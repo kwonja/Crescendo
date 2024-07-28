@@ -1,5 +1,6 @@
 package com.sokpulee.crescendo.global.util.jwt;
 
+import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -78,33 +79,32 @@ public class JWTUtil {
         return key;
     }
 
-    //	전달 받은 토큰이 제대로 생성된 것인지 확인 하고 문제가 있다면 UnauthorizedException 발생.
+    // 전달 받은 토큰이 제대로 생성된 것인지 확인 하고 문제가 있다면 AuthenticationRequiredException 발생.
     public boolean checkToken(String token) {
         try {
-//			Json Web Signature? 서버에서 인증을 근거로 인증 정보를 서버의 private key 서명 한것을 토큰화 한것
-//			setSigningKey : JWS 서명 검증을 위한  secret key 세팅
-//			parseClaimsJws : 파싱하여 원본 jws 만들기
+            // Json Web Signature? 서버에서 인증을 근거로 인증 정보를 서버의 private key 서명 한것을 토큰화 한것
+            // setSigningKey : JWS 서명 검증을 위한 secret key 세팅
+            // parseClaimsJws : 파싱하여 원본 jws 만들기
             Jws<Claims> claims = Jwts.parser().setSigningKey(this.generateKey()).parseClaimsJws(token);
-//			Claims 는 Map 구현체 형태
+            // Claims 는 Map 구현체 형태
             log.debug("claims: {}", claims);
             return true;
         } catch (Exception e) {
             log.error(e.getMessage());
-            return false;
+            throw new AuthenticationRequiredException();
+        }
+    }
+    public Long getUserId(String authorization) {
+        try {
+            Jws<Claims> claims = Jwts.parser().setSigningKey(this.generateKey()).parseClaimsJws(authorization);
+            Map<String, Object> value = claims.getBody();
+            log.info("value : {}", value);
+            return ((Number) value.get("userId")).longValue();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new AuthenticationRequiredException();
         }
     }
 
-    public int getUserId(String authorization) {
-        Jws<Claims> claims = null;
-        try {
-            claims = Jwts.parser().setSigningKey(this.generateKey()).parseClaimsJws(authorization);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-//            throw new UnAuthorizedException();
-        }
-        Map<String, Object> value = claims.getBody();
-        log.info("value : {}", value);
-        return (int) value.get("userId");
-    }
 
 }
