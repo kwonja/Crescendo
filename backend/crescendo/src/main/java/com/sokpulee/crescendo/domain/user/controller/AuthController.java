@@ -1,6 +1,8 @@
 package com.sokpulee.crescendo.domain.user.controller;
 
+import com.sokpulee.crescendo.domain.user.dto.request.EmailRandomKeyRequest;
 import com.sokpulee.crescendo.domain.user.dto.request.SignUpRequest;
+import com.sokpulee.crescendo.domain.user.dto.response.EmailRandomKeyResponse;
 import com.sokpulee.crescendo.domain.user.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,5 +24,13 @@ public class AuthController {
     public ResponseEntity<?> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
         authService.signUp(signUpRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/email/random-key")
+    public ResponseEntity<?> emailRandomKey(@Valid @RequestBody EmailRandomKeyRequest emailRandomKeyRequest) {
+
+        EmailRandomKeyResponse response = authService.createEmailRandomKey(emailRandomKeyRequest);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }
