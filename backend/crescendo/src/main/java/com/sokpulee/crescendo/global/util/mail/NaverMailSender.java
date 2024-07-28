@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.mail.Message;
-import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
@@ -28,12 +27,12 @@ public class NaverMailSender implements MailSendHelper{
     private String MAIL_PW;
 
     @Override
-    public void sendNewPassword(String email, String password) throws MessagingException {
+    public void sendNewPassword(String email, String password) {
         sendNotiMail(email, "여행 나침반에서 새로운 비밀번호를 안내드립니다.", "새로운 비밀번호는 아래와 같습니다. \n" + password);
     }
 
     @Override
-    public String sendEmailAuth(String email) throws MessagingException {
+    public String sendEmailRandomKey(String email) {
 
         Random random = new Random();
         String randomKey = String.valueOf(random.nextInt(900000) + 100000); // 6자리 랜덤 키 생성
