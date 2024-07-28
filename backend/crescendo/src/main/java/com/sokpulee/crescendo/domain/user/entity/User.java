@@ -2,18 +2,19 @@ package com.sokpulee.crescendo.domain.user.entity;
 
 import com.sokpulee.crescendo.domain.idol.entity.Idol;
 import com.sokpulee.crescendo.global.TimeStampedEntity;
+import com.sokpulee.crescendo.global.util.encrypt.EnctyptHelper;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Getter;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends TimeStampedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    @Column(name = "user_id")
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idol_id")
@@ -36,4 +37,19 @@ public class User extends TimeStampedEntity {
 
     @Column(length = 1000)
     private String refreshToken;
+
+    @Builder
+    public User(Idol idol, String email, String password, String nickname, String profilePath, String introduction, String refreshToken) {
+        this.idol = idol;
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.profilePath = profilePath;
+        this.introduction = introduction;
+        this.refreshToken = refreshToken;
+    }
+
+    public void encryptPassword(EnctyptHelper enctyptHelper) {
+        this.password = enctyptHelper.encrypt(this.password);
+    }
 }
