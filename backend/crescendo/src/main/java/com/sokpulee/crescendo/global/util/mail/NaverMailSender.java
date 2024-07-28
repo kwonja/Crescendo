@@ -1,5 +1,6 @@
 package com.sokpulee.crescendo.global.util.mail;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.mail.Message;
@@ -14,13 +15,17 @@ import java.util.Random;
 @Component
 public class NaverMailSender implements MailSendHelper{
     /** 메일 HOST **/
-    private final String HOST = "smtp.naver.com";
+    @Value("{mail.host}")
+    private String HOST;
     /** 메일 PORT **/
-    private final String PORT = "587";
+    @Value("{mail.port}")
+    private String PORT;
     /** 메일 ID **/
-    private final String MAIL_ID = "ssafy6843@naver.com";
+    @Value("{mail.id}")
+    private String MAIL_ID;
     /** 메일 PW **/
-    private final String MAIL_PW = "qwer123!@#";
+    @Value("{mail.pw}")
+    private String MAIL_PW;
 
     @Override
     public void sendNewPassword(String email, String password) throws MessagingException {
