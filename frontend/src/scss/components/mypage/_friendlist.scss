@@ -1,4 +1,4 @@
-.friendlist{
+.friend{
     margin: 0 auto;
     width: 210px;
     height: 30px;
@@ -18,17 +18,84 @@
         display: flex;
         justify-content: center;
         align-items: center;
+
+        cursor: pointer;
+        span{
+            height: 10px;
+            font-size: 11px;
+        }
+        div{
+            height: 15px;
+        }
+        background: #FEA3A3;
+        display: flex;
+        flex-direction: column;
+        gap : 2px;
     }
 
+    .active{
+         border-radius: 10px 0px 0px 0px;
+        background: #F66;
+        display: flex;
+        flex-direction: column;
+        gap : 2px;
+        cursor: pointer;
+    }
     .left{
         border-radius: 10px 0px 0px 0px;
-        background: #F66;
-        
     }
     .right{
         border-radius: 0px 10px 0px 0px;
-        background: #FEA3A3;
     }
-    
+}
 
+.list{
+    width: 270px;
+    height: 340px;
+    border-radius: 20px;
+    background: #F66;
+    margin: 0 auto;
+}
+
+.search-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    padding-top: 10px;
+    margin-bottom: 15px;
+  }
+  
+  input {
+    width: 240px;
+    height: 30px;
+    border-radius: 10px;
+    background: #FFF;
+    padding-left: 10px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    padding-right: 30px;
+    box-sizing: border-box;
+    position: relative;
+    padding-top: 10px;
+    outline: none;
+  }
+  span{
+    position: relative;
+  }
+  
+  .search-icon {
+    position: absolute;
+    right: 10px; /* 검색 아이콘의 위치 조정 */
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+
+.profilelist{
+    padding: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
 }
