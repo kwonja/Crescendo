@@ -2,6 +2,7 @@ import Main from '../pages/Main';
 import App from '../App';
 import { createBrowserRouter } from 'react-router-dom';
 import ErrorPage from '../components/layout/ErrorPage';
+import MyPage from '../pages/MyPage';
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -23,6 +24,10 @@ export const router = createBrowserRouter([
       {
         path: '/game',
         element: <Main />,
+      },
+      {
+        path: '/mypage',
+        element: <MyPage />,
       },
     ],
   },

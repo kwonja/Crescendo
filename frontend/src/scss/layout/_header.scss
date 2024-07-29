@@ -47,6 +47,7 @@
   }
 
   &_icon {
+    width: 330px;
     height: 80px;
     display: flex;
     flex-direction: row;
@@ -55,5 +56,21 @@
     align-items: center;
     margin-right: 30px;
     margin-left: auto;
+    position: relative;
+    div{
+      width: 60px;
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+    
+    .selected {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px 0px 10px 10px;
+      background: #FEA3A3;
+    }
   }
 }

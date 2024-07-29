@@ -1,7 +1,8 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
-@import 'components/buttons';
+@import 'components/common/buttons';
+@import 'components/header/settingmenu';
 @import 'base/font';
 @import 'layout/header';
 @import 'layout/frame';
