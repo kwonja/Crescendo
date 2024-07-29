@@ -1,8 +1,13 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+
 @import 'components/common/buttons';
 @import 'components/header/settingmenu';
+@import 'components/header/header';
+@import 'components/mypage//profile';
 @import 'base/font';
-@import 'layout/header';
 @import 'layout/frame';
+
+
+@import 'page/mypage'

@@ -4,7 +4,7 @@ import { ReactComponent as User } from '../../assets/images/user.svg';
 import { ReactComponent as Alarm } from '../../assets/images/alarm.svg';
 import { ReactComponent as Chat } from '../../assets/images/chat.svg';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import SettingMenu from '../header/SettingMenu';
+import SettingMenu from './SettingMenu';
 
 export default function LoginHeader() {
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
