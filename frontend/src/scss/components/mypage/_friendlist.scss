@@ -1,0 +1,34 @@
+.friendlist{
+    margin: 0 auto;
+    width: 210px;
+    height: 30px;
+    margin-top: 10px;
+    .listbar{
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+       
+    }
+
+    .follow{
+        width: 105px;
+        height: 30px;
+        color: #FFF;
+        font-size: 14px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .left{
+        border-radius: 10px 0px 0px 0px;
+        background: #F66;
+        
+    }
+    .right{
+        border-radius: 0px 10px 0px 0px;
+        background: #FEA3A3;
+    }
+    
+
+}
