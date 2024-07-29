@@ -91,7 +91,7 @@ public class JWTUtil {
             return true;
         } catch (Exception e) {
             log.error(e.getMessage());
-            throw new AuthenticationRequiredException();
+            return false;
         }
     }
     public Long getUserId(String authorization) {
