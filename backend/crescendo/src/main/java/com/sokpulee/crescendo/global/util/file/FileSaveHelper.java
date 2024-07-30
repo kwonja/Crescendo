@@ -8,4 +8,6 @@ public interface FileSaveHelper {
     String saveUserProfile(MultipartFile profileImage);
 
     String saveFeedImage(MultipartFile feedImage);
+
+    String saveFanArtImage(MultipartFile fanArtImage);
 }
