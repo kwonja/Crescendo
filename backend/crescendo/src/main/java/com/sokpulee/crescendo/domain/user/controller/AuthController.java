@@ -1,13 +1,16 @@
 package com.sokpulee.crescendo.domain.user.controller;
 
 import com.sokpulee.crescendo.domain.user.dto.request.EmailRandomKeyRequest;
+import com.sokpulee.crescendo.domain.user.dto.request.LoginRequest;
 import com.sokpulee.crescendo.domain.user.dto.request.SignUpRequest;
 import com.sokpulee.crescendo.domain.user.dto.response.EmailRandomKeyResponse;
 import com.sokpulee.crescendo.domain.user.service.AuthService;
+import com.sokpulee.crescendo.global.util.jwt.JWTUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
+    private final JWTUtil jwtUtil;
 
     @PostMapping("/sign-up")
     @Operation(summary = "회원가입", description = "회원가입 API")
@@ -36,5 +40,22 @@ public class AuthController {
         EmailRandomKeyResponse response = authService.createEmailRandomKey(emailRandomKeyRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+
+        Long userId = authService.login(loginRequest);
+
+        String accessToken = jwtUtil.createAccessToken(userId);
+        String refreshToken = jwtUtil.createRefreshToken(userId);
+
+        authService.saveRefreshToken(userId, refreshToken);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+        headers.set("Refresh-Token", refreshToken);
+
+        return ResponseEntity.status(HttpStatus.OK).headers(headers).build();
     }
 }

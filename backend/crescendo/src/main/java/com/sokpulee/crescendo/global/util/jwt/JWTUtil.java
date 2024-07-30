@@ -8,6 +8,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
@@ -26,12 +27,12 @@ public class JWTUtil {
     @Value("${jwt.refresh-token.expiretime}")
     private long refreshTokenExpireTime;
 
-    public String createAccessToken(int userId) {
+    public String createAccessToken(Long userId) {
         return create(userId, "access-token", accessTokenExpireTime);
     }
 
     //	AccessToken에 비해 유효기간을 길게 설정.
-    public String createRefreshToken(int userId) {
+    public String createRefreshToken(Long userId) {
         return create(userId, "refresh-token", refreshTokenExpireTime);
     }
 
@@ -41,7 +42,7 @@ public class JWTUtil {
 //		subject : payload에 sub의 value로 들어갈 subject값
 //		expire : 토큰 유효기간 설정을 위한 값
 //		jwt 토큰의 구성 : header + payload + signature
-    private String create(int userId, String subject, long expireTime) {
+    private String create(Long userId, String subject, long expireTime) {
 //		Payload 설정 : 생성일 (IssuedAt), 유효기간 (Expiration),
 //		토큰 제목 (Subject), 데이터 (Claim) 등 정보 세팅.
         Claims claims = Jwts.claims()
@@ -80,7 +81,9 @@ public class JWTUtil {
     }
 
     // 전달 받은 토큰이 제대로 생성된 것인지 확인 하고 문제가 있다면 AuthenticationRequiredException 발생.
-    public boolean checkToken(String token) {
+    public boolean checkToken(String authorizationHeader) {
+        String token = extractToken(authorizationHeader);
+
         try {
             // Json Web Signature? 서버에서 인증을 근거로 인증 정보를 서버의 private key 서명 한것을 토큰화 한것
             // setSigningKey : JWS 서명 검증을 위한 secret key 세팅
@@ -94,9 +97,12 @@ public class JWTUtil {
             return false;
         }
     }
-    public Long getUserId(String authorization) {
+
+    public Long getUserId(String authorizationHeader) {
+        String token = extractToken(authorizationHeader);
+
         try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(this.generateKey()).parseClaimsJws(authorization);
+            Jws<Claims> claims = Jwts.parser().setSigningKey(this.generateKey()).parseClaimsJws(token);
             Map<String, Object> value = claims.getBody();
             log.info("value : {}", value);
             return ((Number) value.get("userId")).longValue();
@@ -106,5 +112,13 @@ public class JWTUtil {
         }
     }
 
+    private String extractToken(String authorizationHeader) {
+        if (StringUtils.hasText(authorizationHeader) && authorizationHeader.startsWith("Bearer ")) {
+            return authorizationHeader.substring(7);
+        }
+        else {
+            throw new AuthenticationRequiredException();
+        }
+    }
 
 }

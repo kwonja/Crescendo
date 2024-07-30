@@ -24,7 +24,9 @@ public class UserServiceImpl implements UserService{
 
         String profilePath = user.getProfilePath();
 
-        fileSaveHelper.deleteUserProfile(profilePath);
+        System.out.println("jdklsjfldksjf" + profilePath);
+        fileSaveHelper.deleteFile(profilePath);
         String savePath = fileSaveHelper.saveUserProfile(request.getProfileImage());
+        user.changeProfilePath(savePath);
     }
 }

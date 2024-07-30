@@ -1,7 +1,6 @@
 package com.sokpulee.crescendo.domain.user.entity;
 
 import com.sokpulee.crescendo.domain.idol.entity.Idol;
-import com.sokpulee.crescendo.global.TimeStampedEntity;
 import com.sokpulee.crescendo.global.util.encrypt.EnctyptHelper;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -12,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User extends TimeStampedEntity {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -53,5 +52,13 @@ public class User extends TimeStampedEntity {
 
     public void encryptPassword(EnctyptHelper enctyptHelper) {
         this.password = enctyptHelper.encrypt(this.password);
+    }
+
+    public void changeRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public void changeProfilePath(String savePath) {
+        this.profilePath = savePath;
     }
 }

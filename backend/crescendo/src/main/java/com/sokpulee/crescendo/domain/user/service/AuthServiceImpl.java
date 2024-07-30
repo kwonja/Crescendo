@@ -3,6 +3,7 @@ package com.sokpulee.crescendo.domain.user.service;
 import com.sokpulee.crescendo.domain.idol.entity.Idol;
 import com.sokpulee.crescendo.domain.idol.repository.IdolRepository;
 import com.sokpulee.crescendo.domain.user.dto.request.EmailRandomKeyRequest;
+import com.sokpulee.crescendo.domain.user.dto.request.LoginRequest;
 import com.sokpulee.crescendo.domain.user.dto.request.SignUpRequest;
 import com.sokpulee.crescendo.domain.user.dto.response.EmailRandomKeyResponse;
 import com.sokpulee.crescendo.domain.user.entity.EmailAuth;
@@ -10,6 +11,8 @@ import com.sokpulee.crescendo.domain.user.entity.User;
 import com.sokpulee.crescendo.domain.user.repository.EmailAuthRepository;
 import com.sokpulee.crescendo.domain.user.repository.UserRepository;
 import com.sokpulee.crescendo.global.exception.custom.IdolNotFoundException;
+import com.sokpulee.crescendo.global.exception.custom.LoginFailException;
+import com.sokpulee.crescendo.global.exception.custom.UserNotFoundException;
 import com.sokpulee.crescendo.global.util.encrypt.EnctyptHelper;
 import com.sokpulee.crescendo.global.util.mail.MailSendHelper;
 import lombok.RequiredArgsConstructor;
@@ -45,5 +48,28 @@ public class AuthServiceImpl implements AuthService {
         EmailAuth emailAuth = emailAuthRepository.save(EmailAuth.builder().randomKey(randomKey).build());
 
         return new EmailRandomKeyResponse(emailAuth.getEmailAuthId());
+    }
+
+    @Override
+    public Long login(LoginRequest loginRequest) {
+
+        User user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(UserNotFoundException::new);
+
+        if(enctyptHelper.isMatch(loginRequest.getPassword(), user.getPassword())) {
+            return user.getId();
+        }
+        else {
+            throw new LoginFailException();
+        }
+    }
+
+    @Override
+    public void saveRefreshToken(Long userId, String refreshToken) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+
+        user.changeRefreshToken(refreshToken);
     }
 }

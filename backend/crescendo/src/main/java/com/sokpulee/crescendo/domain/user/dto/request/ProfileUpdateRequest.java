@@ -10,4 +10,7 @@ public class ProfileUpdateRequest {
     @NotNull(message = "프로필 이미지는 필수입니다.")
     private MultipartFile profileImage;
 
+    public ProfileUpdateRequest(MultipartFile profileImage) {
+        this.profileImage = profileImage;
+    }
 }
