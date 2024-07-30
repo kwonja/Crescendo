@@ -3,6 +3,7 @@ package com.sokpulee.crescendo.domain.follow.entity;
 import com.sokpulee.crescendo.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,4 +22,10 @@ public class Follow {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "follower_id")
     private User follower;
+
+    @Builder
+    public Follow(User following, User follower) {
+        this.following = following;
+        this.follower = follower;
+    }
 }
