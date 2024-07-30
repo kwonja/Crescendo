@@ -2,9 +2,10 @@ import React from 'react'
 import { ReactComponent as User } from '../../assets/images/reduser.svg';
 import { ReactComponent as Heart } from '../../assets/images/heart.svg';
 import { ReactComponent as Dots} from '../../assets/images/dots.svg';
+import { ReactComponent as Comment} from '../../assets/images/comment.svg';
 export default function Feed() {
-
     const tags = ["2주년","뉴진스"]
+
   return (
     <div className='feed'>
         <div className='upper'> 
@@ -27,6 +28,7 @@ export default function Feed() {
                 ))}
                     
                 </div>
+        <Comment className='comment'/>
             
         </div>
   )
