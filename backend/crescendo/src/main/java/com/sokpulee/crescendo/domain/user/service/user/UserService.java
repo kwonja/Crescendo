@@ -17,4 +17,6 @@ public interface UserService {
     void updateNickname(Long loggedInUserId, NicknameUpdateRequest nicknameUpdateRequest);
 
     void updateIntroduction(Long loggedInUserId, IntroductionUpdateRequest introductionUpdateRequest);
+
+    void updatePassword(Long loggedInUserId, PasswordUpdateMyPageRequest passwordUpdateMyPageRequest);
 }

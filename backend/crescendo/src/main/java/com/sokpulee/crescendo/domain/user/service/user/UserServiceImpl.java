@@ -6,8 +6,10 @@ import com.sokpulee.crescendo.domain.user.dto.response.user.UserInfoResponse;
 import com.sokpulee.crescendo.domain.user.entity.User;
 import com.sokpulee.crescendo.domain.user.repository.UserRepository;
 import com.sokpulee.crescendo.global.exception.custom.EmailConflictException;
+import com.sokpulee.crescendo.global.exception.custom.IncorrectCurrentPasswordException;
 import com.sokpulee.crescendo.global.exception.custom.NicknameConflictException;
 import com.sokpulee.crescendo.global.exception.custom.UserNotFoundException;
+import com.sokpulee.crescendo.global.util.encrypt.EnctyptHelper;
 import com.sokpulee.crescendo.global.util.file.FileSaveHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final FileSaveHelper fileSaveHelper;
     private final FollowRepository followRepository;
+    private final EnctyptHelper enctyptHelper;
 
     @Override
     public void updateProfile(Long userId, ProfileUpdateRequest request) {
@@ -96,5 +99,19 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(UserNotFoundException::new);
         user.updateIntroduction(introductionUpdateRequest.getIntroduction());
 
+    }
+
+    @Override
+    public void updatePassword(Long loggedInUserId, PasswordUpdateMyPageRequest passwordUpdateMyPageRequest) {
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        if(!enctyptHelper.isMatch(passwordUpdateMyPageRequest.getCurrentPassword(), user.getPassword())) {
+            throw new IncorrectCurrentPasswordException();
+        }
+        else {
+            user.updatePassword(enctyptHelper.encrypt(passwordUpdateMyPageRequest.getNewPassword()));
+        }
     }
 }

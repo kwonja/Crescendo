@@ -113,4 +113,19 @@ public class UserController {
         return ResponseEntity.status(NO_CONTENT).build();
     }
 
+    @PatchMapping("/mypage/password")
+    @Operation(summary = "비밀번호 수정 - 마이페이지", description = "비밀번호 수정 - 마이페이지 API")
+    public ResponseEntity<?> updatePassword(
+            @AuthPrincipal Long loggedInUserId,
+            @Valid @RequestBody PasswordUpdateMyPageRequest passwordUpdateMyPageRequest
+    ) {
+
+        if(loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+        userService.updatePassword(loggedInUserId, passwordUpdateMyPageRequest);
+
+        return ResponseEntity.status(NO_CONTENT).build();
+    }
+
 }
