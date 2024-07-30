@@ -7,21 +7,25 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
 @Component
-public class FileSaver implements FileSaveHelper{
+public class FileSaver implements FileSaveHelper {
 
     @Value("${image.upload.dir}")
     private String uploadDir;
 
+    private final String PROFILE_DIR = "profile";
+
     @Override
-    public void deleteUserProfile(String profilePath) {
-        File file = new File(profilePath);
+    public void deleteFile(String filePath) {
+        if(filePath == null || filePath.isEmpty()) {
+            return;
+        }
+        File file = new File(uploadDir + File.separator + filePath);
 
         if (file.exists()) {
             if (!file.delete()) {
@@ -32,7 +36,11 @@ public class FileSaver implements FileSaveHelper{
 
     @Override
     public String saveUserProfile(MultipartFile profileImage) {
-        String realPath = uploadDir + File.separator + "profile";
+        return saveFile(profileImage, PROFILE_DIR);
+    }
+    
+    public String saveFile(MultipartFile profileImage, String dir) {
+        String realPath = uploadDir + File.separator + dir;
         String today = new SimpleDateFormat("yyMMdd").format(new Date());
         String saveFolder = realPath + File.separator + today;
         File folder = new File(saveFolder);
@@ -55,7 +63,6 @@ public class FileSaver implements FileSaveHelper{
             throw new FileSaveFailException();
         }
 
-        return savedFile.getAbsolutePath();
+        return dir + File.separator + today + File.separator + newFileName;
     }
-
 }
