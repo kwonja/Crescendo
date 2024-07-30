@@ -29,8 +29,8 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
 
-        final String authorization = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
+        final String authorizationHeader = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
 
-        return jwtUtil.getUserId(authorization);
+        return jwtUtil.getUserId(authorizationHeader);
     }
 }
