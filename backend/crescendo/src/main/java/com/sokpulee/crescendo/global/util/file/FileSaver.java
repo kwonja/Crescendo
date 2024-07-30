@@ -19,6 +19,7 @@ public class FileSaver implements FileSaveHelper {
     private String uploadDir;
 
     private final String PROFILE_DIR = "profile";
+    private final String FEED_DIR = "feed";
 
     @Override
     public void deleteFile(String filePath) {
@@ -37,6 +38,11 @@ public class FileSaver implements FileSaveHelper {
     @Override
     public String saveUserProfile(MultipartFile profileImage) {
         return saveFile(profileImage, PROFILE_DIR);
+    }
+
+    @Override
+    public String saveFeedImage(MultipartFile feedImage) {
+        return saveFile(feedImage, FEED_DIR);
     }
 
     public String saveFile(MultipartFile profileImage, String dir) {
