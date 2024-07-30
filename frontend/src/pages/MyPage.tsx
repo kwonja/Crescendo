@@ -3,6 +3,7 @@ import Profile from '../components/mypage/Profile';
 import FriendList from '../components/mypage/FriendList';
 import { ReactComponent as Crown } from '../assets/images/crown.svg';
 import Feed from '../components/common/Feed';
+import Gallery from '../components/common/Gallery';
 export default function MyPage() {
   const [isSelected, setIsSelected] = useState<string>('feed');
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
@@ -55,12 +56,21 @@ export default function MyPage() {
           <div className="indicator" style={indicatorStyle}></div>
         </div>
 
-        <div className="feedlsit">
+
+        {isSelected === 'feed' && <div className="">
           <Feed />
           <Feed />
           <Feed />
           <Feed />
-        </div>
+        </div>}
+
+        {isSelected === 'gallery' && <div className="">
+          <Gallery />
+          {/* <Gallery />
+          <Gallery />
+          <Gallery /> */}
+        </div>}
+        
       </div>
     </div>
   );
