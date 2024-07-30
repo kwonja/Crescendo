@@ -20,7 +20,11 @@ export default function LoginHeader() {
         const { offsetLeft, offsetWidth } = activeLink;
         setIndicatorStyle({
           left: offsetLeft + (offsetWidth - 80) / 2 + 'px', // Center the indicator
+          display : 'block'
         });
+      }
+      else{
+        setIndicatorStyle({display : 'none'})
       }
     }
   }, [location]);
