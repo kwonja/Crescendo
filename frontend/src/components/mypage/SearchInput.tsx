@@ -8,9 +8,10 @@ interface InputProps{
 export default function SearchInput({placeholder} : InputProps) {
   return (
     <div className="search-container">
-        <span><input type="text" placeholder={placeholder}/>
+        <span>
+        <input type="text" placeholder={placeholder}/>
         <div className='search-icon'><Search/></div>
         </span>
-      </div>
+    </div>
   )
 }

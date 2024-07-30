@@ -41,6 +41,8 @@ export default function MyPage() {
         <div className={`item ${isSelected === 'gallery' ? 'active' : ''}`} onClick={()=>setIsSelected('gallery')}>내 갤러리</div>
         <div className="indicator" style={indicatorStyle}></div>
       </div>
+
+
       
 
     </div>

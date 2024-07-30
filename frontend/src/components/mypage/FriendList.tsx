@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import FriendProfile from './FriendProfile';
-import SearchInput from '../common/SearchInput';
+import SearchInput from './SearchInput';
 export default function FriendList() {
   const [isSelected,setIsSelected] =useState<string>('left');
   return (
