@@ -13,4 +13,6 @@ public interface UserService {
     void emailExists(EmailExistsRequest emailExistsRequest);
 
     UserInfoResponse getUserById(Long loggedInUserId, Long findUserId);
+
+    void deleteUserById(Long loggedInUserId);
 }

@@ -6,6 +6,7 @@ import com.sokpulee.crescendo.domain.user.dto.request.user.ProfileUpdateRequest;
 import com.sokpulee.crescendo.domain.user.dto.response.user.UserInfoResponse;
 import com.sokpulee.crescendo.domain.user.service.user.UserService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
+import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
 import com.sokpulee.crescendo.global.util.jwt.JWTUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -66,5 +67,17 @@ public class UserController {
         UserInfoResponse userInfoResponse = userService.getUserById(loggedInUserId, findUserId);
 
         return ResponseEntity.status(OK).body(userInfoResponse);
+    }
+
+    @DeleteMapping
+    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 API")
+    public ResponseEntity<?> deleteUserById(@AuthPrincipal Long loggedInUserId) {
+        if(loggedInUserId != null) {
+            throw new AuthenticationRequiredException();
+        }
+
+        userService.deleteUserById(loggedInUserId);
+
+        return ResponseEntity.status(NO_CONTENT).build();
     }
 }

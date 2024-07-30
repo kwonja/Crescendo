@@ -74,4 +74,12 @@ public class UserServiceImpl implements UserService {
 
         return userInfo.build();
     }
+
+    @Override
+    public void deleteUserById(Long loggedInUserId) {
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        userRepository.delete(user);
+    }
 }
