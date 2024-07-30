@@ -3,6 +3,7 @@ package com.sokpulee.crescendo.domain.user.service;
 import com.sokpulee.crescendo.domain.idol.entity.Idol;
 import com.sokpulee.crescendo.domain.idol.repository.IdolRepository;
 import com.sokpulee.crescendo.domain.user.dto.request.EmailRandomKeyRequest;
+import com.sokpulee.crescendo.domain.user.dto.request.EmailValidationRequest;
 import com.sokpulee.crescendo.domain.user.dto.request.LoginRequest;
 import com.sokpulee.crescendo.domain.user.dto.request.SignUpRequest;
 import com.sokpulee.crescendo.domain.user.dto.response.EmailRandomKeyResponse;
@@ -10,9 +11,7 @@ import com.sokpulee.crescendo.domain.user.entity.EmailAuth;
 import com.sokpulee.crescendo.domain.user.entity.User;
 import com.sokpulee.crescendo.domain.user.repository.EmailAuthRepository;
 import com.sokpulee.crescendo.domain.user.repository.UserRepository;
-import com.sokpulee.crescendo.global.exception.custom.IdolNotFoundException;
-import com.sokpulee.crescendo.global.exception.custom.LoginFailException;
-import com.sokpulee.crescendo.global.exception.custom.UserNotFoundException;
+import com.sokpulee.crescendo.global.exception.custom.*;
 import com.sokpulee.crescendo.global.util.encrypt.EnctyptHelper;
 import com.sokpulee.crescendo.global.util.mail.MailSendHelper;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +31,18 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void signUp(SignUpRequest signUpRequest) {
+
+        EmailAuth emailAuth = emailAuthRepository.findById(signUpRequest.getEmailAuthId())
+                .orElseThrow(EmailValidationNotFoundException::new);
+
+        if(!signUpRequest.getRandomKey().equals(emailAuth.getRandomKey())) {
+            emailAuthRepository.delete(emailAuth);
+            throw new EmailAuthException();
+        }
+        else {
+            emailAuthRepository.delete(emailAuth);
+        }
+
         Idol idol = idolRepository.findById(signUpRequest.getIdolId())
                 .orElseThrow(IdolNotFoundException::new);
 
@@ -71,5 +82,16 @@ public class AuthServiceImpl implements AuthService {
                 .orElseThrow(UserNotFoundException::new);
 
         user.changeRefreshToken(refreshToken);
+    }
+
+    @Override
+    public void emailValidate(EmailValidationRequest emailValidationRequest) {
+
+        EmailAuth emailAuth = emailAuthRepository.findById(emailValidationRequest.getEmailAuthId())
+                .orElseThrow(EmailValidationNotFoundException::new);
+
+        if(!emailValidationRequest.getRandomKey().equals(emailAuth.getRandomKey())) {
+            throw new EmailAuthException();
+        }
     }
 }
