@@ -3,6 +3,7 @@ import CommunityMain from '../pages/CommunityMain';
 import App from '../App';
 import { createBrowserRouter } from 'react-router-dom';
 import ErrorPage from '../components/layout/ErrorPage';
+import Login from '../pages/Login.tsx';
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -12,6 +13,10 @@ export const router = createBrowserRouter([
       {
         path: '/',
         element: <Main />,
+      },
+      {
+        path: '/login',
+        element: <Login />,
       },
       {
         path: '/community',
