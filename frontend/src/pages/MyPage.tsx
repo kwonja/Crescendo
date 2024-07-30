@@ -65,16 +65,6 @@ export default function MyPage() {
           </div>
         )}
 
-<<<<<<< HEAD
-        {isSelected === 'gallery' && (
-          <div className="">
-            <Gallery />
-            {/* <Gallery />
-          <Gallery />
-          <Gallery /> */}
-          </div>
-        )}
-=======
         {isSelected === 'feed' && <div className="">
           <Feed />
           <Feed />
@@ -93,7 +83,6 @@ export default function MyPage() {
           <Gallery />
         </div>}
         
->>>>>>> 4fb1f181efc3ce2422873a2c43e0b76fabaa8741
       </div>
     </div>
   );
