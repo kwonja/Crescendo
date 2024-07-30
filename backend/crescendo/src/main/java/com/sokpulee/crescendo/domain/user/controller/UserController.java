@@ -1,5 +1,6 @@
 package com.sokpulee.crescendo.domain.user.controller;
 
+import com.sokpulee.crescendo.domain.user.dto.request.user.EmailExistsRequest;
 import com.sokpulee.crescendo.domain.user.dto.request.user.NickNameExistsRequest;
 import com.sokpulee.crescendo.domain.user.dto.request.user.ProfileUpdateRequest;
 import com.sokpulee.crescendo.domain.user.service.user.UserService;
@@ -34,9 +35,19 @@ public class UserController {
     }
 
     @PostMapping("/nickname/exists")
+    @Operation(summary = "닉네임 중복 체크", description = "닉네임 중복 체크 API")
     public ResponseEntity<?> nicknameExists(@RequestBody NickNameExistsRequest nickNameExistsRequest) {
 
         userService.nicknameExists(nickNameExistsRequest);
+
+        return ResponseEntity.status(NO_CONTENT).build();
+    }
+
+    @PostMapping("/email/exists")
+    @Operation(summary = "이메일 중복 체크", description = "이메일 중복 체크 API")
+    public ResponseEntity<?> emailExists(@RequestBody EmailExistsRequest emailExistsRequest) {
+
+        userService.emailExists(emailExistsRequest);
 
         return ResponseEntity.status(NO_CONTENT).build();
     }
