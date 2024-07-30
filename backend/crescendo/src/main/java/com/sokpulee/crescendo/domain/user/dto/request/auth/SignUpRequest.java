@@ -1,4 +1,4 @@
-package com.sokpulee.crescendo.domain.user.dto.request;
+package com.sokpulee.crescendo.domain.user.dto.request.auth;
 
 import com.sokpulee.crescendo.domain.idol.entity.Idol;
 import com.sokpulee.crescendo.domain.user.entity.User;

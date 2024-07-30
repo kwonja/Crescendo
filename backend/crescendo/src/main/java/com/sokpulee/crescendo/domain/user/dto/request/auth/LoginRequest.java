@@ -1,4 +1,4 @@
-package com.sokpulee.crescendo.domain.user.dto.request;
+package com.sokpulee.crescendo.domain.user.dto.request.auth;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

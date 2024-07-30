@@ -1,8 +1,10 @@
-package com.sokpulee.crescendo.domain.user.service;
+package com.sokpulee.crescendo.domain.user.service.user;
 
-import com.sokpulee.crescendo.domain.user.dto.request.ProfileUpdateRequest;
+import com.sokpulee.crescendo.domain.user.dto.request.user.NickNameExistsRequest;
+import com.sokpulee.crescendo.domain.user.dto.request.user.ProfileUpdateRequest;
 import com.sokpulee.crescendo.domain.user.entity.User;
 import com.sokpulee.crescendo.domain.user.repository.UserRepository;
+import com.sokpulee.crescendo.global.exception.custom.NicknameConflictException;
 import com.sokpulee.crescendo.global.exception.custom.UserNotFoundException;
 import com.sokpulee.crescendo.global.util.file.FileSaveHelper;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final FileSaveHelper fileSaveHelper;
@@ -28,5 +30,13 @@ public class UserServiceImpl implements UserService{
         fileSaveHelper.deleteFile(profilePath);
         String savePath = fileSaveHelper.saveUserProfile(request.getProfileImage());
         user.changeProfilePath(savePath);
+    }
+
+    @Override
+    public void nicknameExists(NickNameExistsRequest nickNameExistsRequest) {
+
+        if(userRepository.findByNickname(nickNameExistsRequest.getNickname()).isPresent()) {
+            throw new NicknameConflictException();
+        }
     }
 }

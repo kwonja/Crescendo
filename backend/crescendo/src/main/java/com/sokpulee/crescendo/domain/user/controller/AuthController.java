@@ -1,11 +1,11 @@
 package com.sokpulee.crescendo.domain.user.controller;
 
-import com.sokpulee.crescendo.domain.user.dto.request.EmailRandomKeyRequest;
-import com.sokpulee.crescendo.domain.user.dto.request.EmailValidationRequest;
-import com.sokpulee.crescendo.domain.user.dto.request.LoginRequest;
-import com.sokpulee.crescendo.domain.user.dto.request.SignUpRequest;
-import com.sokpulee.crescendo.domain.user.dto.response.EmailRandomKeyResponse;
-import com.sokpulee.crescendo.domain.user.service.AuthService;
+import com.sokpulee.crescendo.domain.user.dto.request.auth.EmailRandomKeyRequest;
+import com.sokpulee.crescendo.domain.user.dto.request.auth.EmailValidationRequest;
+import com.sokpulee.crescendo.domain.user.dto.request.auth.LoginRequest;
+import com.sokpulee.crescendo.domain.user.dto.request.auth.SignUpRequest;
+import com.sokpulee.crescendo.domain.user.dto.response.auth.EmailRandomKeyResponse;
+import com.sokpulee.crescendo.domain.user.service.auth.AuthService;
 import com.sokpulee.crescendo.global.util.jwt.JWTUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

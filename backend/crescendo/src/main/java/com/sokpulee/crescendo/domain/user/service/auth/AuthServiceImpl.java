@@ -1,12 +1,12 @@
-package com.sokpulee.crescendo.domain.user.service;
+package com.sokpulee.crescendo.domain.user.service.auth;
 
 import com.sokpulee.crescendo.domain.idol.entity.Idol;
 import com.sokpulee.crescendo.domain.idol.repository.IdolRepository;
-import com.sokpulee.crescendo.domain.user.dto.request.EmailRandomKeyRequest;
-import com.sokpulee.crescendo.domain.user.dto.request.EmailValidationRequest;
-import com.sokpulee.crescendo.domain.user.dto.request.LoginRequest;
-import com.sokpulee.crescendo.domain.user.dto.request.SignUpRequest;
-import com.sokpulee.crescendo.domain.user.dto.response.EmailRandomKeyResponse;
+import com.sokpulee.crescendo.domain.user.dto.request.auth.EmailRandomKeyRequest;
+import com.sokpulee.crescendo.domain.user.dto.request.auth.EmailValidationRequest;
+import com.sokpulee.crescendo.domain.user.dto.request.auth.LoginRequest;
+import com.sokpulee.crescendo.domain.user.dto.request.auth.SignUpRequest;
+import com.sokpulee.crescendo.domain.user.dto.response.auth.EmailRandomKeyResponse;
 import com.sokpulee.crescendo.domain.user.entity.EmailAuth;
 import com.sokpulee.crescendo.domain.user.entity.User;
 import com.sokpulee.crescendo.domain.user.repository.EmailAuthRepository;
