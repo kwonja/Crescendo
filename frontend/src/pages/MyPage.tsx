@@ -8,7 +8,6 @@ export default function MyPage() {
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    console.log("테스트")
     const menuElement = menuRef.current;
     if (menuElement) {
       const activeLink = menuElement.querySelector('.active') as HTMLElement;

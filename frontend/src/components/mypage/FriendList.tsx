@@ -22,10 +22,7 @@ export default function FriendList() {
         </div>
     </div>
     <div className='list'>
-
-      <SearchInput/>
-      
-
+      <SearchInput placeholder='친구를 검색하세요'/>
       <div className='profilelist'>
         <FriendProfile/>
         <FriendProfile/>
