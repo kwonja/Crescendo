@@ -63,6 +63,6 @@ public class FileSaver implements FileSaveHelper {
             throw new FileSaveFailException();
         }
 
-        return dir + File.separator + today + File.separator + newFileName;
+        return dir + "/" + today + "/" + newFileName;
     }
 }
