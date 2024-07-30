@@ -64,11 +64,15 @@ export default function MyPage() {
           <Feed />
         </div>}
 
-        {isSelected === 'gallery' && <div className="">
+        {isSelected === 'gallery' && <div className="mypage_gallery">
           <Gallery />
-          {/* <Gallery />
           <Gallery />
-          <Gallery /> */}
+          <Gallery />
+          <Gallery />
+          <Gallery />
+          <Gallery />
+          <Gallery />
+          <Gallery />
         </div>}
         
       </div>
