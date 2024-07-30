@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -24,12 +27,18 @@ public class FeedController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> addFeed(
             @AuthPrincipal Long loggedInUserId,
-            @Valid  @ModelAttribute FeedAddRequest feedAddRequest
-    ) {
-//        if(loggedInUserId == null) {
-////            throw new AuthenticationRequi redException();
-////        }
-        System.out.println(feedAddRequest.toString());
+            @Valid
+            @RequestParam("title") String title,
+            @RequestParam("content") String content,
+            @RequestParam("imageList")List<MultipartFile> imageList,
+            @RequestParam("tagList") List<String> tagList,
+            @RequestParam("idolGroupId") Long idolGroupId
+            ) {
+        if(loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+
+        FeedAddRequest feedAddRequest = new FeedAddRequest(title,content,imageList,tagList,idolGroupId);
 
         feedService.addFeed(loggedInUserId, feedAddRequest);
 
