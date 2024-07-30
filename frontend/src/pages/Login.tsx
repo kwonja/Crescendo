@@ -10,11 +10,11 @@ import '../scss/page/_login.scss';
 const Login: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>(); // Redux 디스패치를 사용하여 액션 전송
   const { error, loading } = useSelector((state: RootState) => state.auth); // Redux 스토어에서 인증 상태 선택
-  const [email, setEmail] = useState(''); // 이메일 상태 관리
+  const [email, setEmail] = useState(localStorage.getItem('email') || ''); // 로컬 스토리지에서 이메일 불러오기
   const [password, setPassword] = useState(''); // 비밀번호 상태 관리
   const [showPassword, setShowPassword] = useState(false); // 비밀번호 시각화 상태 관리
-  const [rememberMe, setRememberMe] = useState(false); // '아이디 저장' 체크박스 상태 관리
-  const [autoLogin, setAutoLogin] = useState(false); // '자동 로그인' 체크박스 상태 관리
+  const [rememberMe, setRememberMe] = useState(localStorage.getItem('rememberMe') === 'true'); // 로컬 스토리지에서 '아이디 저장' 체크박스 상태 불러오기
+  const [autoLogin, setAutoLogin] = useState(localStorage.getItem('autoLogin') === 'true'); // 로컬 스토리지에서 '자동 로그인' 체크박스 상태 불러오기
   const [errorMessage, setErrorMessage] = useState(''); // 에러 메시지 상태 관리
 
   // 이메일 입력이 변경될 때 호출되는 함수
@@ -30,16 +30,33 @@ const Login: React.FC = () => {
   // 로그인 폼이 제출될 때 호출되는 함수
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault(); // 폼 제출의 기본 동작 막음
+
+    // '아이디 저장' 체크박스가 체크되어 있는 경우 이메일을 로컬 스토리지에 저장
+    if (rememberMe) {
+      localStorage.setItem('rememberMe', 'true'); // 'rememberMe' 상태를 로컬 스토리지에 저장
+      localStorage.setItem('email', email); // 이메일을 로컬 스토리지에 저장
+    } else {
+      localStorage.removeItem('rememberMe'); // 'rememberMe' 상태를 로컬 스토리지에서 제거
+      localStorage.removeItem('email'); // 이메일을 로컬 스토리지에서 제거
+    }
+
+    // '자동 로그인' 체크박스 상태를 로컬 스토리지에 저장
+    localStorage.setItem('autoLogin', autoLogin.toString());
+
+    // 이메일 유효성 검사
     if (!isValidEmail(email)) {
-      setErrorMessage('유효한 이메일 주소를 입력하세요.'); // 이메일이 유효하지 않을 시 에러 메시지
+      setErrorMessage('유효한 이메일 주소를 입력하세요.'); // 이메일이 유효하지 않을 시 에러 메시지 설정
       return;
     }
+
+    // 비밀번호 유효성 검사
     if (!isValidPassword(password)) {
       setErrorMessage(
-        '비밀번호는 최소 8자 이상, 32자 이하이며, 영어, 숫자, 특수문자를 각각 1개 이상 포함해야 합니다.', // 비밀번호가 유효하지 않으면 에러 메시지
+        '비밀번호는 최소 8자 이상, 32자 이하이며, 영어, 숫자, 특수문자를 각각 1개 이상 포함해야 합니다.', // 비밀번호가 유효하지 않으면 에러 메시지 설정
       );
       return;
     }
+
     setErrorMessage(''); // 에러 메시지를 초기화
     dispatch(login({ email, password })); // 로그인 액션 디스패치
   };
@@ -50,7 +67,6 @@ const Login: React.FC = () => {
       {/* 로그인 페이지 컨테이너 */}
       <h1 className="login-title">로그인</h1> {/* 타이틀 */}
       <div className="login-wrapper">
-        {' '}
         <form onSubmit={handleSubmit} className="login-form">
           {' '}
           {/* 로그인 폼 */}
@@ -107,7 +123,7 @@ const Login: React.FC = () => {
                   onChange={() => setRememberMe(!rememberMe)}
                 />
                 <div className="custom-checkbox"></div>
-                <label>아이디 저장</label>
+                <label>이메일 저장</label>
               </div>
               <div className="form-checkbox">
                 <input
@@ -127,8 +143,10 @@ const Login: React.FC = () => {
                   회원가입
                 </button>
               </div>
+              {/* 로그인 버튼 */}
+              {/* 로딩 중에는 비활성화 */}
               <button type="submit" className="submit-button" disabled={loading}>
-                {loading ? '로그인 중...' : '로그인'} {/* 로그인 버튼 */}
+                로그인
               </button>
             </div>
           </div>

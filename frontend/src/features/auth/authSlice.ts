@@ -45,20 +45,25 @@ const authSlice = createSlice({
       state.isLoggedIn = false;
     },
   },
+
+  // extraReducers : 비동기 액션(주로 createAsyncThunk로 생성된 액션)을 처리하기 위한 특별한 필드
   extraReducers: builder => {
     builder
+      // 비동기 액션이 시작될 때의 상태 처리
       .addCase(login.pending, state => {
-        state.loading = true;
-        state.error = null;
+        state.loading = true; // 로그인 요청 중 상태를 로딩 중으로 설정합니다.
+        state.error = null; // 오류 상태를 초기화합니다.
       })
+      // 비동기 액션이 성공적으로 완료됐을 때의 상태 처리
       .addCase(login.fulfilled, (state, action: PayloadAction<string>) => {
-        state.loading = false;
-        state.isLoggedIn = true;
-        state.email = action.payload;
+        state.loading = false; // 로딩 상태 해제
+        state.isLoggedIn = true; // 로그인 상태를 true로 설정
+        state.email = action.payload; // 서버에서 받은 이메일 저장
       })
+      // 비동기 액션이 실패했을 때의 상태 처리
       .addCase(login.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
+        state.loading = false; // 로딩 상태 해제
+        state.error = action.payload as string; // 오류 메시지 저장
       });
   },
 });
