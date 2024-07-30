@@ -41,13 +41,11 @@ public class Feed extends TimeStampedEntity {
     private List<FeedImage> imageList = new ArrayList<>();
 
     @Builder
-    public Feed(IdolGroup idolGroup, User user, String title, String content, List<FeedHashtag> hashtagList, List<FeedImage> imageList) {
+    public Feed(IdolGroup idolGroup, User user, String title, String content) {
         this.idolGroup = idolGroup;
         this.user = user;
         this.title = title;
         this.content = content;
-        this.hashtagList = hashtagList;
-        this.imageList = imageList;
     }
 
     public void addHashtag(FeedHashtag hashtag) {
