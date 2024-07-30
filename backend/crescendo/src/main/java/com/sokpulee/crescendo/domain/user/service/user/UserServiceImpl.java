@@ -1,10 +1,7 @@
 package com.sokpulee.crescendo.domain.user.service.user;
 
 import com.sokpulee.crescendo.domain.follow.repository.FollowRepository;
-import com.sokpulee.crescendo.domain.user.dto.request.user.EmailExistsRequest;
-import com.sokpulee.crescendo.domain.user.dto.request.user.NickNameExistsRequest;
-import com.sokpulee.crescendo.domain.user.dto.request.user.NicknameUpdateRequest;
-import com.sokpulee.crescendo.domain.user.dto.request.user.ProfileUpdateRequest;
+import com.sokpulee.crescendo.domain.user.dto.request.user.*;
 import com.sokpulee.crescendo.domain.user.dto.response.user.UserInfoResponse;
 import com.sokpulee.crescendo.domain.user.entity.User;
 import com.sokpulee.crescendo.domain.user.repository.UserRepository;
@@ -91,5 +88,13 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(loggedInUserId)
                 .orElseThrow(UserNotFoundException::new);
         user.updateNickname(nicknameUpdateRequest.getNickname());
+    }
+
+    @Override
+    public void updateIntroduction(Long loggedInUserId, IntroductionUpdateRequest introductionUpdateRequest) {
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+        user.updateIntroduction(introductionUpdateRequest.getIntroduction());
+
     }
 }

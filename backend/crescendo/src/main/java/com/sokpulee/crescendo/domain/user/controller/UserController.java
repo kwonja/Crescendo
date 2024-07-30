@@ -1,9 +1,6 @@
 package com.sokpulee.crescendo.domain.user.controller;
 
-import com.sokpulee.crescendo.domain.user.dto.request.user.EmailExistsRequest;
-import com.sokpulee.crescendo.domain.user.dto.request.user.NickNameExistsRequest;
-import com.sokpulee.crescendo.domain.user.dto.request.user.NicknameUpdateRequest;
-import com.sokpulee.crescendo.domain.user.dto.request.user.ProfileUpdateRequest;
+import com.sokpulee.crescendo.domain.user.dto.request.user.*;
 import com.sokpulee.crescendo.domain.user.dto.response.user.UserInfoResponse;
 import com.sokpulee.crescendo.domain.user.service.user.UserService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
@@ -75,6 +72,7 @@ public class UserController {
             @AuthPrincipal Long userId,
             @Valid @ModelAttribute ProfileUpdateRequest request
     ) {
+
         if(userId == null) {
             throw new AuthenticationRequiredException();
         }
@@ -87,7 +85,9 @@ public class UserController {
     @Operation(summary = "닉네임 수정", description = "닉네임 수정 API")
     public ResponseEntity<?> updateNickname(
             @AuthPrincipal Long loggedInUserId,
-            @Valid @RequestBody NicknameUpdateRequest nicknameUpdateRequest) {
+            @Valid @RequestBody NicknameUpdateRequest nicknameUpdateRequest
+    ) {
+
         if(loggedInUserId == null) {
             throw new AuthenticationRequiredException();
         }
@@ -96,4 +96,21 @@ public class UserController {
 
         return ResponseEntity.status(NO_CONTENT).build();
     }
+
+    @PatchMapping("/mypage/introduction")
+    @Operation(summary = "자기소개 수정", description = "자기소개 수정 API")
+    public ResponseEntity<?> updateIntroduction(
+            @AuthPrincipal Long loggedInUserId,
+            @Valid @RequestBody IntroductionUpdateRequest introductionUpdateRequest
+    ) {
+
+        if(loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+
+        userService.updateIntroduction(loggedInUserId, introductionUpdateRequest);
+
+        return ResponseEntity.status(NO_CONTENT).build();
+    }
+
 }
