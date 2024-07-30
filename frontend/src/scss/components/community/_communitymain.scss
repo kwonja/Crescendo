@@ -18,14 +18,14 @@
 
         &_container {
             display: flex;
-            justify-content: space-around;
+            justify-content: space-between;
             align-items: center;
             width: 1400px;
             margin:20px auto;
         }
 
         &_contents {
-            display: flex;  
+            display: flex;
             width: 1200px;
             padding: 20px;
         }
@@ -40,7 +40,7 @@
         text-align: center;
         color: #f66;
         font-size: 20pt;
-        margin: 0px 20px;
+        margin: 20px;
         box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
 
         &_name {
@@ -60,4 +60,13 @@
         display: flex;
         margin-left: 20px;
     }
+
+    &_list {
+        display: flex;
+        flex-wrap: wrap;
+        width: 1200;
+        margin: auto;
+        padding: 20px;
+    }
 }
+

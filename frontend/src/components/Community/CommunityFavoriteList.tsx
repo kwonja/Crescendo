@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import CommunityCard from './CommunityCard';
 import Button from '../common/Button';
-import axios from 'axios';
+// import axios from 'axios';
 import { ReactComponent as RightBtn } from '../../assets/images/right.svg';
 import { ReactComponent as LeftBtn } from '../../assets/images/left.svg';
 
@@ -35,9 +35,6 @@ export default function CommunityFavoriteList() {
       name: "Black Pink",
       profile: "group-profile/aespa.jpg"
     },
-  ];
-
-  const tmpNext:communityInfo[] = [
     {
       idolGroupId: 5,
       name: "소녀시대",
@@ -51,50 +48,55 @@ export default function CommunityFavoriteList() {
   ];
   
   // 상수 또는 변수(상태) 초기화
-  const size:number = 4;
-  const apiPath:string = "";
+  // const API_PATH:string = "";
 
-  const [page, setPage] = useState<number>(1);
-  const [maxPage, setMaxPage] = useState<number>(1);
+  const [idx, setIdx] = useState<number>(-1); // 로딩 전 -1
   const [communityList, setCommunityList] = useState<communityInfo[]>([])
+  const [showList, setShowList] = useState<communityInfo[]>([])
 
   // 리스트 불러오기
-  useEffect(()=>{
-    axios.get(apiPath, {
-      params: {
-        page,
-        size
-      },
-    })
-    .then((response)=>{
-      setCommunityList(response.data.content);
-      setMaxPage(response.data.pageable.totalElements);
-    })
-    .catch(()=>{})
+  useEffect(() =>{
+    // axios.get(API_PATH)
+    // .then((response)=>{
+    //   setCommunityList(response.data.content);
+    // })
+    // .catch(()=>{})
 
     // 테스트용 코드
-    if (page === 1) setCommunityList(tmpList);
-    else setCommunityList(tmpNext);
-    setMaxPage(2);
-  },[page])
+    setCommunityList(tmpList);
+    setIdx(0);  
+  },[]);
+
+  useEffect(()=>{
+    if (idx === -1) return; // 로딩 전 로딩안함
+    let tmp = [...communityList];
+    tmp = tmp.slice(idx, idx+4);
+    setShowList(tmp);
+    // console.log(showList);
+  }, [idx]);
+
   
   function onIncrease() {
-    if (page < maxPage) setPage((prev)=>prev+1);
-    else setPage(1);
-    console.log(page);
+    if (idx+8 < communityList.length-1) setIdx((prev)=>prev+4);
+    else {
+      setIdx(communityList.length-4);
+    }
+    // console.log(idx);
   }
 
   function onDecrease() {
-    if (page > 1 ) setPage((prev)=>prev-1);
-    else setPage(maxPage);
-    console.log(page);
+    if (idx-4 > 0) setIdx((prev)=>prev-4);
+    else {
+      setIdx(0);
+    }
+    // console.log(idx);
   }
 
   return <div className='communitymain_favoritelist_container'>
-    <Button className='square empty' onClick={onDecrease}><LeftBtn/></Button>
+    {<Button className={idx===0?'hidden ':''+'square empty'} onClick={onDecrease}><LeftBtn/></Button>}
     <div className='communitymain_favoritelist_contents'>
-      {communityList.map((community)=>(<CommunityCard idolGroupId={community.idolGroupId} name={community.name} profile={community.profile} key={community.idolGroupId} />))}
+      {showList.map((community)=>(<CommunityCard idolGroupId={community.idolGroupId} name={community.name} profile={community.profile} key={community.idolGroupId} />))}
     </div>
-    <Button className='square empty' onClick={onIncrease}><RightBtn/></Button>
+    {<Button className={idx===communityList.length-4?'hidden ':''+'square empty'} onClick={onIncrease}><RightBtn/></Button>}
   </div>;
 }
