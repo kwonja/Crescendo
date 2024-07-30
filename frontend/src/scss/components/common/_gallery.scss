@@ -1,21 +1,19 @@
-.gallery{
+.gallery {
+  width: 310px;
+  height: 490px;
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  background-color: #f66;
+  img {
     width: 310px;
-    height: 490px;
-    border: 1px solid black;
+    height: 400px;
+    border-radius: 10px;
+  }
+  .upper {
     display: flex;
-    flex-direction: column;
-    background-color: #F66;
-    img{
-        width: 310px;
-        height: 400px;
-        border-radius: 10px;
-    }
-    .upper{
-        display: flex;
-        flex-direction: row;
-    }
-    .lower{
-    
-    }
-
+    flex-direction: row;
+  }
+  .lower {
+  }
 }

@@ -1,64 +1,63 @@
-.friend{
-    margin: 0 auto;
-    width: 210px;
-    height: 30px;
-    margin-top: 10px;
-    .listbar{
-        width: 100%;
-        display: flex;
-        flex-direction: row;
-       
-    }
-
-    .follow{
-        width: 105px;
-        height: 30px;
-        color: #FFF;
-        font-size: 14px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: #FEA3A3;
-    
-        flex-direction: column;
-        gap : 2px;
-        cursor: pointer;
-        span{
-            height: 10px;
-            font-size: 11px;
-        }
-        div{
-            height: 15px;
-        }
-    }
-
-    .active{
-         border-radius: 10px 0px 0px 0px;
-        background: #F66;
-        display: flex;
-        flex-direction: column;
-        gap : 2px;
-        cursor: pointer;
-    }
-    .left{
-        border-radius: 10px 0px 0px 0px;
-    }
-    .right{
-        border-radius: 0px 10px 0px 0px;
-    }
-}
-
-.list{
-    width: 270px;
-    height: 340px;
-    border-radius: 20px;
-    background: #F66;
-    margin: 0 auto;
-}
-
-.profilelist{
-    padding: 15px;
+.friend {
+  margin: 0 auto;
+  width: 210px;
+  height: 30px;
+  margin-top: 10px;
+  .listbar {
+    width: 100%;
     display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
+    flex-direction: row;
+  }
+
+  .follow {
+    width: 105px;
+    height: 30px;
+    color: #fff;
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fea3a3;
+
+    flex-direction: column;
+    gap: 2px;
+    cursor: pointer;
+    span {
+      height: 10px;
+      font-size: 11px;
+    }
+    div {
+      height: 15px;
+    }
+  }
+
+  .active {
+    border-radius: 10px 0px 0px 0px;
+    background: #f66;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    cursor: pointer;
+  }
+  .left {
+    border-radius: 10px 0px 0px 0px;
+  }
+  .right {
+    border-radius: 0px 10px 0px 0px;
+  }
+}
+
+.list {
+  width: 270px;
+  height: 340px;
+  border-radius: 20px;
+  background: #f66;
+  margin: 0 auto;
+}
+
+.profilelist {
+  padding: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
 }

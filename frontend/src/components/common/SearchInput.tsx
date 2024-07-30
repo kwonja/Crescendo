@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { ReactComponent as Search } from '../../assets/images/search.svg';
 
 interface InputProps {
@@ -8,10 +8,10 @@ interface InputProps {
   onSearch?: () => void;
 }
 
-export default function SearchInput({ placeholder, value, onChange, onSearch, }:InputProps) {
+export default function SearchInput({ placeholder, value, onChange, onSearch }: InputProps) {
   return (
     <div className="search-container">
-        <span>
+      <span>
         <input
           type="text"
           value={value}
@@ -19,8 +19,10 @@ export default function SearchInput({ placeholder, value, onChange, onSearch, }:
           placeholder={placeholder}
           className="search-input"
         />
-        <div className='search-icon' onClick={onSearch}><Search/></div>
-        </span>
+        <div className="search-icon" onClick={onSearch}>
+          <Search />
+        </div>
+      </span>
     </div>
-  )
+  );
 }
