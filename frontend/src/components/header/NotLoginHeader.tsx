@@ -29,7 +29,7 @@ export default function NotLoginHeader() {
 
       <ul className="header_menu" ref={menuRef}>
         <li>
-          <NavLink to="/">커뮤니티</NavLink>
+          <NavLink to="/community">커뮤니티</NavLink>
         </li>
         <li>
           <NavLink to="/dance">댄스챌린지</NavLink>
@@ -44,7 +44,7 @@ export default function NotLoginHeader() {
       </ul>
 
       <div className="header_icon">
-        <Link to="/">
+        <Link to="/login">
           <Login />
         </Link>
         <Link to="/">
