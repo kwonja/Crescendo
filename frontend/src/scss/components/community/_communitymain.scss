@@ -1,0 +1,51 @@
+.communitymain {
+    margin:20px auto;
+    color: #f66;
+
+    &_title {
+        margin-left: 400px;
+        text-align: left;
+        font-size: 50pt;
+    }
+
+    &_favoritelist {
+        
+
+        &_container {
+            display: flex;
+            align-items: center;
+            width: 1300px;
+            margin:20px auto;
+        }
+
+        &_contents {
+            display: flex;
+            justify-content: space-between;  
+            width: 1100px;
+            margin:20px auto;
+        }
+    }
+
+    &_card {
+        background-color: white;
+        width: 250px;
+        height: 400px;
+        border: 3px solid #f66;
+        border-radius: 23px;
+        text-align: center;
+        color: #f66;
+        font-size: 24pt;
+
+        &_name {
+            margin-top: 5.5px;
+        }
+
+    }
+
+    &_card > img {
+        width: 250px;
+        height: 325px;
+        border-radius: 20px 20px 0px 0px;
+    }
+
+}

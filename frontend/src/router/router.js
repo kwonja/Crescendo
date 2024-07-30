@@ -1,5 +1,5 @@
 import Main from '../pages/Main';
-import CommunityMain from '../pages/CommunityMain';
+import CommunityMainPage from '../pages/CommunityMainPage';
 import App from '../App';
 import { createBrowserRouter } from 'react-router-dom';
 import ErrorPage from '../components/layout/ErrorPage';
@@ -15,7 +15,7 @@ export const router = createBrowserRouter([
       },
       {
         path: '/community',
-        element: <CommunityMain />,
+        element: <CommunityMainPage />,
       },
       {
         path: '/favorite',
