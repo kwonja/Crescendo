@@ -1,8 +1,16 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
-@import 'components/buttons';
+
+@import 'components/common/buttons';
+@import 'components/header/settingmenu';
+@import 'components/header/header';
+@import 'components/mypage/profile';
+@import 'components/mypage/friendlist';
+@import 'components/mypage/friendprofile';
 @import 'base/font';
-@import 'layout/header';
-@import 'layout/frame';
 @import 'components/community/communitymain';
+@import 'layout/frame';
+@import 'components/common/search';
+
+@import 'page/mypage'

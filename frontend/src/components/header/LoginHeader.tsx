@@ -4,9 +4,11 @@ import { ReactComponent as User } from '../../assets/images/user.svg';
 import { ReactComponent as Alarm } from '../../assets/images/alarm.svg';
 import { ReactComponent as Chat } from '../../assets/images/chat.svg';
 import { Link, NavLink, useLocation } from 'react-router-dom';
+import SettingMenu from './SettingMenu';
 
 export default function LoginHeader() {
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
+  const [userMode,setUserMode] = useState<boolean>(false);
   const menuRef = useRef<HTMLUListElement>(null);
   const location = useLocation();
 
@@ -18,7 +20,11 @@ export default function LoginHeader() {
         const { offsetLeft, offsetWidth } = activeLink;
         setIndicatorStyle({
           left: offsetLeft + (offsetWidth - 80) / 2 + 'px', // Center the indicator
+          display : 'block'
         });
+      }
+      else{
+        setIndicatorStyle({display : 'none'})
       }
     }
   }, [location]);
@@ -46,18 +52,13 @@ export default function LoginHeader() {
       </ul>
 
       <div className="header_icon">
-        <Link to="/">
-          <Chat />
-        </Link>
-        <Link to="/">
-          <Alarm />
-        </Link>
-        <Link to="/">
-          <UserList />
-        </Link>
-        <Link to="/">
-          <User />
-        </Link>
+        <div><Chat /></div>
+        <div><Alarm /></div>
+        <div><UserList /></div>
+        <div className={` ${userMode ? 'selected' : ''}`} onClick={() => setUserMode((prev) => !prev)}>
+        <User />
+        {userMode && <SettingMenu />}
+      </div>
       </div>
     </div>
   );
