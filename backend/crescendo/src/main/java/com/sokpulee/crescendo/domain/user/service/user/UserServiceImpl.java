@@ -3,6 +3,7 @@ package com.sokpulee.crescendo.domain.user.service.user;
 import com.sokpulee.crescendo.domain.follow.repository.FollowRepository;
 import com.sokpulee.crescendo.domain.user.dto.request.user.EmailExistsRequest;
 import com.sokpulee.crescendo.domain.user.dto.request.user.NickNameExistsRequest;
+import com.sokpulee.crescendo.domain.user.dto.request.user.NicknameUpdateRequest;
 import com.sokpulee.crescendo.domain.user.dto.request.user.ProfileUpdateRequest;
 import com.sokpulee.crescendo.domain.user.dto.response.user.UserInfoResponse;
 import com.sokpulee.crescendo.domain.user.entity.User;
@@ -38,9 +39,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void nicknameExists(NickNameExistsRequest nickNameExistsRequest) {
+    public void nicknameExists(String nickname) {
 
-        if(userRepository.findByNickname(nickNameExistsRequest.getNickname()).isPresent()) {
+        if(userRepository.findByNickname(nickname).isPresent()) {
             throw new NicknameConflictException();
         }
     }
@@ -81,5 +82,14 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(UserNotFoundException::new);
 
         userRepository.delete(user);
+    }
+
+    @Override
+    public void updateNickname(Long loggedInUserId, NicknameUpdateRequest nicknameUpdateRequest) {
+        nicknameExists(nicknameUpdateRequest.getNickname());
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+        user.updateNickname(nicknameUpdateRequest.getNickname());
     }
 }

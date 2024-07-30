@@ -2,6 +2,7 @@ package com.sokpulee.crescendo.domain.user.controller;
 
 import com.sokpulee.crescendo.domain.user.dto.request.user.EmailExistsRequest;
 import com.sokpulee.crescendo.domain.user.dto.request.user.NickNameExistsRequest;
+import com.sokpulee.crescendo.domain.user.dto.request.user.NicknameUpdateRequest;
 import com.sokpulee.crescendo.domain.user.dto.request.user.ProfileUpdateRequest;
 import com.sokpulee.crescendo.domain.user.dto.response.user.UserInfoResponse;
 import com.sokpulee.crescendo.domain.user.service.user.UserService;
@@ -10,8 +11,7 @@ import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredExce
 import com.sokpulee.crescendo.global.util.jwt.JWTUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.Getter;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,30 +28,18 @@ public class UserController {
     private final UserService userService;
     private final JWTUtil jwtUtil;
 
-    @PatchMapping(value = "/mypage/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "프로필 수정", description = "프로필 수정 API")
-    public ResponseEntity<?> updateProfile(
-            @AuthPrincipal Long userId,
-            @ModelAttribute ProfileUpdateRequest request
-    ) {
-
-        userService.updateProfile(userId, request);
-
-        return ResponseEntity.status(NO_CONTENT).build();
-    }
-
     @PostMapping("/nickname/exists")
     @Operation(summary = "닉네임 중복 체크", description = "닉네임 중복 체크 API")
-    public ResponseEntity<?> nicknameExists(@RequestBody NickNameExistsRequest nickNameExistsRequest) {
+    public ResponseEntity<?> nicknameExists(@Valid @RequestBody NickNameExistsRequest nickNameExistsRequest) {
 
-        userService.nicknameExists(nickNameExistsRequest);
+        userService.nicknameExists(nickNameExistsRequest.getNickname());
 
         return ResponseEntity.status(NO_CONTENT).build();
     }
 
     @PostMapping("/email/exists")
     @Operation(summary = "이메일 중복 체크", description = "이메일 중복 체크 API")
-    public ResponseEntity<?> emailExists(@RequestBody EmailExistsRequest emailExistsRequest) {
+    public ResponseEntity<?> emailExists(@Valid @RequestBody EmailExistsRequest emailExistsRequest) {
 
         userService.emailExists(emailExistsRequest);
 
@@ -77,6 +65,34 @@ public class UserController {
         }
 
         userService.deleteUserById(loggedInUserId);
+
+        return ResponseEntity.status(NO_CONTENT).build();
+    }
+
+    @PatchMapping(value = "/mypage/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "프로필 수정", description = "프로필 수정 API")
+    public ResponseEntity<?> updateProfile(
+            @AuthPrincipal Long userId,
+            @Valid @ModelAttribute ProfileUpdateRequest request
+    ) {
+        if(userId == null) {
+            throw new AuthenticationRequiredException();
+        }
+        userService.updateProfile(userId, request);
+
+        return ResponseEntity.status(NO_CONTENT).build();
+    }
+
+    @PatchMapping("/mypage/nickname")
+    @Operation(summary = "닉네임 수정", description = "닉네임 수정 API")
+    public ResponseEntity<?> updateNickname(
+            @AuthPrincipal Long loggedInUserId,
+            @Valid @RequestBody NicknameUpdateRequest nicknameUpdateRequest) {
+        if(loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+
+        userService.updateNickname(loggedInUserId, nicknameUpdateRequest);
 
         return ResponseEntity.status(NO_CONTENT).build();
     }
