@@ -16,8 +16,11 @@
         margin: 0 auto;
         margin-top: 15px;
         position: relative;
+        
         img{
-            border-radius: 50%;
+            border-radius: 10px;
+            border: 10px solid #fff;
+            box-sizing: border-box;
         }
             
     }

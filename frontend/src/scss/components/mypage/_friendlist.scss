@@ -18,7 +18,10 @@
         display: flex;
         justify-content: center;
         align-items: center;
-
+        background: #FEA3A3;
+    
+        flex-direction: column;
+        gap : 2px;
         cursor: pointer;
         span{
             height: 10px;
@@ -27,10 +30,6 @@
         div{
             height: 15px;
         }
-        background: #FEA3A3;
-        display: flex;
-        flex-direction: column;
-        gap : 2px;
     }
 
     .active{
