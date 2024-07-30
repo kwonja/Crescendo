@@ -2,10 +2,7 @@ package com.sokpulee.crescendo.domain.user.service.auth;
 
 import com.sokpulee.crescendo.domain.idol.entity.Idol;
 import com.sokpulee.crescendo.domain.idol.repository.IdolRepository;
-import com.sokpulee.crescendo.domain.user.dto.request.auth.EmailRandomKeyRequest;
-import com.sokpulee.crescendo.domain.user.dto.request.auth.EmailValidationRequest;
-import com.sokpulee.crescendo.domain.user.dto.request.auth.LoginRequest;
-import com.sokpulee.crescendo.domain.user.dto.request.auth.SignUpRequest;
+import com.sokpulee.crescendo.domain.user.dto.request.auth.*;
 import com.sokpulee.crescendo.domain.user.dto.response.auth.EmailRandomKeyResponse;
 import com.sokpulee.crescendo.domain.user.entity.EmailAuth;
 import com.sokpulee.crescendo.domain.user.entity.User;
@@ -32,16 +29,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void signUp(SignUpRequest signUpRequest) {
 
-        EmailAuth emailAuth = emailAuthRepository.findById(signUpRequest.getEmailAuthId())
-                .orElseThrow(EmailValidationNotFoundException::new);
-
-        if(!signUpRequest.getRandomKey().equals(emailAuth.getRandomKey())) {
-            emailAuthRepository.delete(emailAuth);
-            throw new EmailAuthException();
-        }
-        else {
-            emailAuthRepository.delete(emailAuth);
-        }
+        authenticateEmail(signUpRequest.getEmailAuthId(), signUpRequest.getRandomKey());
 
         Idol idol = idolRepository.findById(signUpRequest.getIdolId())
                 .orElseThrow(IdolNotFoundException::new);
@@ -92,6 +80,31 @@ public class AuthServiceImpl implements AuthService {
 
         if(!emailValidationRequest.getRandomKey().equals(emailAuth.getRandomKey())) {
             throw new EmailAuthException();
+        }
+    }
+
+    @Override
+    public void updatePassword(UpdatePasswordRequest updatePasswordRequest) {
+
+        authenticateEmail(updatePasswordRequest.getEmailAuthId(), updatePasswordRequest.getRandomKey());
+
+        User user = userRepository.findByEmail(updatePasswordRequest.getEmail())
+                .orElseThrow(UserNotFoundException::new);
+
+        user.updatePassword(enctyptHelper.encrypt(updatePasswordRequest.getNewPassword()));
+
+    }
+
+    private void authenticateEmail(Long emailAuthId, String randomKey) {
+        EmailAuth emailAuth = emailAuthRepository.findById(emailAuthId)
+                .orElseThrow(EmailValidationNotFoundException::new);
+
+        if(randomKey.equals(emailAuth.getRandomKey())) {
+            emailAuthRepository.delete(emailAuth);
+            throw new EmailAuthException();
+        }
+        else {
+            emailAuthRepository.delete(emailAuth);
         }
     }
 }

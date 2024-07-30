@@ -1,9 +1,6 @@
 package com.sokpulee.crescendo.domain.user.controller;
 
-import com.sokpulee.crescendo.domain.user.dto.request.auth.EmailRandomKeyRequest;
-import com.sokpulee.crescendo.domain.user.dto.request.auth.EmailValidationRequest;
-import com.sokpulee.crescendo.domain.user.dto.request.auth.LoginRequest;
-import com.sokpulee.crescendo.domain.user.dto.request.auth.SignUpRequest;
+import com.sokpulee.crescendo.domain.user.dto.request.auth.*;
 import com.sokpulee.crescendo.domain.user.dto.response.auth.EmailRandomKeyResponse;
 import com.sokpulee.crescendo.domain.user.service.auth.AuthService;
 import com.sokpulee.crescendo.global.util.jwt.JWTUtil;
@@ -13,10 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -39,6 +33,7 @@ public class AuthController {
     }
 
     @PostMapping("/email/random-key")
+    @Operation(summary = "이메일 인증키 발송", description = "이메일 인증키 발송 API")
     public ResponseEntity<?> emailRandomKey(@Valid @RequestBody EmailRandomKeyRequest emailRandomKeyRequest) {
 
         EmailRandomKeyResponse response = authService.createEmailRandomKey(emailRandomKeyRequest);
@@ -47,6 +42,7 @@ public class AuthController {
     }
 
     @PostMapping("/email/validation")
+    @Operation(summary = "이메일 인증키 인증", description = "이메일 인증키 인증 API")
     public ResponseEntity<?> emailValidate(@Valid @RequestBody EmailValidationRequest emailValidationRequest) {
 
         authService.emailValidate(emailValidationRequest);
@@ -55,6 +51,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
+    @Operation(summary = "로그인", description = "로그인 API")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
 
         Long userId = authService.login(loginRequest);
@@ -70,4 +67,14 @@ public class AuthController {
 
         return ResponseEntity.status(OK).headers(headers).build();
     }
+
+    @PatchMapping("/password")
+    @Operation(summary = "비밀번호 업데이트 - 비밀번호 찾기", description = "비밀번호 업데이트 - 비밀번호 찾기 API")
+    public ResponseEntity<?> updatePassword(@Valid @RequestBody UpdatePasswordRequest updatePasswordRequest) {
+
+        authService.updatePassword(updatePasswordRequest);
+
+        return ResponseEntity.status(NO_CONTENT).build();
+    }
+
 }

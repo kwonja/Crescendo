@@ -61,4 +61,8 @@ public class User {
     public void changeProfilePath(String savePath) {
         this.profilePath = savePath;
     }
+
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
+    }
 }
