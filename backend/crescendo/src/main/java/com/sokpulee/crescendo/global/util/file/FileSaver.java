@@ -38,7 +38,7 @@ public class FileSaver implements FileSaveHelper {
     public String saveUserProfile(MultipartFile profileImage) {
         return saveFile(profileImage, PROFILE_DIR);
     }
-    
+
     public String saveFile(MultipartFile profileImage, String dir) {
         String realPath = uploadDir + File.separator + dir;
         String today = new SimpleDateFormat("yyMMdd").format(new Date());
