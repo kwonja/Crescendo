@@ -15,34 +15,6 @@ export default function Feed() {
           <span>2024.01.01</span>
         </div>
         <Heart className="heart" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
         <Dots className="dots" />
       </div>
       <div className="text">뉴진스와 버니즈의 2주년!!</div>
