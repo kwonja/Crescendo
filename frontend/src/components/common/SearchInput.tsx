@@ -1,9 +1,14 @@
 import React from 'react'
 import { ReactComponent as Search } from '../../assets/images/search.svg';
-export default function SearchInput() {
+
+interface InputProps{
+  placeholder?: string;
+}
+
+export default function SearchInput({placeholder} : InputProps) {
   return (
     <div className="search-container">
-        <span><input type="text" placeholder="친구를 검색하세요"/>
+        <span><input type="text" placeholder={placeholder}/>
         <div className='search-icon'><Search/></div>
         </span>
       </div>
