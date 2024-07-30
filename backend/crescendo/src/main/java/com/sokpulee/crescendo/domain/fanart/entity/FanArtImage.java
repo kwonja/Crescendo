@@ -2,6 +2,7 @@ package com.sokpulee.crescendo.domain.fanart.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,4 +20,14 @@ public class FanArtImage {
 
     @Column(length = 500)
     private String imagePath;
+
+    @Builder
+    public FanArtImage(FanArt fanArt, String imagePath) {
+        this.fanArt = fanArt;
+        this.imagePath = imagePath;
+    }
+
+    public void changeFanArt(FanArt fanArt) {
+        this.fanArt = fanArt;
+    }
 }

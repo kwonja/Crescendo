@@ -34,8 +34,6 @@ public class FeedServiceImpl implements FeedService {
     @Override
     public void addFeed(Long loggedInUserId, FeedAddRequest feedAddRequest) {
 
-        System.out.println("sldkjf;asdjf;lasjdf" + feedAddRequest.getIdolGroupId());
-
         User user = userRepository.findById(loggedInUserId)
                 .orElseThrow(UserNotFoundException::new);
 
