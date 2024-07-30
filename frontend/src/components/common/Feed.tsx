@@ -19,8 +19,8 @@ export default function Feed() {
       </div>
       <div className="text">뉴진스와 버니즈의 2주년!!</div>
       <div className="tag">
-        {tags.map(tag => (
-          <div>#{tag}</div>
+        {tags.map((tag, index) => (
+          <div key={index}>#{tag}</div>
         ))}
       </div>
       <Comment className="comment" />

@@ -4,15 +4,20 @@
   &_left {
     width: 310px;
     height: 1000px;
-    border: 1px solid black;
     box-sizing: border-box;
   }
 
   &_center {
     width: 1300px;
     height: 1000px;
-    border: 1px solid black;
     box-sizing: border-box;
+  }
+
+  &_gallery {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
   }
 }
 

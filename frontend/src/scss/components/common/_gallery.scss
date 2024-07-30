@@ -1,11 +1,11 @@
 .gallery {
   width: 310px;
   height: 490px;
-  border: 1px solid black;
   display: flex;
   flex-direction: column;
   background-color: #f66;
   position: relative;
+  box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
   img {
     width: 310px;
     height: 400px;
@@ -15,18 +15,55 @@
     display: flex;
     flex-direction: row;
   }
+  .title_box {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-left: 10px;
+    margin-top: 10px;
+    gap: 5px;
+    .title {
+      font-size: 20px;
+      color: #fff;
+      text-align: center;
+    }
+  }
+  .type {
+    width: 24px;
+    height: 10px;
+    background-color: #fff;
+    color: #f66;
+    font-size: 8px;
+    text-align: center;
+  }
 
-  .userinfo {
+  &_userinfo {
+    display: flex;
+    width: 100%;
+    height: 30px;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 10px;
     margin-bottom: 10px;
-    .dots {
-      position: absolute;
-      right: 0px;
-      bottom: 0px;
-    }
-    .heart {
-      position: absolute;
-      right: 40px;
-      bottom: 0px;
-    }
+    padding-left: 10px;
+    gap: 5px;
+    position: relative;
+  }
+  &_heart {
+    position: absolute;
+    right: 50px;
+    bottom: 0px;
+  }
+  &_comment {
+    position: absolute;
+    right: 10px;
+    bottom: 0px;
+  }
+
+  &_profile {
+    display: flex;
+    flex-direction: column;
+    color: #fff;
   }
 }

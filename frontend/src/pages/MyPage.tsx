@@ -65,6 +65,7 @@ export default function MyPage() {
           </div>
         )}
 
+<<<<<<< HEAD
         {isSelected === 'gallery' && (
           <div className="">
             <Gallery />
@@ -73,6 +74,26 @@ export default function MyPage() {
           <Gallery /> */}
           </div>
         )}
+=======
+        {isSelected === 'feed' && <div className="">
+          <Feed />
+          <Feed />
+          <Feed />
+          <Feed />
+        </div>}
+
+        {isSelected === 'gallery' && <div className="mypage_gallery">
+          <Gallery />
+          <Gallery />
+          <Gallery />
+          <Gallery />
+          <Gallery />
+          <Gallery />
+          <Gallery />
+          <Gallery />
+        </div>}
+        
+>>>>>>> 4fb1f181efc3ce2422873a2c43e0b76fabaa8741
       </div>
     </div>
   );
