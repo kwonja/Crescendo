@@ -16,8 +16,8 @@ export default function Gallery() {
       <div className="userinfo">
         <User />
         <div className="profile">
-            <span>Nickname</span>
-            <span>2024.01.01</span>
+          <span>Nickname</span>
+          <span>2024.01.01</span>
         </div>
         <Heart className="heart" />
         <Dots className="dots" />

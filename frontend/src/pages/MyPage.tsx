@@ -56,21 +56,23 @@ export default function MyPage() {
           <div className="indicator" style={indicatorStyle}></div>
         </div>
 
+        {isSelected === 'feed' && (
+          <div className="">
+            <Feed />
+            <Feed />
+            <Feed />
+            <Feed />
+          </div>
+        )}
 
-        {isSelected === 'feed' && <div className="">
-          <Feed />
-          <Feed />
-          <Feed />
-          <Feed />
-        </div>}
-
-        {isSelected === 'gallery' && <div className="">
-          <Gallery />
-          {/* <Gallery />
+        {isSelected === 'gallery' && (
+          <div className="">
+            <Gallery />
+            {/* <Gallery />
           <Gallery />
           <Gallery /> */}
-        </div>}
-        
+          </div>
+        )}
       </div>
     </div>
   );

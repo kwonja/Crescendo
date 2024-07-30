@@ -16,17 +16,17 @@
     flex-direction: row;
   }
 
-  .userinfo{
+  .userinfo {
     margin-bottom: 10px;
     .dots {
-        position: absolute;
-        right: 0px;
-        bottom: 0px;
-      }
-      .heart {
-        position: absolute;
-        right: 40px;
-        bottom: 0px;
-      }
+      position: absolute;
+      right: 0px;
+      bottom: 0px;
+    }
+    .heart {
+      position: absolute;
+      right: 40px;
+      bottom: 0px;
+    }
   }
 }
