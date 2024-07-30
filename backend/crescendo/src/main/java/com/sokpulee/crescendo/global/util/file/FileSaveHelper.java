@@ -6,4 +6,6 @@ public interface FileSaveHelper {
     void deleteFile(String filePath);
 
     String saveUserProfile(MultipartFile profileImage);
+
+    String saveFeedImage(MultipartFile feedImage);
 }
