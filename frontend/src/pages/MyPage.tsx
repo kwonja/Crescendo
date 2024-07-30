@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import Profile from '../components/mypage/Profile'
 import FriendList from '../components/mypage/FriendList'
 import { ReactComponent as Crown } from '../assets/images/crown.svg';
+import Feed from '../components/common/Feed';
 export default function MyPage() {
   const [isSelected,setIsSelected] = useState<string>('feed');
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
@@ -41,7 +42,13 @@ export default function MyPage() {
         <div className={`item ${isSelected === 'gallery' ? 'active' : ''}`} onClick={()=>setIsSelected('gallery')}>내 갤러리</div>
         <div className="indicator" style={indicatorStyle}></div>
       </div>
-      
+
+      <div className='feedlsit'>
+      <Feed/>
+      <Feed/>
+      <Feed/>
+      <Feed/>
+      </div>
 
     </div>
     </div>

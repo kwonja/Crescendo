@@ -44,7 +44,7 @@ export default function NotLoginHeader() {
       </ul>
 
       <div className="header_icon">
-        <Link to="/">
+        <Link to="/login">
           <Login />
         </Link>
         <Link to="/">
