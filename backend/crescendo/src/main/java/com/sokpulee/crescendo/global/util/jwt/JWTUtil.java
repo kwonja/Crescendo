@@ -82,6 +82,9 @@ public class JWTUtil {
 
     // 전달 받은 토큰이 제대로 생성된 것인지 확인 하고 문제가 있다면 AuthenticationRequiredException 발생.
     public boolean checkToken(String authorizationHeader) {
+        if(authorizationHeader == null) {
+            return false;
+        }
         String token = extractToken(authorizationHeader);
 
         try {
@@ -99,6 +102,9 @@ public class JWTUtil {
     }
 
     public Long getUserId(String authorizationHeader) {
+        if(authorizationHeader == null) {
+            return null;
+        }
         String token = extractToken(authorizationHeader);
 
         try {
