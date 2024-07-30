@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { api } from '../../apis/core';
 
 // 인증 관련 상태 인터페이스 정의
 interface AuthState {
@@ -22,7 +22,7 @@ export const login = createAsyncThunk(
   'auth/login',
   async ({ email, password }: { email: string; password: string }, { rejectWithValue }) => {
     try {
-      const response = await axios.post('http://i11b108.p.ssafy.io:8000//api/v1/auth/login', {
+      const response = await api.post('/api/v1/auth/login', {
         email,
         password,
       });
