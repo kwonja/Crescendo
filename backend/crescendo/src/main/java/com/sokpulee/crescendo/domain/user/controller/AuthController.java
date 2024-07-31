@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,11 +62,20 @@ public class AuthController {
 
         authService.saveRefreshToken(userId, refreshToken);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + accessToken);
-        headers.set("Refresh-Token", refreshToken);
+        // Secure HttpOnly 쿠키로 refreshToken 설정
+        ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", refreshToken)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(7 * 24 * 60 * 60) // 쿠키 유효기간 설정 (예: 7일)
+                .build();
 
-        return ResponseEntity.status(OK).headers(headers).build();
+        // accessToken은 JSON payload로 전달
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .body("Access token generated successfully");
+
     }
 
     @PatchMapping("/password")
