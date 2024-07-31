@@ -21,6 +21,7 @@ public class FileSaver implements FileSaveHelper {
     private final String PROFILE_DIR = "profile";
     private final String FEED_DIR = "feed";
     private final String FANART_DIR = "fanart";
+    private final String FAVORITE_RANK_DIR = "favoriteRank";
 
     @Override
     public void deleteFile(String filePath) {
@@ -46,6 +47,9 @@ public class FileSaver implements FileSaveHelper {
 
     @Override
     public String saveFanArtImage(MultipartFile fanArtImage) { return saveFile(fanArtImage, FANART_DIR); }
+
+    @Override
+    public String saveFavoriteRankImage(MultipartFile favoriteIdolImage) { return saveFile(favoriteIdolImage, FAVORITE_RANK_DIR); }
 
     public String saveFile(MultipartFile profileImage, String dir) {
         String realPath = uploadDir + File.separator + dir;
