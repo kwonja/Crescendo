@@ -15,6 +15,9 @@ export default function CommunityMain() {
         <CommunitySearchInput />
       </div>
     </div>
-    <CommunityList/>
+    <div className='communitymain_contents'>
+      <CommunityList/>
+    </div>
+    
   </div>;
 }
