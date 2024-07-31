@@ -2,6 +2,7 @@ package com.sokpulee.crescendo.domain.favoriterank.controller;
 
 import com.sokpulee.crescendo.domain.favoriterank.dto.request.FavoriteRankAddRequest;
 import com.sokpulee.crescendo.domain.favoriterank.dto.request.FavoriteRanksSearchCondition;
+import com.sokpulee.crescendo.domain.favoriterank.dto.response.FavoriteRankBestPhotoResponse;
 import com.sokpulee.crescendo.domain.favoriterank.dto.response.FavoriteRankResponse;
 import com.sokpulee.crescendo.domain.favoriterank.service.FavoriteRankService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
@@ -21,7 +22,7 @@ import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/favorite_rank")
+@RequestMapping("/api/v1/favorite-rank")
 @Tag(name = "FavoriteRank", description = "전국 최애 자랑 관련 API")
 public class FavoriteRankController {
 
@@ -29,7 +30,7 @@ public class FavoriteRankController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> registerFavoriteRank(
-            @AuthPrincipal Long loggedInUserId,
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
             @Valid @ModelAttribute FavoriteRankAddRequest favoriteRankAddRequest
     ) {
         if(loggedInUserId == null) {
@@ -56,5 +57,40 @@ public class FavoriteRankController {
                 .build();
         Page<FavoriteRankResponse> favoriteRanks = favoriteRankService.getFavoriteRanks(userId, condition, pageable);
         return ResponseEntity.ok(favoriteRanks);
+    }
+
+    @DeleteMapping("/{favorite-rank-id}")
+    public ResponseEntity<?> deleteFavoriteRank(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("favorite-rank-id") Long favoriteRankId
+    ) {
+        if(loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+
+        favoriteRankService.deleteFavoriteRank(loggedInUserId, favoriteRankId);
+
+        return ResponseEntity.status(NO_CONTENT).build();
+    }
+
+    @GetMapping("/bestphoto")
+    public ResponseEntity<?> getBestPhoto() {
+
+        FavoriteRankBestPhotoResponse response = favoriteRankService.getBestPhoto();
+
+        return ResponseEntity.status(OK).body(response);
+    }
+
+    @PostMapping("/{favorite-rank-id}/vote")
+    public ResponseEntity<?> voteFavoriteRank(
+            @AuthPrincipal Long loggedInUserId,
+            @PathVariable("favorite-rank-id") Long favoriteRankId) {
+
+        if(loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+        favoriteRankService.voteFavoriteRank(loggedInUserId, favoriteRankId);
+
+        return ResponseEntity.status(CREATED).build();
     }
 }
