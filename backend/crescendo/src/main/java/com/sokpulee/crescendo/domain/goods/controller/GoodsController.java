@@ -1,14 +1,13 @@
-package com.sokpulee.crescendo.domain.fanart.controller;
+package com.sokpulee.crescendo.domain.goods.controller;
 
-import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtAddRequest;
-import com.sokpulee.crescendo.domain.fanart.service.FanArtService;
-import com.sokpulee.crescendo.domain.feed.dto.request.FeedAddRequest;
+import com.sokpulee.crescendo.domain.goods.dto.request.GoodsAddRequest;
+import com.sokpulee.crescendo.domain.goods.service.GoodsService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,28 +22,25 @@ import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/community/fan-art")
-@Tag(name = "FanArt", description = "팬아트 관련 API")
-public class FanArtController {
-
-    private final FanArtService fanArtService;
+@RequestMapping("/api/v1/community/goods")
+@Tag(name = "Goods", description = "굿즈 관련 API")
+public class GoodsController {
+    private final GoodsService goodsService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "팬아트 글쓰기", description = "팬아트 글쓰기 API")
-    public ResponseEntity<?> addFanArt(
+    @Operation(summary = "굿즈 글쓰기", description = "굿즈 글쓰기 API")
+    public ResponseEntity<?> addGoods(
             @AuthPrincipal Long loggedInUserId,
-            @RequestParam("title") String title,
-            @RequestParam("content") String content,
-            @RequestParam("imageList") List<MultipartFile> imageList,
-            @RequestParam("idolGroupId") Long idolGroupId
+            @RequestParam String title,
+            @RequestParam String content,
+            @RequestParam List<MultipartFile> imageList,
+            @RequestParam Long idolGroupId
     ) {
-        if(loggedInUserId == null) {
+        if (loggedInUserId == null) {
             throw new AuthenticationRequiredException();
         }
-
-        FanArtAddRequest fanArtAddRequest = new FanArtAddRequest(title,content,imageList,idolGroupId);
-
-        fanArtService.addFanArt(loggedInUserId, fanArtAddRequest);
+        GoodsAddRequest goodsAddRequest = new GoodsAddRequest(title, content, imageList, idolGroupId);
+        goodsService.addGoods(loggedInUserId, goodsAddRequest);
 
         return ResponseEntity.status(CREATED).build();
     }

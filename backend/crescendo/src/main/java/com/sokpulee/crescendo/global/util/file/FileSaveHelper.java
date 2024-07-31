@@ -10,4 +10,6 @@ public interface FileSaveHelper {
     String saveFeedImage(MultipartFile feedImage);
 
     String saveFanArtImage(MultipartFile fanArtImage);
+
+    String saveGoodsImage(MultipartFile goodsImage);
 }
