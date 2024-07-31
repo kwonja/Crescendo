@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Profile from '../components/mypage/Profile';
 import FriendList from '../components/mypage/FriendList';
 import { ReactComponent as Crown } from '../assets/images/crown.svg';
-import Feed from '../components/feed/Feed';
+// import Feed from '../components/feed/Feed';
 import Gallery from '../components/common/Gallery';
 // import { useAppSelector } from '../store/hooks/hook';
 export default function MyPage() {
