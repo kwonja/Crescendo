@@ -75,7 +75,7 @@ export default function CommunityList() {
   ];
 
   return <div className='communitymain_contents' >
-    <div className='communitymain_list'>
+    <div className='communitylist_contents'>
       {
         tmpList.map((community)=>(<CommunityCard idolGroupId={community.idolGroupId} 
           name={community.name} profile={community.profile} key={community.idolGroupId} />))

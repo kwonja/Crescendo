@@ -83,9 +83,9 @@ export default function CommunityFavoriteList() {
     }
   }
 
-  return <div className='communitymain_favoritelist_container'>
+  return <div className='communityfavoritelist_container'>
     {<Button className={idx===0?'hidden ':''+'square empty'} onClick={decreaseIdx}><LeftBtn/></Button>}
-    <div className='communitymain_favoritelist_contents'>
+    <div className='communityfavoritelist_contents'>
       {showList.map((community)=>(<CommunityCard idolGroupId={community.idolGroupId} name={community.name} profile={community.profile} key={community.idolGroupId} />))}
     </div>
     {<Button className={idx>=communityList.length-4?'hidden ':''+'square empty'} onClick={increaseIdx}><RightBtn/></Button>}

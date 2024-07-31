@@ -12,12 +12,12 @@
 @import 'components/common/feed';
 @import 'components/common/search';
 @import 'components/common/gallery';
+@import 'components/community/communitycard';
+@import 'components/community/communityfavoritelist';
+@import 'components/community/communitylist';
 
 @import 'base/font';
-@import 'components/community/communitymain';
 @import 'page/mypage';
 @import 'page/login';
+@import 'page/communitymain';
 @import 'layout/frame';
-@import 'components/common/search';
-
-@import 'page/mypage';

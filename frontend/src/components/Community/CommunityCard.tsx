@@ -9,8 +9,8 @@ type communityInfoProps = {
 
 
 export default function CommunityCard({idolGroupId,name,profile}:communityInfoProps) {
-  return <div className='communitymain_card'>
-    <img src={profile} alt={name}></img>
-    <div className='communitymain_card_name'>{name}</div>
+  return <div className='communitycard'>
+    <img className='communitycard_img'  src={profile} alt={name}></img>
+    <div className='communitycard_name'>{name}</div>
   </div>;
 }
