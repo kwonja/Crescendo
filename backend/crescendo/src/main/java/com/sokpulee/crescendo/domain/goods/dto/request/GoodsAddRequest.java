@@ -1,6 +1,5 @@
-package com.sokpulee.crescendo.domain.feed.dto.request;
+package com.sokpulee.crescendo.domain.goods.dto.request;
 
-import com.sokpulee.crescendo.domain.feed.entity.Feed;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -10,25 +9,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@ToString
 @NoArgsConstructor
-public class FeedAddRequest {
-
+@ToString
+public class GoodsAddRequest {
     private String title;
 
     private String content;
 
     private List<MultipartFile> imageList;
 
-    private List<String> tagList;
+    private long idolGroupId;
 
-    private Long idolGroupId;
-
-    public FeedAddRequest(String title, String content, List<MultipartFile> imageList, List<String> tagList, Long idolGroupId) {
+    public GoodsAddRequest(String title, String content, List<MultipartFile> imageList, long idolGroupId) {
         this.title = title;
         this.content = content;
         this.imageList = imageList;
-        this.tagList = tagList;
         this.idolGroupId = idolGroupId;
     }
 
@@ -37,12 +32,5 @@ public class FeedAddRequest {
             imageList = new ArrayList<>();
         }
         return imageList;
-    }
-
-    public List<String> getTagList(){
-        if(tagList == null){
-            tagList = new ArrayList<>();
-        }
-        return tagList;
     }
 }

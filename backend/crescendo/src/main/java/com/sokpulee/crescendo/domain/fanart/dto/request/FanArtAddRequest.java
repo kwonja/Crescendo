@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -24,5 +25,12 @@ public class FanArtAddRequest {
         this.content = content;
         this.imageList = imageList;
         this.idolGroupId = idolGroupId;
+    }
+
+    public List<MultipartFile> getImageList() {
+        if (imageList == null) {
+            imageList = new ArrayList<>();
+        }
+        return imageList;
     }
 }
