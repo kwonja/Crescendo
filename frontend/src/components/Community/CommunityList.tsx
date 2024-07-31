@@ -15,89 +15,64 @@ export default function CommunityList() {
     {
       idolGroupId: 1,
       name: "NewJeans",
-      profile: "group-profile/newjeans.jpg" // 대충 막 정함
+      profile: "https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg"
     },
     {
       idolGroupId: 2,
       name: "BTS",
-      profile: "group-profile/bts.jpg"
+      profile: "https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg"
     },
     {
       idolGroupId: 3,
       name: "Aespa",
-      profile: "group-profile/aespa.jpg"
+      profile: "https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg"
     },
     {
       idolGroupId: 4,
       name: "Black Pink",
-      profile: "group-profile/aespa.jpg"
+      profile: "https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg"
     },
     {
       idolGroupId: 5,
       name: "소녀시대",
-      profile: "group-profile/newjeans.jpg"
+      profile: "https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg"
     },
     {
       idolGroupId: 6,
       name: "오마이걸",
-      profile: "group-profile/bts.jpg"
+      profile: "https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg"
     },
     {
       idolGroupId: 7,
       name: "빅뱅",
-      profile: "group-profile/newjeans.jpg"
+      profile: "https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg"
     },
     {
       idolGroupId: 8,
       name: "르세라핌",
-      profile: "group-profile/bts.jpg"
+      profile: "https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg"
     },
     {
       idolGroupId: 9,
       name: "이달의소녀",
-      profile: "group-profile/aespa.jpg"
+      profile: "https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg"
     },
     {
       idolGroupId: 10,
       name: "(여자)아이들",
-      profile: "group-profile/aespa.jpg"
+      profile: "https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg"
     },
     {
       idolGroupId: 11,
       name: "QWER",
-      profile: "group-profile/newjeans.jpg"
+      profile: "https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg"
     },
     {
       idolGroupId: 12,
       name: "마마무",
-      profile: "group-profile/bts.jpg"
+      profile: "https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg"
     },
   ];
-
-  // const tmpToAdd = [
-  //   {
-  //     idolGroupId: 13,
-  //     name: "TWICE",
-  //     profile: "group-profile/aespa.jpg"
-  //   },
-  //   {
-  //     idolGroupId: 14,
-  //     name: "레드벨벳",
-  //     profile: "group-profile/aespa.jpg"
-  //   },
-  //   {
-  //     idolGroupId: 15,
-  //     name: "IVE",
-  //     profile: "group-profile/newjeans.jpg"
-  //   },
-  //   {
-  //     idolGroupId: 16,
-  //     name: "프로미스나인",
-  //     profile: "group-profile/bts.jpg"
-  //   },
-  // ];
-
-
 
   return <div className='communitymain_contents' >
     <div className='communitymain_list'>

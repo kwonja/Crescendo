@@ -1,5 +1,5 @@
 import Main from '../pages/Main';
-import CommunityMainPage from '../pages/CommunityMainPage';
+import CommunityMainPage from '../pages/CommunityMain';
 import App from '../App';
 import { createBrowserRouter } from 'react-router-dom';
 import Login from '../pages/Login.tsx';
