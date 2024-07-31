@@ -6,11 +6,11 @@ import { ReactComponent as Comment } from '../../assets/images/Feed/comment.svg'
 import { ReactComponent as FullHeart } from '../../assets/images/Feed/fullheart.svg';
 import { FeedData } from '../../interface/feed';
 
-interface FeedProps{
-  feed : FeedData
+interface FeedProps {
+  feed: FeedData;
 }
-export default function Feed({feed}:FeedProps) {
-   const [like, setLike] = useState<number>(99);
+export default function Feed({ feed }: FeedProps) {
+  const [like, setLike] = useState<number>(99);
   const [comment, setComment] = useState<number>(99);
   const [isLiked, setisLiked] = useState<boolean>(false);
 
@@ -35,7 +35,7 @@ export default function Feed({feed}:FeedProps) {
         {like}
         {!isLiked ? (
           <Heart
-          className='hoverup'
+            className="hoverup"
             onClick={() => {
               setLike(prev => prev + 1);
               setisLiked(true);
@@ -43,7 +43,7 @@ export default function Feed({feed}:FeedProps) {
           />
         ) : (
           <FullHeart
-          className='hoverup'
+            className="hoverup"
             onClick={() => {
               setLike(prev => prev - 1);
               setisLiked(false);
@@ -55,7 +55,7 @@ export default function Feed({feed}:FeedProps) {
         {' '}
         {comment}
         <Comment
-        className='hoverup'
+          className="hoverup"
           onClick={() => {
             setComment(prev => prev + 1);
           }}

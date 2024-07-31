@@ -1,7 +1,5 @@
-import React from 'react'
+import React from 'react';
 
 export default function FeedList() {
-  return (
-    <div>FeedList</div>
-  )
+  return <div>FeedList</div>;
 }

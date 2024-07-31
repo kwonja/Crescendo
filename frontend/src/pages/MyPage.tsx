@@ -4,14 +4,13 @@ import FriendList from '../components/mypage/FriendList';
 import { ReactComponent as Crown } from '../assets/images/crown.svg';
 import Feed from '../components/feed/Feed';
 import Gallery from '../components/common/Gallery';
-import { useAppSelector } from '../store/hooks/hook';
+// import { useAppSelector } from '../store/hooks/hook';
 export default function MyPage() {
   const [isSelected, setIsSelected] = useState<string>('feed');
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
   const menuRef = useRef<HTMLDivElement>(null);
-  const feedlist = useAppSelector(state=> state.feed);
+  // const feedlist = useAppSelector(state => state.feed);
   useEffect(() => {
-    
     const menuElement = menuRef.current;
     if (menuElement) {
       const activeLink = menuElement.querySelector('.active') as HTMLElement;
@@ -60,19 +59,19 @@ export default function MyPage() {
 
         {isSelected === 'feed' && (
           <div className="">
+            {/* <Feed />
             <Feed />
             <Feed />
-            <Feed />
-            <Feed />
+            <Feed /> */}
           </div>
         )}
 
         {isSelected === 'feed' && (
           <div className="">
+            {/* <Feed />
             <Feed />
             <Feed />
-            <Feed />
-            <Feed />
+            <Feed /> */}
           </div>
         )}
 
