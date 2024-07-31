@@ -14,9 +14,8 @@ export default function LoginHeader() {
   const location = useLocation();
 
   const handleModeClick = (mode: string) => {
-    setUserMode(prevMode => prevMode === mode ? '' : mode);
+    setUserMode(prevMode => (prevMode === mode ? '' : mode));
   };
-
 
   useEffect(() => {
     const menuElement = menuRef.current;
@@ -57,22 +56,34 @@ export default function LoginHeader() {
       </ul>
 
       <div className="header_icon">
-        <div className={` header_icon_div ${userMode==='chat' ? 'chat' : ''}`} onClick={() => handleModeClick('chat')}>
+        <div
+          className={` header_icon_div ${userMode === 'chat' ? 'chat' : ''}`}
+          onClick={() => handleModeClick('chat')}
+        >
           <Chat />
         </div>
-        <div className={` header_icon_div ${userMode==='alarm' ? 'alarm' : ''}`} onClick={() => handleModeClick('alarm')}>
+        <div
+          className={` header_icon_div ${userMode === 'alarm' ? 'alarm' : ''}`}
+          onClick={() => handleModeClick('alarm')}
+        >
           <Alarm />
         </div>
-        <div className={` header_icon_div ${userMode==='userlist' ? 'userlist' : ''}`} onClick={() => handleModeClick('userlist')}>
+        <div
+          className={` header_icon_div ${userMode === 'userlist' ? 'userlist' : ''}`}
+          onClick={() => handleModeClick('userlist')}
+        >
           <UserList />
         </div>
-        <div className={` header_icon_div ${userMode==='user' ? 'user' : ''}`} onClick={() => handleModeClick('user')}>
+        <div
+          className={` header_icon_div ${userMode === 'user' ? 'user' : ''}`}
+          onClick={() => handleModeClick('user')}
+        >
           <User />
         </div>
-        {userMode==='chat' && <ChatRoom />}
-        {userMode==='alarm' && <UserMenu />}
-        {userMode==='userlist' && <UserMenu />}
-        {userMode==='user' && <UserMenu handleMode={()=>setUserMode('')}/>}
+        {userMode === 'chat' && <ChatRoom />}
+        {userMode === 'alarm' && <UserMenu />}
+        {userMode === 'userlist' && <UserMenu />}
+        {userMode === 'user' && <UserMenu handleMode={() => setUserMode('')} />}
       </div>
     </div>
   );
