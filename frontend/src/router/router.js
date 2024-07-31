@@ -2,7 +2,9 @@ import Main from '../pages/Main';
 import CommunityMain from '../pages/CommunityMain';
 import App from '../App';
 import { createBrowserRouter } from 'react-router-dom';
-import ErrorPage from '../components/layout/ErrorPage';
+import Login from '../pages/Login.tsx';
+import ErrorPage from '../components/error/ErrorPage';
+import MyPage from '../pages/MyPage';
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -12,6 +14,10 @@ export const router = createBrowserRouter([
       {
         path: '/',
         element: <Main />,
+      },
+      {
+        path: '/login',
+        element: <Login />,
       },
       {
         path: '/community',
@@ -28,6 +34,10 @@ export const router = createBrowserRouter([
       {
         path: '/game',
         element: <Main />,
+      },
+      {
+        path: '/mypage',
+        element: <MyPage />,
       },
     ],
   },

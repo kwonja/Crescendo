@@ -56,12 +56,12 @@ public class FavoriteRankServiceImpl implements FavoriteRankService {
             }
         }
 
-        for (Map.Entry<Idol, String> entry : idolTopFavoriteImageMap.entrySet()) {
-            Idol idol = entry.getKey();
-            String favoriteImagePath = entry.getValue();
-
-            idol.updateProfile2(favoriteImagePath);
-        }
+//        for (Map.Entry<Idol, String> entry : idolTopFavoriteImageMap.entrySet()) {
+//            Idol idol = entry.getKey();
+//            String favoriteImagePath = entry.getValue();
+//
+//            idol.updateProfile2(favoriteImagePath);
+//        }
     }
 
     @Override

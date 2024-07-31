@@ -4,6 +4,7 @@ import com.sokpulee.crescendo.domain.user.entity.User;
 import com.sokpulee.crescendo.global.TimeStampedEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -29,4 +30,12 @@ public class FanArtComment extends TimeStampedEntity {
 
     @Column(length = 200)
     private String content;
+
+    @Builder
+    public FanArtComment(FanArt fanArt, FanArtComment parentFanArtComment, User user, String content) {
+        this.fanArt = fanArt;
+        this.parentFanArtComment = parentFanArtComment;
+        this.user = user;
+        this.content = content;
+    }
 }

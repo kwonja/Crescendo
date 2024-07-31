@@ -4,11 +4,18 @@ import { ReactComponent as User } from '../../assets/images/user.svg';
 import { ReactComponent as Alarm } from '../../assets/images/alarm.svg';
 import { ReactComponent as Chat } from '../../assets/images/chat.svg';
 import { Link, NavLink, useLocation } from 'react-router-dom';
+import UserMenu from './UserMenu';
+import ChatRoom from './ChatRoom';
 
 export default function LoginHeader() {
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
+  const [userMode, setUserMode] = useState<string>('');
   const menuRef = useRef<HTMLUListElement>(null);
   const location = useLocation();
+
+  const handleModeClick = (mode: string) => {
+    setUserMode(prevMode => (prevMode === mode ? '' : mode));
+  };
 
   useEffect(() => {
     const menuElement = menuRef.current;
@@ -18,7 +25,10 @@ export default function LoginHeader() {
         const { offsetLeft, offsetWidth } = activeLink;
         setIndicatorStyle({
           left: offsetLeft + (offsetWidth - 80) / 2 + 'px', // Center the indicator
+          display: 'block',
         });
+      } else {
+        setIndicatorStyle({ display: 'none' });
       }
     }
   }, [location]);
@@ -46,18 +56,34 @@ export default function LoginHeader() {
       </ul>
 
       <div className="header_icon">
-        <Link to="/">
+        <div
+          className={` header_icon_div ${userMode === 'chat' ? 'chat' : ''}`}
+          onClick={() => handleModeClick('chat')}
+        >
           <Chat />
-        </Link>
-        <Link to="/">
+        </div>
+        <div
+          className={` header_icon_div ${userMode === 'alarm' ? 'alarm' : ''}`}
+          onClick={() => handleModeClick('alarm')}
+        >
           <Alarm />
-        </Link>
-        <Link to="/">
+        </div>
+        <div
+          className={` header_icon_div ${userMode === 'userlist' ? 'userlist' : ''}`}
+          onClick={() => handleModeClick('userlist')}
+        >
           <UserList />
-        </Link>
-        <Link to="/">
+        </div>
+        <div
+          className={` header_icon_div ${userMode === 'user' ? 'user' : ''}`}
+          onClick={() => handleModeClick('user')}
+        >
           <User />
-        </Link>
+        </div>
+        {userMode === 'chat' && <ChatRoom />}
+        {userMode === 'alarm' && <UserMenu />}
+        {userMode === 'userlist' && <UserMenu />}
+        {userMode === 'user' && <UserMenu handleMode={() => setUserMode('')} />}
       </div>
     </div>
   );

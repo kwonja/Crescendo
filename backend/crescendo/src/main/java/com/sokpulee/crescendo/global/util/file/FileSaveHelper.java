@@ -11,5 +11,8 @@ public interface FileSaveHelper {
 
     String saveFanArtImage(MultipartFile fanArtImage);
 
+    String saveGoodsImage(MultipartFile goodsImage);
+
     String saveFavoriteRankImage(MultipartFile favoriteIdolImage);
+
 }
