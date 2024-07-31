@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'; // Redux의 useDispatch와 useSelector 훅 임포트
 import { RootState, AppDispatch } from '../store/store'; // Redux 스토어의 타입 임포트
 import { login } from '../features/auth/authSlice'; // 로그인 액션 임포트
@@ -16,6 +16,13 @@ const Login: React.FC = () => {
   const [rememberMe, setRememberMe] = useState(localStorage.getItem('rememberMe') === 'true'); // 로컬 스토리지에서 '아이디 저장' 체크박스 상태 불러오기
   const [autoLogin, setAutoLogin] = useState(localStorage.getItem('autoLogin') === 'true'); // 로컬 스토리지에서 '자동 로그인' 체크박스 상태 불러오기
   const [errorMessage, setErrorMessage] = useState(''); // 에러 메시지 상태 관리
+
+  useEffect(() => {
+    // 자동 로그인 체크박스가 체크되어 있으면 로그인 연장 실행
+    if (autoLogin) {
+      dispatch(login({ email, password }));
+    }
+  }, [autoLogin, dispatch, email, password]);
 
   // 이메일 입력이 변경될 때 호출되는 함수
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 export const BASE_URL = 'http://i11b108.p.ssafy.io:8000';
 
 const config = {
@@ -16,8 +17,13 @@ export const Authapi = axios.create(config); // 인증이 필요한 요청용 �
 let accessToken: string | null = null;
 
 // 엑세스 토큰 설정 함수
-export const setAccessToken = (token: string) => {
+export const setAccessToken = (token: string | null) => {
   accessToken = token;
+  if (token) {
+    Authapi.defaults.headers.common.Authorization = `Bearer ${token}`;
+  } else {
+    delete Authapi.defaults.headers.common.Authorization;
+  }
 };
 
 // Authapi 인스턴스에 요청 인터셉터 추가
@@ -41,17 +47,16 @@ Authapi.interceptors.response.use(
       originalRequest._retry = true; // 재시도를 방지하기 위한 플래그 설정
       try {
         // 리프레시 토큰을 사용하여 새로운 엑세스 토큰 요청
-        const response = await axios.post(
-          `${BASE_URL}/api/v1/auth/refresh-token`,
-          {},
-          { withCredentials: true },
-        );
+        const response = await axios.post(`${BASE_URL}/api/v1/auth/refresh-token`, {});
         const newAccessToken = response.headers.authorization.split(' ')[1]; // Authorization 헤더에서 새로운 엑세스 토큰 추출
         setAccessToken(newAccessToken); // 새로운 엑세스 토큰을 설정
-        axios.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`; // axios 기본 헤더에 새로운 엑세스 토큰 설정
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return Authapi(originalRequest); // 원래의 요청을 새로운 엑세스 토큰으로 재시도
       } catch (refreshError) {
-        return Promise.reject(refreshError); // 리프레시 토큰 요청 실패 시 에러 반환
+        // 리프레시 토큰도 만료된 경우
+        alert('세션이 만료되었습니다. 다시 로그인해 주세요.');
+        window.location.href = '/login'; // 로그인 페이지로 리디렉션
+        return Promise.reject(refreshError);
       }
     }
     return Promise.reject(error); // 다른 에러는 그대로 반환
