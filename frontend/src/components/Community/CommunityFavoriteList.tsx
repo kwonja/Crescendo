@@ -49,6 +49,8 @@ export default function CommunityFavoriteList() {
   
   // 상수 또는 변수(상태) 초기화
   // const API_PATH:string = "";
+  const SIZE_PER_PAGE = 4; // 한번에 몇개의 그룹이 보일지
+  const MOVE_STEP = 4; // 화살표 클릭시 몇개의 그룹을 넘길지
 
   const [idx, setIdx] = useState<number>(-1); // 로딩 전 -1
   const [communityList, setCommunityList] = useState<communityInfo[]>([])
@@ -70,22 +72,22 @@ export default function CommunityFavoriteList() {
   useEffect(()=>{
     if (idx === -1) return; // 로딩 전 로딩안함
     let tmp = [...communityList];
-    tmp = tmp.slice(idx, idx+4);
+    tmp = tmp.slice(idx, idx+SIZE_PER_PAGE);
     setShowList(tmp);
     // console.log(showList);
   }, [idx]);
 
   
   function onIncrease() {
-    if (idx+8 < communityList.length-1) setIdx((prev)=>prev+4);
+    if (idx+SIZE_PER_PAGE+MOVE_STEP < communityList.length-1) setIdx((prev)=>prev+MOVE_STEP);
     else {
-      setIdx(communityList.length-4);
+      setIdx(communityList.length-SIZE_PER_PAGE);
     }
     // console.log(idx);
   }
 
   function onDecrease() {
-    if (idx-4 > 0) setIdx((prev)=>prev-4);
+    if (idx-MOVE_STEP > 0) setIdx((prev)=>prev-MOVE_STEP);
     else {
       setIdx(0);
     }
@@ -97,6 +99,6 @@ export default function CommunityFavoriteList() {
     <div className='communitymain_favoritelist_contents'>
       {showList.map((community)=>(<CommunityCard idolGroupId={community.idolGroupId} name={community.name} profile={community.profile} key={community.idolGroupId} />))}
     </div>
-    {<Button className={idx===communityList.length-4?'hidden ':''+'square empty'} onClick={onIncrease}><RightBtn/></Button>}
+    {<Button className={idx>=communityList.length-4?'hidden ':''+'square empty'} onClick={onIncrease}><RightBtn/></Button>}
   </div>;
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import CommunityCard from './CommunityCard';
 
+
 export default function CommunityList() {
   // 타입 정의
   type communityInfo = {
