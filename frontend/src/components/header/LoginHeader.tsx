@@ -5,13 +5,18 @@ import { ReactComponent as Alarm } from '../../assets/images/alarm.svg';
 import { ReactComponent as Chat } from '../../assets/images/chat.svg';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import UserMenu from './UserMenu';
-
+import ChatRoom from './ChatRoom';
 
 export default function LoginHeader() {
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
   const [userMode, setUserMode] = useState<string>('');
   const menuRef = useRef<HTMLUListElement>(null);
   const location = useLocation();
+
+  const handleModeClick = (mode: string) => {
+    setUserMode(prevMode => prevMode === mode ? '' : mode);
+  };
+
 
   useEffect(() => {
     const menuElement = menuRef.current;
@@ -52,32 +57,22 @@ export default function LoginHeader() {
       </ul>
 
       <div className="header_icon">
-        <div
-        className={` ${userMode ? 'chat' : ''}`}
-        onClick={() => setUserMode('chat')}
-        >
+        <div className={` header_icon_div ${userMode==='chat' ? 'chat' : ''}`} onClick={() => handleModeClick('chat')}>
           <Chat />
         </div>
-        <div
-          className={` ${userMode ? 'alarm' : ''}`}
-          onClick={() => setUserMode('alarm')}
-        >
+        <div className={` header_icon_div ${userMode==='alarm' ? 'alarm' : ''}`} onClick={() => handleModeClick('alarm')}>
           <Alarm />
         </div>
-        <div
-          className={` ${userMode ? 'userlist' : ''}`}
-          onClick={() => setUserMode('userlist')} 
-          >
+        <div className={` header_icon_div ${userMode==='userlist' ? 'userlist' : ''}`} onClick={() => handleModeClick('userlist')}>
           <UserList />
         </div>
-
-        <div
-          className={` ${userMode ? 'user' : ''}`}
-          onClick={() => setUserMode('user')}
-        >
+        <div className={` header_icon_div ${userMode==='user' ? 'user' : ''}`} onClick={() => handleModeClick('user')}>
           <User />
-          {userMode && <UserMenu />}
         </div>
+        {userMode==='chat' && <ChatRoom />}
+        {userMode==='alarm' && <UserMenu />}
+        {userMode==='userlist' && <UserMenu />}
+        {userMode==='user' && <UserMenu handleMode={()=>setUserMode('')}/>}
       </div>
     </div>
   );
