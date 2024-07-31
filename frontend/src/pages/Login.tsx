@@ -5,6 +5,7 @@ import { login } from '../features/auth/authSlice'; // 로그인 액션 임포�
 import { isValidEmail } from '../utils/EmailValidation'; // 이메일 유효성 검사 함수 임포트
 import { isValidPassword } from '../utils/PasswordValidation'; // 비밀번호 유효성 검사 함수 임포트
 import { ReactComponent as Visualization } from '../assets/images/visualization.svg'; // 비밀번호 시각화 아이콘 임포트
+import { Link } from 'react-router-dom';
 import '../scss/page/_login.scss';
 
 const Login: React.FC = () => {
@@ -72,7 +73,7 @@ const Login: React.FC = () => {
     <div className="login-container">
       {' '}
       {/* 로그인 페이지 컨테이너 */}
-      <h1 className="login-title">로그인</h1> {/* 타이틀 */}
+      <h1 className="login-title">로그인</h1>
       <div className="login-wrapper">
         <form onSubmit={handleSubmit} className="login-form">
           {' '}
@@ -130,7 +131,7 @@ const Login: React.FC = () => {
                   onChange={() => setRememberMe(!rememberMe)}
                 />
                 <div className="custom-checkbox"></div>
-                <label>이메일 저장</label>
+                <label>이메일저장</label>
               </div>
               <div className="form-checkbox">
                 <input
@@ -139,16 +140,16 @@ const Login: React.FC = () => {
                   onChange={() => setAutoLogin(!autoLogin)}
                 />
                 <div className="custom-checkbox"></div>
-                <label>자동 로그인</label>
+                <label>자동로그인</label>
               </div>
             </div>
             <div className="button-group">
               {' '}
               {/* 버튼 그룹 */}
               <div className="signup-link">
-                <button type="button" onClick={() => alert('회원가입 페이지로 이동')}>
-                  회원가입
-                </button>
+                <Link to="/signup">
+                  <button type="button">회원가입</button>
+                </Link>
               </div>
               {/* 로그인 버튼 */}
               {/* 로딩 중에는 비활성화 */}
