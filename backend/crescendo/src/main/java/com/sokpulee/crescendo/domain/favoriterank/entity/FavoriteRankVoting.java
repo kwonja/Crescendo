@@ -15,6 +15,10 @@ public class FavoriteRankVoting {
     private Long favoriteRankVotingId;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "favorite_rank_id")
+    private FavoriteRank favoriteRank;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 }
