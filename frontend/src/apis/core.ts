@@ -1,10 +1,10 @@
-import axios from "axios";
-export const BASE_URL = "http://i11b108.p.ssafy.io:8000";
+import axios from 'axios';
+export const BASE_URL = 'http://i11b108.p.ssafy.io:8000';
 
 const config = {
   baseURL: BASE_URL,
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 };
 export const api = axios.create(config);
