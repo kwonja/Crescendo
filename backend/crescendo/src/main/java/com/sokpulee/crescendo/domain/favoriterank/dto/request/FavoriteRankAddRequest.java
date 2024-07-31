@@ -1,12 +1,12 @@
 package com.sokpulee.crescendo.domain.favoriterank.dto.request;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter
-@NoArgsConstructor
+@AllArgsConstructor
 public class FavoriteRankAddRequest {
 
     @NotNull(message = "최애 아이돌 ID")

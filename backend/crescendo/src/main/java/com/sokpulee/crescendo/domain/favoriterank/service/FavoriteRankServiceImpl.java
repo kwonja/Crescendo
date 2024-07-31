@@ -1,6 +1,8 @@
 package com.sokpulee.crescendo.domain.favoriterank.service;
 
 import com.sokpulee.crescendo.domain.favoriterank.dto.request.FavoriteRankAddRequest;
+import com.sokpulee.crescendo.domain.favoriterank.dto.request.FavoriteRanksSearchCondition;
+import com.sokpulee.crescendo.domain.favoriterank.dto.response.FavoriteRankResponse;
 import com.sokpulee.crescendo.domain.favoriterank.entity.FavoriteRank;
 import com.sokpulee.crescendo.domain.favoriterank.repository.FavoriteRankRepository;
 import com.sokpulee.crescendo.domain.idol.entity.Idol;
@@ -12,6 +14,8 @@ import com.sokpulee.crescendo.global.exception.custom.IdolNotFoundException;
 import com.sokpulee.crescendo.global.exception.custom.UserNotFoundException;
 import com.sokpulee.crescendo.global.util.file.FileSaveHelper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,5 +90,10 @@ public class FavoriteRankServiceImpl implements FavoriteRankService {
                 .build();
 
         favoriteRankRepository.save(favoriteRank);
+    }
+
+    @Override
+    public Page<FavoriteRankResponse> getFavoriteRanks(Long userId, FavoriteRanksSearchCondition condition, Pageable pageable) {
+        return favoriteRankRepository.findFavoriteRank(userId, condition, pageable);
     }
 }
