@@ -74,7 +74,7 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      color: #f66;
+      color: #FEA3A3;
       font-size: 44px;
       cursor: pointer;
     }
@@ -87,6 +87,9 @@
       background: #f66;
       bottom: 0;
       transition: 0.3s linear;
+    }
+    .active{
+      color: #f66;
     }
   }
 }
