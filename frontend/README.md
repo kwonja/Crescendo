@@ -22,5 +22,5 @@ npm start
 |   init    |                              초기 설정                              |
 |   test    |                             테스트 코드                             |
 |   style   | 코드 포맷팅, 세미콜론 누락, 코드 변경이 없는 경우, 짜잘한 코드 수정 |
-|   refactor  |                            코드 리팩토링                            |
-|   merge     |                            코드 합치기                            |
+| refactor  |                            코드 리팩토링                            |
+|   merge   |                             코드 합치기                             |
