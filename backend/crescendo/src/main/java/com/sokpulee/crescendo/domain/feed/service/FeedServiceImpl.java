@@ -54,12 +54,14 @@ public class FeedServiceImpl implements FeedService {
                 .content(feedAddRequest.getContent())
                 .build();
 
-        for (String tag : feedAddRequest.getTagList()) {
-            FeedHashtag feedHashtag = FeedHashtag.builder()
-                    .tag(tag)
-                    .build();
+        if (!feedAddRequest.getTagList().isEmpty()) {
+            for (String tag : feedAddRequest.getTagList()) {
+                FeedHashtag feedHashtag = FeedHashtag.builder()
+                        .tag(tag)
+                        .build();
 
-            feed.addHashtag(feedHashtag);
+                feed.addHashtag(feedHashtag);
+            }
         }
 
         if (!feedAddRequest.getImageList().isEmpty()) {

@@ -38,4 +38,11 @@ public class FeedAddRequest {
         }
         return imageList;
     }
+
+    public List<String> getTagList(){
+        if(tagList == null){
+            tagList = new ArrayList<>();
+        }
+        return tagList;
+    }
 }

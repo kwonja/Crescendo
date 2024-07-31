@@ -33,7 +33,7 @@ public class FanArtController {
             @AuthPrincipal Long loggedInUserId,
             @RequestParam("title") String title,
             @RequestParam("content") String content,
-            @RequestParam("imageList") List<MultipartFile> imageList,
+            @RequestParam(value = "imageList",required = false) List<MultipartFile> imageList,
             @RequestParam("idolGroupId") Long idolGroupId
     ) {
         if(loggedInUserId == null) {

@@ -32,7 +32,7 @@ public class FeedController {
             @RequestParam String title,
             @RequestParam String content,
             @RequestParam(required = false) List<MultipartFile> imageList,
-            @RequestParam List<String> tagList,
+            @RequestParam(required = false) List<String> tagList,
             @RequestParam Long idolGroupId
             ) {
         if(loggedInUserId == null) {
