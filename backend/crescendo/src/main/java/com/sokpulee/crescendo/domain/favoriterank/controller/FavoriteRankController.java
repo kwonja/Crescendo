@@ -7,6 +7,7 @@ import com.sokpulee.crescendo.domain.favoriterank.dto.response.FavoriteRankRespo
 import com.sokpulee.crescendo.domain.favoriterank.service.FavoriteRankService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -29,6 +30,7 @@ public class FavoriteRankController {
     private final FavoriteRankService favoriteRankService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "전국 최애 자랑 등록", description = "전국 최애 자랑 등록 API")
     public ResponseEntity<?> registerFavoriteRank(
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
             @Valid @ModelAttribute FavoriteRankAddRequest favoriteRankAddRequest
@@ -43,6 +45,7 @@ public class FavoriteRankController {
     }
 
     @GetMapping
+    @Operation(summary = "전국 최애 자랑 조회", description = "전국 최애 자랑 조회 API")
     public ResponseEntity<Page<FavoriteRankResponse>> getFavoriteRanks(@RequestParam int page,
                                                                        @RequestParam int size,
                                                                        @RequestParam(required = false) Long idolId,
@@ -60,6 +63,7 @@ public class FavoriteRankController {
     }
 
     @DeleteMapping("/{favorite-rank-id}")
+    @Operation(summary = "전국 최애 자랑 삭제", description = "전국 최애 자랑 삭제 API")
     public ResponseEntity<?> deleteFavoriteRank(
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
             @PathVariable("favorite-rank-id") Long favoriteRankId
@@ -74,6 +78,7 @@ public class FavoriteRankController {
     }
 
     @GetMapping("/bestphoto")
+    @Operation(summary = "전국 최애 자랑 아이돌 별 베스트 사진 조회", description = "전국 최애 자랑 아이돌 별 베스트 사진 조회 API")
     public ResponseEntity<?> getBestPhoto() {
 
         FavoriteRankBestPhotoResponse response = favoriteRankService.getBestPhoto();
@@ -82,6 +87,7 @@ public class FavoriteRankController {
     }
 
     @PostMapping("/{favorite-rank-id}/vote")
+    @Operation(summary = "전국 최애 자랑 투표", description = "전국 최애 자랑 투표 API")
     public ResponseEntity<?> voteFavoriteRank(
             @AuthPrincipal Long loggedInUserId,
             @PathVariable("favorite-rank-id") Long favoriteRankId) {
