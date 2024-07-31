@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { isValidEmail } from '../utils/EmailValidation'; // 이메일 유효성 검사 함수 임포트
 import { isValidPassword } from '../utils/PasswordValidation'; // 비밀번호 유효성 검사 함수 임포트
 import { ReactComponent as Visualization } from '../assets/images/visualization.svg'; // 비밀번호 시각화 아이콘 임포트
@@ -14,7 +14,11 @@ const SignUp: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false); // 비밀번호 시각화 상태 관리
   const [showConfirmPassword, setShowConfirmPassword] = useState(false); // 비밀번호 확인 시각화 상태 관리
   const [termsAccepted, setTermsAccepted] = useState(false); // 약관 동의 상태 관리
-  const [verificationButtonText, setVerificationButtonText] = useState('인증번호 전송'); // 인증번호 버튼 텍스트 관리
+  const [isVerificationButtonDisabled, setIsVerificationButtonDisabled] = useState(false); // 인증번호 버튼 비활성화 상태
+  const [verificationCountdown, setVerificationCountdown] = useState(0); // 인증번호 카운트다운 타이머
+  const [isFirstVerification, setIsFirstVerification] = useState(true); // 첫 번째 인증 시도 여부
+  const [isEmailLocked, setIsEmailLocked] = useState(false); // 이메일 입력 잠금 상태
+  const [isVerificationCodeLocked, setIsVerificationCodeLocked] = useState(false); // 인증번호 입력 잠금 상태
   const [fieldErrors, setFieldErrors] = useState({
     email: '',
     verificationCode: '',
@@ -24,55 +28,68 @@ const SignUp: React.FC = () => {
     termsAccepted: '',
   });
 
-  // 이메일 입력이 변경될 때 호출되는 함수
+  useEffect(() => {
+    let timer: ReturnType<typeof setInterval>;
+    if (verificationCountdown > 0) {
+      timer = setInterval(() => {
+        setVerificationCountdown(prev => prev - 1);
+      }, 1000);
+    } else {
+      setIsVerificationButtonDisabled(false);
+    }
+
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [verificationCountdown]);
+
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
+    if (!isEmailLocked) {
+      setEmail(e.target.value);
+    }
   };
 
-  // 인증번호 입력이 변경될 때 호출되는 함수
   const handleVerificationCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setVerificationCode(e.target.value);
+    if (!isVerificationCodeLocked) {
+      setVerificationCode(e.target.value);
+    }
   };
 
-  // 비밀번호 입력이 변경될 때 호출되는 함수
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   };
 
-  // 비밀번호 확인 입력이 변경될 때 호출되는 함수
   const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setConfirmPassword(e.target.value);
   };
 
-  // 닉네임 입력이 변경될 때 호출되는 함수
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
   };
 
-  // 인증번호 전송 버튼 클릭 시 호출되는 함수
   const handleSendVerificationCode = () => {
     if (!isValidEmail(email)) {
-      setFieldErrors(prev => ({ ...prev, email: '유효한 이메일 주소를 입력하세요.' }));
+      setFieldErrors(prev => ({ ...prev, email: '유효한 이메일 형식을 입력해 주세요' }));
       return;
     }
     setFieldErrors(prev => ({ ...prev, email: '' }));
     setFieldErrors(prev => ({ ...prev, verificationCode: '인증번호가 전송되었습니다.' }));
-    setVerificationButtonText('재전송'); // 버튼 텍스트 변경
+    setIsVerificationButtonDisabled(true);
+    setVerificationCountdown(15);
+    setIsFirstVerification(false); // 첫 번째 시도 이후 false로 설정
+    setIsEmailLocked(true); // 이메일 입력 잠금
   };
 
-  // 인증하기 버튼 클릭 시 호출되는 함수
   const handleVerifyCode = () => {
     if (verificationCode === '123456') {
-      // 테스트용 인증번호 123456
       setCodeVerified(true);
-      setFieldErrors(prev => ({ ...prev, verificationCode: '' }));
       setFieldErrors(prev => ({ ...prev, verificationCode: '인증이 완료되었습니다.' }));
+      setIsVerificationCodeLocked(true); // 인증번호 입력 잠금
     } else {
-      setFieldErrors(prev => ({ ...prev, verificationCode: '인증번호가 올바르지 않습니다.' }));
+      setFieldErrors(prev => ({ ...prev, verificationCode: '인증번호가 틀립니다.' }));
     }
   };
 
-  // 회원가입 폼이 제출될 때 호출되는 함수
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -118,22 +135,15 @@ const SignUp: React.FC = () => {
     }
 
     setFieldErrors(errors);
-    // 회원가입 로직을 여기에 추가
     console.log({ email, password, nickname });
   };
 
   return (
     <div className="signup-container">
-      {' '}
-      {/* 회원가입 페이지 컨테이너 */}
       <h1 className="signup-title">회원가입</h1>
       <div className="signup-wrapper">
         <form onSubmit={handleSubmit} className="signup-form">
-          {' '}
-          {/* 회원가입 폼 */}
           <div className="form-group">
-            {' '}
-            {/* 이메일 입력 그룹 */}
             <div className="input-group">
               <input
                 type="email"
@@ -143,20 +153,26 @@ const SignUp: React.FC = () => {
                 onChange={handleEmailChange}
                 maxLength={254}
                 required
+                disabled={isEmailLocked}
               />
-              <button
-                type="button"
-                onClick={handleSendVerificationCode}
-                className="verification-button"
-              >
-                {verificationButtonText}
-              </button>
+              {isVerificationButtonDisabled ? (
+                <span className="verification-timer">{verificationCountdown}초</span>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleSendVerificationCode}
+                  className="verification-button"
+                  style={{ visibility: codeVerified ? 'hidden' : 'visible' }}
+                >
+                  {isFirstVerification ? '인증번호 전송' : '재전송'}
+                </button>
+              )}
             </div>
-            {fieldErrors.email && <p className="error-message">{fieldErrors.email}</p>}
+            <p className={`error-message ${fieldErrors.email ? 'visible' : ''}`}>
+              {fieldErrors.email}
+            </p>
           </div>
           <div className="form-group">
-            {' '}
-            {/* 인증번호 입력 그룹 */}
             <div className="input-group">
               <input
                 type="text"
@@ -166,18 +182,22 @@ const SignUp: React.FC = () => {
                 onChange={handleVerificationCodeChange}
                 maxLength={6}
                 required
+                disabled={isVerificationCodeLocked}
               />
-              <button type="button" onClick={handleVerifyCode} className="verification-button">
+              <button
+                type="button"
+                onClick={handleVerifyCode}
+                className="verification-button"
+                style={{ visibility: codeVerified ? 'hidden' : 'visible' }}
+              >
                 인증하기
               </button>
             </div>
-            {fieldErrors.verificationCode && (
-              <p className="error-message">{fieldErrors.verificationCode}</p>
-            )}
+            <p className={`error-message ${fieldErrors.verificationCode ? 'visible' : ''}`}>
+              {fieldErrors.verificationCode}
+            </p>
           </div>
           <div className="password-group">
-            {' '}
-            {/* 비밀번호 입력 그룹 */}
             <div className="input-group">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -196,11 +216,11 @@ const SignUp: React.FC = () => {
                 {showPassword ? '숨기기' : '보이기'}
               </Visualization>
             </div>
-            {fieldErrors.password && <p className="error-message">{fieldErrors.password}</p>}
+            <p className={`error-message ${fieldErrors.password ? 'visible' : ''}`}>
+              {fieldErrors.password}
+            </p>
           </div>
           <div className="password-group">
-            {' '}
-            {/* 비밀번호 확인 그룹 */}
             <div className="input-group">
               <input
                 type={showConfirmPassword ? 'text' : 'password'}
@@ -219,13 +239,11 @@ const SignUp: React.FC = () => {
                 {showConfirmPassword ? '숨기기' : '보이기'}
               </Visualization>
             </div>
-            {fieldErrors.confirmPassword && (
-              <p className="error-message">{fieldErrors.confirmPassword}</p>
-            )}
+            <p className={`error-message ${fieldErrors.confirmPassword ? 'visible' : ''}`}>
+              {fieldErrors.confirmPassword}
+            </p>
           </div>
           <div className="form-group">
-            {' '}
-            {/* 닉네임 입력 그룹 */}
             <div className="input-group">
               <input
                 type="text"
@@ -237,14 +255,12 @@ const SignUp: React.FC = () => {
                 required
               />
             </div>
-            {fieldErrors.nickname && <p className="error-message">{fieldErrors.nickname}</p>}
+            <p className={`error-message ${fieldErrors.nickname ? 'visible' : ''}`}>
+              {fieldErrors.nickname}
+            </p>
           </div>
           <div className="form-actions">
-            {' '}
-            {/* 폼 액션 그룹 */}
             <div className="form-checkbox">
-              {' '}
-              {/* 약관 동의 체크박스 */}
               <input
                 type="checkbox"
                 checked={termsAccepted}
@@ -253,18 +269,18 @@ const SignUp: React.FC = () => {
               <div className="custom-checkbox"></div>
               <label>약관에 동의합니다</label>
             </div>
-            {fieldErrors.termsAccepted && (
-              <p className="error-message">{fieldErrors.termsAccepted}</p>
-            )}
             <div className="button-group">
-              {' '}
-              {/* 버튼 그룹 */}
               <button type="submit" className="submit-button">
                 회원가입
               </button>
             </div>
           </div>
         </form>
+        <div className="terms-div">
+          <p className={`error-message ${fieldErrors.termsAccepted ? 'visible' : ''}`}>
+            {fieldErrors.termsAccepted}
+          </p>
+        </div>
       </div>
     </div>
   );

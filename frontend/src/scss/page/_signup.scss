@@ -8,6 +8,25 @@
   align-items: center;
   padding: 2rem 0;
 
+  .hidden {
+    visibility: hidden;
+  }
+
+  .error-message {
+    color: #e53e3e;
+    font-size: 20px;
+    height: 1.5em; /* 고정된 높이 설정 */
+    visibility: hidden;
+  }
+
+  .terms-div {
+    margin-left: 60px;
+  }
+
+  .error-message.visible {
+    visibility: visible;
+  }
+
   .signup-title {
     color: #000;
     font-size: 48px;
@@ -25,6 +44,7 @@
     width: 100%;
     max-width: 800px;
     padding: 2rem;
+    margin-top: 200px;
 
     .signup-form {
       display: flex;
@@ -63,9 +83,7 @@
           .verification-button {
             width: 200px;
             height: 50px;
-
             color: #f00;
-
             text-align: center;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
             font-size: 18px;
@@ -73,13 +91,30 @@
             font-weight: 400;
             line-height: 100%; /* 16px */
             letter-spacing: 2.56px;
-
             cursor: pointer;
             background: none;
             border: none;
             &:hover {
               text-decoration: underline;
             }
+          }
+
+          .verification-timer {
+            width: 200px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #f00;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
+            font-size: 18px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 100%; /* 16px */
+            letter-spacing: 2.56px;
+            background: none;
+            border: none;
           }
         }
       }
@@ -115,7 +150,7 @@
 
           .toggle-password {
             position: absolute;
-            top: 50%;
+            top: 35%;
             right: 5px;
             transform: translateY(-50%);
             background: none;
@@ -142,9 +177,10 @@
           margin-left: 20px;
 
           input {
+            width: 24px;
+            height: 24px;
             opacity: 0; /* 기본 체크박스를 숨김 */
             position: absolute;
-
             cursor: pointer;
           }
 
@@ -197,12 +233,6 @@
             }
           }
         }
-      }
-
-      .error-message {
-        color: #e53e3e;
-        font-size: 0.875rem;
-        margin-top: 0.5rem;
       }
     }
   }
