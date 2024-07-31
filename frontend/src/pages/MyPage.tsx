@@ -2,14 +2,16 @@ import React, { useEffect, useRef, useState } from 'react';
 import Profile from '../components/mypage/Profile';
 import FriendList from '../components/mypage/FriendList';
 import { ReactComponent as Crown } from '../assets/images/crown.svg';
-import Feed from '../components/common/Feed';
+import Feed from '../components/feed/Feed';
 import Gallery from '../components/common/Gallery';
+import { useAppSelector } from '../store/hooks/hook';
 export default function MyPage() {
   const [isSelected, setIsSelected] = useState<string>('feed');
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
   const menuRef = useRef<HTMLDivElement>(null);
-
+  const feedlist = useAppSelector(state=> state.feed);
   useEffect(() => {
+    
     const menuElement = menuRef.current;
     if (menuElement) {
       const activeLink = menuElement.querySelector('.active') as HTMLElement;
