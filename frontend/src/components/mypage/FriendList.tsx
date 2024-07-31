@@ -30,12 +30,6 @@ export default function FriendList() {
           <FriendProfile />
           <FriendProfile />
           <FriendProfile />
-          <FriendProfile />
-          <FriendProfile />
-          <FriendProfile />
-          <FriendProfile />
-          <FriendProfile />
-          <FriendProfile />
         </div>
       </div>
     </>

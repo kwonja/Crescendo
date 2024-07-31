@@ -4,6 +4,7 @@ import { ReactComponent as User } from '../../assets/images/Gallery/whiteuser.sv
 import { ReactComponent as Heart } from '../../assets/images/Gallery/whiteheart.svg';
 import { ReactComponent as Comment } from '../../assets/images/Gallery/whitecomment.svg';
 import fanartImage from '../../assets/images/fanart.png';
+
 export default function Gallery() {
   return (
     <div className="gallery">

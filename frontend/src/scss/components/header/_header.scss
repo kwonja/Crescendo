@@ -8,6 +8,7 @@
   position: relative;
   box-shadow: 5px 5px 4px 0px rgba(0, 0, 0, 0.15);
 
+  
   &_title {
     display: flex;
     width: 310px;
@@ -19,7 +20,7 @@
     font-size: 42px;
     margin-right: 182px;
   }
-
+  
   &_menu {
     display: flex;
     flex-direction: row;
@@ -71,11 +72,13 @@
       cursor: pointer;
     }
 
-    .selected {
+    .user {
       width: 60px;
       height: 60px;
-      border-radius: 10px 0px 10px 10px;
+      border-radius: 10px 10px 0px 0px;
+      box-shadow: 4px 1px 4px 0px rgba(0, 0, 0, 0.25);
       background: #fea3a3;
+      
     }
   }
 }

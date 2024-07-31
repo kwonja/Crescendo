@@ -4,11 +4,12 @@ import { ReactComponent as User } from '../../assets/images/user.svg';
 import { ReactComponent as Alarm } from '../../assets/images/alarm.svg';
 import { ReactComponent as Chat } from '../../assets/images/chat.svg';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import SettingMenu from './SettingMenu';
+import UserMenu from './UserMenu';
+
 
 export default function LoginHeader() {
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
-  const [userMode, setUserMode] = useState<boolean>(false);
+  const [userMode, setUserMode] = useState<string>('');
   const menuRef = useRef<HTMLUListElement>(null);
   const location = useLocation();
 
@@ -51,21 +52,31 @@ export default function LoginHeader() {
       </ul>
 
       <div className="header_icon">
-        <div>
+        <div
+        className={` ${userMode ? 'chat' : ''}`}
+        onClick={() => setUserMode('chat')}
+        >
           <Chat />
         </div>
-        <div>
+        <div
+          className={` ${userMode ? 'alarm' : ''}`}
+          onClick={() => setUserMode('alarm')}
+        >
           <Alarm />
         </div>
-        <div>
+        <div
+          className={` ${userMode ? 'userlist' : ''}`}
+          onClick={() => setUserMode('userlist')} 
+          >
           <UserList />
         </div>
+
         <div
-          className={` ${userMode ? 'selected' : ''}`}
-          onClick={() => setUserMode(prev => !prev)}
+          className={` ${userMode ? 'user' : ''}`}
+          onClick={() => setUserMode('user')}
         >
           <User />
-          {userMode && <SettingMenu />}
+          {userMode && <UserMenu />}
         </div>
       </div>
     </div>

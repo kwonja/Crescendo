@@ -15,7 +15,7 @@
     display: flex;
     flex-direction: row;
   }
-  .title_box {
+  .title_box{
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -23,22 +23,23 @@
     padding-left: 10px;
     margin-top: 10px;
     gap: 5px;
-    .title {
+    .title{
       font-size: 20px;
-      color: #fff;
+      color: #FFF;
       text-align: center;
     }
   }
-  .type {
+  .type{
     width: 24px;
     height: 10px;
-    background-color: #fff;
+    background-color: #FFF;
     color: #f66;
     font-size: 8px;
     text-align: center;
   }
 
-  &_userinfo {
+  &_userinfo{
+
     display: flex;
     width: 100%;
     height: 30px;
@@ -47,8 +48,9 @@
     margin-top: 10px;
     margin-bottom: 10px;
     padding-left: 10px;
-    gap: 5px;
+    gap :5px;
     position: relative;
+      
   }
   &_heart {
     position: absolute;
@@ -61,9 +63,9 @@
     bottom: 0px;
   }
 
-  &_profile {
+  &_profile{
     display: flex;
     flex-direction: column;
-    color: #fff;
+    color: #FFF;
   }
 }
