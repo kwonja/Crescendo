@@ -1,6 +1,7 @@
 package com.sokpulee.crescendo.domain.fanart.controller;
 
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtAddRequest;
+import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtCommentAddRequest;
 import com.sokpulee.crescendo.domain.fanart.service.FanArtService;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedAddRequest;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
@@ -11,10 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -48,4 +46,44 @@ public class FanArtController {
 
         return ResponseEntity.status(CREATED).build();
     }
+
+    @PostMapping("/{fan-art-id}/comment")
+    @Operation(summary = "팬아트 댓글쓰기", description = "팬아트 댓글쓰기 API")
+    public ResponseEntity<?> addFanArtComment(
+            @AuthPrincipal Long loggedInUserId,
+            @PathVariable("fan-art-id") Long fanArtId,
+            @RequestParam String content
+    ){
+        if(loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+
+        FanArtCommentAddRequest fanArtCommentAddRequest = new FanArtCommentAddRequest(content);
+
+        fanArtService.addFanArtComment(loggedInUserId,fanArtId,fanArtCommentAddRequest);
+
+        return ResponseEntity.status(CREATED).build();
+    }
+
+    @PostMapping("{fan-art-id}/comment/{fan-art-comment-id}/reply")
+    @Operation(summary = "팬아트 답글쓰기", description = "팬아트 답글쓰기 API")
+    public ResponseEntity<?> addFanArtReply(
+            @AuthPrincipal Long loggedInUserId,
+            @PathVariable("fan-art-id") Long fanArtId,
+            @PathVariable("fan-art-comment-id") Long fanArtCommentId,
+            @RequestParam String content
+    ){
+        if(loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+
+        FanArtCommentAddRequest fanArtReplyAddRequest = new FanArtCommentAddRequest(content);
+
+        fanArtService.addFanArtReply(loggedInUserId,fanArtId,fanArtCommentId,fanArtReplyAddRequest);
+
+        return ResponseEntity.status(CREATED).build();
+
+
+    }
+
 }

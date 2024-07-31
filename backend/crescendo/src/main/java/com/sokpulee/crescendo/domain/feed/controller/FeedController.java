@@ -62,4 +62,23 @@ public class FeedController {
 
         return ResponseEntity.status(CREATED).build();
     }
+
+    @PostMapping("{feed-id}/comment/{feed-comment-id}/reply")
+    @Operation(summary = "피드 답글쓰기", description = "피드 답글쓰기 API")
+    public ResponseEntity<?> addFeedReply(
+            @AuthPrincipal Long loggedInUserId,
+            @PathVariable("feed-id") Long feedId,
+            @PathVariable("feed-comment-id") Long feedCommentId,
+            @RequestParam String content
+    ){
+        if(loggedInUserId == null){
+            throw new AuthenticationRequiredException();
+        }
+
+        FeedCommentAddRequest feedReplyAddRequest = new FeedCommentAddRequest(content);
+
+        feedService.addFeedReply(loggedInUserId,feedId,feedCommentId,feedReplyAddRequest);
+
+        return ResponseEntity.status(CREATED).build();
+    }
 }

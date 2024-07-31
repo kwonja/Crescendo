@@ -4,6 +4,7 @@ import com.sokpulee.crescendo.domain.user.entity.User;
 import com.sokpulee.crescendo.global.TimeStampedEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -29,4 +30,12 @@ public class GoodsComment extends TimeStampedEntity {
 
     @Column(length = 200)
     private String content;
+
+    @Builder
+    public GoodsComment(Goods goods, User user, String content, GoodsComment parentGoodsComment) {
+        this.goods = goods;
+        this.user = user;
+        this.content = content;
+        this.parentGoodsComment = parentGoodsComment;
+    }
 }

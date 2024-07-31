@@ -1,15 +1,19 @@
 package com.sokpulee.crescendo.domain.goods.service;
 
+import com.sokpulee.crescendo.domain.feed.entity.Feed;
+import com.sokpulee.crescendo.domain.feed.entity.FeedComment;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsAddRequest;
+import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentAddRequest;
 import com.sokpulee.crescendo.domain.goods.entity.Goods;
+import com.sokpulee.crescendo.domain.goods.entity.GoodsComment;
 import com.sokpulee.crescendo.domain.goods.entity.GoodsImage;
+import com.sokpulee.crescendo.domain.goods.repository.GoodsCommentRepository;
 import com.sokpulee.crescendo.domain.goods.repository.GoodsRepository;
 import com.sokpulee.crescendo.domain.idol.entity.IdolGroup;
 import com.sokpulee.crescendo.domain.idol.repository.IdolGroupRepository;
 import com.sokpulee.crescendo.domain.user.entity.User;
 import com.sokpulee.crescendo.domain.user.repository.UserRepository;
-import com.sokpulee.crescendo.global.exception.custom.IdolGroupNotFoundException;
-import com.sokpulee.crescendo.global.exception.custom.UserNotFoundException;
+import com.sokpulee.crescendo.global.exception.custom.*;
 import com.sokpulee.crescendo.global.util.file.FileSaveHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
-public class GoodsServiceImpl implements GoodsService{
+public class GoodsServiceImpl implements GoodsService {
     private final UserRepository userRepository;
 
     private final IdolGroupRepository idolGroupRepository;
@@ -25,6 +29,8 @@ public class GoodsServiceImpl implements GoodsService{
     private final FileSaveHelper fileSaveHelper;
 
     private final GoodsRepository goodsRepository;
+
+    private final GoodsCommentRepository goodsCommentRepository;
 
 
     @Override
@@ -42,17 +48,70 @@ public class GoodsServiceImpl implements GoodsService{
                 .content(goodsAddRequest.getContent())
                 .build();
 
-        for(MultipartFile goodsImageFile : goodsAddRequest.getImageList()){
-            String savePath = fileSaveHelper.saveGoodsImage(goodsImageFile);
+        if (!goodsAddRequest.getImageList().isEmpty()) {
+            for (MultipartFile goodsImageFile : goodsAddRequest.getImageList()) {
+                String savePath = fileSaveHelper.saveGoodsImage(goodsImageFile);
 
-            GoodsImage goodsImage = GoodsImage.builder()
-                    .imagePath(savePath)
-                    .build();
-            System.out.println(goodsImage.toString());
+                GoodsImage goodsImage = GoodsImage.builder()
+                        .imagePath(savePath)
+                        .build();
+                System.out.println(goodsImage.toString());
 
-            goods.addImage(goodsImage);
+                goods.addImage(goodsImage);
+            }
         }
 
         goodsRepository.save(goods);
+    }
+
+    @Override
+    public void addGoodsComment(Long loggedInUserId, Long goodsId, GoodsCommentAddRequest goodsCommentAddRequest) {
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        Goods goods = goodsRepository.findById(goodsId)
+                .orElseThrow(GoodsNotFoundException::new);
+
+        GoodsComment goodsComment = GoodsComment.builder()
+                .goods(goods)
+                .user(user)
+                .content(goodsCommentAddRequest.getContent())
+                .build();
+
+        goodsCommentRepository.save(goodsComment);
+    }
+
+    @Override
+    public void addGoodsReply(Long loggedInUserId, Long goodsId, Long goodsCommentId, GoodsCommentAddRequest goodsReplyAddRequest) {
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        Goods goods = goodsRepository.findById(goodsId)
+                .orElseThrow(GoodsNotFoundException::new);
+
+        GoodsComment parentGoodsComment = goodsCommentRepository.findById(goodsCommentId)
+                .orElseThrow(GoodsCommentNotFoundException::new);
+
+        GoodsComment goodsComment = GoodsComment.builder()
+                .goods(goods)
+                .parentGoodsComment(parentGoodsComment)
+                .user(user)
+                .content(goodsReplyAddRequest.getContent())
+                .build();
+
+        if (parentGoodsComment.getParentGoodsComment() == null) {
+            goodsCommentRepository.save(goodsComment);
+        } else {
+            throw new GoodsCommentNotFoundException();
+        }
+    }
+
+    @Override
+    public void deleteGoods(Long loggedInUserId, Long goodsId) {
+        if (goodsRepository.existsById(goodsId)) {
+            goodsRepository.deleteById(goodsId);
+        } else {
+            throw new GoodsNotFoundException();
+        }
     }
 }

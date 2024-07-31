@@ -1,6 +1,8 @@
 package com.sokpulee.crescendo.domain.goods.controller;
 
+import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsAddRequest;
+import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentAddRequest;
 import com.sokpulee.crescendo.domain.goods.service.GoodsService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
@@ -10,10 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -33,7 +32,7 @@ public class GoodsController {
             @AuthPrincipal Long loggedInUserId,
             @RequestParam String title,
             @RequestParam String content,
-            @RequestParam List<MultipartFile> imageList,
+            @RequestParam(required = false) List<MultipartFile> imageList,
             @RequestParam Long idolGroupId
     ) {
         if (loggedInUserId == null) {
@@ -44,4 +43,65 @@ public class GoodsController {
 
         return ResponseEntity.status(CREATED).build();
     }
+
+    @DeleteMapping("/{goods-id}")
+    @Operation(summary = "굿즈 글삭제", description = "굿즈 글삭제 API")
+    public ResponseEntity<?> deleteGoods(
+        @AuthPrincipal Long loggedInUserId,
+        @PathVariable("goods-id") Long goodsId
+    ){
+        if (loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+        goodsService.deleteGoods(loggedInUserId,goodsId);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{goods-id}/comment")
+    @Operation(summary = "굿즈 댓글쓰기", description = "굿즈 댓글쓰기 API")
+    public ResponseEntity<?> addGoodsComment(
+            @AuthPrincipal Long loggedInUserId,
+            @PathVariable("goods-id") Long goodsId,
+            @RequestParam String content
+    ){
+        if (loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+        GoodsCommentAddRequest goodsCommentAddRequest = new GoodsCommentAddRequest(content);
+
+        goodsService.addGoodsComment(loggedInUserId,goodsId,goodsCommentAddRequest);
+
+        return ResponseEntity.status(CREATED).build();
+    }
+
+    @PostMapping("{goods-id}/comment/{goods-comment-id}/reply")
+    @Operation(summary = "굿즈 답글쓰기", description = "굿즈 답글쓰기 API")
+    public ResponseEntity<?> addGoodsReply(
+            @AuthPrincipal Long loggedInUserId,
+            @PathVariable("goods-id") Long goodsId,
+            @PathVariable("goods-comment-id") Long goodsCommentId,
+            @RequestParam String content
+    ){
+        if(loggedInUserId == null){
+            throw new AuthenticationRequiredException();
+        }
+
+        GoodsCommentAddRequest goodsReplyAddRequest = new GoodsCommentAddRequest(content);
+
+        goodsService.addGoodsReply(loggedInUserId,goodsId,goodsCommentId,goodsReplyAddRequest);
+
+        return ResponseEntity.status(CREATED).build();
+    }
+
+
+
+
+
+
+
+
+
+
+
 }
