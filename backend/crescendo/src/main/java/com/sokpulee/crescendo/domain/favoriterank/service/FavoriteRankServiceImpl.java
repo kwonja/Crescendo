@@ -111,6 +111,7 @@ public class FavoriteRankServiceImpl implements FavoriteRankService {
             throw new UnauthorizedAcessException();
         }
         else {
+            fileSaveHelper.deleteFile(favoriteRank.getFavoriteIdolImagePath());
             favoriteRankRepository.delete(favoriteRank);
         }
     }
