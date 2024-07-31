@@ -5,8 +5,12 @@ import com.sokpulee.crescendo.domain.user.entity.User;
 import com.sokpulee.crescendo.global.TimeStampedEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -29,4 +33,20 @@ public class FanArt extends TimeStampedEntity {
 
     @Column(length = 500)
     private String content;
+
+    @OneToMany(mappedBy = "fanArt", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FanArtImage> imageList = new ArrayList<>();
+
+    @Builder
+    public FanArt(User user, IdolGroup idolGroup, String title, String content) {
+        this.user = user;
+        this.idolGroup = idolGroup;
+        this.title = title;
+        this.content = content;
+    }
+
+    public void addImage(FanArtImage image) {
+        imageList.add(image);
+        image.changeFanArt(this);
+    }
 }

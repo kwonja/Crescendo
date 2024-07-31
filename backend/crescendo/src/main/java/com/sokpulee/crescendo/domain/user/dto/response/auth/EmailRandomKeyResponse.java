@@ -1,4 +1,4 @@
-package com.sokpulee.crescendo.domain.user.dto.response;
+package com.sokpulee.crescendo.domain.user.dto.response.auth;
 
 public class EmailRandomKeyResponse {
 
