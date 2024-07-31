@@ -65,24 +65,27 @@ export default function MyPage() {
           </div>
         )}
 
-        {isSelected === 'feed' && <div className="">
-          <Feed />
-          <Feed />
-          <Feed />
-          <Feed />
-        </div>}
+        {isSelected === 'feed' && (
+          <div className="">
+            <Feed />
+            <Feed />
+            <Feed />
+            <Feed />
+          </div>
+        )}
 
-        {isSelected === 'gallery' && <div className="mypage_gallery">
-          <Gallery />
-          <Gallery />
-          <Gallery />
-          <Gallery />
-          <Gallery />
-          <Gallery />
-          <Gallery />
-          <Gallery />
-        </div>}
-        
+        {isSelected === 'gallery' && (
+          <div className="mypage_gallery">
+            <Gallery />
+            <Gallery />
+            <Gallery />
+            <Gallery />
+            <Gallery />
+            <Gallery />
+            <Gallery />
+            <Gallery />
+          </div>
+        )}
       </div>
     </div>
   );
