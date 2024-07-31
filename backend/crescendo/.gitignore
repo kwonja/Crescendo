@@ -39,6 +39,7 @@ out/
 *.yml
 
 # Package Files
-*.jar
 *.war
 *.ear
+
+/images/**

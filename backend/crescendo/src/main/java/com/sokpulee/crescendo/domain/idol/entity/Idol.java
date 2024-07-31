@@ -10,10 +10,11 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Idol extends TimeStampedEntity {
+public class Idol {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idolId;
+    @Column(name = "idol_id")
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idol_group_id")
@@ -39,4 +40,8 @@ public class Idol extends TimeStampedEntity {
     private String profile2;
 
     private Integer winNum;
+
+    public void updateProfile2(String favoriteImagePath) {
+        this.profile2 = favoriteImagePath;
+    }
 }

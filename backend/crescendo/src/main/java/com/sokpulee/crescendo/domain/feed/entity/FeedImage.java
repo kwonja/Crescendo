@@ -2,6 +2,7 @@ package com.sokpulee.crescendo.domain.feed.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,4 +20,14 @@ public class FeedImage {
 
     @Column(length = 500)
     private String imagePath;
+
+    @Builder
+    public FeedImage(Feed feed, String imagePath) {
+        this.feed = feed;
+        this.imagePath = imagePath;
+    }
+
+    public void changeFeed(Feed feed) {
+        this.feed = feed;
+    }
 }

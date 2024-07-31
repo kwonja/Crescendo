@@ -12,7 +12,12 @@ import lombok.NoArgsConstructor;
 public class FavoriteRankVoting {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long favoriteRankVotingId;
+    @Column(name = "favorite_rank_voting_id")
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "favorite_rank_id")
+    private FavoriteRank favoriteRank;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
