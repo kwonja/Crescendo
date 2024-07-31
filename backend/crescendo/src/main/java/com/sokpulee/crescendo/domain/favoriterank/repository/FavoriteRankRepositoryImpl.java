@@ -97,8 +97,6 @@ public class FavoriteRankRepositoryImpl implements FavoriteRankCustomRepository 
         QFavoriteRank favoriteRank = QFavoriteRank.favoriteRank;
         QFavoriteRankVoting favoriteRankVoting = QFavoriteRankVoting.favoriteRankVoting;
 
-
-        // 서브쿼리를 사용하여 각 아이돌별로 가장 높은 투표수를 가진 FavoriteRank의 ID를 찾습니다.
         List<Tuple> subQuery = queryFactory
                 .select(favoriteRank.idol.id, favoriteRank.id, favoriteRankVoting.id.count())
                 .from(favoriteRank)
@@ -106,7 +104,6 @@ public class FavoriteRankRepositoryImpl implements FavoriteRankCustomRepository 
                 .groupBy(favoriteRank.idol.id, favoriteRank.id)
                 .fetch();
 
-        // 각 아이돌별로 가장 높은 투표수를 가진 FavoriteRank의 ID를 추출합니다.
         Map<Long, Tuple> bestRankByIdol = subQuery.stream()
                 .collect(Collectors.toMap(
                         tuple -> tuple.get(favoriteRank.idol.id),
@@ -117,14 +114,14 @@ public class FavoriteRankRepositoryImpl implements FavoriteRankCustomRepository 
         List<Long> bestRankIds = bestRankByIdol.values().stream()
                 .map(tuple -> tuple.get(favoriteRank.id))
                 .collect(Collectors.toList());
-        // 메인 쿼리를 수행하여 각 아이돌의 가장 높은 투표수를 가진 FavoriteRank 정보를 가져옵니다.
+
         return queryFactory.select(
                 Projections.constructor(FavoriteRankBestPhotoDto.class,
                         favoriteRank.idol.id,
                         favoriteRank.idol.name,
                         favoriteRank.favoriteIdolImagePath))
                 .from(favoriteRank)
-                .join(favoriteRank.idol).fetchJoin()
+                .join(favoriteRank.idol)
                 .where(favoriteRank.id.in(bestRankIds))
                 .fetch();
     }

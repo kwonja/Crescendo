@@ -1,5 +1,8 @@
 package com.sokpulee.crescendo.domain.favoriterank.dto;
 
+import lombok.Getter;
+
+@Getter
 public class FavoriteRankBestPhotoDto {
 
     private Long idolId;
