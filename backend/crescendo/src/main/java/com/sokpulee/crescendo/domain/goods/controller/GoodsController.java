@@ -4,6 +4,7 @@ import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtUpdateRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentAddRequest;
+import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsUpdateRequest;
 import com.sokpulee.crescendo.domain.goods.service.GoodsService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
@@ -107,6 +108,23 @@ public class GoodsController {
         }
         goodsService.deleteGoodsComment(loggedInUserId,goodsId,goodsCommentId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping(value = "{goods-id}/comment/{goods-comment-id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "굿즈 댓글수정", description = "굿즈 댓글수정 API")
+    public ResponseEntity<?> updateGoodsComment(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("goods-id") Long goodsId,
+            @PathVariable("goods-comment-id") Long goodsCommentId,
+            @ModelAttribute GoodsCommentUpdateRequest goodsCommentUpdateRequest
+    ){
+        if (loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+
+        goodsService.updateGoodsComment(loggedInUserId,goodsId,goodsCommentId,goodsCommentUpdateRequest);
+
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("{goods-id}/comment/{goods-comment-id}/reply")

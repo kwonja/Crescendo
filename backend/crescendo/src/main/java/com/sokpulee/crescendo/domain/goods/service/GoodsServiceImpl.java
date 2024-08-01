@@ -1,9 +1,8 @@
 package com.sokpulee.crescendo.domain.goods.service;
 
-import com.sokpulee.crescendo.domain.fanart.entity.FanArt;
-import com.sokpulee.crescendo.domain.fanart.entity.FanArtImage;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentAddRequest;
+import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsUpdateRequest;
 import com.sokpulee.crescendo.domain.goods.entity.Goods;
 import com.sokpulee.crescendo.domain.goods.entity.GoodsComment;
@@ -89,7 +88,7 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public void updateGoods(Long loggedInUserId, Long goodsId, GoodsUpdateRequest goodsUpdateRequest) {
         Goods goods = goodsRepository.findById(goodsId)
-                .orElseThrow(FanArtNotFoundException::new);
+                .orElseThrow(GoodsNotFoundException::new);
 
         User user = userRepository.findById(loggedInUserId)
                 .orElseThrow(UserNotFoundException::new);
@@ -121,7 +120,7 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public void deleteGoodsComment(Long loggedInUserId, Long goodsId, Long goodsCommentId) {
         Goods goods = goodsRepository.findById(goodsId)
-                .orElseThrow(FanArtNotFoundException::new);
+                .orElseThrow(GoodsNotFoundException::new);
 
         User user = userRepository.findById(loggedInUserId)
                 .orElseThrow(UserNotFoundException::new);
@@ -134,6 +133,26 @@ public class GoodsServiceImpl implements GoodsService {
         }
 
         goodsCommentRepository.delete(goodsComment);
+    }
+
+    @Override
+    public void updateGoodsComment(Long loggedInUserId, Long goodsId, Long goodsCommentId, GoodsCommentUpdateRequest goodsCommentUpdateRequest) {
+        Goods goods = goodsRepository.findById(goodsId)
+                .orElseThrow(GoodsNotFoundException::new);
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        GoodsComment goodsComment = goodsCommentRepository.findById(goodsCommentId)
+                .orElseThrow(GoodsCommentNotFoundException::new);
+
+        if (!goodsComment.getUser().getId().equals(loggedInUserId)) {
+            throw new UnAuthorizedAccessException();
+        }
+
+        goodsComment.changeComment(goodsCommentUpdateRequest.getContent());
+
+        goodsCommentRepository.save(goodsComment);
     }
 
     @Override
