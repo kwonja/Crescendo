@@ -30,7 +30,7 @@ export const fetchCommunityList = createAsyncThunk(
   async ({ page, size }: { page: number; size: number }) => {
     const response = await axios.get(`/api/community-list?page=${page}&size=${size}`); // 이부분은 수정하겟지..
     return response.data as CommunityItem[];
-  }
+  },
 );
 
 // 슬라이스 정의
@@ -43,15 +43,15 @@ const communityListSlice = createSlice({
       state.items = [];
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
-      .addCase(fetchCommunityList.pending, (state) => {
+      .addCase(fetchCommunityList.pending, state => {
         state.status = 'loading';
       })
       .addCase(fetchCommunityList.fulfilled, (state, action: PayloadAction<CommunityItem[]>) => {
         state.status = 'succeeded';
         state.items = [...state.items, ...action.payload];
-        state.page += 1;  // page 값 증가
+        state.page += 1; // page 값 증가
       })
       .addCase(fetchCommunityList.rejected, (state, action) => {
         state.status = 'failed';
