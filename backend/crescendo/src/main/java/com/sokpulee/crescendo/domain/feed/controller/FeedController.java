@@ -6,6 +6,7 @@ import com.sokpulee.crescendo.domain.feed.service.FeedService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -28,7 +29,7 @@ public class FeedController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "피드 글쓰기", description = "피드 글쓰기 API")
     public ResponseEntity<?> addFeed(
-            @AuthPrincipal Long loggedInUserId,
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
             @RequestParam String title,
             @RequestParam String content,
             @RequestParam(required = false) List<MultipartFile> imageList,
@@ -49,7 +50,7 @@ public class FeedController {
     @DeleteMapping("/{feed-id}")
     @Operation(summary = "피드 글삭제", description = "피드 글삭제 API")
     public ResponseEntity<?> deleteFeed(
-            @AuthPrincipal Long loggedInUserId,
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
             @PathVariable("feed-id") Long feedId
     ){
         if(loggedInUserId == null) {
@@ -63,7 +64,7 @@ public class FeedController {
     @PostMapping("/{feed-id}/comment")
     @Operation(summary = "피드 댓글쓰기", description = "피드 댓글쓰기 API")
     public ResponseEntity<?> addFeedComment(
-            @AuthPrincipal Long loggedInUserId,
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
             @PathVariable("feed-id") Long feedId,
             @RequestParam String content
     ){
@@ -80,7 +81,7 @@ public class FeedController {
     @PostMapping("{feed-id}/comment/{feed-comment-id}/reply")
     @Operation(summary = "피드 답글쓰기", description = "피드 답글쓰기 API")
     public ResponseEntity<?> addFeedReply(
-            @AuthPrincipal Long loggedInUserId,
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
             @PathVariable("feed-id") Long feedId,
             @PathVariable("feed-comment-id") Long feedCommentId,
             @RequestParam String content
