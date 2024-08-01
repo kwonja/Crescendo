@@ -108,7 +108,7 @@ public class FavoriteRankServiceImpl implements FavoriteRankService {
                 .orElseThrow(FavoriteRankNotFoundException::new);
 
         if(!favoriteRank.getUser().getId().equals(user.getId())) {
-            throw new UnauthorizedAcessException();
+            throw new UnAuthorizedAccessException();
         }
         else {
             fileSaveHelper.deleteFile(favoriteRank.getFavoriteIdolImagePath());

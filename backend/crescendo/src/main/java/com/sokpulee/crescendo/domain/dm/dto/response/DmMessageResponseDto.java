@@ -5,21 +5,21 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class ChatResponse {
+public class DmMessageResponseDto {
 
     private Long dmMessageId;
     private String message;
     private LocalDateTime createdAt;
     private Long writerId;
-    private String writerNickName;
+    private String writerNickname;
     private String writerProfilePath;
 
-    public ChatResponse(Long dmMessageId, String message, LocalDateTime createdAt, Long writerId, String writerNickName, String writerProfilePath) {
+    public DmMessageResponseDto(Long dmMessageId, String message, LocalDateTime createdAt, Long writerId, String writerNickname, String writerProfilePath) {
         this.dmMessageId = dmMessageId;
         this.message = message;
         this.createdAt = createdAt;
         this.writerId = writerId;
-        this.writerNickName = writerNickName;
+        this.writerNickname = writerNickname;
         this.writerProfilePath = writerProfilePath;
     }
 }

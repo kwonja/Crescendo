@@ -2,6 +2,7 @@ package com.sokpulee.crescendo.domain.fanart.service;
 
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtAddRequest;
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtCommentAddRequest;
+import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtUpdateRequest;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArt;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArtComment;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArtImage;
@@ -13,12 +14,14 @@ import com.sokpulee.crescendo.domain.user.entity.User;
 import com.sokpulee.crescendo.domain.user.repository.UserRepository;
 import com.sokpulee.crescendo.global.exception.custom.*;
 import com.sokpulee.crescendo.global.util.file.FileSaveHelper;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class FanArtServiceImpl implements FanArtService {
 
     private final UserRepository userRepository;
@@ -64,12 +67,54 @@ public class FanArtServiceImpl implements FanArtService {
     }
 
     @Override
-    public void deleteFanArt(Long loggedInUserId, Long fanArtId) {
-        if(fanArtRepository.existsById(fanArtId)){
+    public void deleteFanArt(Long fanArtId, Long loggedInUserId) {
+        FanArt fanArt = fanArtRepository.findById(fanArtId)
+                .orElseThrow(FanArtNotFoundException::new);
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        if (!fanArt.getUser().getId().equals(loggedInUserId)) {
+            throw new UnAuthorizedAccessException();
+        }
+
+        if (fanArtRepository.existsById(fanArtId)) {
             fanArtRepository.deleteById(fanArtId);
-        }else{
+        } else {
             throw new FanArtNotFoundException();
         }
+    }
+
+    @Override
+    public void updateFanArt(Long loggedInUserId, Long fanArtId, FanArtUpdateRequest fanArtUpdateRequest) {
+        FanArt fanArt = fanArtRepository.findById(fanArtId)
+                .orElseThrow(FanArtNotFoundException::new);
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        IdolGroup idolGroup = idolGroupRepository.findById(fanArtUpdateRequest.getIdolGroupId())
+                .orElseThrow(IdolGroupNotFoundException::new);
+
+        if (!fanArt.getUser().getId().equals(loggedInUserId)) {
+            throw new UnAuthorizedAccessException();
+        }
+
+        fanArt.changeFanArt(idolGroup, fanArtUpdateRequest.getTitle(), fanArtUpdateRequest.getContent());
+
+            fanArt.getImageList().clear();
+        if (!fanArtUpdateRequest.getImageList().isEmpty()) {
+            for (MultipartFile fanArtImageFile : fanArtUpdateRequest.getImageList()) {
+                String savePath = fileSaveHelper.saveFanArtImage(fanArtImageFile);
+
+                FanArtImage fanArtImage = FanArtImage.builder()
+                        .imagePath(savePath)
+                        .build();
+
+                fanArt.addImage(fanArtImage);
+            }
+        }
+        fanArtRepository.save(fanArt);
     }
 
     @Override
