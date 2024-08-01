@@ -1,6 +1,7 @@
 package com.sokpulee.crescendo.domain.quiz.controller;
 
 import com.sokpulee.crescendo.domain.quiz.dto.request.QuizCreateRequest;
+import com.sokpulee.crescendo.domain.quiz.dto.response.QuizStartResponse;
 import com.sokpulee.crescendo.domain.quiz.service.QuizService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
@@ -10,10 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -38,5 +36,12 @@ public class QuizController {
 
         quizService.createQuiz(loggedInUserId, quizCreateRequest);
         return ResponseEntity.status(OK).build();
+    }
+
+    @GetMapping("/{quiz-id}/start")
+    public ResponseEntity<?> startQuiz(@PathVariable("quiz-id") Long quizId) {
+
+        QuizStartResponse response = quizService.startQuiz(quizId);
+        return ResponseEntity.status(OK).body(response);
     }
 }
