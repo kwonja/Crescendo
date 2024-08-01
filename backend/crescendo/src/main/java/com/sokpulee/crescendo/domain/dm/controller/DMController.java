@@ -3,6 +3,7 @@ package com.sokpulee.crescendo.domain.dm.controller;
 import com.sokpulee.crescendo.domain.dm.dto.request.DmGroupCreateRequest;
 import com.sokpulee.crescendo.domain.dm.dto.response.DMGroupCreateResponse;
 import com.sokpulee.crescendo.domain.dm.dto.response.DMGroupGetResponse;
+import com.sokpulee.crescendo.domain.dm.dto.response.MyDMGroupIdListResponse;
 import com.sokpulee.crescendo.domain.dm.service.DMService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
@@ -24,7 +25,7 @@ public class DMController {
     private final DMService dmService;
 
     @PostMapping("/dm-group")
-    @Operation(summary = "DM 그룹 생성", description = "DM 그룹 생성 API")
+    @Operation(summary = "DM 그룹 생성(상대방과 DM 그룹이 없을 때 생성)", description = "DM 그룹 생성 API")
     public ResponseEntity<?> createDMGroup(
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
             @RequestBody DmGroupCreateRequest dmGroupCreateRequest
@@ -65,4 +66,15 @@ public class DMController {
         return ResponseEntity.status(NO_CONTENT).build();
     }
 
+    @GetMapping("/my-dm-group/simple")
+    @Operation(summary = "내 DM 그룹 목록 조회(구독용)", description = "내 DM 그룹 목록 조회(구독용) API")
+    public ResponseEntity<?> getMyDMGroupSimple(@Parameter(hidden = true) @AuthPrincipal Long loggedInUserId) {
+
+        if(loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+
+        MyDMGroupIdListResponse response =  dmService.findAllDmGroupsByUserId(loggedInUserId);
+        return ResponseEntity.status(OK).body(response);
+    }
 }

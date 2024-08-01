@@ -3,6 +3,7 @@ package com.sokpulee.crescendo.domain.dm.service;
 import com.sokpulee.crescendo.domain.dm.dto.request.DmGroupCreateRequest;
 import com.sokpulee.crescendo.domain.dm.dto.response.DMGroupCreateResponse;
 import com.sokpulee.crescendo.domain.dm.dto.response.DMGroupGetResponse;
+import com.sokpulee.crescendo.domain.dm.dto.response.MyDMGroupIdListResponse;
 import com.sokpulee.crescendo.domain.dm.entity.DmGroup;
 import com.sokpulee.crescendo.domain.dm.entity.DmParticipants;
 import com.sokpulee.crescendo.domain.dm.repository.DMGroupRepository;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Transactional
@@ -85,5 +87,13 @@ public class DMServiceImpl implements DMService {
                 .orElseThrow(DMGroupNotFoundException::new);
 
         dmGroupRepository.delete(dmGroup);
+    }
+
+    @Override
+    public MyDMGroupIdListResponse findAllDmGroupsByUserId(Long loggedInUserId) {
+        List<DmGroup> dmGroupList = dmGroupRepository.findAllByUserId(loggedInUserId);
+
+
+        return null;
     }
 }
