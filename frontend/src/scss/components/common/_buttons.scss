@@ -10,21 +10,20 @@
   box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
   color: #ffffff;
   font-size: 24px;
-}
 
-.empty {
+  &.empty {
   border: 5px solid #f66;
   background: none;
   color: #f66;
+  }
+
+  &.square {
+    width: 100px;
+    height: 100px;
+  }
+
+  &.hidden {
+    visibility: hidden;
+  }
 }
 
-.square {
-  width: 100px;
-  height: 100px;
-}
-
-.hidden {
-  visibility: hidden;
-  width: 100px;
-  height: 100px;
-}
