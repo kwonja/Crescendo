@@ -1,5 +1,5 @@
 import Main from '../pages/Main';
-import CommunityMain from '../pages/CommunityMain';
+import CommunityMainPage from '../pages/CommunityMain';
 import App from '../App';
 import { createBrowserRouter } from 'react-router-dom';
 import Login from '../pages/Login.tsx';
@@ -21,7 +21,7 @@ export const router = createBrowserRouter([
       },
       {
         path: '/community',
-        element: <CommunityMain />,
+        element: <CommunityMainPage />,
       },
       {
         path: '/favorite',

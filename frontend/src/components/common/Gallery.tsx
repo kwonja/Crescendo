@@ -9,7 +9,7 @@ export default function Gallery() {
   return (
     <div className="gallery">
       <img src={fanartImage} alt="팬아트그림" />
-      
+
       <div className="title_box">
         <div className="type">팬아트</div>
         <div className="title">뉴진스 민지 수채화 팬아트</div>

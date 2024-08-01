@@ -2,6 +2,7 @@ package com.sokpulee.crescendo.domain.goods.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,4 +20,14 @@ public class GoodsImage {
 
     @Column(length = 500)
     private String imagePath;
+
+    @Builder
+    public GoodsImage(Goods goods, String imagePath) {
+        this.goods = goods;
+        this.imagePath = imagePath;
+    }
+
+    public void changeGoods(Goods goods){
+        this.goods = goods;
+    }
 }
