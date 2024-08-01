@@ -14,12 +14,12 @@ export default function FriendList() {
   const dispatch = useAppDispatch();
   const {followingList} = useAppSelector( state => state.following);
   const {followerList} = useAppSelector(state => state.follower);
-  const [isSelected, setIsSelected] = useState<string>('left');
+  const [isSelected, setIsSelected] = useState<'follower' | 'following'>('follower');
 
 
   useEffect( ()=>{
     
-    if(isSelected ==='left')
+    if(isSelected ==='follower')
     {
       const promise = dispatch(getUserFollower(1))
       return () => promise.abort();
@@ -35,15 +35,15 @@ export default function FriendList() {
       <div className="friend">
         <div className="listbar">
           <div
-            className={`follow left ${isSelected === 'left' ? 'active' : ''}`}
-            onClick={() => setIsSelected('left')}
+            className={`follow left ${isSelected === 'follower' ? 'active' : ''}`}
+            onClick={() => setIsSelected('follower')}
           >
             <div>팔로우</div>
             <span>{followerList.length}</span>
           </div>
           <div
-            className={`follow right ${isSelected === 'right' ? 'active' : ''}`}
-            onClick={() => setIsSelected('right')}
+            className={`follow right ${isSelected === 'following' ? 'active' : ''}`}
+            onClick={() => setIsSelected('following')}
           >
             <div>팔로워</div>
             <span>{followingList.length}</span>
@@ -53,7 +53,7 @@ export default function FriendList() {
       <div className="list">
         <SearchInput placeholder="친구를 검색하세요" />
         <div className="profilelist">
-          {isSelected ==='left' ?
+          {isSelected ==='follower' ?
 
           followerList.length > 0 ? 
 
