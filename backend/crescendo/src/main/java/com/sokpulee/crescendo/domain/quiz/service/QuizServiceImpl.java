@@ -1,6 +1,8 @@
 package com.sokpulee.crescendo.domain.quiz.service;
 
+import com.sokpulee.crescendo.domain.quiz.dto.QuizQuestionDTO;
 import com.sokpulee.crescendo.domain.quiz.dto.request.QuizCreateRequest;
+import com.sokpulee.crescendo.domain.quiz.dto.response.QuizStartResponse;
 import com.sokpulee.crescendo.domain.quiz.entity.Quiz;
 import com.sokpulee.crescendo.domain.quiz.entity.QuizQuestion;
 import com.sokpulee.crescendo.domain.quiz.entity.QuizQuestionAnswer;
@@ -14,6 +16,9 @@ import com.sokpulee.crescendo.global.util.file.FileSaveHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Transactional
 @RequiredArgsConstructor
@@ -63,5 +68,25 @@ public class QuizServiceImpl implements QuizService {
         }
 
         quizRepository.save(quiz);
+    }
+
+    @Override
+    public QuizStartResponse startQuiz(Long quizId) {
+        Quiz quiz = quizRepository.findQuizWithDetailsById(quizId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid quiz ID: " + quizId));
+
+        List<QuizQuestionDTO> questionList = quiz.getQuestions().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
+        return new QuizStartResponse(questionList);
+    }
+
+    private QuizQuestionDTO convertToDTO(QuizQuestion quizQuestion) {
+        List<String> answers = quizQuestion.getQuestionAnswers().stream()
+                .map(QuizQuestionAnswer::getAnswer)
+                .toList();
+
+        return new QuizQuestionDTO(quizQuestion.getQuizImagePath(), answers);
     }
 }
