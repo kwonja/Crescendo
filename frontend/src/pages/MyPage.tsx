@@ -6,7 +6,7 @@ import Feed from '../components/common/Feed';
 import { useAppSelector } from '../store/hooks/hook';
 import Gallery from '../components/common/Gallery';
 export default function MyPage() {
-  const [isSelected, setIsSelected] = useState<string>('feed');
+  const [isSelected, setIsSelected] = useState<'feed' | 'gallery'>('feed');
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
   const menuRef = useRef<HTMLDivElement>(null);
   const feedlist = useAppSelector(state => state.feed);
