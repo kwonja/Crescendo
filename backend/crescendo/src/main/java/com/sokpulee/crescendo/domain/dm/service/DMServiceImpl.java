@@ -3,10 +3,11 @@ package com.sokpulee.crescendo.domain.dm.service;
 import com.sokpulee.crescendo.domain.dm.dto.request.DmGroupCreateRequest;
 import com.sokpulee.crescendo.domain.dm.dto.response.DMGroupCreateResponse;
 import com.sokpulee.crescendo.domain.dm.dto.response.DMGroupGetResponse;
+import com.sokpulee.crescendo.domain.dm.dto.response.DmGroupResponseDto;
 import com.sokpulee.crescendo.domain.dm.dto.response.MyDMGroupIdListResponse;
 import com.sokpulee.crescendo.domain.dm.entity.DmGroup;
 import com.sokpulee.crescendo.domain.dm.entity.DmParticipants;
-import com.sokpulee.crescendo.domain.dm.repository.DMGroupRepository;
+import com.sokpulee.crescendo.domain.dm.repository.dmgroup.DMGroupRepository;
 import com.sokpulee.crescendo.domain.dm.repository.DMMessageRepository;
 import com.sokpulee.crescendo.domain.dm.repository.DMParticipantsRepository;
 import com.sokpulee.crescendo.domain.user.entity.User;
@@ -14,6 +15,8 @@ import com.sokpulee.crescendo.domain.user.repository.UserRepository;
 import com.sokpulee.crescendo.global.exception.custom.DMGroupNotFoundException;
 import com.sokpulee.crescendo.global.exception.custom.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -95,5 +98,10 @@ public class DMServiceImpl implements DMService {
 
 
         return null;
+    }
+
+    @Override
+    public Page<DmGroupResponseDto> findDmGroupsByUserId(Long loggedInUserId, Pageable pageable) {
+        return dmGroupRepository.findDmGroupsByUserId(loggedInUserId, pageable);
     }
 }
