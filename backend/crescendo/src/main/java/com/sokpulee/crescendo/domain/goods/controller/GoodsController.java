@@ -1,7 +1,5 @@
 package com.sokpulee.crescendo.domain.goods.controller;
 
-import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtUpdateRequest;
-import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentUpdateRequest;
@@ -14,7 +12,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -97,7 +94,7 @@ public class GoodsController {
     }
 
     @DeleteMapping("/{goods-id}/comment/{goods-comment-id}")
-    @Operation(summary = "굿즈 댓글삭제", description = "굿즈 댓글삭제 API")
+    @Operation(summary = "굿즈 댓글 및 답글 삭제", description = "굿즈 댓글 및 답글 삭제 API")
     public ResponseEntity<?> deleteGoodsComment(
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
             @PathVariable("goods-id") Long goodsId,
@@ -111,7 +108,7 @@ public class GoodsController {
     }
 
     @PatchMapping(value = "{goods-id}/comment/{goods-comment-id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "굿즈 댓글수정", description = "굿즈 댓글수정 API")
+    @Operation(summary = "굿즈 댓글 및 답글 수정", description = "굿즈 댓글 및 답글 수정 API")
     public ResponseEntity<?> updateGoodsComment(
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
             @PathVariable("goods-id") Long goodsId,
@@ -145,8 +142,6 @@ public class GoodsController {
 
         return ResponseEntity.status(CREATED).build();
     }
-
-
 
 
 
