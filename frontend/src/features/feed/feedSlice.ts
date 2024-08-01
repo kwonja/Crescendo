@@ -5,7 +5,7 @@ import { FeedData } from '../../interface/feed';
 
 const inistalState: FeedData[] = [
   {
-    feedId : 0,
+    feedId: 0,
     userId: 0,
     profileImagePath: '',
     nickname: 'Nickname',
@@ -19,7 +19,7 @@ const inistalState: FeedData[] = [
     tagList: ['뉴진스', '2주년'],
   },
   {
-    feedId : 1,
+    feedId: 1,
     userId: 1,
     profileImagePath: '',
     nickname: 'Nickname',
@@ -33,7 +33,7 @@ const inistalState: FeedData[] = [
     tagList: ['뉴진스', '2주년'],
   },
   {
-    feedId : 2,
+    feedId: 2,
     userId: 2,
     profileImagePath: '',
     nickname: 'Nickname',
@@ -45,12 +45,12 @@ const inistalState: FeedData[] = [
     content: '뉴진스와 버니즈의 2주년!!',
     commentCnt: 0,
     tagList: ['뉴진스', '2주년'],
-  }
+  },
 ];
 
 const feedSlice = createSlice({
   name: 'feed',
-  initialState : inistalState,
+  initialState: inistalState,
   reducers: {
     incrementLike: (state, action: PayloadAction<number>) => {
       const feed = state.find(feed => feed.feedId === action.payload);
@@ -66,8 +66,8 @@ const feedSlice = createSlice({
         feed.isLike = false;
       }
     },
-  }
+  },
 });
 
-export const { incrementLike,decrementLike } = feedSlice.actions;
+export const { incrementLike, decrementLike } = feedSlice.actions;
 export default feedSlice.reducer;

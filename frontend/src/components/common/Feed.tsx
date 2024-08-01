@@ -1,4 +1,4 @@
-import React  from 'react';
+import React from 'react';
 import { ReactComponent as User } from '../../assets/images/Feed/reduser.svg';
 import { ReactComponent as Heart } from '../../assets/images/Feed/heart.svg';
 import { ReactComponent as Dots } from '../../assets/images/Feed/dots.svg';
@@ -12,7 +12,7 @@ interface FeedProps {
   feed: FeedData;
 }
 export default function Feed({ feed }: FeedProps) {
-  const { nickname,createdAt,likeCnt,content,commentCnt,tagList,isLike,feedId} = feed;
+  const { nickname, createdAt, likeCnt, content, commentCnt, tagList, isLike, feedId } = feed;
   const dispatch = useAppDispatch();
   return (
     <div className="feed">
@@ -52,9 +52,7 @@ export default function Feed({ feed }: FeedProps) {
       <div className="feed_comment_box">
         {' '}
         {commentCnt}
-        <Comment
-          className="hoverup"
-        />
+        <Comment className="hoverup" />
       </div>
     </div>
   );
