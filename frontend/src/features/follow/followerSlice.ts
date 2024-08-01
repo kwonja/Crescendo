@@ -7,69 +7,65 @@ import { followerAPI } from '../../apis/follow';
 
 type PromiseStatus = 'loading' | 'sucess' | 'failed' | '';
 
-interface followProps{
-    followerList : follow[],
-    status : PromiseStatus,
-    error : string | undefined
+interface followProps {
+  followerList: follow[];
+  status: PromiseStatus;
+  error: string | undefined;
 }
 
 //createAsyncThunk는 비동기 작업을 도와주는 액션함수이기때문에
 //타입이 있어야한다.
 export const getUserFollower = createAsyncThunk(
-    'followSlice/getUserFollower',
-    async (userId : number) => {
-        const response = await followerAPI(userId);
-        console.log(response);
-        return response;
-    }
+  'followSlice/getUserFollower',
+  async (userId: number) => {
+    const response = await followerAPI(userId);
+    console.log(response);
+    return response;
+  },
 );
 
-
-
-
-const inistalState : followProps ={
-    followerList :[
-        {
-            userId : 1,
-            nickname : 'Nickname1',
-            profilePath : 'https://cdn.topstarnews.net/news/photo/202301/15040596_1067813_363.jpg',
-        },
-        {
-            userId : 1,
-            nickname : 'Nickname1',
-            profilePath : 'https://cdn.topstarnews.net/news/photo/202301/15040596_1067813_363.jpg',
-        },
-        {
-            userId : 1,
-            nickname : 'Nickname1',
-            profilePath : 'https://cdn.topstarnews.net/news/photo/202301/15040596_1067813_363.jpg',
-        }
-    ],
-    status :'',
-    error : ''
-}
+const inistalState: followProps = {
+  followerList: [
+    {
+      userId: 1,
+      nickname: 'Nickname1',
+      profilePath: 'https://cdn.topstarnews.net/news/photo/202301/15040596_1067813_363.jpg',
+    },
+    {
+      userId: 1,
+      nickname: 'Nickname1',
+      profilePath: 'https://cdn.topstarnews.net/news/photo/202301/15040596_1067813_363.jpg',
+    },
+    {
+      userId: 1,
+      nickname: 'Nickname1',
+      profilePath: 'https://cdn.topstarnews.net/news/photo/202301/15040596_1067813_363.jpg',
+    },
+  ],
+  status: '',
+  error: '',
+};
 
 const followerSlice = createSlice({
   name: 'follwer',
   initialState: inistalState,
   reducers: {},
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
-     .addCase(getUserFollower.pending, (state) => {
+      .addCase(getUserFollower.pending, state => {
         state.status = 'loading';
       })
-     .addCase(getUserFollower.fulfilled, (state, action) => {
-        state.status ='sucess';
+      .addCase(getUserFollower.fulfilled, (state, action) => {
+        state.status = 'sucess';
         console.log(action.payload.followingList);
         state.followerList = action.payload.followerList;
         console.log(state.followerList);
       })
-     .addCase(getUserFollower.rejected, (state, action) => {
+      .addCase(getUserFollower.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
       });
   },
 });
-
 
 export default followerSlice.reducer;

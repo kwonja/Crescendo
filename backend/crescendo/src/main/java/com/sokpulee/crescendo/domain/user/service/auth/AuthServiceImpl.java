@@ -95,6 +95,19 @@ public class AuthServiceImpl implements AuthService {
 
     }
 
+    @Override
+    public boolean isRefreshTokenValid(Long userId, String refreshToken) {
+        User user = userRepository.findById(userId).orElse(null);
+        return user != null && refreshToken.equals(user.getRefreshToken());
+    }
+
+    @Override
+    public void deleteRefreshToken(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+        user.deleteRefreshToken();
+    }
+
     private void authenticateEmail(Long emailAuthId, String randomKey) {
         EmailAuth emailAuth = emailAuthRepository.findById(emailAuthId)
                 .orElseThrow(EmailValidationNotFoundException::new);

@@ -10,8 +10,8 @@ export const store = configureStore({
     auth: authReducer,
     feed: feedReducer,
     communityList: communityListReducer,
-    follower : followerReducer,
-    following : followingReducer
+    follower: followerReducer,
+    following: followingReducer,
   },
 });
 
