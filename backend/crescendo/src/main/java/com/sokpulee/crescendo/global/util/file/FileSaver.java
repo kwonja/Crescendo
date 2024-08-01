@@ -21,6 +21,7 @@ public class FileSaver implements FileSaveHelper {
     private final String PROFILE_DIR = "profile";
     private final String FEED_DIR = "feed";
     private final String FANART_DIR = "fanart";
+    private final String GOODS_DIR = "goods";
     private final String FAVORITE_RANK_DIR = "favoriteRank";
 
     @Override
@@ -38,9 +39,7 @@ public class FileSaver implements FileSaveHelper {
     }
 
     @Override
-    public String saveUserProfile(MultipartFile profileImage) {
-        return saveFile(profileImage, PROFILE_DIR);
-    }
+    public String saveUserProfile(MultipartFile profileImage) { return saveFile(profileImage, PROFILE_DIR); }
 
     @Override
     public String saveFeedImage(MultipartFile feedImage) { return saveFile(feedImage, FEED_DIR); }
@@ -49,6 +48,8 @@ public class FileSaver implements FileSaveHelper {
     public String saveFanArtImage(MultipartFile fanArtImage) { return saveFile(fanArtImage, FANART_DIR); }
 
     @Override
+    public String saveGoodsImage(MultipartFile goodsImage) { return saveFile(goodsImage, GOODS_DIR); }
+
     public String saveFavoriteRankImage(MultipartFile favoriteIdolImage) { return saveFile(favoriteIdolImage, FAVORITE_RANK_DIR); }
 
     public String saveFile(MultipartFile profileImage, String dir) {
