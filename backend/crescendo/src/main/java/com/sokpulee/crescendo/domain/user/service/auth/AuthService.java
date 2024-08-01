@@ -15,4 +15,8 @@ public interface AuthService {
     void emailValidate(EmailValidationRequest emailValidationRequest);
 
     void updatePassword(UpdatePasswordRequest updatePasswordRequest);
+
+    boolean isRefreshTokenValid(Long userId, String refreshToken);
+
+    void deleteRefreshToken(Long userId);
 }
