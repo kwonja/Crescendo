@@ -64,6 +64,15 @@ public class FanArtServiceImpl implements FanArtService {
     }
 
     @Override
+    public void deleteFanArt(Long loggedInUserId, Long fanArtId) {
+        if(fanArtRepository.existsById(fanArtId)){
+            fanArtRepository.deleteById(fanArtId);
+        }else{
+            throw new FanArtNotFoundException();
+        }
+    }
+
+    @Override
     public void addFanArtComment(Long loggedInUserId, Long fanArtId, FanArtCommentAddRequest fanArtCommentAddRequest) {
         User user = userRepository.findById(loggedInUserId)
                 .orElseThrow(UserNotFoundException::new);
@@ -104,4 +113,6 @@ public class FanArtServiceImpl implements FanArtService {
             throw new FanArtCommentNotFoundException();
         }
     }
+
+
 }

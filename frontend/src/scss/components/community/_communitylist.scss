@@ -1,0 +1,9 @@
+.communitylist {
+  &_contents {
+    display: flex;
+    flex-wrap: wrap;
+    width: 1200;
+    margin: auto;
+    padding: 20px;
+  }
+}

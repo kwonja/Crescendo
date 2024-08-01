@@ -12,4 +12,5 @@ public class CrescendoApplication {
 		SpringApplication.run(CrescendoApplication.class, args);
 	}
 
+
 }

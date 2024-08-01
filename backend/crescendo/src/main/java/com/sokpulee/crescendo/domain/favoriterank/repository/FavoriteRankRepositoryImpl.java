@@ -1,10 +1,13 @@
 package com.sokpulee.crescendo.domain.favoriterank.repository;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.sokpulee.crescendo.domain.favoriterank.dto.FavoriteRankBestPhotoDto;
 import com.sokpulee.crescendo.domain.favoriterank.dto.request.FavoriteRanksSearchCondition;
+import com.sokpulee.crescendo.domain.favoriterank.dto.response.FavoriteRankBestPhotoResponse;
 import com.sokpulee.crescendo.domain.favoriterank.dto.response.FavoriteRankResponse;
 import com.sokpulee.crescendo.domain.favoriterank.entity.QFavoriteRank;
 import com.sokpulee.crescendo.domain.favoriterank.entity.QFavoriteRankVoting;
@@ -14,7 +17,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class FavoriteRankRepositoryImpl implements FavoriteRankCustomRepository {
 
@@ -87,4 +92,37 @@ public class FavoriteRankRepositoryImpl implements FavoriteRankCustomRepository 
         return new PageImpl<>(favoriteRanks, pageable, total);
     }
 
+    @Override
+    public List<FavoriteRankBestPhotoDto> findBestRankedPhotos() {
+        QFavoriteRank favoriteRank = QFavoriteRank.favoriteRank;
+        QFavoriteRankVoting favoriteRankVoting = QFavoriteRankVoting.favoriteRankVoting;
+
+        List<Tuple> subQuery = queryFactory
+                .select(favoriteRank.idol.id, favoriteRank.id, favoriteRankVoting.id.count())
+                .from(favoriteRank)
+                .join(favoriteRankVoting).on(favoriteRank.id.eq(favoriteRankVoting.favoriteRank.id))
+                .groupBy(favoriteRank.idol.id, favoriteRank.id)
+                .fetch();
+
+        Map<Long, Tuple> bestRankByIdol = subQuery.stream()
+                .collect(Collectors.toMap(
+                        tuple -> tuple.get(favoriteRank.idol.id),
+                        tuple -> tuple,
+                        (tuple1, tuple2) -> tuple1.get(favoriteRankVoting.id.count()).compareTo(tuple2.get(favoriteRankVoting.id.count())) > 0 ? tuple1 : tuple2
+                ));
+
+        List<Long> bestRankIds = bestRankByIdol.values().stream()
+                .map(tuple -> tuple.get(favoriteRank.id))
+                .collect(Collectors.toList());
+
+        return queryFactory.select(
+                Projections.constructor(FavoriteRankBestPhotoDto.class,
+                        favoriteRank.idol.id,
+                        favoriteRank.idol.name,
+                        favoriteRank.favoriteIdolImagePath))
+                .from(favoriteRank)
+                .join(favoriteRank.idol)
+                .where(favoriteRank.id.in(bestRankIds))
+                .fetch();
+    }
 }

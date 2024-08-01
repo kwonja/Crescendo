@@ -65,6 +65,15 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
+    public void deleteGoods(Long loggedInUserId, Long goodsId) {
+        if (goodsRepository.existsById(goodsId)) {
+            goodsRepository.deleteById(goodsId);
+        } else {
+            throw new GoodsNotFoundException();
+        }
+    }
+
+    @Override
     public void addGoodsComment(Long loggedInUserId, Long goodsId, GoodsCommentAddRequest goodsCommentAddRequest) {
         User user = userRepository.findById(loggedInUserId)
                 .orElseThrow(UserNotFoundException::new);
@@ -106,12 +115,5 @@ public class GoodsServiceImpl implements GoodsService {
         }
     }
 
-    @Override
-    public void deleteGoods(Long loggedInUserId, Long goodsId) {
-        if (goodsRepository.existsById(goodsId)) {
-            goodsRepository.deleteById(goodsId);
-        } else {
-            throw new GoodsNotFoundException();
-        }
-    }
+
 }
