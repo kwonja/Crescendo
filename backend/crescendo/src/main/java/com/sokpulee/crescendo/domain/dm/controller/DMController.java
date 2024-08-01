@@ -1,17 +1,13 @@
 package com.sokpulee.crescendo.domain.dm.controller;
 
 import com.sokpulee.crescendo.domain.dm.dto.request.DmGroupCreateRequest;
-import com.sokpulee.crescendo.domain.dm.dto.response.DMGroupCreateResponse;
-import com.sokpulee.crescendo.domain.dm.dto.response.DMGroupGetResponse;
-import com.sokpulee.crescendo.domain.dm.dto.response.DmGroupResponseDto;
-import com.sokpulee.crescendo.domain.dm.dto.response.MyDMGroupIdListResponse;
+import com.sokpulee.crescendo.domain.dm.dto.response.*;
 import com.sokpulee.crescendo.domain.dm.service.DMService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -97,5 +93,23 @@ public class DMController {
         Pageable pageable = PageRequest.of(page, size);
         Page<DmGroupResponseDto> dmGroups = dmService.findDmGroupsByUserId(loggedInUserId, pageable);
         return ResponseEntity.ok(dmGroups);
+    }
+
+    @GetMapping("/dm-group/{dm-group-id}")
+    @Operation(summary = "DM 내역 불러오기", description = "DM 내역 불러오기 API")
+    public ResponseEntity<?> getDmMessages(
+            @AuthPrincipal Long loggedInUserId,
+            @PathVariable("dm-group-id") Long dmGroupId,
+            @RequestParam int page,
+            @RequestParam int size
+    ) {
+        if(loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<DmMessageResponseDto> messages = dmService.findMessagesByDmGroupId(loggedInUserId, dmGroupId, pageable);
+        return ResponseEntity.status(OK).body(messages);
     }
 }

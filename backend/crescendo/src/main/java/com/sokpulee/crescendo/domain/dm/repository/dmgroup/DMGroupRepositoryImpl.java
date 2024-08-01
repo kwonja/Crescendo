@@ -57,4 +57,20 @@ public class DMGroupRepositoryImpl implements DMGroupRepositoryCustom{
 
         return PageableExecutionUtils.getPage(results, pageable, countQuery::fetchOne);
     }
+
+    @Override
+    public boolean existsByUserIdAndDmGroupId(Long loggedInUserId, Long dmGroupId) {
+        QDmGroup dmGroup = QDmGroup.dmGroup;
+        QDmParticipants dmParticipants = QDmParticipants.dmParticipants;
+
+        Integer fetchOne = queryFactory
+                .selectOne()
+                .from(dmGroup)
+                .join(dmGroup.dmParticipantList, dmParticipants)
+                .where(dmGroup.id.eq(dmGroupId)
+                        .and(dmParticipants.user.id.eq(loggedInUserId)))
+                .fetchFirst();
+
+        return fetchOne != null;
+    }
 }

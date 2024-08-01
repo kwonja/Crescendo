@@ -7,11 +7,12 @@ import com.sokpulee.crescendo.domain.dm.entity.DmGroup;
 import com.sokpulee.crescendo.domain.dm.entity.DmMessage;
 import com.sokpulee.crescendo.domain.dm.entity.DmParticipants;
 import com.sokpulee.crescendo.domain.dm.repository.dmgroup.DMGroupRepository;
-import com.sokpulee.crescendo.domain.dm.repository.DMMessageRepository;
+import com.sokpulee.crescendo.domain.dm.repository.dmmessage.DMMessageRepository;
 import com.sokpulee.crescendo.domain.dm.repository.DMParticipantsRepository;
 import com.sokpulee.crescendo.domain.user.entity.User;
 import com.sokpulee.crescendo.domain.user.repository.UserRepository;
 import com.sokpulee.crescendo.global.exception.custom.DMGroupNotFoundException;
+import com.sokpulee.crescendo.global.exception.custom.UnAuthorizedAccessException;
 import com.sokpulee.crescendo.global.exception.custom.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -124,5 +125,15 @@ public class DMServiceImpl implements DMService {
 
 
         return new MessageResponse(saveDMMessage, user);
+    }
+
+    @Override
+    public Page<DmMessageResponseDto> findMessagesByDmGroupId(Long loggedInUserId, Long dmGroupId, Pageable pageable) {
+
+        if (!dmGroupRepository.existsByUserIdAndDmGroupId(loggedInUserId, dmGroupId)) {
+            throw new UnAuthorizedAccessException();
+        }
+
+        return dmMessageRepository.findMessagesByDmGroupId(dmGroupId, pageable);
     }
 }

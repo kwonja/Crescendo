@@ -16,4 +16,5 @@ public interface DMGroupRepository extends JpaRepository<DmGroup, Long>, DMGroup
 
     @Query("SELECT g FROM DmGroup g JOIN g.dmParticipantList p WHERE p.user.id = :userId")
     List<DmGroup> findAllByUserId(@Param("userId") Long userId);
+
 }

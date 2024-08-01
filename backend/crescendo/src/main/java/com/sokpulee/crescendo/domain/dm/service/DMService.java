@@ -17,4 +17,6 @@ public interface DMService {
     Page<DmGroupResponseDto> findDmGroupsByUserId(Long loggedInUserId, Pageable pageable);
 
     MessageResponse saveMessage(MessageRequest message);
+
+    Page<DmMessageResponseDto> findMessagesByDmGroupId(Long loggedInUserId, Long dmGroupId, Pageable pageable);
 }

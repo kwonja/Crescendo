@@ -87,7 +87,7 @@ public class FanArtServiceImpl implements FanArtService {
                 .orElseThrow(IdolGroupNotFoundException::new);
 
         if (!fanArt.getUser().getId().equals(loggedInUserId)) {
-            throw new UnauthorizedAcessException();
+            throw new UnAuthorizedAccessException();
         }
 
         fanArt.changeFanArt(idolGroup, fanArtUpdateRequest.getTitle(), fanArtUpdateRequest.getContent());
