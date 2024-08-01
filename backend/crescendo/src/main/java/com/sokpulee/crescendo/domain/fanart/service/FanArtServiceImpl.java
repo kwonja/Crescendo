@@ -67,7 +67,17 @@ public class FanArtServiceImpl implements FanArtService {
     }
 
     @Override
-    public void deleteFanArt(Long fanArtId) {
+    public void deleteFanArt(Long fanArtId, Long loggedInUserId) {
+        FanArt fanArt = fanArtRepository.findById(fanArtId)
+                .orElseThrow(FanArtNotFoundException::new);
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        if (!fanArt.getUser().getId().equals(loggedInUserId)) {
+            throw new UnAuthorizedAccessException();
+        }
+
         if (fanArtRepository.existsById(fanArtId)) {
             fanArtRepository.deleteById(fanArtId);
         } else {
@@ -92,8 +102,8 @@ public class FanArtServiceImpl implements FanArtService {
 
         fanArt.changeFanArt(idolGroup, fanArtUpdateRequest.getTitle(), fanArtUpdateRequest.getContent());
 
-        if (!fanArtUpdateRequest.getImageList().isEmpty()) {
             fanArt.getImageList().clear();
+        if (!fanArtUpdateRequest.getImageList().isEmpty()) {
             for (MultipartFile fanArtImageFile : fanArtUpdateRequest.getImageList()) {
                 String savePath = fileSaveHelper.saveFanArtImage(fanArtImageFile);
 

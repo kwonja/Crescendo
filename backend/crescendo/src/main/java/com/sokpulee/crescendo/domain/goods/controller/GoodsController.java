@@ -54,7 +54,7 @@ public class GoodsController {
         if (loggedInUserId == null) {
             throw new AuthenticationRequiredException();
         }
-        goodsService.deleteGoods(goodsId);
+        goodsService.deleteGoods(goodsId,loggedInUserId);
 
         return ResponseEntity.noContent().build();
     }

@@ -50,12 +50,6 @@ public class FanArt extends TimeStampedEntity {
         image.changeFanArt(this);
     }
 
-    public void changeImage(FanArtImage image) {
-        imageList.remove(image);
-        imageList.add(image);
-        image.changeFanArt(this);
-    }
-
 
     public void changeFanArt(IdolGroup idolGroup, String title, String content) {
         this.idolGroup = idolGroup;
