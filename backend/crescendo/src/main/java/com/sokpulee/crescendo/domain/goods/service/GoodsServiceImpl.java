@@ -1,7 +1,5 @@
 package com.sokpulee.crescendo.domain.goods.service;
 
-import com.sokpulee.crescendo.domain.feed.entity.Feed;
-import com.sokpulee.crescendo.domain.feed.entity.FeedComment;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentAddRequest;
 import com.sokpulee.crescendo.domain.goods.entity.Goods;
@@ -65,7 +63,17 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public void deleteGoods(Long goodsId) {
+    public void deleteGoods(Long goodsId, Long loggedInUserId) {
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        Goods goods = goodsRepository.findById(goodsId)
+                .orElseThrow(GoodsNotFoundException::new);
+
+        if (!goods.getUser().getId().equals(loggedInUserId)) {
+            throw new UnAuthorizedAccessException();
+        }
+
         if (goodsRepository.existsById(goodsId)) {
             goodsRepository.deleteById(goodsId);
         } else {

@@ -58,5 +58,11 @@ public class Feed extends TimeStampedEntity {
         image.changeFeed(this);
     }
 
+    public void changeFeed(IdolGroup idolGroup, String title, String content) {
+        this.idolGroup = idolGroup;
+        this.title = title;
+        this.content = content;
+    }
+
 
 }

@@ -1,8 +1,8 @@
 package com.sokpulee.crescendo.domain.feed.service;
 
-import com.sokpulee.crescendo.domain.fanart.entity.FanArtComment;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedAddRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentAddRequest;
+import com.sokpulee.crescendo.domain.feed.dto.request.FeedUpdateRequest;
 import com.sokpulee.crescendo.domain.feed.entity.Feed;
 import com.sokpulee.crescendo.domain.feed.entity.FeedComment;
 import com.sokpulee.crescendo.domain.feed.entity.FeedHashtag;
@@ -80,12 +80,67 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
-    public void deleteFeed(Long feedId) {
+    public void deleteFeed(Long feedId, Long loggedInUserId) {
+        Feed feed = feedRepository.findById(feedId)
+                .orElseThrow(FeedNotFoundException::new);
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        if (!feed.getUser().getId().equals(loggedInUserId)) {
+            throw new UnAuthorizedAccessException();
+        }
+
         if (feedRepository.existsById(feedId)) {
             feedRepository.deleteById(feedId);
         } else {
             throw new FeedNotFoundException();
         }
+    }
+
+    @Override
+    public void updateFeed(Long loggedInUserId, Long feedId, FeedUpdateRequest feedUpdateRequest) {
+        Feed feed = feedRepository.findById(feedId)
+                .orElseThrow(FeedNotFoundException::new);
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        IdolGroup idolGroup = idolGroupRepository.findById(feedUpdateRequest.getIdolGroupId())
+                .orElseThrow(IdolGroupNotFoundException::new);
+
+        if (!feed.getUser().getId().equals(loggedInUserId)) {
+            throw new UnAuthorizedAccessException();
+        }
+
+        feed.changeFeed(idolGroup, feedUpdateRequest.getTitle(), feedUpdateRequest.getContent());
+
+            feed.getImageList().clear();
+        if (!feedUpdateRequest.getImageList().isEmpty()) {
+            for (MultipartFile feedImageFile : feedUpdateRequest.getImageList()) {
+                String savePath = fileSaveHelper.saveFeedImage(feedImageFile);
+
+                FeedImage feedImage = FeedImage.builder()
+                        .imagePath(savePath)
+                        .build();
+
+                feed.addImage(feedImage);
+            }
+        }
+
+            feed.getHashtagList().clear();
+        if (!feedUpdateRequest.getTagList().isEmpty()) {
+            for (String tag : feedUpdateRequest.getTagList()) {
+                FeedHashtag feedHashtag = FeedHashtag.builder()
+                        .tag(tag)
+                        .build();
+
+                feed.addHashtag(feedHashtag);
+            }
+        }
+
+
+        feedRepository.save(feed);
     }
 
     @Override
