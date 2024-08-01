@@ -1,13 +1,18 @@
 import React from 'react';
+import { follow } from '../../interface/follow';
 
-export default function FriendProfile() {
+interface FriendProps{
+  follow: follow
+}
+export default function FriendProfile( {follow} : FriendProps) {
+  const {nickname,profilePath} =follow;
   return (
     <div className="friendprofile">
       <img
-        src="https://cdn.topstarnews.net/news/photo/202301/15040596_1067813_363.jpg"
+        src={profilePath}
         alt="유저 프로필"
       />
-      <span>nickname</span>
+      <span>{nickname}</span>
     </div>
   );
-}
+}   
