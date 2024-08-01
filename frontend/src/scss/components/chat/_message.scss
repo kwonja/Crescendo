@@ -1,0 +1,61 @@
+
+
+.MyMessage{
+    width: 300px;
+    margin: 0 auto;
+    display: flex;
+    span{
+        border-radius: 10px 10px 0px 10px;
+        background: #D7D7D7;
+        padding: 10px;
+        font-size: 18px;
+        color: #000;
+        margin-left: auto;
+    }
+}
+
+.OtherMessage{
+    width: 300px;
+    margin: 0 auto;
+    display: flex;
+    span{
+        border-radius: 10px 10px 10px 0px;
+        background: #FFF;
+        padding: 10px;
+        font-size: 18px;
+        color: #000;
+    }
+}
+
+.send-container {
+    display: flex;
+    margin: 0 auto;
+    margin-top: auto;
+    margin-bottom: 20px;
+  
+    input {
+      width: 300px;
+      border-radius: 10px;
+      background: #fff;
+      position: relative;
+      padding: 10px;
+      padding-right: 80px;
+      outline: none;
+      color: #000;
+      font-size: 18px;
+    }
+    span {
+      position: relative;
+    }
+  
+    .send-icon {
+      position: absolute;
+      right: 10px; /* 검색 아이콘의 위치 조정 */
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      display: flex;
+      flex-direction: row;
+      gap : 10px;
+    }
+  }
