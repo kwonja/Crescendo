@@ -1,7 +1,10 @@
 package com.sokpulee.crescendo.domain.goods.service;
 
+import com.sokpulee.crescendo.domain.fanart.entity.FanArt;
+import com.sokpulee.crescendo.domain.fanart.entity.FanArtImage;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentAddRequest;
+import com.sokpulee.crescendo.domain.goods.dto.request.GoodsUpdateRequest;
 import com.sokpulee.crescendo.domain.goods.entity.Goods;
 import com.sokpulee.crescendo.domain.goods.entity.GoodsComment;
 import com.sokpulee.crescendo.domain.goods.entity.GoodsImage;
@@ -13,12 +16,14 @@ import com.sokpulee.crescendo.domain.user.entity.User;
 import com.sokpulee.crescendo.domain.user.repository.UserRepository;
 import com.sokpulee.crescendo.global.exception.custom.*;
 import com.sokpulee.crescendo.global.util.file.FileSaveHelper;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class GoodsServiceImpl implements GoodsService {
     private final UserRepository userRepository;
 
@@ -79,6 +84,38 @@ public class GoodsServiceImpl implements GoodsService {
         } else {
             throw new GoodsNotFoundException();
         }
+    }
+
+    @Override
+    public void updateGoods(Long loggedInUserId, Long goodsId, GoodsUpdateRequest goodsUpdateRequest) {
+        Goods goods = goodsRepository.findById(goodsId)
+                .orElseThrow(FanArtNotFoundException::new);
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        IdolGroup idolGroup = idolGroupRepository.findById(goodsUpdateRequest.getIdolGroupId())
+                .orElseThrow(IdolGroupNotFoundException::new);
+
+        if (!goods.getUser().getId().equals(loggedInUserId)) {
+            throw new UnAuthorizedAccessException();
+        }
+
+        goods.changeGoods(idolGroup, goodsUpdateRequest.getTitle(), goodsUpdateRequest.getContent());
+
+        goods.getImageList().clear();
+        if (!goodsUpdateRequest.getImageList().isEmpty()) {
+            for (MultipartFile goodsImageFile : goodsUpdateRequest.getImageList()) {
+                String savePath = fileSaveHelper.saveGoodsImage(goodsImageFile);
+
+                GoodsImage goodsImage = GoodsImage.builder()
+                        .imagePath(savePath)
+                        .build();
+
+                goods.addImage(goodsImage);
+            }
+        }
+        goodsRepository.save(goods);
     }
 
     @Override

@@ -1,14 +1,17 @@
 package com.sokpulee.crescendo.domain.goods.controller;
 
+import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtUpdateRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentAddRequest;
+import com.sokpulee.crescendo.domain.goods.dto.request.GoodsUpdateRequest;
 import com.sokpulee.crescendo.domain.goods.service.GoodsService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -57,6 +60,23 @@ public class GoodsController {
         goodsService.deleteGoods(goodsId,loggedInUserId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping(value = "{goods-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "굿즈 글수정", description = "굿즈 글수정 API")
+    public ResponseEntity<?> updateGoods(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("goods-id") Long goodsId,
+            @Valid @ModelAttribute GoodsUpdateRequest goodsUpdateRequest
+    ){
+        if(loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+
+        goodsService.updateGoods(loggedInUserId,goodsId,goodsUpdateRequest);
+
+        return ResponseEntity.ok().build();
+
     }
 
     @PostMapping("/{goods-id}/comment")

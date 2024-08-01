@@ -49,4 +49,10 @@ public class Goods extends TimeStampedEntity {
         imageList.add(goodsImage);
         goodsImage.changeGoods(this);
     }
+
+    public void changeGoods(IdolGroup idolGroup, String title, String content) {
+        this.idolGroup = idolGroup;
+        this.title = title;
+        this.content = content;
+    }
 }
