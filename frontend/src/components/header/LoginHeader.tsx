@@ -5,16 +5,20 @@ import { ReactComponent as Alarm } from '../../assets/images/alarm.svg';
 import { ReactComponent as Chat } from '../../assets/images/chat.svg';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import UserMenu from './UserMenu';
-import ChatRoom from './ChatRoom';
+import ChatLayout from '../chat/ChatLayout';
+
+
+
+type ModeState = 'chat' | 'alarm' | 'userlist' | 'user' | '';
 
 export default function LoginHeader() {
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
-  const [userMode, setUserMode] = useState<string>('');
+  const [userMode, setUserMode] = useState<ModeState>('');
   const menuRef = useRef<HTMLUListElement>(null);
   const location = useLocation();
 
-  const handleModeClick = (mode: string) => {
-    setUserMode(prevMode => (prevMode === mode ? '' : mode));
+  const handleModeClick = (mode: ModeState) => {
+    setUserMode(prevMode => ( prevMode === mode ? '' : mode));
   };
 
   useEffect(() => {
@@ -80,7 +84,7 @@ export default function LoginHeader() {
         >
           <User />
         </div>
-        {userMode === 'chat' && <ChatRoom />}
+        {userMode === 'chat' && <ChatLayout />}
         {userMode === 'alarm' && <UserMenu />}
         {userMode === 'userlist' && <UserMenu />}
         {userMode === 'user' && <UserMenu handleMode={() => setUserMode('')} />}

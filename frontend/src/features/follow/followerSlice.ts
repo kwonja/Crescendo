@@ -5,7 +5,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { follow } from '../../interface/follow';
 import { followerAPI } from '../../apis/follow';
 
-type PromiseStatus = 'loading' | 'sucess' | 'failed' | '';
+type PromiseStatus = 'loading' | 'success' | 'failed' | '';
 
 interface followProps {
   followerList: follow[];
@@ -16,7 +16,7 @@ interface followProps {
 //createAsyncThunk는 비동기 작업을 도와주는 액션함수이기때문에
 //타입이 있어야한다.
 export const getUserFollower = createAsyncThunk(
-  'followSlice/getUserFollower',
+  'followerSlice/getUserFollower',
   async (userId: number) => {
     const response = await followerAPI(userId);
     console.log(response);
@@ -47,7 +47,7 @@ const inistalState: followProps = {
 };
 
 const followerSlice = createSlice({
-  name: 'follwer',
+  name: 'follower',
   initialState: inistalState,
   reducers: {},
   extraReducers: builder => {
@@ -56,7 +56,7 @@ const followerSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(getUserFollower.fulfilled, (state, action) => {
-        state.status = 'sucess';
+        state.status = 'success';
         console.log(action.payload.followingList);
         state.followerList = action.payload.followerList;
         console.log(state.followerList);

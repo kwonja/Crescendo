@@ -4,7 +4,6 @@
 
 @import 'components/common/buttons';
 @import 'components/header/usermenu';
-@import 'components/header/chatroom';
 @import 'components/header/header';
 @import 'components/mypage/profile';
 @import 'components/mypage/friendlist';
@@ -15,6 +14,9 @@
 @import 'components/community/communitycard';
 @import 'components/community/communityfavoritelist';
 @import 'components/community/communitylist';
+
+@import 'components/chat/chatlayout';
+@import 'components/chat/chatroomlistitem';
 
 @import 'base/font';
 @import 'page/mypage';

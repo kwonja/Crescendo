@@ -10,7 +10,7 @@ import Followerlist from './FollowerList';
 export default function FriendList() {
   const dispatch = useAppDispatch();
   const { followingList } = useAppSelector(state => state.following);
-  const { followerList} = useAppSelector(state => state.follower);
+  const { followerList } = useAppSelector(state => state.follower);
   const [isSelected, setIsSelected] = useState<'follower' | 'following'>('follower');
 
   useEffect(() => {
@@ -45,9 +45,7 @@ export default function FriendList() {
       </div>
       <div className="list">
         <SearchInput placeholder="친구를 검색하세요" />
-          {isSelected === 'follower' ? (
-            <Followerlist/>
-          ) : <FollowingList/>}
+        {isSelected === 'follower' ? <Followerlist /> : <FollowingList />}
       </div>
     </>
   );
