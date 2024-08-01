@@ -119,6 +119,24 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
+    public void deleteGoodsComment(Long loggedInUserId, Long goodsId, Long goodsCommentId) {
+        Goods goods = goodsRepository.findById(goodsId)
+                .orElseThrow(FanArtNotFoundException::new);
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        GoodsComment goodsComment = goodsCommentRepository.findById(goodsCommentId)
+                .orElseThrow(GoodsCommentNotFoundException::new);
+
+        if (!goodsComment.getUser().getId().equals(loggedInUserId)) {
+            throw new UnAuthorizedAccessException();
+        }
+
+        goodsCommentRepository.delete(goodsComment);
+    }
+
+    @Override
     public void addGoodsComment(Long loggedInUserId, Long goodsId, GoodsCommentAddRequest goodsCommentAddRequest) {
         User user = userRepository.findById(loggedInUserId)
                 .orElseThrow(UserNotFoundException::new);

@@ -14,4 +14,6 @@ public interface GoodsService {
     void deleteGoods(Long goodsId, Long loggedInUserId);
 
     void updateGoods(Long loggedInUserId,Long goodsId,GoodsUpdateRequest goodsUpdateRequest);
+
+    void deleteGoodsComment(Long loggedInUserId,Long goodsId,Long goodsCommentId);
 }

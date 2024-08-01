@@ -76,7 +76,6 @@ public class GoodsController {
         goodsService.updateGoods(loggedInUserId,goodsId,goodsUpdateRequest);
 
         return ResponseEntity.ok().build();
-
     }
 
     @PostMapping("/{goods-id}/comment")
@@ -94,6 +93,20 @@ public class GoodsController {
         goodsService.addGoodsComment(loggedInUserId,goodsId,goodsCommentAddRequest);
 
         return ResponseEntity.status(CREATED).build();
+    }
+
+    @DeleteMapping("/{goods-id}/comment/{goods-comment-id}")
+    @Operation(summary = "굿즈 댓글삭제", description = "굿즈 댓글삭제 API")
+    public ResponseEntity<?> deleteGoodsComment(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("goods-id") Long goodsId,
+            @PathVariable("goods-comment-id") Long goodsCommentId
+    ){
+        if (loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+        goodsService.deleteGoodsComment(loggedInUserId,goodsId,goodsCommentId);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("{goods-id}/comment/{goods-comment-id}/reply")
