@@ -18,6 +18,5 @@ export default function CommunityMain() {
     <div className='communitymain_contents'>
       <CommunityList/>
     </div>
-    
   </div>;
 }
