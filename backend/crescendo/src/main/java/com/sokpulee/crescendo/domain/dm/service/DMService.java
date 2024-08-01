@@ -7,4 +7,6 @@ import com.sokpulee.crescendo.domain.dm.dto.response.DMGroupGetResponse;
 public interface DMService {
     DMGroupCreateResponse createDMGroup(Long loggedInUserId, DmGroupCreateRequest dmGroupCreateRequest);
     DMGroupGetResponse findDmGroup(Long loggedInUserId, Long opponentId);
+
+    void deleteDmGroup(Long loggedInUserId, Long opponentId);
 }

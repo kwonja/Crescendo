@@ -38,7 +38,7 @@ public class DMController {
         return ResponseEntity.status(CREATED).body(response);
     }
 
-    @GetMapping("/user/{opponent-id}")
+    @GetMapping("/dm-group/user/{opponent-id}")
     @Operation(summary = "DM 그룹 조회", description = "DM 그룹 조회 API")
     public ResponseEntity<?> getDMGroup(
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
@@ -52,4 +52,17 @@ public class DMController {
 
         return ResponseEntity.status(OK).body(dmGroup);
     }
+
+    @DeleteMapping("/dm-group/user/{opponent-id}")
+    @Operation(summary = "DM 그룹 삭제", description = "DM 그룹 삭제 API")
+    public ResponseEntity<?> deleteDMGroup(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("opponent-id") Long opponentId
+    ) {
+
+        dmService.deleteDmGroup(loggedInUserId, opponentId);
+
+        return ResponseEntity.status(NO_CONTENT).build();
+    }
+
 }

@@ -77,4 +77,13 @@ public class DMServiceImpl implements DMService {
 
         return new DMGroupGetResponse(dmGroup);
     }
+
+    @Override
+    public void deleteDmGroup(Long loggedInUserId, Long opponentId) {
+
+        DmGroup dmGroup = dmGroupRepository.findDmGroupByParticipants(loggedInUserId, opponentId)
+                .orElseThrow(DMGroupNotFoundException::new);
+
+        dmGroupRepository.delete(dmGroup);
+    }
 }
