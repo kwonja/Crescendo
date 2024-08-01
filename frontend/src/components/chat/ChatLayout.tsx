@@ -6,15 +6,12 @@ export default function ChatLayout() {
     <div className="chatlayout">
       <div className="title">채팅목록</div>
 
-
       <div className="chatroomlist">
         <ChatRoomListItem />
         <ChatRoomListItem />
         <ChatRoomListItem />
         <ChatRoomListItem />
       </div>
-
-      
     </div>
   );
 }

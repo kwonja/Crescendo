@@ -1,24 +1,24 @@
-.chatroom{
-    width: 330px;
-    height: 500px;
-    box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
-    border-radius: 0px 10px 10px 10px;
-    background: #fea3a3;
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    padding-top: 15px;
-    position: absolute;
-    top: 68px;
-    left: 0px;
-    z-index: 1000;
+.chatroom {
+  width: 330px;
+  height: 500px;
+  box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  border-radius: 0px 10px 10px 10px;
+  background: #fea3a3;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding-top: 15px;
+  position: absolute;
+  top: 68px;
+  left: 0px;
+  z-index: 1000;
 
-    .upper{
-        width: 300px;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        font-size: 25px;
-        margin: 0 auto;
-    }
+  .upper {
+    width: 300px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 25px;
+    margin: 0 auto;
+  }
 }
