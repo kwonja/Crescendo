@@ -30,8 +30,14 @@ export default function CommunityDetail() {
   const isLogin = true;
 
   const [isSelected, setIsSelected] = useState<'feed' | 'gallery'>('feed');
+  const [isFavorite, setisFavorite] = useState<boolean>(communityDetailInfo.isFavorite); // 비동기식으로 옮길땐 로드 이후 세팅해야할듯?
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
   const menuRef = useRef<HTMLDivElement>(null);
+
+  function clickStar() {
+    setisFavorite((prev)=>!prev);
+    // 이후 rest-api서버로 전송
+  }
 
   useEffect(() => {
     const menuElement = menuRef.current;
@@ -52,7 +58,9 @@ export default function CommunityDetail() {
         <img className="banner_img" src={communityDetailInfo.banner} alt={communityDetailInfo.name}></img>
         <div className="banner_name">{communityDetailInfo.name}</div>
         <div className="banner_favoritenum">{`${favoriteNum} Favorites`}</div>
-        {isLogin && <div className="banner_star" onClick={()=>{}}>{communityDetailInfo.isFavorite?<FullStar/>:<Star/>}</div>}
+        {isLogin && <div className="banner_star" >{
+          isFavorite?<FullStar className="hoverup" onClick={clickStar}/>
+          :<Star className="hoverup" onClick={clickStar}/>}</div>}
       </div>
       <div className="category" ref={menuRef}>
           <div
