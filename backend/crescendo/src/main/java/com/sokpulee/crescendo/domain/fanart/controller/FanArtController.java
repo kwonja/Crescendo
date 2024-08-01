@@ -46,6 +46,19 @@ public class FanArtController {
 
         return ResponseEntity.status(CREATED).build();
     }
+    @PostMapping("/{fan-art-id}")
+    @Operation(summary = "팬아트 글삭제", description = "팬아트 글삭제 API")
+    public ResponseEntity<?> deleteFanArt(
+            @AuthPrincipal Long loggedInUserId,
+            @PathVariable("fan-art-id") Long fanArtId
+    ){
+        if(loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+        fanArtService.deleteFanArt(loggedInUserId,fanArtId);
+        return ResponseEntity.noContent().build();
+    }
+    
 
     @PostMapping("/{fan-art-id}/comment")
     @Operation(summary = "팬아트 댓글쓰기", description = "팬아트 댓글쓰기 API")
