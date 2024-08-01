@@ -46,7 +46,7 @@ public class FanArtController {
 
         return ResponseEntity.status(CREATED).build();
     }
-    @PostMapping("/{fan-art-id}")
+    @DeleteMapping("/{fan-art-id}")
     @Operation(summary = "팬아트 글삭제", description = "팬아트 글삭제 API")
     public ResponseEntity<?> deleteFanArt(
             @AuthPrincipal Long loggedInUserId,
