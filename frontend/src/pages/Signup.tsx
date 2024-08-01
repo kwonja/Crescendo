@@ -12,12 +12,14 @@ import { isValidEmail } from '../utils/EmailValidation';
 import { isValidPassword } from '../utils/PasswordValidation';
 import { ReactComponent as Visualization } from '../assets/images/visualization.svg';
 import TermsModal from '../components/signup/TermsModal';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 import '../scss/page/_signup.scss';
 
 const SignUp = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error, emailAuthId } = useSelector((state: RootState) => state.auth);
-
+  const navigate = useNavigate();
   const [email, setEmail] = useState(''); // 이메일
   const [verificationCode, setVerificationCode] = useState(''); // 인증번호
   const [codeVerified, setCodeVerified] = useState(false); // 인증번호 검증
@@ -57,6 +59,12 @@ const SignUp = () => {
       if (timer) clearInterval(timer);
     };
   }, [verificationCountdown]);
+
+  useEffect(() => {
+    if (termsAccepted) {
+      setFieldErrors(prev => ({ ...prev, termsAccepted: '' }));
+    }
+  }, [termsAccepted]);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!isEmailLocked) {
@@ -171,7 +179,7 @@ const SignUp = () => {
     }
 
     setFieldErrors(errors);
-    dispatch(
+    const result = await dispatch(
       signUp({
         email,
         password,
@@ -181,6 +189,15 @@ const SignUp = () => {
         randomKey: verificationCode,
       }),
     );
+
+    if (signUp.fulfilled.match(result)) {
+      toast.success('회원가입 성공! 로그인 페이지로 이동합니다.');
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);
+    } else {
+      toast.error('회원가입 실패! 다시 시도해주세요.');
+    }
   };
 
   return (
@@ -314,8 +331,9 @@ const SignUp = () => {
               <div className="custom-checkbox"></div>
               <label>
                 <span className="terms-link" onClick={() => setIsModalOpen(true)}>
-                  약관에 동의합니다
+                  약관
                 </span>
+                에 동의합니다.
               </label>
             </div>
             <div className="button-group">
@@ -330,7 +348,6 @@ const SignUp = () => {
             {fieldErrors.termsAccepted}
           </p>
         </div>
-        {loading && <p className="loading-message">로딩 중...</p>}
         {error && <p className="error-message">{error}</p>}
       </div>
       <TermsModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
