@@ -80,6 +80,15 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
+    public void deleteFeed(Long feedId) {
+        if (feedRepository.existsById(feedId)) {
+            feedRepository.deleteById(feedId);
+        } else {
+            throw new FeedNotFoundException();
+        }
+    }
+
+    @Override
     public void addFeedComment(Long loggedInUserId, Long feedId, FeedCommentAddRequest feedCommentAddRequest) {
 
         User user = userRepository.findById(loggedInUserId)
@@ -122,4 +131,6 @@ public class FeedServiceImpl implements FeedService {
         }
 
     }
+
+
 }

@@ -10,5 +10,5 @@ public interface FanArtService {
 
     void addFanArtReply(Long loggedInUserId, Long fanArtId, Long fanArtCommentId, FanArtCommentAddRequest fanArtReplyAddRequest);
 
-    void deleteFanArt(Long loggedInUserId,Long fanArtId);
+    void deleteFanArt(Long fanArtId);
 }

@@ -55,7 +55,7 @@ public class FanArtController {
         if(loggedInUserId == null) {
             throw new AuthenticationRequiredException();
         }
-        fanArtService.deleteFanArt(loggedInUserId,fanArtId);
+        fanArtService.deleteFanArt(fanArtId);
         return ResponseEntity.noContent().build();
     }
     

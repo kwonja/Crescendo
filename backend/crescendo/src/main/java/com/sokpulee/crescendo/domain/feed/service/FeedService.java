@@ -9,4 +9,6 @@ public interface FeedService {
     void addFeedComment(Long loggedInUserId, Long feedId ,FeedCommentAddRequest feedCommentAddRequest);
 
     void addFeedReply(Long loggedInUserId, Long feedId, Long feedCommentId, FeedCommentAddRequest feedReplyAddRequest);
+
+    void deleteFeed(Long feedId);
 }

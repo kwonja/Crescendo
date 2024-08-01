@@ -64,7 +64,7 @@ public class FanArtServiceImpl implements FanArtService {
     }
 
     @Override
-    public void deleteFanArt(Long loggedInUserId, Long fanArtId) {
+    public void deleteFanArt(Long fanArtId) {
         if(fanArtRepository.existsById(fanArtId)){
             fanArtRepository.deleteById(fanArtId);
         }else{

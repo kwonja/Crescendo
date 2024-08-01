@@ -65,7 +65,7 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public void deleteGoods(Long loggedInUserId, Long goodsId) {
+    public void deleteGoods(Long goodsId) {
         if (goodsRepository.existsById(goodsId)) {
             goodsRepository.deleteById(goodsId);
         } else {
