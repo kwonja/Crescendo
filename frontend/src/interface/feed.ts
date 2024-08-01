@@ -1,4 +1,5 @@
 export interface FeedData {
+  feedId: number;
   userId: number; // 작성자 userId
   profileImagePath: string; // 작성자 프로필 사진 경로
   nickname: string; // 작성자 닉네임

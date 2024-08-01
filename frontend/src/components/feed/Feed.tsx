@@ -1,64 +1,59 @@
-import React, { useState } from 'react';
+import React  from 'react';
 import { ReactComponent as User } from '../../assets/images/Feed/reduser.svg';
 import { ReactComponent as Heart } from '../../assets/images/Feed/heart.svg';
 import { ReactComponent as Dots } from '../../assets/images/Feed/dots.svg';
 import { ReactComponent as Comment } from '../../assets/images/Feed/comment.svg';
 import { ReactComponent as FullHeart } from '../../assets/images/Feed/fullheart.svg';
 import { FeedData } from '../../interface/feed';
+import { useAppDispatch } from '../../store/hooks/hook';
+import { decrementLike, incrementLike } from '../../features/feed/feedSlice';
 
 interface FeedProps {
   feed: FeedData;
 }
 export default function Feed({ feed }: FeedProps) {
-  const [like, setLike] = useState<number>(99);
-  const [comment, setComment] = useState<number>(99);
-  const [isLiked, setisLiked] = useState<boolean>(false);
-
+  const { nickname,createdAt,likeCnt,content,commentCnt,tagList,isLike,feedId} = feed;
+  const dispatch = useAppDispatch();
   return (
     <div className="feed">
       <div className="upper">
         <User />
         <div className="userinfo">
-          <span>{feed.nickname}</span>
-          <span>{feed.createdAt}</span>
+          <span>{nickname}</span>
+          <span>{createdAt}</span>
         </div>
 
         <Dots className="dots hoverup" />
       </div>
-      <div className="text">{feed.content}</div>
+      <div className="text">{content}</div>
       <div className="tag">
-        {feed.tagList.map((tag, index) => (
+        {tagList.map((tag, index) => (
           <div key={index}>#{tag}</div>
         ))}
       </div>
       <div className="feed_heart_box">
-        {like}
-        {!isLiked ? (
+        {likeCnt}
+        {!isLike ? (
           <Heart
             className="hoverup"
             onClick={() => {
-              setLike(prev => prev + 1);
-              setisLiked(true);
+              dispatch(incrementLike(feedId));
             }}
           />
         ) : (
           <FullHeart
             className="hoverup"
             onClick={() => {
-              setLike(prev => prev - 1);
-              setisLiked(false);
+              dispatch(decrementLike(feedId));
             }}
           />
         )}
       </div>
       <div className="feed_comment_box">
         {' '}
-        {comment}
+        {commentCnt}
         <Comment
           className="hoverup"
-          onClick={() => {
-            setComment(prev => prev + 1);
-          }}
         />
       </div>
     </div>
