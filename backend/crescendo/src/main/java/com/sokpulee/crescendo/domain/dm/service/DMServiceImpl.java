@@ -1,11 +1,10 @@
 package com.sokpulee.crescendo.domain.dm.service;
 
 import com.sokpulee.crescendo.domain.dm.dto.request.DmGroupCreateRequest;
-import com.sokpulee.crescendo.domain.dm.dto.response.DMGroupCreateResponse;
-import com.sokpulee.crescendo.domain.dm.dto.response.DMGroupGetResponse;
-import com.sokpulee.crescendo.domain.dm.dto.response.DmGroupResponseDto;
-import com.sokpulee.crescendo.domain.dm.dto.response.MyDMGroupIdListResponse;
+import com.sokpulee.crescendo.domain.dm.dto.request.MessageRequest;
+import com.sokpulee.crescendo.domain.dm.dto.response.*;
 import com.sokpulee.crescendo.domain.dm.entity.DmGroup;
+import com.sokpulee.crescendo.domain.dm.entity.DmMessage;
 import com.sokpulee.crescendo.domain.dm.entity.DmParticipants;
 import com.sokpulee.crescendo.domain.dm.repository.dmgroup.DMGroupRepository;
 import com.sokpulee.crescendo.domain.dm.repository.DMMessageRepository;
@@ -94,14 +93,36 @@ public class DMServiceImpl implements DMService {
 
     @Override
     public MyDMGroupIdListResponse findAllDmGroupsByUserId(Long loggedInUserId) {
-        List<DmGroup> dmGroupList = dmGroupRepository.findAllByUserId(loggedInUserId);
 
+        List<DmGroup> dmGroupList = dmGroupRepository.findAllByUserId(loggedInUserId);
 
         return null;
     }
 
     @Override
     public Page<DmGroupResponseDto> findDmGroupsByUserId(Long loggedInUserId, Pageable pageable) {
+
         return dmGroupRepository.findDmGroupsByUserId(loggedInUserId, pageable);
+    }
+
+    @Override
+    public MessageResponse saveMessage(MessageRequest message) {
+
+        DmGroup dmGroup = dmGroupRepository.findById(message.getDmGroupId())
+                .orElseThrow(DMGroupNotFoundException::new);
+
+        User user = userRepository.findById(message.getWriterId())
+                .orElseThrow(UserNotFoundException::new);
+
+        DmMessage dmMessage = DmMessage.builder()
+                .dmGroup(dmGroup)
+                .user(user)
+                .content(message.getMessage())
+                .build();
+
+        DmMessage saveDMMessage = dmMessageRepository.save(dmMessage);
+
+
+        return new MessageResponse(saveDMMessage, user);
     }
 }

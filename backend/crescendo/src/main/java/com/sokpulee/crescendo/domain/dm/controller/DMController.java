@@ -93,7 +93,7 @@ public class DMController {
         if(loggedInUserId == null) {
             throw new AuthenticationRequiredException();
         }
-        
+
         Pageable pageable = PageRequest.of(page, size);
         Page<DmGroupResponseDto> dmGroups = dmService.findDmGroupsByUserId(loggedInUserId, pageable);
         return ResponseEntity.ok(dmGroups);
