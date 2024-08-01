@@ -11,5 +11,5 @@ public interface GoodsService {
 
     void addGoodsReply(Long loggedInUserId,Long goodsId, Long goodsCommentId, GoodsCommentAddRequest goodsReplyAddRequest);
 
-    void deleteGoods(Long loggedInUserId,Long goodsId);
+    void deleteGoods(Long goodsId);
 }

@@ -45,6 +45,20 @@ public class FeedController {
 
         return ResponseEntity.status(CREATED).build();
     }
+    
+    @DeleteMapping("/{feed-id}")
+    @Operation(summary = "피드 글삭제", description = "피드 글삭제 API")
+    public ResponseEntity<?> deleteFeed(
+            @AuthPrincipal Long loggedInUserId,
+            @PathVariable("feed-id") Long feedId
+    ){
+        if(loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+        feedService.deleteFeed(feedId);
+
+        return ResponseEntity.noContent().build();
+    }
 
     @PostMapping("/{feed-id}/comment")
     @Operation(summary = "피드 댓글쓰기", description = "피드 댓글쓰기 API")
