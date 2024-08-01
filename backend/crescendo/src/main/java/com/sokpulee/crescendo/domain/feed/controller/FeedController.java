@@ -2,12 +2,14 @@ package com.sokpulee.crescendo.domain.feed.controller;
 
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedAddRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentAddRequest;
+import com.sokpulee.crescendo.domain.feed.dto.request.FeedUpdateRequest;
 import com.sokpulee.crescendo.domain.feed.service.FeedService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -56,7 +58,23 @@ public class FeedController {
         if(loggedInUserId == null) {
             throw new AuthenticationRequiredException();
         }
-        feedService.deleteFeed(feedId);
+        feedService.deleteFeed(feedId,loggedInUserId);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping(value = "/{feed-id}" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "피드 글수정", description = "피드 글수정 API")
+    public ResponseEntity<?> updateFeed(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("feed-id") Long feedId,
+            @Valid @ModelAttribute FeedUpdateRequest feedUpdateRequest
+    ){
+        if(loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+
+        feedService.updateFeed(loggedInUserId,feedId,feedUpdateRequest);
 
         return ResponseEntity.noContent().build();
     }
