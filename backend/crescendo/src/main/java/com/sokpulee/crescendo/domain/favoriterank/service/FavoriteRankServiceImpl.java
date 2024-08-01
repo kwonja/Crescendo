@@ -1,17 +1,19 @@
 package com.sokpulee.crescendo.domain.favoriterank.service;
 
+import com.sokpulee.crescendo.domain.favoriterank.dto.FavoriteRankBestPhotoDto;
 import com.sokpulee.crescendo.domain.favoriterank.dto.request.FavoriteRankAddRequest;
 import com.sokpulee.crescendo.domain.favoriterank.dto.request.FavoriteRanksSearchCondition;
+import com.sokpulee.crescendo.domain.favoriterank.dto.response.FavoriteRankBestPhotoResponse;
 import com.sokpulee.crescendo.domain.favoriterank.dto.response.FavoriteRankResponse;
 import com.sokpulee.crescendo.domain.favoriterank.entity.FavoriteRank;
+import com.sokpulee.crescendo.domain.favoriterank.entity.FavoriteRankVoting;
 import com.sokpulee.crescendo.domain.favoriterank.repository.FavoriteRankRepository;
+import com.sokpulee.crescendo.domain.favoriterank.repository.FavoriteRankVotingRepository;
 import com.sokpulee.crescendo.domain.idol.entity.Idol;
 import com.sokpulee.crescendo.domain.idol.repository.IdolRepository;
 import com.sokpulee.crescendo.domain.user.entity.User;
 import com.sokpulee.crescendo.domain.user.repository.UserRepository;
-import com.sokpulee.crescendo.global.exception.custom.DuplicateFavoriteRankException;
-import com.sokpulee.crescendo.global.exception.custom.IdolNotFoundException;
-import com.sokpulee.crescendo.global.exception.custom.UserNotFoundException;
+import com.sokpulee.crescendo.global.exception.custom.*;
 import com.sokpulee.crescendo.global.util.file.FileSaveHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,9 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -31,6 +32,7 @@ import java.util.Map;
 public class FavoriteRankServiceImpl implements FavoriteRankService {
 
     private final FavoriteRankRepository favoriteRankRepository;
+    private final FavoriteRankVotingRepository favoriteRankVotingRepository;
     private final UserRepository userRepository;
     private final IdolRepository idolRepository;
     private final FileSaveHelper fileSaveHelper;
@@ -95,5 +97,55 @@ public class FavoriteRankServiceImpl implements FavoriteRankService {
     @Override
     public Page<FavoriteRankResponse> getFavoriteRanks(Long userId, FavoriteRanksSearchCondition condition, Pageable pageable) {
         return favoriteRankRepository.findFavoriteRank(userId, condition, pageable);
+    }
+
+    @Override
+    public void deleteFavoriteRank(Long loggedInUserId, Long favoriteRankId) {
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        FavoriteRank favoriteRank = favoriteRankRepository.findById(favoriteRankId)
+                .orElseThrow(FavoriteRankNotFoundException::new);
+
+        if(!favoriteRank.getUser().getId().equals(user.getId())) {
+            throw new UnauthorizedAcessException();
+        }
+        else {
+            fileSaveHelper.deleteFile(favoriteRank.getFavoriteIdolImagePath());
+            favoriteRankRepository.delete(favoriteRank);
+        }
+    }
+
+    @Override
+    public FavoriteRankBestPhotoResponse getBestPhoto() {
+
+        List<FavoriteRankBestPhotoDto> allBestRankedPhotos = favoriteRankRepository.findBestRankedPhotos();
+
+        // Shuffle and limit to 20 results
+        Collections.shuffle(allBestRankedPhotos);
+        List<FavoriteRankBestPhotoDto> bestRankList = allBestRankedPhotos.stream().limit(20).collect(Collectors.toList());
+
+        return new FavoriteRankBestPhotoResponse(bestRankList);
+
+    }
+
+    @Override
+    public void voteFavoriteRank(Long loggedInUserId, Long favoriteRankId) {
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+        FavoriteRank favoriteRank = favoriteRankRepository.findById(favoriteRankId)
+                .orElseThrow(FavoriteRankNotFoundException::new);
+
+        Optional<FavoriteRankVoting> existingVote = favoriteRankVotingRepository.findByFavoriteRankIdAndUserId(favoriteRankId, user.getId());
+
+        if (existingVote.isPresent()) {
+            favoriteRankVotingRepository.deleteByFavoriteRankIdAndUserId(favoriteRankId, user.getId());
+        } else {
+            FavoriteRankVoting favoriteRankVoting = FavoriteRankVoting.builder()
+                    .user(user)
+                    .favoriteRank(favoriteRank)
+                    .build();
+            favoriteRankVotingRepository.save(favoriteRankVoting);
+        }
     }
 }

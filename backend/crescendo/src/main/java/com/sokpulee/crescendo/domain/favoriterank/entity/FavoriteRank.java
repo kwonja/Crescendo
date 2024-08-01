@@ -2,6 +2,7 @@ package com.sokpulee.crescendo.domain.favoriterank.entity;
 
 import com.sokpulee.crescendo.domain.idol.entity.Idol;
 import com.sokpulee.crescendo.domain.user.entity.User;
+import com.sokpulee.crescendo.global.CreatedAtEntity;
 import com.sokpulee.crescendo.global.TimeStampedEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class FavoriteRank {
+public class FavoriteRank extends CreatedAtEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "favorite_rank_id")
@@ -30,8 +31,6 @@ public class FavoriteRank {
 
     @Column(length = 500)
     private String favoriteIdolImagePath;
-
-    private LocalDateTime createdAt;
 
     @Builder
     public FavoriteRank(User user, Idol idol, String favoriteIdolImagePath) {
