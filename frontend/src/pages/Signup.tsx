@@ -1,24 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import { isValidEmail } from '../utils/EmailValidation'; // 이메일 유효성 검사 함수 임포트
-import { isValidPassword } from '../utils/PasswordValidation'; // 비밀번호 유효성 검사 함수 임포트
-import { ReactComponent as Visualization } from '../assets/images/visualization.svg'; // 비밀번호 시각화 아이콘 임포트
-import '../scss/page/_signup.scss'; // 새로운 회원가입 페이지 스타일
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../store/store';
+import {
+  sendVerificationCode,
+  verifyEmailCode,
+  checkEmailExists,
+  checkNicknameExists,
+  signUp,
+} from '../features/auth/authSlice';
+import { isValidEmail } from '../utils/EmailValidation';
+import { isValidPassword } from '../utils/PasswordValidation';
+import { ReactComponent as Visualization } from '../assets/images/visualization.svg';
+import TermsModal from '../components/signup/TermsModal';
+import '../scss/page/_signup.scss';
 
-const SignUp: React.FC = () => {
-  const [email, setEmail] = useState(''); // 이메일 상태 관리
-  const [verificationCode, setVerificationCode] = useState(''); // 인증번호 상태 관리
-  const [codeVerified, setCodeVerified] = useState(false); // 인증번호 검증 상태 관리
-  const [password, setPassword] = useState(''); // 비밀번호 상태 관리
-  const [confirmPassword, setConfirmPassword] = useState(''); // 비밀번호 확인 상태 관리
-  const [nickname, setNickname] = useState(''); // 닉네임 상태 관리
-  const [showPassword, setShowPassword] = useState(false); // 비밀번호 시각화 상태 관리
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // 비밀번호 확인 시각화 상태 관리
-  const [termsAccepted, setTermsAccepted] = useState(false); // 약관 동의 상태 관리
-  const [isVerificationButtonDisabled, setIsVerificationButtonDisabled] = useState(false); // 인증번호 버튼 비활성화 상태
-  const [verificationCountdown, setVerificationCountdown] = useState(0); // 인증번호 카운트다운 타이머
+const SignUp = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { loading, error, emailAuthId } = useSelector((state: RootState) => state.auth);
+
+  const [email, setEmail] = useState(''); // 이메일
+  const [verificationCode, setVerificationCode] = useState(''); // 인증번호
+  const [codeVerified, setCodeVerified] = useState(false); // 인증번호 검증
+  const [password, setPassword] = useState(''); // 비밀번호
+  const [confirmPassword, setConfirmPassword] = useState(''); // 비밀번호 확인
+  const [nickname, setNickname] = useState(''); // 닉네임
+  const [showPassword, setShowPassword] = useState(false); // 비밀번호 시각화
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // 비밀번호 확인 시각화
+  const [termsAccepted, setTermsAccepted] = useState(false); // 약관 동의
+  const [isVerificationButtonDisabled, setIsVerificationButtonDisabled] = useState(false); // 인증번호 버튼 비활성화
+  const [verificationCountdown, setVerificationCountdown] = useState(0); // 인증번호 타이머
   const [isFirstVerification, setIsFirstVerification] = useState(true); // 첫 번째 인증 시도 여부
-  const [isEmailLocked, setIsEmailLocked] = useState(false); // 이메일 입력 잠금 상태
-  const [isVerificationCodeLocked, setIsVerificationCodeLocked] = useState(false); // 인증번호 입력 잠금 상태
+  const [isEmailLocked, setIsEmailLocked] = useState(false); // 이메일 입력 잠금
+  const [isVerificationCodeLocked, setIsVerificationCodeLocked] = useState(false); // 인증번호 입력 잠금
   const [fieldErrors, setFieldErrors] = useState({
     email: '',
     verificationCode: '',
@@ -27,6 +40,8 @@ const SignUp: React.FC = () => {
     nickname: '',
     termsAccepted: '',
   });
+
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태
 
   useEffect(() => {
     let timer: ReturnType<typeof setInterval>;
@@ -67,21 +82,36 @@ const SignUp: React.FC = () => {
     setNickname(e.target.value);
   };
 
-  const handleSendVerificationCode = () => {
+  const handleSendVerificationCode = async () => {
     if (!isValidEmail(email)) {
       setFieldErrors(prev => ({ ...prev, email: '유효한 이메일 형식을 입력해 주세요' }));
       return;
     }
+
+    const emailExists = await dispatch(checkEmailExists(email));
+    if (emailExists.type === `${checkEmailExists.rejected}`) {
+      setFieldErrors(prev => ({ ...prev, email: '이메일이 이미 존재합니다.' }));
+      return;
+    }
+
     setFieldErrors(prev => ({ ...prev, email: '' }));
+    dispatch(sendVerificationCode(email));
     setFieldErrors(prev => ({ ...prev, verificationCode: '인증번호가 전송되었습니다.' }));
     setIsVerificationButtonDisabled(true);
     setVerificationCountdown(15);
     setIsFirstVerification(false); // 첫 번째 시도 이후 false로 설정
     setIsEmailLocked(true); // 이메일 입력 잠금
+    console.log('emailAuthId:', emailAuthId); // emailAuthId 로그로 확인
   };
 
-  const handleVerifyCode = () => {
-    if (verificationCode === '123456') {
+  const handleVerifyCode = async () => {
+    if (!emailAuthId) {
+      setFieldErrors(prev => ({ ...prev, verificationCode: '인증번호 전송을 먼저 해주세요.' }));
+      return;
+    }
+
+    const result = await dispatch(verifyEmailCode({ emailAuthId, randomKey: verificationCode }));
+    if (result.type === `${verifyEmailCode.fulfilled}`) {
       setCodeVerified(true);
       setFieldErrors(prev => ({ ...prev, verificationCode: '인증이 완료되었습니다.' }));
       setIsVerificationCodeLocked(true); // 인증번호 입력 잠금
@@ -90,7 +120,7 @@ const SignUp: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     let errors = {
@@ -134,8 +164,23 @@ const SignUp: React.FC = () => {
       return;
     }
 
+    const nicknameExists = await dispatch(checkNicknameExists(nickname));
+    if (nicknameExists.type === `${checkNicknameExists.rejected}`) {
+      setFieldErrors(prev => ({ ...prev, nickname: '사용중인 닉네임입니다.' }));
+      return;
+    }
+
     setFieldErrors(errors);
-    console.log({ email, password, nickname });
+    dispatch(
+      signUp({
+        email,
+        password,
+        nickname,
+        idolId: 1,
+        emailAuthId: emailAuthId!,
+        randomKey: verificationCode,
+      }),
+    );
   };
 
   return (
@@ -267,10 +312,14 @@ const SignUp: React.FC = () => {
                 onChange={() => setTermsAccepted(!termsAccepted)}
               />
               <div className="custom-checkbox"></div>
-              <label>약관에 동의합니다</label>
+              <label>
+                <span className="terms-link" onClick={() => setIsModalOpen(true)}>
+                  약관에 동의합니다
+                </span>
+              </label>
             </div>
             <div className="button-group">
-              <button type="submit" className="submit-button">
+              <button type="submit" className="submit-button" disabled={loading}>
                 회원가입
               </button>
             </div>
@@ -281,7 +330,10 @@ const SignUp: React.FC = () => {
             {fieldErrors.termsAccepted}
           </p>
         </div>
+        {loading && <p className="loading-message">로딩 중...</p>}
+        {error && <p className="error-message">{error}</p>}
       </div>
+      <TermsModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 };
