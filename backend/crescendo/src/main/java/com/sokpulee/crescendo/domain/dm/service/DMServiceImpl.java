@@ -37,7 +37,7 @@ public class DMServiceImpl implements DMService {
         User opponentUser = userRepository.findById(dmGroupCreateRequest.getOpponentId())
                 .orElseThrow(UserNotFoundException::new);
 
-        Optional<DmGroup> existingGroup = dmGroupRepository.findDmGroupByParticipants(userId, opponentId);
+        Optional<DmGroup> existingGroup = dmGroupRepository.findDmGroupByParticipants(loggedInUserId, dmGroupCreateRequest.getOpponentId());
         if (existingGroup.isPresent()) {
             throw new IllegalStateException("DM group already exists between the users");
         }
