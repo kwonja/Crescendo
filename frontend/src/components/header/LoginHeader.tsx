@@ -6,8 +6,7 @@ import { ReactComponent as Chat } from '../../assets/images/chat.svg';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import UserMenu from './UserMenu';
 import ChatLayout from '../chat/ChatLayout';
-
-
+import Chatroom from '../chat/ChatRoom';
 
 type ModeState = 'chat' | 'alarm' | 'userlist' | 'user' | '';
 
@@ -18,7 +17,7 @@ export default function LoginHeader() {
   const location = useLocation();
 
   const handleModeClick = (mode: ModeState) => {
-    setUserMode(prevMode => ( prevMode === mode ? '' : mode));
+    setUserMode(prevMode => (prevMode === mode ? '' : mode));
   };
 
   useEffect(() => {
@@ -86,7 +85,7 @@ export default function LoginHeader() {
         </div>
         {userMode === 'chat' && <ChatLayout />}
         {userMode === 'alarm' && <UserMenu />}
-        {userMode === 'userlist' && <UserMenu />}
+        {userMode === 'userlist' && <Chatroom />}
         {userMode === 'user' && <UserMenu handleMode={() => setUserMode('')} />}
       </div>
     </div>
