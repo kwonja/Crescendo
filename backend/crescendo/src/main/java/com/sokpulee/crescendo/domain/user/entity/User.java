@@ -73,4 +73,8 @@ public class User {
     public void updateIntroduction(String introduction) {
         this.introduction = introduction;
     }
+
+    public void deleteRefreshToken() {
+        this.refreshToken = null;
+    }
 }

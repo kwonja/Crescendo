@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -62,7 +63,6 @@ public class AuthController {
 
         authService.saveRefreshToken(userId, refreshToken);
 
-        // Secure HttpOnly 쿠키로 refreshToken 설정
         ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", refreshToken)
                 .httpOnly(true)
                 .secure(true)
@@ -70,12 +70,10 @@ public class AuthController {
                 .maxAge(7 * 24 * 60 * 60) // 쿠키 유효기간 설정 (예: 7일)
                 .build();
 
-        // accessToken은 JSON payload로 전달
-        return ResponseEntity.ok()
+        return ResponseEntity.status(OK)
                 .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-                .body("Access token generated successfully");
-
+                .build();
     }
 
     @PatchMapping("/password")
@@ -87,4 +85,47 @@ public class AuthController {
         return ResponseEntity.status(NO_CONTENT).build();
     }
 
+    @PostMapping("/refresh-token")
+    @Operation(summary = "AccessToken 재발급", description = "AccessToken 재발급 API")
+    public ResponseEntity<?> refreshAccessToken(@CookieValue(value = "refreshToken", required = false) String refreshToken) {
+
+        if (refreshToken == null || !jwtUtil.checkToken(refreshToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
+        }
+
+        Long userId = jwtUtil.getUserId(refreshToken);
+        if (userId == null || !authService.isRefreshTokenValid(userId, refreshToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
+        }
+
+        String newAccessToken = jwtUtil.createAccessToken(userId);
+
+        return ResponseEntity.status(OK)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + newAccessToken)
+                .build();
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "로그아웃", description = "로그아웃 API")
+    public ResponseEntity<?> logout(@CookieValue(value = "refreshToken", required = false) String refreshToken) {
+        if (refreshToken == null || !jwtUtil.checkToken(refreshToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
+        }
+
+        Long userId = jwtUtil.getUserId(refreshToken);
+        if (userId != null) {
+            authService.deleteRefreshToken(userId);
+        }
+
+        ResponseCookie deleteCookie = ResponseCookie.from("refreshToken", "")
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(0) // 쿠키 삭제
+                .build();
+
+        return ResponseEntity.status(OK)
+                .header(HttpHeaders.SET_COOKIE, deleteCookie.toString())
+                .build();
+    }
 }

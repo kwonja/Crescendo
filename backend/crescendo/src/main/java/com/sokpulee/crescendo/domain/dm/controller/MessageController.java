@@ -1,32 +1,26 @@
 package com.sokpulee.crescendo.domain.dm.controller;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
+import com.sokpulee.crescendo.domain.dm.dto.request.MessageRequest;
+import com.sokpulee.crescendo.domain.dm.dto.response.MessageResponse;
+import com.sokpulee.crescendo.domain.dm.service.DMService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
-import java.time.LocalDateTime;
 
 @Controller
 @RequiredArgsConstructor
 public class MessageController {
 
     private final SimpMessagingTemplate simpMessagingTemplate;
+    private final DMService dmService;
 
+    @MessageMapping("/message")
+    public void send(MessageRequest message) throws Exception {
 
+        MessageResponse messageResponse = dmService.saveMessage(message);
 
-//    @MessageMapping("/chat")
-//    public void send(ChatDto chat) throws Exception {
-//        log.info(chat.toString());
-//
-//        chat.setCreatedAt(LocalDateTime.now());
-//        chatService.saveChat(chat);
-//
-//        UserInfoDto userInfoDto = userService.findByUserId(chat.getUserId());
-//        chat.setNickName(userInfoDto.getNickname());
-//        chat.setProfile(userInfoDto.getProfile());
-//
-//        simpMessagingTemplate.convertAndSend("/topic/messages/" + chat.getTripDetailId(), chat);
-//    }
+        simpMessagingTemplate.convertAndSend("/topic/messages/" + message.getDmGroupId(), message);
+    }
 }

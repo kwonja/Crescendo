@@ -7,6 +7,7 @@ import com.sokpulee.crescendo.domain.goods.service.GoodsService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,7 @@ public class GoodsController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "굿즈 글쓰기", description = "굿즈 글쓰기 API")
     public ResponseEntity<?> addGoods(
-            @AuthPrincipal Long loggedInUserId,
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
             @RequestParam String title,
             @RequestParam String content,
             @RequestParam(required = false) List<MultipartFile> imageList,
@@ -47,13 +48,13 @@ public class GoodsController {
     @DeleteMapping("/{goods-id}")
     @Operation(summary = "굿즈 글삭제", description = "굿즈 글삭제 API")
     public ResponseEntity<?> deleteGoods(
-        @AuthPrincipal Long loggedInUserId,
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
         @PathVariable("goods-id") Long goodsId
     ){
         if (loggedInUserId == null) {
             throw new AuthenticationRequiredException();
         }
-        goodsService.deleteGoods(loggedInUserId,goodsId);
+        goodsService.deleteGoods(goodsId,loggedInUserId);
 
         return ResponseEntity.noContent().build();
     }
@@ -61,7 +62,7 @@ public class GoodsController {
     @PostMapping("/{goods-id}/comment")
     @Operation(summary = "굿즈 댓글쓰기", description = "굿즈 댓글쓰기 API")
     public ResponseEntity<?> addGoodsComment(
-            @AuthPrincipal Long loggedInUserId,
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
             @PathVariable("goods-id") Long goodsId,
             @RequestParam String content
     ){
@@ -78,7 +79,7 @@ public class GoodsController {
     @PostMapping("{goods-id}/comment/{goods-comment-id}/reply")
     @Operation(summary = "굿즈 답글쓰기", description = "굿즈 답글쓰기 API")
     public ResponseEntity<?> addGoodsReply(
-            @AuthPrincipal Long loggedInUserId,
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
             @PathVariable("goods-id") Long goodsId,
             @PathVariable("goods-comment-id") Long goodsCommentId,
             @RequestParam String content

@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: ${SPRING_APPLICATION_NAME}
+  # .env
+  config:
+    import: optional:file:.env[.properties]

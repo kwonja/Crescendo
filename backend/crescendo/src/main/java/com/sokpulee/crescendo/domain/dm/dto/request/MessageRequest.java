@@ -5,15 +5,15 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class ChatRequest {
+public class MessageRequest {
 
     private Long dmGroupId;
-    private Long userId;
+    private Long writerId;
     private String message;
 
-    public ChatRequest(Long dmGroupId, Long userId, String message) {
+    public MessageRequest(Long dmGroupId, Long writerId, String message) {
         this.dmGroupId = dmGroupId;
-        this.userId = userId;
+        this.writerId = writerId;
         this.message = message;
     }
 }

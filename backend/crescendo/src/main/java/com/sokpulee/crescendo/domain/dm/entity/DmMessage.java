@@ -5,6 +5,7 @@ import com.sokpulee.crescendo.global.CreatedAtEntity;
 import com.sokpulee.crescendo.global.TimeStampedEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,4 +28,11 @@ public class DmMessage extends CreatedAtEntity {
 
     @Column(length = 1000)
     private String content;
+
+    @Builder
+    public DmMessage(DmGroup dmGroup, User user, String content) {
+        this.dmGroup = dmGroup;
+        this.user = user;
+        this.content = content;
+    }
 }
