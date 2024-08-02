@@ -3,22 +3,26 @@
     display: inline-block;
 
     &_head {
+        color: #bbbbbb;
         padding: 10px;
         cursor: pointer;
         display: flex;
         justify-content: space-between;
         align-items: center;
+
+        &:hover {
+            background-color:#f1f1f1;
+        }
     }
     
     &_icon {
         margin-left: 10px;
-        margin-right: 10px;  
+        margin-right: 10px;
     }
     
     &_list {
         position: absolute;
         width: 100%;
-        border-top: none;
         max-height: 200px;
         overflow-y: auto;
         background-color: #fff;
@@ -27,9 +31,10 @@
         &_item {
             padding: 10px;
             cursor: pointer;
-        }
-        &_item:hover {
-            background-color: #f1f1f1;  
+
+            &:hover {
+                background-color: #f1f1f1;  
+            }
         }
     }
 }
