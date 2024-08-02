@@ -1,10 +1,12 @@
 import Main from '../pages/Main';
 import CommunityMainPage from '../pages/CommunityMain';
+import CommunityDetail from '../pages/CommunityDetail';
 import App from '../App';
 import { createBrowserRouter } from 'react-router-dom';
 import Login from '../pages/Login.tsx';
 import ErrorPage from '../components/error/ErrorPage';
 import MyPage from '../pages/MyPage';
+
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -22,6 +24,10 @@ export const router = createBrowserRouter([
       {
         path: '/community',
         element: <CommunityMainPage />,
+      },
+      {
+        path: '/community/:idolGroupId',
+        element: <CommunityDetail />,
       },
       {
         path: '/favorite',
