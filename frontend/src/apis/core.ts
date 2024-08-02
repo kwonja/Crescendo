@@ -46,8 +46,12 @@ Authapi.interceptors.response.use(
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true; // 재시도를 방지하기 위한 플래그 설정
       try {
-        // 리프레시 토큰을 사용하여 새로운 엑세스 토큰 요청
-        const response = await axios.post(`${BASE_URL}/api/v1/auth/refresh-token`, {});
+        // 리프레시 토큰을 사용하여 새로운 엑세스 토큰 발급 요청
+        const response = await axios.post(
+          `${BASE_URL}/api/v1/auth/refresh-token`,
+          {},
+          { withCredentials: true },
+        );
         const newAccessToken = response.headers.authorization.split(' ')[1]; // Authorization 헤더에서 새로운 엑세스 토큰 추출
         setAccessToken(newAccessToken); // 새로운 엑세스 토큰을 설정
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;

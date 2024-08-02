@@ -196,6 +196,12 @@
             flex-shrink: 0;
           }
 
+          span {
+            text-decoration: underline;
+            text-underline-offset: 6px;
+            cursor: pointer;
+          }
+
           input:checked + .custom-checkbox {
             background-color: #ff6666; /* 체크박스가 체크될 때 색칠 */
           }

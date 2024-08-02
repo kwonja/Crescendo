@@ -1,98 +1,247 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { api, setAccessToken } from '../../apis/core';
 
-// 인증 관련 상태 인터페이스 정의
+// 인터페이스
 interface AuthState {
-  email: string;
-  loading: boolean;
-  error: string | null;
-  isLoggedIn: boolean;
-  accessToken: string | null;
+  email: string; // 사용자 이메일 주소
+  loading: boolean; // 현재 비동기 작업이 진행 중인지 여부
+  error: string | null; // 비동기 작업 중 발생한 오류 메시지
+  isLoggedIn: boolean; // 사용자 로그인 상태 여부
+  accessToken: string | null; // 로그인 후 받은 엑세스 토큰
+  emailAuthId: number | null; // 이메일 인증 ID
 }
 
-// 초기 상태 정의
+// 초기 상태 정의 (초기값)
 const initialState: AuthState = {
   email: '',
   loading: false,
   error: null,
   isLoggedIn: false,
   accessToken: null,
+  emailAuthId: null,
 };
 
 // 로그인 비동기 함수
+// 성공 시 액세스 토큰을 설정하고 email과 accessToken 반환
+// 실패 시 오류 메시지 반환
+// 리프레쉬 토큰은 httponly secure 쿠키로 오기 때문에 처리 x
 export const login = createAsyncThunk(
   'auth/login',
   async ({ email, password }: { email: string; password: string }, { rejectWithValue }) => {
     try {
-      const response = await api.post(
-        '/api/v1/auth/login',
-        { email, password },
-        { withCredentials: true },
-      );
-      const accessToken = response.headers.authorization.split(' ')[1]; // Authorization 헤더에서 액세스 토큰 추출
-      const refreshToken = response.headers['refresh-token']; // Refresh-Token 헤더에서 리프레시 토큰 추출
-
-      // 리프레시 토큰을 httpOnly 쿠키에 저장
-      document.cookie = `refreshToken=${refreshToken}; path=/; secure; httpOnly`;
-
-      // API 요청하는 콜마다 헤더에 accessToken 담아 보내도록 설정
+      const response = await api.post('/api/v1/auth/login', { email, password });
+      const accessToken = response.headers.authorization.split(' ')[1];
       setAccessToken(accessToken);
-
       return { email, accessToken };
     } catch (error) {
-      return rejectWithValue('Login failed');
+      return rejectWithValue('로그인 실패');
     }
   },
 );
 
-// 인증 슬라이스 생성
+// 이메일 중복 확인 비동기 함수
+export const checkEmailExists = createAsyncThunk(
+  'auth/checkEmailExists',
+  async (email: string, { rejectWithValue }) => {
+    try {
+      await api.post('/api/v1/user/email/exists', { email });
+    } catch (error) {
+      return rejectWithValue('사용중인 이메일입니다.');
+    }
+  },
+);
+
+// 닉네임 중복 확인 비동기 함수
+export const checkNicknameExists = createAsyncThunk(
+  'auth/checkNicknameExists',
+  async (nickname: string, { rejectWithValue }) => {
+    try {
+      await api.post('/api/v1/user/nickname/exists', { nickname });
+    } catch (error) {
+      return rejectWithValue('사용중인 닉네임입니다.');
+    }
+  },
+);
+
+// 회원가입 비동기 함수
+export const signUp = createAsyncThunk(
+  'auth/signUp',
+  async (
+    data: {
+      email: string;
+      password: string;
+      nickname: string;
+      idolId: number;
+      emailAuthId: number;
+      randomKey: string;
+    },
+    { rejectWithValue },
+  ) => {
+    try {
+      await api.post('/api/v1/auth/sign-up', data);
+    } catch (error) {
+      return rejectWithValue('회원가입 실패');
+    }
+  },
+);
+
+// 이메일 인증번호 보내기 비동기 함수
+export const sendVerificationCode = createAsyncThunk(
+  'auth/sendVerificationCode',
+  async (email: string, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/api/v1/auth/email/random-key', { email });
+      return response.data.emailAuthId;
+    } catch (error) {
+      return rejectWithValue('인증번호 전송 실패');
+    }
+  },
+);
+
+// 이메일 인증번호 확인 비동기 함수
+export const verifyEmailCode = createAsyncThunk(
+  'auth/verifyEmailCode',
+  async (
+    { emailAuthId, randomKey }: { emailAuthId: number; randomKey: string },
+    { rejectWithValue },
+  ) => {
+    try {
+      await api.post('/api/v1/auth/email/validation', { emailAuthId, randomKey });
+      return { emailAuthId };
+    } catch (error) {
+      return rejectWithValue('유효하지 않는 인증번호입니다.');
+    }
+  },
+);
+
+// 로그아웃 비동기 함수
+export const logoutUser = createAsyncThunk('auth/logoutUser', async (_, { rejectWithValue }) => {
+  try {
+    await api.post('/api/v1/auth/logout', {});
+    setAccessToken(null); // 엑세스 토큰 삭제
+  } catch (error) {
+    return rejectWithValue('로그아웃 실패');
+  }
+});
+
+// 슬라이스 생성
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    // reset : 초기 상태로 재설정
     reset(state) {
       state.email = '';
       state.loading = false;
       state.error = null;
       state.isLoggedIn = false;
       state.accessToken = null;
+      state.emailAuthId = null;
     },
+    // logout : 로그아웃, 액세스 토큰 제거
     logout(state) {
       state.email = '';
       state.loading = false;
       state.error = null;
       state.isLoggedIn = false;
       state.accessToken = null;
-      setAccessToken(null); // 액세스 토큰을 제거
+      state.emailAuthId = null;
+      setAccessToken(null); // 엑세스 토큰 삭제
     },
   },
-
-  // extraReducers : 비동기 액션(주로 createAsyncThunk로 생성된 액션)을 처리하기 위한 특별한 필드
   extraReducers: builder => {
     builder
-      // 비동기 액션이 시작될 때의 상태 처리
       .addCase(login.pending, state => {
-        state.loading = true; // 로그인 요청 중 상태를 로딩 중으로 설정
-        state.error = null; // 오류 상태 초기화
+        state.loading = true;
+        state.error = null;
       })
-      // 비동기 액션이 성공적으로 완료됐을 때의 상태 처리
       .addCase(
         login.fulfilled,
         (state, action: PayloadAction<{ email: string; accessToken: string }>) => {
-          state.loading = false; // 로딩 상태 해제
-          state.isLoggedIn = true; // 로그인 상태를 true로 설정
-          state.email = action.payload.email; // 서버에서 받은 이메일 저장
-          state.accessToken = action.payload.accessToken; // 서버에서 받은 액세스 토큰 저장
+          state.loading = false;
+          state.isLoggedIn = true;
+          state.email = action.payload.email;
+          state.accessToken = action.payload.accessToken;
         },
       )
-      // 비동기 액션이 실패했을 때의 상태 처리
       .addCase(login.rejected, (state, action) => {
-        state.loading = false; // 로딩 상태 해제
-        state.error = action.payload as string; // 오류 메시지 저장
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(checkEmailExists.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(checkEmailExists.fulfilled, state => {
+        state.loading = false;
+      })
+      .addCase(checkEmailExists.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(checkNicknameExists.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(checkNicknameExists.fulfilled, state => {
+        state.loading = false;
+      })
+      .addCase(checkNicknameExists.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(signUp.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(signUp.fulfilled, state => {
+        state.loading = false;
+      })
+      .addCase(signUp.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(sendVerificationCode.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(sendVerificationCode.fulfilled, (state, action) => {
+        state.loading = false;
+        state.emailAuthId = action.payload;
+      })
+      .addCase(sendVerificationCode.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(verifyEmailCode.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(verifyEmailCode.fulfilled, state => {
+        state.loading = false;
+        state.error = null;
+      })
+      .addCase(verifyEmailCode.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(logoutUser.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(logoutUser.fulfilled, state => {
+        state.loading = false;
+        state.isLoggedIn = false;
+        state.email = '';
+        state.accessToken = null;
+        state.emailAuthId = null;
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });
 
-// 액션 및 리듀서 내보내기
-export const { reset } = authSlice.actions;
+export const { reset, logout } = authSlice.actions;
 export default authSlice.reducer;
