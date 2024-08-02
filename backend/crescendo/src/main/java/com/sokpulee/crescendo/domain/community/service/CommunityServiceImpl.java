@@ -1,6 +1,8 @@
 package com.sokpulee.crescendo.domain.community.service;
 
 import com.sokpulee.crescendo.domain.community.dto.response.FavoritesGetResponse;
+import com.sokpulee.crescendo.domain.community.dto.response.IdolGroupDetailResponse;
+import com.sokpulee.crescendo.domain.community.dto.response.IdolGroupGetResponse;
 import com.sokpulee.crescendo.domain.community.entity.CommunityFavorites;
 import com.sokpulee.crescendo.domain.community.repository.CommunityFavoritesRepository;
 import com.sokpulee.crescendo.domain.idol.entity.IdolGroup;
@@ -20,7 +22,7 @@ import java.util.Optional;
 @Transactional
 @Service
 @RequiredArgsConstructor
-public class CommunityFavoritesServiceImpl implements CommunityFavoritesService {
+public class CommunityServiceImpl implements CommunityService {
 
     private final CommunityFavoritesRepository communityFavoritesRepository;
     private final UserRepository userRepository;
@@ -56,5 +58,39 @@ public class CommunityFavoritesServiceImpl implements CommunityFavoritesService 
                         favorite.getIdolGroup().getName(),
                         favorite.getIdolGroup().getProfile()
         ));
+    }
+
+    @Override
+    public Page<IdolGroupGetResponse> getIdolGroups(Pageable pageable) {
+        return idolGroupRepository.findAll(pageable)
+                .map(idolGroup -> new IdolGroupGetResponse(
+                        idolGroup.getId(),
+                        idolGroup.getName(),
+                        idolGroup.getProfile()
+                ));
+    }
+
+    @Override
+    public IdolGroupDetailResponse getIdolGroupDetail(Long loggedInUserId, Long idolGroupId) {
+        IdolGroup idolGroup = idolGroupRepository.findById(idolGroupId)
+                .orElseThrow(IdolGroupNotFoundException::new);
+
+        IdolGroupDetailResponse.IdolGroupDetailResponseBuilder builder = IdolGroupDetailResponse.builder()
+                .idolGroupId(idolGroup.getId())
+                .name(idolGroup.getName())
+                .peopleNum(idolGroup.getPeopleNum())
+                .introduction(idolGroup.getIntroduction())
+                .profile(idolGroup.getProfile())
+                .banner(idolGroup.getBanner());
+
+        if (loggedInUserId != null) {
+            User user = userRepository.findById(loggedInUserId)
+                    .orElseThrow(UserNotFoundException::new);
+
+            boolean isFavorite  = communityFavoritesRepository.existsByUserAndIdolGroup(user, idolGroup);
+            builder.isFavorite(isFavorite);
+        }
+
+        return builder.build();
     }
 }
