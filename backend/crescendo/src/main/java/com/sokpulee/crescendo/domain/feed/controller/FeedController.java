@@ -2,6 +2,7 @@ package com.sokpulee.crescendo.domain.feed.controller;
 
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedAddRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentAddRequest;
+import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedUpdateRequest;
 import com.sokpulee.crescendo.domain.feed.service.FeedService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
@@ -94,6 +95,37 @@ public class FeedController {
         feedService.addFeedComment(loggedInUserId, feedId, feedCommentAddRequest);
 
         return ResponseEntity.status(CREATED).build();
+    }
+
+    @DeleteMapping("/{feed-id}/comment/{feed-comment-id}")
+    @Operation(summary = "피드 댓글 및 답글 삭제", description = "피드 댓글 및 답글 삭제 API")
+    public ResponseEntity<?> deleteFeedComment(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("feed-id") Long feedId,
+            @PathVariable("feed-comment-id") Long feedCommentId
+    ){
+        if (loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+        feedService.deleteFeedComment(loggedInUserId,feedId,feedCommentId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping(value = "{feed-id}/comment/{feed-comment-id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "피드 댓글 및 답글 수정", description = "피드 댓글 및 답글 수정 API")
+    public ResponseEntity<?> updateFeedComment(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("feed-id") Long feedId,
+            @PathVariable("feed-comment-id") Long feedCommentId,
+            @ModelAttribute FeedCommentUpdateRequest feedCommentUpdateRequest
+    ){
+        if (loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+
+        feedService.updateFeedComment(loggedInUserId, feedId, feedCommentId, feedCommentUpdateRequest);
+
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("{feed-id}/comment/{feed-comment-id}/reply")

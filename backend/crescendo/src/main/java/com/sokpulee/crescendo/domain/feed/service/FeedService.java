@@ -2,6 +2,7 @@ package com.sokpulee.crescendo.domain.feed.service;
 
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedAddRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentAddRequest;
+import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedUpdateRequest;
 
 public interface FeedService {
@@ -14,4 +15,10 @@ public interface FeedService {
     void deleteFeed(Long feedId, Long loggedInUserId);
 
     void updateFeed(Long loggedInUserId,Long feedId, FeedUpdateRequest feedUpdateRequest);
+
+    void deleteFeedComment(Long loggedInUserId,Long feedId,Long feedCommentId);
+
+    void updateFeedComment(Long loggedInUserId, Long feedId, Long feedCommentId, FeedCommentUpdateRequest feedCommentUpdateRequest);
 }
+
+

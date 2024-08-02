@@ -147,8 +147,6 @@ public class FanArtController {
         fanArtService.addFanArtReply(loggedInUserId,fanArtId,fanArtCommentId,fanArtReplyAddRequest);
 
         return ResponseEntity.status(CREATED).build();
-
-
     }
 
 }
