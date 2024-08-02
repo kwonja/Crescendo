@@ -1,15 +1,18 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-// import Header from './components/header/NotLoginHeader';
-import Header from './components/header/LoginHeader';
+import { useSelector } from 'react-redux';
+import { RootState } from './store/store';
+import NotLoginHeader from './components/header/NotLoginHeader';
+import LoginHeader from './components/header/LoginHeader';
 
 import { ToastContainer, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function App() {
+  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
   return (
     <>
-      <Header />
+      {isLoggedIn ? <LoginHeader /> : <NotLoginHeader />}
       <Outlet />
       <ToastContainer
         position="top-center"

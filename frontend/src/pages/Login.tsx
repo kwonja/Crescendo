@@ -5,12 +5,13 @@ import { login } from '../features/auth/authSlice'; // 로그인 액션 임포�
 import { isValidEmail } from '../utils/EmailValidation'; // 이메일 유효성 검사 함수 임포트
 import { isValidPassword } from '../utils/PasswordValidation'; // 비밀번호 유효성 검사 함수 임포트
 import { ReactComponent as Visualization } from '../assets/images/visualization.svg'; // 비밀번호 시각화 아이콘 임포트
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../scss/page/_login.scss';
 
 const Login: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>(); // Redux 디스패치를 사용하여 액션 전송
-  const { error, loading } = useSelector((state: RootState) => state.auth); // Redux 스토어에서 인증 상태 선택
+  const { error, loading, isLoggedIn } = useSelector((state: RootState) => state.auth); // Redux 스토어에서 인증 상태 선택
+  const navigate = useNavigate();
   const [email, setEmail] = useState(localStorage.getItem('email') || ''); // 로컬 스토리지에서 이메일 불러오기
   const [password, setPassword] = useState(''); // 비밀번호 상태 관리
   const [showPassword, setShowPassword] = useState(false); // 비밀번호 시각화 상태 관리
@@ -24,6 +25,12 @@ const Login: React.FC = () => {
       dispatch(login({ email, password }));
     }
   }, [autoLogin, dispatch, email, password]);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate('/'); // 로그인 성공 시 메인 페이지로 이동
+    }
+  }, [isLoggedIn, navigate]);
 
   // 이메일 입력이 변경될 때 호출되는 함수
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
