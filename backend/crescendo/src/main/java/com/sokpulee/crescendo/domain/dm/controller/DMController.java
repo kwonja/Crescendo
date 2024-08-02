@@ -15,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static org.springframework.http.HttpStatus.*;
 
 @RestController
@@ -82,17 +84,15 @@ public class DMController {
     @GetMapping("/my-dm-group")
     @Operation(summary = "내 DM 목록 조회(내 대화 리스트 조회용)", description = "내 DM 목록 조회(내 대화 리스트 조회용) API")
     public ResponseEntity<?> getMyDmGroups(
-            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
-            @RequestParam int page,
-            @RequestParam int size
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId
     ) {
         if(loggedInUserId == null) {
             throw new AuthenticationRequiredException();
         }
 
-        Pageable pageable = PageRequest.of(page, size);
-        Page<DmGroupResponseDto> dmGroups = dmService.findDmGroupsByUserId(loggedInUserId, pageable);
-        return ResponseEntity.ok(dmGroups);
+        List<DmGroupResponseDto> response = dmService.findDmGroupsByUserId(loggedInUserId);
+
+        return ResponseEntity.status(OK).body(response);
     }
 
     @GetMapping("/dm-group/{dm-group-id}")
