@@ -39,5 +39,8 @@ public class FeedComment extends TimeStampedEntity {
         this.parentFeedComment = parentFeedComment;
     }
 
+    public void changeComment(String content){
+        this.content = content;
+    }
 
 }
