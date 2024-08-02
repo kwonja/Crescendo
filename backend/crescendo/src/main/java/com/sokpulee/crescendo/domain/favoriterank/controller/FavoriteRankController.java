@@ -89,7 +89,7 @@ public class FavoriteRankController {
     @PostMapping("/{favorite-rank-id}/vote")
     @Operation(summary = "전국 최애 자랑 투표", description = "전국 최애 자랑 투표 API")
     public ResponseEntity<?> voteFavoriteRank(
-            @AuthPrincipal Long loggedInUserId,
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
             @PathVariable("favorite-rank-id") Long favoriteRankId) {
 
         if(loggedInUserId == null) {
