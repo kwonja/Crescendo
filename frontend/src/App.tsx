@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import Header from './components/header/NotLoginHeader';
-// import Header from './components/header/LoginHeader';
+// import Header from './components/header/NotLoginHeader';
+import Header from './components/header/LoginHeader';
 
 import { ToastContainer, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';

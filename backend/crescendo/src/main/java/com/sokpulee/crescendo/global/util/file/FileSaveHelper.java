@@ -10,4 +10,12 @@ public interface FileSaveHelper {
     String saveFeedImage(MultipartFile feedImage);
 
     String saveFanArtImage(MultipartFile fanArtImage);
+
+    String saveGoodsImage(MultipartFile goodsImage);
+
+    String saveFavoriteRankImage(MultipartFile favoriteIdolImage);
+
+    String saveQuizThumbnailImage(MultipartFile thumbnailImage);
+
+    String saveQuizQuestionImage(MultipartFile quizImage);
 }

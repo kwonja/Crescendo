@@ -1,6 +1,8 @@
 package com.sokpulee.crescendo.domain.user.controller;
 
+import com.sokpulee.crescendo.domain.follow.dto.UserDto;
 import com.sokpulee.crescendo.domain.user.dto.request.user.*;
+import com.sokpulee.crescendo.domain.user.dto.response.user.NickNameSearchingResponse;
 import com.sokpulee.crescendo.domain.user.dto.response.user.UserInfoResponse;
 import com.sokpulee.crescendo.domain.user.service.user.UserService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
@@ -10,6 +12,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -126,6 +131,17 @@ public class UserController {
         userService.updatePassword(loggedInUserId, passwordUpdateMyPageRequest);
 
         return ResponseEntity.status(NO_CONTENT).build();
+    }
+
+    @GetMapping("/search")
+    @Operation(summary = "회원 검색(닉네임)", description = "회원 검색(닉네임) API")
+    public Page<NickNameSearchingResponse> searchUsersByNickname(
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam("nickname") String nickname
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userService.searchUsersByNickname(nickname, pageable);
     }
 
 }

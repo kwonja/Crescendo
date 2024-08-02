@@ -21,6 +21,10 @@ public class FileSaver implements FileSaveHelper {
     private final String PROFILE_DIR = "profile";
     private final String FEED_DIR = "feed";
     private final String FANART_DIR = "fanart";
+    private final String GOODS_DIR = "goods";
+    private final String FAVORITE_RANK_DIR = "favoriteRank";
+    private final String QUIZ_THUMBNAIL_DIR = "quizThumbnail";
+    private final String QUIZ_QUESTION_DIR = "quizQuestion";
 
     @Override
     public void deleteFile(String filePath) {
@@ -37,15 +41,29 @@ public class FileSaver implements FileSaveHelper {
     }
 
     @Override
-    public String saveUserProfile(MultipartFile profileImage) {
-        return saveFile(profileImage, PROFILE_DIR);
-    }
+    public String saveUserProfile(MultipartFile profileImage) { return saveFile(profileImage, PROFILE_DIR); }
 
     @Override
     public String saveFeedImage(MultipartFile feedImage) { return saveFile(feedImage, FEED_DIR); }
 
     @Override
     public String saveFanArtImage(MultipartFile fanArtImage) { return saveFile(fanArtImage, FANART_DIR); }
+
+    @Override
+    public String saveGoodsImage(MultipartFile goodsImage) { return saveFile(goodsImage, GOODS_DIR); }
+
+    @Override
+    public String saveFavoriteRankImage(MultipartFile favoriteIdolImage) { return saveFile(favoriteIdolImage, FAVORITE_RANK_DIR); }
+
+    @Override
+    public String saveQuizThumbnailImage(MultipartFile thumbnailImage) {
+        return saveFile(thumbnailImage, QUIZ_THUMBNAIL_DIR);
+    }
+
+    @Override
+    public String saveQuizQuestionImage(MultipartFile quizImage) {
+        return saveFile(quizImage, QUIZ_QUESTION_DIR);
+    }
 
     public String saveFile(MultipartFile profileImage, String dir) {
         String realPath = uploadDir + File.separator + dir;

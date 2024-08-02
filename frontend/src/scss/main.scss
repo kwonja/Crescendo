@@ -3,14 +3,27 @@
 @import 'tailwindcss/utilities';
 
 @import 'components/common/buttons';
-@import 'components/header/settingmenu';
+@import 'components/header/usermenu';
+@import 'components/header/chatroom';
 @import 'components/header/header';
 @import 'components/mypage/profile';
 @import 'components/mypage/friendlist';
 @import 'components/mypage/friendprofile';
-@import 'base/font';
-@import 'page/login';
-@import 'layout/frame';
+@import 'components/common/feed';
 @import 'components/common/search';
+@import 'components/common/gallery';
+@import 'components/common/gallerylist';
+@import 'components/community/communitycard';
+@import 'components/community/communityfavoritelist';
+@import 'components/community/communitylist';
+
+@import 'base/font';
 @import 'page/mypage';
+<<<<<<< HEAD
 @import 'components/signup/termsmodal';
+=======
+@import 'page/login';
+@import 'page/communitymain';
+@import 'page/communitydetail';
+@import 'layout/frame';
+>>>>>>> 6cc6dc9e40236362ea2f4cdfd6afd45c2d261474

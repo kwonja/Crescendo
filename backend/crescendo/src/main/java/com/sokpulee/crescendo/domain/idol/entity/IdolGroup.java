@@ -2,6 +2,7 @@ package com.sokpulee.crescendo.domain.idol.entity;
 
 import com.sokpulee.crescendo.global.TimeStampedEntity;
 import jakarta.persistence.*;
+import jdk.jfr.Name;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,8 @@ import lombok.NoArgsConstructor;
 public class IdolGroup extends TimeStampedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idolGroupId;
+    @Column(name = "idol_group_id")
+    private Long id;
 
     @Column(length = 50)
     private String name;

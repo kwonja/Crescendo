@@ -36,6 +36,9 @@
       align-items: center;
       position: relative;
     }
+    .active {
+      font-size: 32px;
+    }
   }
   .indicator {
     position: absolute;
@@ -58,8 +61,8 @@
     margin-right: 30px;
     margin-left: auto;
     position: relative;
-    
-    div{
+
+    &_div {
       width: 60px;
       height: 60px;
       display: flex;
@@ -67,14 +70,26 @@
       align-items: center;
       cursor: pointer;
     }
-    
-    .selected {
-      width: 60px;
-      height: 60px;
-      border-radius: 10px 0px 10px 10px;
-      background: #FEA3A3;
-    }
 
-    
+    .chat {
+      border-radius: 10px 10px 0px 0px;
+      background: #fea3a3;
+      box-shadow: 4px 1px 4px 0px rgba(0, 0, 0, 0.25);
+    }
+    .alarm {
+      border-radius: 10px 10px 0px 0px;
+      background: #fea3a3;
+      box-shadow: 4px 1px 4px 0px rgba(0, 0, 0, 0.25);
+    }
+    .userlist {
+      border-radius: 10px 10px 0px 0px;
+      background: #fea3a3;
+      box-shadow: 4px 1px 4px 0px rgba(0, 0, 0, 0.25);
+    }
+    .user {
+      border-radius: 10px 10px 0px 0px;
+      box-shadow: 4px 1px 4px 0px rgba(0, 0, 0, 0.25);
+      background: #fea3a3;
+    }
   }
 }

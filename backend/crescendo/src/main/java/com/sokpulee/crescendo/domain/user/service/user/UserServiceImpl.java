@@ -2,6 +2,7 @@ package com.sokpulee.crescendo.domain.user.service.user;
 
 import com.sokpulee.crescendo.domain.follow.repository.FollowRepository;
 import com.sokpulee.crescendo.domain.user.dto.request.user.*;
+import com.sokpulee.crescendo.domain.user.dto.response.user.NickNameSearchingResponse;
 import com.sokpulee.crescendo.domain.user.dto.response.user.UserInfoResponse;
 import com.sokpulee.crescendo.domain.user.entity.User;
 import com.sokpulee.crescendo.domain.user.repository.UserRepository;
@@ -12,8 +13,14 @@ import com.sokpulee.crescendo.global.exception.custom.UserNotFoundException;
 import com.sokpulee.crescendo.global.util.encrypt.EnctyptHelper;
 import com.sokpulee.crescendo.global.util.file.FileSaveHelper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -113,5 +120,15 @@ public class UserServiceImpl implements UserService {
         else {
             user.updatePassword(enctyptHelper.encrypt(passwordUpdateMyPageRequest.getNewPassword()));
         }
+    }
+
+    @Override
+    public Page<NickNameSearchingResponse> searchUsersByNickname(String nickname, Pageable pageable) {
+        Page<User> users = userRepository.findByNickname(nickname, pageable);
+        List<NickNameSearchingResponse> results = users.getContent().stream()
+                .map(user -> new NickNameSearchingResponse(user.getId(), user.getProfilePath(), user.getNickname()))
+                .toList();
+
+        return new PageImpl<>(results, pageable, users.getTotalElements());
     }
 }
