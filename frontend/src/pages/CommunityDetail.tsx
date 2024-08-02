@@ -3,10 +3,9 @@ import { ReactComponent as FullStar } from "../assets/images/fullstar.svg"
 import { ReactComponent as Star } from "../assets/images/star.svg"
 import React, { useEffect, useRef, useState } from 'react';
 import SearchInput from "../components/common/SearchInput";
-import { ReactComponent as MenuDown } from '../assets/images/down.svg';
-import { ReactComponent as MenuUp } from '../assets/images/up.svg';
 import FeedList from "../components/common/FeedList";
 import GalleryList from "../components/common/GalleryList";
+import Dropdown from "../components/common/Dropdown";
 
 type communityDetailInfoType = {
   idolGroupId: number,
@@ -39,6 +38,9 @@ export default function CommunityDetail() {
   const [isFavorite, setisFavorite] = useState<boolean>(false);
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
   const menuRef = useRef<HTMLDivElement>(null);
+  const [filterOption, setFilterOption] = useState<string>('필터');
+  const [sortOption, setSortOption] = useState<string>('정렬');
+  const [searchOption, setSearchOption] = useState<string>('검색');
 
   function clickStar() {
     setisFavorite((prev)=>!prev);
@@ -56,6 +58,9 @@ export default function CommunityDetail() {
         });
       }
     }
+    setFilterOption('필터');
+    setSortOption('정렬');
+    setSearchOption('검색');
   }, [isSelected]);
 
 
@@ -86,17 +91,31 @@ export default function CommunityDetail() {
         </div>
         <div className="conditionbar">
             <div className="filter menu">
-              <div className="text">필터</div>
-              <MenuDown/>
+              <Dropdown
+                className="text"
+                selected={filterOption}
+                options={["전체", "팔로우만"]}
+                onSelect={(selected)=>setFilterOption(selected)}
+              />
             </div>
             <div className="search">
-              <div className = "sortby menu">
-                <MenuDown/>
-                <div className="text">정렬</div>
+              <div className = "sort menu">
+                <Dropdown
+                  className="text"
+                  selected={sortOption}
+                  options={["가나다순", "최신순", "좋아요순"]}
+                  onSelect={(selected)=>setSortOption(selected)}
+                  iconPosition="left"
+                />
               </div>
-              <div className = "searchby menu">
-                <MenuDown/>
-                <div className="text">검색</div>
+              <div className = "search menu">
+                <Dropdown
+                  className="text"
+                  selected={searchOption}
+                  options={["제목", "작성자"]}
+                  onSelect={(selected)=>setSearchOption(selected)}
+                  iconPosition="left"
+                />
               </div>
               <SearchInput placeholder="여기에 입력하세요"></SearchInput>
             </div>
