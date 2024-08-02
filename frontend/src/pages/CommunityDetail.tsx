@@ -2,6 +2,11 @@ import { useParams } from "react-router-dom"
 import { ReactComponent as FullStar } from "../assets/images/fullstar.svg"
 import { ReactComponent as Star } from "../assets/images/star.svg"
 import React, { useEffect, useRef, useState } from 'react';
+import SearchInput from "../components/common/SearchInput";
+import { ReactComponent as MenuDown } from '../assets/images/down.svg';
+import { ReactComponent as MenuUp } from '../assets/images/up.svg';
+import FeedList from "../components/common/FeedList";
+import GalleryList from "../components/common/GalleryList";
 
 type communityDetailInfoType = {
   idolGroupId: number,
@@ -28,9 +33,10 @@ export default function CommunityDetail() {
   }
   const favoriteNum = 0;
   const isLogin = true;
+  // 임시 데이터
 
   const [isSelected, setIsSelected] = useState<'feed' | 'gallery'>('feed');
-  const [isFavorite, setisFavorite] = useState<boolean>(communityDetailInfo.isFavorite); // 비동기식으로 옮길땐 로드 이후 세팅해야할듯?
+  const [isFavorite, setisFavorite] = useState<boolean>(false);
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -62,7 +68,8 @@ export default function CommunityDetail() {
           isFavorite?<FullStar className="hoverup" onClick={clickStar}/>
           :<Star className="hoverup" onClick={clickStar}/>}</div>}
       </div>
-      <div className="category" ref={menuRef}>
+      <div className="communitydetail_container">
+        <div className="category" ref={menuRef}>
           <div
             className={`item ${isSelected === 'feed' ? 'active' : ''}`}
             onClick={() => setIsSelected('feed')}
@@ -77,5 +84,25 @@ export default function CommunityDetail() {
           </div>
           <div className="indicator" style={indicatorStyle}></div>
         </div>
+        <div className="conditionbar">
+            <div className="filter menu">
+              <div className="text">필터</div>
+              <MenuDown/>
+            </div>
+            <div className="search">
+              <div className = "sortby menu">
+                <MenuDown/>
+                <div className="text">정렬</div>
+              </div>
+              <div className = "searchby menu">
+                <MenuDown/>
+                <div className="text">검색</div>
+              </div>
+              <SearchInput placeholder="여기에 입력하세요"></SearchInput>
+            </div>
+        </div>
+        {isSelected === 'feed' && <FeedList />}
+        {isSelected === 'gallery' && <GalleryList />}
+      </div>
     </div>
 }

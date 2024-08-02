@@ -16,7 +16,7 @@
           right: 320px;
           color: white;
           text-align: right;
-          font-size: 66px;
+          font-size: 84px;
           // font-family: ;
       }
 
@@ -26,7 +26,7 @@
           right: 320px;
           color: white;
           text-align: right;
-          font-size: 45px;
+          font-size: 54px;
       }
 
       &_star {
@@ -39,6 +39,13 @@
             transform: scale(1.1);
           }
       }
+  }
+
+  &_container {
+    display: flex;
+    flex-direction: column;
+    width: 1300px;
+    margin: auto;
   }
 
   .category {
@@ -75,5 +82,32 @@
       .active {
         color: #f66;
       }
+  }
+  
+  .conditionbar {
+    display:flex;
+    justify-content: space-between;
+    padding: 20px;
+
+    .text {
+      color: #bbbbbb;
+      font-size: 32px;
     }
+
+    .menu {
+      display: flex;
+      align-items: center;
+      margin-right: 20px;
+    }
+
+    .search {
+      display: flex;
+      align-items: center;
+  
+      input {
+        border: 2px solid #f66;
+      }
+  }
+
+  }
 }
