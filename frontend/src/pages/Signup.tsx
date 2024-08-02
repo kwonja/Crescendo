@@ -10,9 +10,14 @@ import {
 } from '../features/auth/authSlice';
 import { isValidEmail } from '../utils/EmailValidation';
 import { isValidPassword } from '../utils/PasswordValidation';
+import {
+  isValidNickname,
+  isExactForbiddenNickname,
+  isIncludedForbiddenNickname,
+} from '../utils/NicknameValidation';
 import { ReactComponent as Visualization } from '../assets/images/visualization.svg';
 import TermsModal from '../components/signup/TermsModal';
-import { toast } from 'react-toastify';
+import { toast, Bounce } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import '../scss/page/_signup.scss';
 
@@ -128,6 +133,31 @@ const SignUp = () => {
     }
   };
 
+  const handleModal = () => {
+    setIsModalOpen(true);
+    toast(
+      <div className="toast-message">
+        <p className="toast-message-success">🎉 회원가입 성공! 🎉</p>
+        <p className="toast-message-movetologin">로그인 페이지로 이동합니다.</p>
+      </div>,
+      {
+        position: 'top-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce,
+        className: 'toast-signup',
+      },
+    );
+    setTimeout(() => {
+      navigate('/login');
+    }, 2000);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -167,6 +197,18 @@ const SignUp = () => {
       hasError = true;
     }
 
+    // 닉네임 유효성 검사
+    if (isExactForbiddenNickname(nickname)) {
+      errors.nickname = '사용할 수 없는 닉네임입니다.';
+      hasError = true;
+    } else if (isIncludedForbiddenNickname(nickname)) {
+      errors.nickname = '욕설이 포함된 닉네임은 사용할 수 없습니다.';
+      hasError = true;
+    } else if (!isValidNickname(nickname)) {
+      errors.nickname = '닉네임은 영어, 숫자 또는 한글로 구성되며 최대 10글자여야 합니다.';
+      hasError = true;
+    }
+
     if (hasError) {
       setFieldErrors(errors);
       return;
@@ -191,7 +233,24 @@ const SignUp = () => {
     );
 
     if (signUp.fulfilled.match(result)) {
-      toast.success('회원가입 성공! 로그인 페이지로 이동합니다.');
+      toast(
+        <div className="toast-message">
+          <p className="toast-message-success">🎉 회원가입 성공! 🎉</p>
+          <p className="toast-message-movetologin">로그인 페이지로 이동합니다.</p>
+        </div>,
+        {
+          position: 'top-center',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+          transition: Bounce,
+          className: 'toast-signup',
+        },
+      );
       setTimeout(() => {
         navigate('/login');
       }, 2000);
@@ -313,7 +372,7 @@ const SignUp = () => {
                 placeholder="닉네임 입력"
                 value={nickname}
                 onChange={handleNicknameChange}
-                maxLength={30}
+                maxLength={10} // 10글자 제한
                 required
               />
             </div>
@@ -330,7 +389,8 @@ const SignUp = () => {
               />
               <div className="custom-checkbox"></div>
               <label>
-                <span className="terms-link" onClick={() => setIsModalOpen(true)}>
+                {/* <span className="terms-link" onClick={() => setIsModalOpen(true)}> */}
+                <span className="terms-link" onClick={handleModal}>
                   약관
                 </span>
                 에 동의합니다.
