@@ -38,4 +38,8 @@ public class GoodsComment extends TimeStampedEntity {
         this.content = content;
         this.parentGoodsComment = parentGoodsComment;
     }
+
+    public void changeComment(String content){
+        this.content = content;
+    }
 }

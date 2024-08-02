@@ -98,7 +98,7 @@ public class DMController {
     @GetMapping("/dm-group/{dm-group-id}")
     @Operation(summary = "DM 내역 불러오기", description = "DM 내역 불러오기 API")
     public ResponseEntity<?> getDmMessages(
-            @AuthPrincipal Long loggedInUserId,
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
             @PathVariable("dm-group-id") Long dmGroupId,
             @RequestParam int page,
             @RequestParam int size

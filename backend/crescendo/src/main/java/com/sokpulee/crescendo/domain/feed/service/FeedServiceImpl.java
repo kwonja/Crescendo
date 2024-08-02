@@ -1,7 +1,10 @@
 package com.sokpulee.crescendo.domain.feed.service;
 
+import com.sokpulee.crescendo.domain.fanart.entity.FanArt;
+import com.sokpulee.crescendo.domain.fanart.entity.FanArtComment;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedAddRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentAddRequest;
+import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedUpdateRequest;
 import com.sokpulee.crescendo.domain.feed.entity.Feed;
 import com.sokpulee.crescendo.domain.feed.entity.FeedComment;
@@ -141,6 +144,44 @@ public class FeedServiceImpl implements FeedService {
 
 
         feedRepository.save(feed);
+    }
+
+    @Override
+    public void deleteFeedComment(Long loggedInUserId, Long feedId, Long feedCommentId) {
+        Feed feed = feedRepository.findById(feedId)
+                .orElseThrow(FeedNotFoundException::new);
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        FeedComment feedComment = feedCommentRepository.findById(feedCommentId)
+                .orElseThrow(FeedCommentNotFoundException::new);
+
+        if (!feedComment.getUser().getId().equals(loggedInUserId)) {
+            throw new UnAuthorizedAccessException();
+        }
+
+        feedCommentRepository.delete(feedComment);
+    }
+
+    @Override
+    public void updateFeedComment(Long loggedInUserId, Long feedId, Long feedCommentId, FeedCommentUpdateRequest feedCommentUpdateRequest) {
+        Feed feed = feedRepository.findById(feedId)
+                .orElseThrow(FeedNotFoundException::new);
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        FeedComment feedComment = feedCommentRepository.findById(feedCommentId)
+                .orElseThrow(FeedCommentNotFoundException::new);
+
+        if (!feedComment.getUser().getId().equals(loggedInUserId)) {
+            throw new UnAuthorizedAccessException();
+        }
+
+        feedComment.changeComment(feedCommentUpdateRequest.getContent());
+
+        feedCommentRepository.save(feedComment);
     }
 
     @Override

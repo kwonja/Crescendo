@@ -1,16 +1,17 @@
 package com.sokpulee.crescendo.domain.goods.controller;
 
-import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentAddRequest;
+import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentUpdateRequest;
+import com.sokpulee.crescendo.domain.goods.dto.request.GoodsUpdateRequest;
 import com.sokpulee.crescendo.domain.goods.service.GoodsService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -59,6 +60,22 @@ public class GoodsController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping(value = "{goods-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "굿즈 글수정", description = "굿즈 글수정 API")
+    public ResponseEntity<?> updateGoods(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("goods-id") Long goodsId,
+            @Valid @ModelAttribute GoodsUpdateRequest goodsUpdateRequest
+    ){
+        if(loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+
+        goodsService.updateGoods(loggedInUserId,goodsId,goodsUpdateRequest);
+
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/{goods-id}/comment")
     @Operation(summary = "굿즈 댓글쓰기", description = "굿즈 댓글쓰기 API")
     public ResponseEntity<?> addGoodsComment(
@@ -74,6 +91,37 @@ public class GoodsController {
         goodsService.addGoodsComment(loggedInUserId,goodsId,goodsCommentAddRequest);
 
         return ResponseEntity.status(CREATED).build();
+    }
+
+    @DeleteMapping("/{goods-id}/comment/{goods-comment-id}")
+    @Operation(summary = "굿즈 댓글 및 답글 삭제", description = "굿즈 댓글 및 답글 삭제 API")
+    public ResponseEntity<?> deleteGoodsComment(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("goods-id") Long goodsId,
+            @PathVariable("goods-comment-id") Long goodsCommentId
+    ){
+        if (loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+        goodsService.deleteGoodsComment(loggedInUserId,goodsId,goodsCommentId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping(value = "{goods-id}/comment/{goods-comment-id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "굿즈 댓글 및 답글 수정", description = "굿즈 댓글 및 답글 수정 API")
+    public ResponseEntity<?> updateGoodsComment(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("goods-id") Long goodsId,
+            @PathVariable("goods-comment-id") Long goodsCommentId,
+            @ModelAttribute GoodsCommentUpdateRequest goodsCommentUpdateRequest
+    ){
+        if (loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+
+        goodsService.updateGoodsComment(loggedInUserId,goodsId,goodsCommentId,goodsCommentUpdateRequest);
+
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("{goods-id}/comment/{goods-comment-id}/reply")
@@ -94,8 +142,6 @@ public class GoodsController {
 
         return ResponseEntity.status(CREATED).build();
     }
-
-
 
 
 
