@@ -15,7 +15,10 @@
     padding: 10px;
     font-size: 18px;
     color: #000;
+    max-width: 200px;
     margin-left: 10px;
+    box-sizing: border-box; /* 패딩과 보더를 너비에 포함 */
+    word-wrap: break-word; /* 단어가 너무 길 경우 줄 바꿈 */
   }
 }
 

@@ -10,15 +10,17 @@ import { BASE_URL } from '../../apis/core';
 import SockJS from 'sockjs-client';
 import { CompatClient, Stomp } from '@stomp/stompjs';
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
-import { setIsSelected, setSelectedGroupId } from '../../features/chat/chatroomSlice';
+import { setIsSelected, setSelectedGroup } from '../../features/chat/chatroomSlice';
 import { getMessages, setMessage } from '../../features/chat/messageSlice';
+import { ChatDateTranfer } from '../../utils/ChatDateTranfer';
 
 export default function Chatroom() {
   const client = useRef<CompatClient | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { selectedGroupId } = useAppSelector(state => state.chatroom);
+  const { selectedGroup } = useAppSelector(state => state.chatroom);
   const { messageList } = useAppSelector(state => state.message);
+  const messageListRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
 
   const connect = useCallback(() => {
@@ -28,7 +30,7 @@ export default function Chatroom() {
       {},
       (frame: string) => {
         console.log('Connected: ' + frame);
-        client.current?.subscribe(`/topic/messages/${selectedGroupId}`, content => {
+        client.current?.subscribe(`/topic/messages/${selectedGroup.dmGroupId}`, content => {
           const newMessage = JSON.parse(content.body);
           dispatch(setMessage(newMessage));
         });
@@ -38,7 +40,7 @@ export default function Chatroom() {
         console.error('Connection error: ', error);
       },
     );
-  }, [selectedGroupId, dispatch]);
+  }, [selectedGroup.dmGroupId, dispatch]);
 
   const HandleMessageSend = () => {
     const message = inputRef.current!.value;
@@ -47,7 +49,7 @@ export default function Chatroom() {
       '/app/message',
       {},
       JSON.stringify({
-        dmGroupId: selectedGroupId,
+        dmGroupId: selectedGroup.dmGroupId,
         message: message,
         writerId: 1,
       }),
@@ -73,6 +75,11 @@ export default function Chatroom() {
     };
   }, [connect]);
 
+  useEffect(() => {
+    if (messageListRef.current) {
+      messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
+    }
+  }, [messageList]);
   return (
     <div className="chatroom">
       <div className="upper">
@@ -80,31 +87,36 @@ export default function Chatroom() {
           <Back
             onClick={() => {
               dispatch(setIsSelected(false));
-              dispatch(setSelectedGroupId(0));
+              dispatch(setSelectedGroup({
+                dmGroupId: 0,
+                opponentId:0,
+              opponentProfilePath: '',
+              opponentNickName: '',
+              lastChatting: '',
+              lastChattingTime: ''
+              }));
             }}
           />
         </div>
-        <div>권자몬</div>
+        <div>{selectedGroup.opponentNickName}</div>
         <Hamburger />
       </div>
       <div className="date">
         <Line style={{ width: 20 }} />
-        <div>2024 년 07 월 24 일</div>
+        <div>{ChatDateTranfer(selectedGroup.lastChattingTime)}</div>
         <Line />
       </div>
+      <div className='messagelist' ref={messageListRef}>
       {messageList.map(message => (
         <div key={message.dmMessageId}>
           {message.writerId === 1 ? (
-            <div className="my-message">
               <MyMessage message={message} />
-            </div>
           ) : (
-            <div className="other-message">
               <OtherMessage />
-            </div>
           )}
         </div>
       ))}
+      </div>
       <div className="send-container">
         <span>
           <input

@@ -13,6 +13,6 @@ export const Authapi = axios.create(config);
 //Authapi에 .interceptors 같은거 붙여서 인증예외처리도 가능!
 
 Authapi.interceptors.request.use(config => {
-  config.headers.Authorization = `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhY2Nlc3MtdG9rZW4iLCJpYXQiOjE3MjI1ODcwNjgsImV4cCI6MTcyMjU5MDY2OCwidXNlcklkIjoxfQ.iQ55_etQvN9pJ_4TPVxx6G1Et4U9isJusr44vDucsME`;
+  config.headers.Authorization = `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhY2Nlc3MtdG9rZW4iLCJpYXQiOjE3MjI2MDMzNjQsImV4cCI6MTcyMjYwNjk2NCwidXNlcklkIjoxfQ.fJPPFadrLpfpJM97XW7S7s2EPT-Q1mfYnPrabq0atco`;
   return config;
 });

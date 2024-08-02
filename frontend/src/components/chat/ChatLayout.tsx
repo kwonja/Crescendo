@@ -4,16 +4,17 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
 import {
   getUserChatRoomList,
   setIsSelected,
-  setSelectedGroupId,
+  setSelectedGroup,
 } from '../../features/chat/chatroomSlice';
+import { ChatRoom } from '../../interface/chat';
 
 export default function ChatLayout() {
   const { chatRoomList } = useAppSelector(state => state.chatroom);
   const dispatch = useAppDispatch();
 
-  const HandleClick = (GroudId: number) => {
+  const HandleClick = (Group: ChatRoom) => {
     dispatch(setIsSelected(true));
-    dispatch(setSelectedGroupId(GroudId));
+    dispatch(setSelectedGroup(Group));
   };
   useEffect(() => {
     const promise = dispatch(getUserChatRoomList());
