@@ -1,5 +1,6 @@
 package com.sokpulee.crescendo.domain.quiz.dto.request;
 
+import com.sokpulee.crescendo.domain.quiz.dto.QuizQuestionDTO;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -23,20 +24,9 @@ public class QuizCreateRequest {
     private MultipartFile thumbnail;
 
     @NotNull(message = "퀴즈 문제들은 필수 값 입니다.")
-    private List<QuizQuestionDTO> questionList;
+    private List<QuizQuestionRequest> questionList;
 
-    @Getter
-    public static class QuizQuestionDTO {
-        private MultipartFile quizImage;
-        private List<String> answer;
-
-        public QuizQuestionDTO(MultipartFile quizImage, List<String> answer) {
-            this.quizImage = quizImage;
-            this.answer = answer;
-        }
-    }
-
-    public QuizCreateRequest(String title, String content, Integer questionNum, MultipartFile thumbnail, List<QuizQuestionDTO> questionList) {
+    public QuizCreateRequest(String title, String content, Integer questionNum, MultipartFile thumbnail, List<QuizQuestionRequest> questionList) {
         this.title = title;
         this.content = content;
         this.questionNum = questionNum;
