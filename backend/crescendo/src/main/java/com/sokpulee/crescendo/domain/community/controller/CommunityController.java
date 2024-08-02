@@ -1,7 +1,9 @@
 package com.sokpulee.crescendo.domain.community.controller;
 
 import com.sokpulee.crescendo.domain.community.dto.response.FavoritesGetResponse;
-import com.sokpulee.crescendo.domain.community.service.CommunityFavoritesService;
+import com.sokpulee.crescendo.domain.community.dto.response.IdolGroupDetailResponse;
+import com.sokpulee.crescendo.domain.community.dto.response.IdolGroupGetResponse;
+import com.sokpulee.crescendo.domain.community.service.CommunityService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,17 +16,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 import static org.springframework.http.HttpStatus.*;
 
 @RestController
-@RequestMapping("/api/v1/favorites")
+@RequestMapping("/api/v1/community")
 @RequiredArgsConstructor
 @Tag(name = "Community", description = "커뮤니티 관련 API")
 public class CommunityController {
 
-    private final CommunityFavoritesService communityFavoritesService;
+    private final CommunityService communityService;
 
-    @PostMapping("/idol-group/{idolGroupId}")
+    @PostMapping("/favorites/idol-group/{idolGroupId}")
     @Operation(summary = "즐겨찾기", description = "즐겨찾기 API")
     public ResponseEntity<Void> toggleFavorite(
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
@@ -35,7 +39,7 @@ public class CommunityController {
             throw new AuthenticationRequiredException();
         }
 
-        communityFavoritesService.toggleFavorite(idolGroupId, loggedInUserId);
+        communityService.toggleFavorite(idolGroupId, loggedInUserId);
         return ResponseEntity.status(NO_CONTENT).build();
     }
 
@@ -47,8 +51,26 @@ public class CommunityController {
             @RequestParam(defaultValue = "10") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<FavoritesGetResponse> favorites = communityFavoritesService.getFavorites(loggedInUserId, pageable);
+        Page<FavoritesGetResponse> favorites = communityService.getFavorites(loggedInUserId, pageable);
 
         return ResponseEntity.status(OK).body(favorites);
+    }
+
+    @GetMapping
+    @Operation(summary = "커뮤니티 아이돌 그룹 조회", description = "커뮤니티 아이돌 그룹 조회 API")
+    public Page<IdolGroupGetResponse> getIdolGroups(@RequestParam int page, @RequestParam int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return communityService.getIdolGroups(pageable);
+    }
+
+    @GetMapping("/idol-group/{idol-group-id}")
+    @Operation(summary = "커뮤니티 아이돌 그룹 상세 조회", description = "커뮤니티 아이돌 그룹 상세 조회 API")
+    public IdolGroupDetailResponse getIdolGroupDetail(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("idol-group-id") Long idolGroupId
+    ) {
+        return communityService.getIdolGroupDetail(loggedInUserId, idolGroupId);
     }
 }

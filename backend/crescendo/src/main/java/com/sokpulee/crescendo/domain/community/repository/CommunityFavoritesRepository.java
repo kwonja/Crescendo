@@ -16,4 +16,6 @@ public interface CommunityFavoritesRepository extends JpaRepository<CommunityFav
 
     @EntityGraph(attributePaths = {"idolGroup"})
     Page<CommunityFavorites> findByUser(User user, Pageable pageable);
+
+    boolean existsByUserAndIdolGroup(User user, IdolGroup idolGroup);
 }
