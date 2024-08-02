@@ -60,14 +60,14 @@ export default function CommunityFavoriteList() {
     // 테스트용 코드
     setCommunityList(tmpList);
     setIdx(0);
-  }, []);
+  }, [tmpList]);
 
   useEffect(() => {
     if (idx === -1) return; // 로딩 전 로딩안함
     let tmp = [...communityList];
     tmp = tmp.slice(idx, idx + SIZE_PER_PAGE);
     setShowList(tmp);
-  }, []);
+  }, [tmpList,communityList,idx]);
 
   function increaseIdx() {
     if (idx + SIZE_PER_PAGE + MOVE_STEP < communityList.length - 1)
