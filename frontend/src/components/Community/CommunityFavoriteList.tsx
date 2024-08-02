@@ -68,7 +68,7 @@ export default function CommunityFavoriteList() {
     tmp = tmp.slice(idx, idx + SIZE_PER_PAGE);
     setShowList(tmp);
   }, []);
-  
+
   function increaseIdx() {
     if (idx + SIZE_PER_PAGE + MOVE_STEP < communityList.length - 1)
       setIdx(prev => prev + MOVE_STEP);

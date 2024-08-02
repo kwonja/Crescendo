@@ -14,8 +14,8 @@ export const store = configureStore({
     communityList: communityListReducer,
     follower: followerReducer,
     following: followingReducer,
-    chatroom : chatroomReducer,
-    message : messagesReducer,
+    chatroom: chatroomReducer,
+    message: messagesReducer,
   },
 });
 

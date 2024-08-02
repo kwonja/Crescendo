@@ -4,29 +4,28 @@ import { createSlice } from '@reduxjs/toolkit';
 
 import { Chat } from '../../interface/chat';
 
-
-interface chatProps{
-    messageList : Chat[]
+interface chatProps {
+  messageList: Chat[];
 }
-const inistalState:chatProps ={
-    messageList : [
+const inistalState: chatProps = {
+  messageList: [
     {
-        dmGroupId : 1,
-        content : "안녕하세요",
-        writerId : 1
+      dmGroupId: 1,
+      content: '안녕하세요',
+      writerId: 1,
     },
     {
-        dmGroupId : 1,
-        content : "안녕하세요",
-        writerId : 3
+      dmGroupId: 1,
+      content: '안녕하세요',
+      writerId: 3,
     },
     {
-        dmGroupId : 1,
-        content : "안녕하세요",
-        writerId : 1
+      dmGroupId: 1,
+      content: '안녕하세요',
+      writerId: 1,
     },
-    ]
-}
+  ],
+};
 
 const chatSlice = createSlice({
   name: 'chat',

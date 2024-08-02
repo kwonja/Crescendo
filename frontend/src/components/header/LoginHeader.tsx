@@ -17,7 +17,7 @@ export default function LoginHeader() {
   const menuRef = useRef<HTMLUListElement>(null);
   const location = useLocation();
 
-  const {isSelected} = useAppSelector( (state)=>state.chatroom)
+  const { isSelected } = useAppSelector(state => state.chatroom);
   const handleModeClick = (mode: ModeState) => {
     setUserMode(prevMode => (prevMode === mode ? '' : mode));
   };
@@ -85,10 +85,10 @@ export default function LoginHeader() {
         >
           <User />
         </div>
-        { (userMode === 'chat' && isSelected === false) && <ChatLayout/> }
-        { (userMode === 'chat' && isSelected === true) && <Chatroom /> }
+        {userMode === 'chat' && isSelected === false && <ChatLayout />}
+        {userMode === 'chat' && isSelected === true && <Chatroom />}
         {userMode === 'alarm' && <UserMenu />}
-        {userMode === 'userlist' && <UserMenu/> }
+        {userMode === 'userlist' && <UserMenu />}
         {userMode === 'user' && <UserMenu handleMode={() => setUserMode('')} />}
       </div>
     </div>

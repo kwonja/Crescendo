@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef  } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { ReactComponent as Back } from '../../assets/images/Chat/back.svg';
 import { ReactComponent as Hamburger } from '../../assets/images/Chat/hamburger.svg';
 import { ReactComponent as Line } from '../../assets/images/Chat/line.svg';
@@ -13,13 +13,12 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
 import { setIsSelected, setSelectedGroupId } from '../../features/chat/chatroomSlice';
 import { getMessages, setMessage } from '../../features/chat/messageSlice';
 
-
 export default function Chatroom() {
   const client = useRef<CompatClient | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { selectedGroupId }= useAppSelector( (state)=>state.chatroom);
-  const { messageList } = useAppSelector( (state)=>state.message)
+  const { selectedGroupId } = useAppSelector(state => state.chatroom);
+  const { messageList } = useAppSelector(state => state.message);
   const dispatch = useAppDispatch();
 
   const connect = useCallback(() => {
@@ -39,17 +38,17 @@ export default function Chatroom() {
         console.error('Connection error: ', error);
       },
     );
-  },[selectedGroupId,dispatch])
+  }, [selectedGroupId, dispatch]);
 
   const HandleMessageSend = () => {
     const message = inputRef.current!.value;
-    console.log(message)
+    console.log(message);
     client.current!.send(
       '/app/message',
       {},
       JSON.stringify({
         dmGroupId: selectedGroupId,
-        message : message,
+        message: message,
         writerId: 1,
       }),
     );
@@ -61,7 +60,6 @@ export default function Chatroom() {
       HandleMessageSend();
     }
   };
-
 
   useEffect(() => {
     connect();
@@ -78,10 +76,13 @@ export default function Chatroom() {
   return (
     <div className="chatroom">
       <div className="upper">
-        <div className='back'><Back onClick={()=>{
-          dispatch(setIsSelected(false));
-          dispatch(setSelectedGroupId(0));
-        }}/>
+        <div className="back">
+          <Back
+            onClick={() => {
+              dispatch(setIsSelected(false));
+              dispatch(setSelectedGroupId(0));
+            }}
+          />
         </div>
         <div>권자몬</div>
         <Hamburger />
@@ -91,17 +92,19 @@ export default function Chatroom() {
         <div>2024 년 07 월 24 일</div>
         <Line />
       </div>
-      {
-        messageList.map(message => (
-          <div key={message.dmMessageId}>
-            {message.writerId === 1? (
-              <div className="my-message"><MyMessage message={message}/></div>
-            ) : (
-              <div className="other-message"><OtherMessage/></div>
-            )}
-          </div>
-        ))
-      }
+      {messageList.map(message => (
+        <div key={message.dmMessageId}>
+          {message.writerId === 1 ? (
+            <div className="my-message">
+              <MyMessage message={message} />
+            </div>
+          ) : (
+            <div className="other-message">
+              <OtherMessage />
+            </div>
+          )}
+        </div>
+      ))}
       <div className="send-container">
         <span>
           <input
