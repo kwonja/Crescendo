@@ -5,21 +5,22 @@ import com.sokpulee.crescendo.domain.quiz.dto.request.QuizCreateRequest;
 import com.sokpulee.crescendo.domain.quiz.dto.request.QuizEndRequest;
 import com.sokpulee.crescendo.domain.quiz.dto.request.QuizQuestionRequest;
 import com.sokpulee.crescendo.domain.quiz.dto.response.QuizEndResponse;
+import com.sokpulee.crescendo.domain.quiz.dto.response.QuizListResponse;
 import com.sokpulee.crescendo.domain.quiz.dto.response.QuizStartResponse;
 import com.sokpulee.crescendo.domain.quiz.entity.Quiz;
 import com.sokpulee.crescendo.domain.quiz.entity.QuizAttempt;
 import com.sokpulee.crescendo.domain.quiz.entity.QuizQuestion;
 import com.sokpulee.crescendo.domain.quiz.entity.QuizQuestionAnswer;
 import com.sokpulee.crescendo.domain.quiz.repository.QuizAttemptRepository;
-import com.sokpulee.crescendo.domain.quiz.repository.QuizQuestionAnswerRepository;
-import com.sokpulee.crescendo.domain.quiz.repository.QuizQuestionRepository;
-import com.sokpulee.crescendo.domain.quiz.repository.QuizRepository;
+import com.sokpulee.crescendo.domain.quiz.repository.quiz.QuizRepository;
 import com.sokpulee.crescendo.domain.user.entity.User;
 import com.sokpulee.crescendo.domain.user.repository.UserRepository;
 import com.sokpulee.crescendo.global.exception.custom.QuizNotFoundException;
 import com.sokpulee.crescendo.global.exception.custom.UserNotFoundException;
 import com.sokpulee.crescendo.global.util.file.FileSaveHelper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -119,5 +120,9 @@ public class QuizServiceImpl implements QuizService {
         QuizEndResponse response = new QuizEndResponse(100 - rankPercentage);
 
         return response;
+    }
+
+    public Page<QuizListResponse> getQuizzes(String title, Pageable pageable) {
+        return quizRepository.findQuizzes(title, pageable);
     }
 }
