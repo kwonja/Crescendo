@@ -8,6 +8,8 @@ import com.sokpulee.crescendo.domain.fanart.entity.FanArtComment;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArtImage;
 import com.sokpulee.crescendo.domain.fanart.repository.FanArtCommentRepository;
 import com.sokpulee.crescendo.domain.fanart.repository.FanArtRepository;
+import com.sokpulee.crescendo.domain.goods.entity.Goods;
+import com.sokpulee.crescendo.domain.goods.entity.GoodsComment;
 import com.sokpulee.crescendo.domain.idol.entity.IdolGroup;
 import com.sokpulee.crescendo.domain.idol.repository.IdolGroupRepository;
 import com.sokpulee.crescendo.domain.user.entity.User;
@@ -115,6 +117,24 @@ public class FanArtServiceImpl implements FanArtService {
             }
         }
         fanArtRepository.save(fanArt);
+    }
+
+    @Override
+    public void deleteFanArtComment(Long loggedInUserId, Long fanArtId, Long fanArtCommentId) {
+        FanArt fanArt = fanArtRepository.findById(fanArtId)
+                .orElseThrow(GoodsNotFoundException::new);
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        FanArtComment fanArtComment = fanArtCommentRepository.findById(fanArtCommentId)
+                .orElseThrow(GoodsCommentNotFoundException::new);
+
+        if (!fanArtComment.getUser().getId().equals(loggedInUserId)) {
+            throw new UnAuthorizedAccessException();
+        }
+
+        fanArtCommentRepository.delete(fanArtComment);
     }
 
     @Override

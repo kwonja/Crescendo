@@ -97,6 +97,20 @@ public class FanArtController {
         return ResponseEntity.status(CREATED).build();
     }
 
+    @DeleteMapping("/{fan-art-id}/comment/{fan-art-comment-id}")
+    @Operation(summary = "팬아트 댓글 및 답글 삭제", description = "팬아트 댓글 및 답글 삭제 API")
+    public ResponseEntity<?> deleteGoodsComment(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("fan-art-id") Long fanArtId,
+            @PathVariable("fan-art-comment-id") Long fanArtCommentId
+    ){
+        if (loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+        fanArtService.deleteFanArtComment(loggedInUserId,fanArtId,fanArtCommentId);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("{fan-art-id}/comment/{fan-art-comment-id}/reply")
     @Operation(summary = "팬아트 답글쓰기", description = "팬아트 답글쓰기 API")
     public ResponseEntity<?> addFanArtReply(
