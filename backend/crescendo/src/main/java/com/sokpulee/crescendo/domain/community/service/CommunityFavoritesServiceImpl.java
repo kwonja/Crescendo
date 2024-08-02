@@ -1,5 +1,6 @@
 package com.sokpulee.crescendo.domain.community.service;
 
+import com.sokpulee.crescendo.domain.community.dto.response.FavoritesGetResponse;
 import com.sokpulee.crescendo.domain.community.entity.CommunityFavorites;
 import com.sokpulee.crescendo.domain.community.repository.CommunityFavoritesRepository;
 import com.sokpulee.crescendo.domain.idol.entity.IdolGroup;
@@ -9,6 +10,8 @@ import com.sokpulee.crescendo.domain.user.repository.UserRepository;
 import com.sokpulee.crescendo.global.exception.custom.IdolGroupNotFoundException;
 import com.sokpulee.crescendo.global.exception.custom.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,5 +42,19 @@ public class CommunityFavoritesServiceImpl implements CommunityFavoritesService 
             communityFavoritesRepository.save(newFavorite);
         }
 
+    }
+
+    @Override
+    public Page<FavoritesGetResponse> getFavorites(Long loggedInUserId, Pageable pageable) {
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        Page<CommunityFavorites> favoritesPage = communityFavoritesRepository.findByUser(user, pageable);
+
+        return favoritesPage.map(favorite -> new FavoritesGetResponse(
+                        favorite.getIdolGroup().getId(),
+                        favorite.getIdolGroup().getName(),
+                        favorite.getIdolGroup().getProfile()
+        ));
     }
 }
