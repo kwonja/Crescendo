@@ -1,15 +1,24 @@
 import React from 'react';
+import { ChatRoom } from '../../interface/chat';
+import { BASE_URL } from '../../apis/core';
+import { timeAgo } from '../../utils/TimeAgo';
 
-export default function Chatroom() {
+
+interface ChatRoomItemProps {
+  room: ChatRoom;
+  HandleClick: (GroupId: number) => void;
+}
+export default function ChatRoomListItem({room,HandleClick}:ChatRoomItemProps) {
+  const {opponentProfilePath,opponentNickname,lastChattingTime,lastChatting,dmGroupId} =room;  
   return (
-    <div className="chatroomlistitem">
-      <img src="/" alt="유저프로필" />
+    <div className="chatroomlistitem" onClick={() => HandleClick(dmGroupId)}>
+      <img src={`${BASE_URL}${opponentProfilePath}`} alt="상대방프로필" />
       <div className="content">
-        <div>닉네임</div>
-        <div>마지막 채팅입니다~</div>
+        <div>{opponentNickname}</div>
+        <div>{lastChatting}</div>
       </div>
 
-      <div className="lastchattime">35분전</div>
+      <div className="lastchattime">{timeAgo(lastChattingTime)}</div>
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { follow } from '../../interface/follow';
 import { followerAPI } from '../../apis/follow';
 
-type PromiseStatus = 'loading' | 'success' | 'failed' | '';
+export type PromiseStatus = 'loading' | 'success' | 'failed' | '';
 
 interface followProps {
   followerList: follow[];

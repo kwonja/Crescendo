@@ -1,9 +1,15 @@
 import React from 'react';
+import { Message } from '../../interface/chat';
 
-export default function MyMessage() {
+
+interface MyProps{
+  message : Message
+}
+export default function MyMessage({message}:MyProps) {
   return (
     <div className="MyMessage">
-      <span>네!! 안녕하세요:)</span>
+      <span className='created'>{message.createdAt.split('T')[0]}</span>
+      <span className='message'>{message.message}</span>
     </div>
   );
 }
