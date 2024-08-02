@@ -5,7 +5,7 @@ import { ReactComponent as MenuUp } from '../../assets/images/up.svg';
 interface DropdownProps {
     className?: string;
     options: string[];
-    selected: string;
+    selected?: string;
     onSelect: (value: string) => void;
     iconPosition?: 'right' | 'left';
 }
