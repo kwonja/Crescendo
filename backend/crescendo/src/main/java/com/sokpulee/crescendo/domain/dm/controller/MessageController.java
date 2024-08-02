@@ -21,6 +21,6 @@ public class MessageController {
 
         MessageResponse messageResponse = dmService.saveMessage(message);
 
-        simpMessagingTemplate.convertAndSend("/topic/messages/" + message.getDmGroupId(), message);
+        simpMessagingTemplate.convertAndSend("/topic/messages/" + message.getDmGroupId(), messageResponse);
     }
 }
