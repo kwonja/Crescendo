@@ -1,14 +1,9 @@
 import React from 'react';
 import CommunityCard from './CommunityCard';
+import { communityInfo } from '../../interface/communityList';
 
 export default function CommunityList() {
   // 타입 정의
-  type communityInfo = {
-    idolGroupId: number; // 아이돌 그룹 ID
-    name: string; // 아이돌 그룹 명
-    profile: string; // 아이돌 그룹 프로필 사진 경로
-  };
-
   // 임시 데이터
   const tmpList: communityInfo[] = [
     // 현재 페이지의 데이터 목록 (커뮤니티 목록)

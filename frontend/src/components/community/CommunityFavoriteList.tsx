@@ -3,14 +3,9 @@ import Button from '../common/Button';
 import { ReactComponent as RightBtn } from '../../assets/images/right.svg';
 import { ReactComponent as LeftBtn } from '../../assets/images/left.svg';
 import CommunityCard from './CommunityCard';
+import { communityInfo } from '../../interface/communityList';
 
 export default function CommunityFavoriteList() {
-  // 타입 정의
-  type communityInfo = {
-    idolGroupId: number; // 아이돌 그룹 ID
-    name: string; // 아이돌 그룹 명
-    profile: string; // 아이돌 그룹 프로필 사진 경로
-  };
 
   // 임시 데이터
   const tmpList: communityInfo[] = [
