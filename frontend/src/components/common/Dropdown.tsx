@@ -10,7 +10,7 @@ interface DropdownProps {
     iconPosition?: 'right' | 'left';
 }
 
-export default function Dropdown({className, options, selected=options[0], onSelect, iconPosition}: DropdownProps) {
+export default function Dropdown({className, options, selected=options[0], onSelect, iconPosition='right'}: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const handleToggle = () => {
     setIsOpen(!isOpen);
@@ -22,7 +22,7 @@ export default function Dropdown({className, options, selected=options[0], onSel
   };
 
   return (
-    <div className={`dropdown ${className}`}>
+    <div className={`dropdown ${className}`} style={{textAlign:iconPosition==='left'?'right':'left'}}>
       <div className="dropdown_head" onClick={handleToggle}>
         {iconPosition === 'left' && <div className='dropdown_icon'>
           {isOpen ? <MenuUp/> : <MenuDown/>}
@@ -34,7 +34,7 @@ export default function Dropdown({className, options, selected=options[0], onSel
       </div>
       {isOpen && (
         <ul className="dropdown_list">
-          {options.map((option,idx) => (
+          {options.filter(option=>option !== selected).map((option,idx) => (
             <li
               key={idx}
               className="dropdown_list_item"
