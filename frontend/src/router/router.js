@@ -6,6 +6,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import Login from '../pages/Login.tsx';
 import ErrorPage from '../components/error/ErrorPage';
 import MyPage from '../pages/MyPage';
+import Favorite from '../pages/Favorite';
 
 export const router = createBrowserRouter([
   {
@@ -31,7 +32,7 @@ export const router = createBrowserRouter([
       },
       {
         path: '/favorite',
-        element: <Main />,
+        element: <Favorite />,
       },
       {
         path: '/dance',
