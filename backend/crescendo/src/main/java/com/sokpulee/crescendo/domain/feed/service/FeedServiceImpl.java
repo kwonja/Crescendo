@@ -6,6 +6,8 @@ import com.sokpulee.crescendo.domain.feed.dto.request.FeedAddRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentAddRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedUpdateRequest;
+import com.sokpulee.crescendo.domain.feed.dto.response.FeedCommentResponse;
+import com.sokpulee.crescendo.domain.feed.dto.response.FeedDetailResponse;
 import com.sokpulee.crescendo.domain.feed.dto.response.FeedResponse;
 import com.sokpulee.crescendo.domain.feed.entity.*;
 import com.sokpulee.crescendo.domain.feed.repository.*;
@@ -22,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 
 @Transactional
@@ -119,6 +122,7 @@ public class FeedServiceImpl implements FeedService {
         feed.changeFeed(idolGroup, feedUpdateRequest.getTitle(), feedUpdateRequest.getContent());
 
         feed.getImageList().clear();
+
         if (!feedUpdateRequest.getImageList().isEmpty()) {
             for (MultipartFile feedImageFile : feedUpdateRequest.getImageList()) {
                 String savePath = fileSaveHelper.saveFeedImage(feedImageFile);
@@ -214,6 +218,63 @@ public class FeedServiceImpl implements FeedService {
     @Override
     public Page<FeedResponse> getFeed(Long loggedInUserId, Pageable pageable) {
         return feedRepository.findFeeds(loggedInUserId, pageable);
+    }
+
+    @Override
+    public FeedDetailResponse getFeedDetail(Long loggedInUserId, Long feedId) {
+
+        Feed feed = feedRepository.findById(feedId)
+                .orElseThrow(FeedNotFoundException::new);
+
+        User user = feed.getUser();
+
+        List<String> feedImagePathList = feed.getImagePathList(feed.getImageList());
+        List<String> tagList = feed.getTagList(feed.getHashtagList());
+
+        FeedDetailResponse response;
+
+        if(loggedInUserId == null){
+             response = FeedDetailResponse.builder()
+                    .userId(user.getId())
+                    .profileImagePath(user.getProfilePath())
+                    .nickname(user.getNickname())
+                    .createdAt(feed.getCreatedAt())
+                    .lastModified(feed.getLastModified())
+                    .likeCnt(feed.getLikeCnt())
+                    .isLike(false)
+                    .feedImagePathList(feedImagePathList)
+                    .content(feed.getContent())
+                    .commentCnt(feed.getCommentCnt())
+                    .tagList(tagList)
+                    .build();
+        }else{
+            User user1 = userRepository.findById(loggedInUserId)
+                    .orElseThrow(UserNotFoundException::new);
+
+            Optional<FeedLike> feedLike = feedLikeRepository.findByFeedAndUser(feed,user1);
+            boolean isLike = feedLike.isPresent();
+
+
+             response = FeedDetailResponse.builder()
+                    .userId(user.getId())
+                    .profileImagePath(user.getProfilePath())
+                    .nickname(user.getNickname())
+                    .createdAt(feed.getCreatedAt())
+                    .lastModified(feed.getLastModified())
+                    .likeCnt(feed.getLikeCnt())
+                    .isLike(isLike)
+                    .feedImagePathList(feedImagePathList)
+                    .content(feed.getContent())
+                    .commentCnt(feed.getCommentCnt())
+                    .tagList(tagList)
+                    .build();
+        }
+        return response;
+    }
+
+    @Override
+    public Page<FeedCommentResponse> getFeedComment(Long loggedInUserId, Pageable pageable) {
+        return feedCommentRepository.findFeedComments(loggedInUserId, pageable);
     }
 
     @Override

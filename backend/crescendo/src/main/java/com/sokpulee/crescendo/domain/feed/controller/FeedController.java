@@ -4,6 +4,8 @@ import com.sokpulee.crescendo.domain.feed.dto.request.FeedAddRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentAddRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedUpdateRequest;
+import com.sokpulee.crescendo.domain.feed.dto.response.FeedCommentResponse;
+import com.sokpulee.crescendo.domain.feed.dto.response.FeedDetailResponse;
 import com.sokpulee.crescendo.domain.feed.dto.response.FeedResponse;
 import com.sokpulee.crescendo.domain.feed.service.FeedService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
@@ -67,6 +69,17 @@ public class FeedController {
 
         return ResponseEntity.ok(feedResponses);
     }
+
+    @GetMapping("{feed-id}")
+    @Operation(summary = "피드 상세조회", description = "피드 상세조회 API")
+    public ResponseEntity<FeedDetailResponse> getFeedDetail(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("feed-id") Long feedId
+    ){
+        FeedDetailResponse feedDetailResponse = feedService.getFeedDetail(loggedInUserId, feedId);
+
+        return ResponseEntity.ok(feedDetailResponse);
+    }
     
     @DeleteMapping("/{feed-id}")
     @Operation(summary = "피드 글삭제", description = "피드 글삭제 API")
@@ -113,6 +126,20 @@ public class FeedController {
         feedService.addFeedComment(loggedInUserId, feedId, feedCommentAddRequest);
 
         return ResponseEntity.status(CREATED).build();
+    }
+
+    @GetMapping("{feed-id}/comment")
+    @Operation(summary = "피드 댓글조회", description = "피드 댓글조회 API")
+    public ResponseEntity<Page<FeedCommentResponse>> getFeedComment(
+        @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+        @RequestParam int page,
+        @RequestParam int size
+    ){
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<FeedCommentResponse> feedCommentResponses = feedService.getFeedComment(loggedInUserId,pageable);
+
+        return ResponseEntity.ok(feedCommentResponses);
     }
 
     @DeleteMapping("/{feed-id}/comment/{feed-comment-id}")

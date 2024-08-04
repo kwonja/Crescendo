@@ -31,12 +31,15 @@ public class FeedComment extends TimeStampedEntity {
     @Column(length = 200)
     private String content;
 
+    private int likeCnt;
+
     @Builder
-    public FeedComment(Feed feed, User user, String content, FeedComment parentFeedComment) {
+    public FeedComment(Feed feed, User user, String content, FeedComment parentFeedComment,int likeCnt) {
         this.feed = feed;
         this.user = user;
         this.content = content;
         this.parentFeedComment = parentFeedComment;
+        this.likeCnt = likeCnt;
     }
 
     public void changeComment(String content){
