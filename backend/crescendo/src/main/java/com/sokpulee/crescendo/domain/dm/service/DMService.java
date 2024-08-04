@@ -6,6 +6,8 @@ import com.sokpulee.crescendo.domain.dm.dto.response.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface DMService {
     DMGroupCreateResponse createDMGroup(Long loggedInUserId, DmGroupCreateRequest dmGroupCreateRequest);
     DMGroupGetResponse findDmGroup(Long loggedInUserId, Long opponentId);
@@ -14,7 +16,7 @@ public interface DMService {
 
     MyDMGroupIdListResponse findAllDmGroupsByUserId(Long loggedInUserId);
 
-    Page<DmGroupResponseDto> findDmGroupsByUserId(Long loggedInUserId, Pageable pageable);
+    List<DmGroupResponseDto> findDmGroupsByUserId(Long loggedInUserId);
 
     MessageResponse saveMessage(MessageRequest message);
 

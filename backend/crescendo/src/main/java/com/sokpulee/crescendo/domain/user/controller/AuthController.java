@@ -2,6 +2,7 @@ package com.sokpulee.crescendo.domain.user.controller;
 
 import com.sokpulee.crescendo.domain.user.dto.request.auth.*;
 import com.sokpulee.crescendo.domain.user.dto.response.auth.EmailRandomKeyResponse;
+import com.sokpulee.crescendo.domain.user.dto.response.auth.LoginResponse;
 import com.sokpulee.crescendo.domain.user.service.auth.AuthService;
 import com.sokpulee.crescendo.global.util.jwt.JWTUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -73,7 +76,7 @@ public class AuthController {
         return ResponseEntity.status(OK)
                 .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-                .build();
+                .body(new LoginResponse(userId));
     }
 
     @PatchMapping("/password")

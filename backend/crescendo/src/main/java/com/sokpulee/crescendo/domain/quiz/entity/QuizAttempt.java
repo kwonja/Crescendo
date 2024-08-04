@@ -2,6 +2,7 @@ package com.sokpulee.crescendo.domain.quiz.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,5 +20,11 @@ public class QuizAttempt {
     private Quiz quiz;
 
     private Integer score;
+
+    @Builder
+    public QuizAttempt(Quiz quiz, Integer score) {
+        this.quiz = quiz;
+        this.score = score;
+    }
 }
 

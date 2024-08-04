@@ -12,12 +12,15 @@
 @import 'components/common/feed';
 @import 'components/common/search';
 @import 'components/common/gallery';
+@import 'components/common/gallerylist';
 @import 'components/community/communitycard';
 @import 'components/community/communityfavoritelist';
 @import 'components/community/communitylist';
 
 @import 'base/font';
 @import 'page/mypage';
+@import 'components/signup/termsmodal';
 @import 'page/login';
 @import 'page/communitymain';
+@import 'page/communitydetail';
 @import 'layout/frame';

@@ -47,7 +47,7 @@ public class DMServiceImpl implements DMService {
             throw new IllegalStateException("DM group already exists between the users");
         }
 
-        DmGroup dmGroup = DmGroup.builder().build();
+        DmGroup dmGroup = new DmGroup();
 
         DmParticipants loggedInParticipants = DmParticipants
                 .builder()
@@ -97,13 +97,13 @@ public class DMServiceImpl implements DMService {
 
         List<DmGroup> dmGroupList = dmGroupRepository.findAllByUserId(loggedInUserId);
 
-        return null;
+        return new MyDMGroupIdListResponse(dmGroupList);
     }
 
     @Override
-    public Page<DmGroupResponseDto> findDmGroupsByUserId(Long loggedInUserId, Pageable pageable) {
+    public List<DmGroupResponseDto> findDmGroupsByUserId(Long loggedInUserId) {
 
-        return dmGroupRepository.findDmGroupsByUserId(loggedInUserId, pageable);
+        return dmGroupRepository.findDmGroupsWithLastMessage(loggedInUserId);
     }
 
     @Override

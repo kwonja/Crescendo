@@ -2,9 +2,11 @@ package com.sokpulee.crescendo.domain.fanart.controller;
 
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtAddRequest;
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtCommentAddRequest;
+import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtUpdateRequest;
 import com.sokpulee.crescendo.domain.fanart.service.FanArtService;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedAddRequest;
+import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentUpdateRequest;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -97,6 +99,37 @@ public class FanArtController {
         return ResponseEntity.status(CREATED).build();
     }
 
+    @DeleteMapping("/{fan-art-id}/comment/{fan-art-comment-id}")
+    @Operation(summary = "팬아트 댓글 및 답글 삭제", description = "팬아트 댓글 및 답글 삭제 API")
+    public ResponseEntity<?> deleteGoodsComment(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("fan-art-id") Long fanArtId,
+            @PathVariable("fan-art-comment-id") Long fanArtCommentId
+    ){
+        if (loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+        fanArtService.deleteFanArtComment(loggedInUserId,fanArtId,fanArtCommentId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping(value = "{fan-art-id}/comment/{fan-art-comment-id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "팬아트 댓글 및 답글 수정", description = "팬아트 댓글 및 답글 수정 API")
+    public ResponseEntity<?> updateFanArtComment(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("fan-art-id") Long fanArtId,
+            @PathVariable("fan-art-comment-id") Long fanArtCommentId,
+            @ModelAttribute FanArtCommentUpdateRequest fanArtCommentUpdateRequest
+    ){
+        if (loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+
+        fanArtService.updateFanArtComment(loggedInUserId,fanArtId,fanArtCommentId,fanArtCommentUpdateRequest);
+
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("{fan-art-id}/comment/{fan-art-comment-id}/reply")
     @Operation(summary = "팬아트 답글쓰기", description = "팬아트 답글쓰기 API")
     public ResponseEntity<?> addFanArtReply(
@@ -114,8 +147,6 @@ public class FanArtController {
         fanArtService.addFanArtReply(loggedInUserId,fanArtId,fanArtCommentId,fanArtReplyAddRequest);
 
         return ResponseEntity.status(CREATED).build();
-
-
     }
 
 }

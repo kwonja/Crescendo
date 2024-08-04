@@ -2,6 +2,7 @@ package com.sokpulee.crescendo.domain.fanart.service;
 
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtAddRequest;
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtCommentAddRequest;
+import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtUpdateRequest;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArt;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArtComment;
@@ -115,6 +116,44 @@ public class FanArtServiceImpl implements FanArtService {
             }
         }
         fanArtRepository.save(fanArt);
+    }
+
+    @Override
+    public void deleteFanArtComment(Long loggedInUserId, Long fanArtId, Long fanArtCommentId) {
+        FanArt fanArt = fanArtRepository.findById(fanArtId)
+                .orElseThrow(FanArtNotFoundException::new);
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        FanArtComment fanArtComment = fanArtCommentRepository.findById(fanArtCommentId)
+                .orElseThrow(FanArtCommentNotFoundException::new);
+
+        if (!fanArtComment.getUser().getId().equals(loggedInUserId)) {
+            throw new UnAuthorizedAccessException();
+        }
+
+        fanArtCommentRepository.delete(fanArtComment);
+    }
+
+    @Override
+    public void updateFanArtComment(Long loggedInUserId, Long fanArtId, Long fanArtCommentId, FanArtCommentUpdateRequest fanArtCommentUpdateRequest) {
+        FanArt fanArt = fanArtRepository.findById(fanArtId)
+                .orElseThrow(FanArtNotFoundException::new);
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        FanArtComment fanArtComment = fanArtCommentRepository.findById(fanArtCommentId)
+                .orElseThrow(FanArtCommentNotFoundException::new);
+
+        if (!fanArtComment.getUser().getId().equals(loggedInUserId)) {
+            throw new UnAuthorizedAccessException();
+        }
+
+        fanArtComment.changeComment(fanArtCommentUpdateRequest.getContent());
+
+        fanArtCommentRepository.save(fanArtComment);
     }
 
     @Override
