@@ -13,7 +13,6 @@ interface CommunityListState {
   hasMore: boolean;
 }
 
-// 초기 상태 정의
 const initialState: CommunityListState = {
   communityList: [],
   status: '',
@@ -22,7 +21,7 @@ const initialState: CommunityListState = {
   hasMore: true
 };
 
-// 비동기 함수 정의
+// 전체 커뮤니티 리스트 가져오는 함수
 export const getCommunityList = createAsyncThunk(
   'communityList/getCommunityList',
   async ({ page, size }: { page: number; size: number }) => {
@@ -31,7 +30,6 @@ export const getCommunityList = createAsyncThunk(
   },
 );
 
-// 슬라이스 정의
 const communityListSlice = createSlice({
   name: 'communityList',
   initialState,
@@ -39,6 +37,9 @@ const communityListSlice = createSlice({
     resetPage(state) {
       state.page = 0;
       state.communityList = [];
+      state.hasMore= true;
+      state.status= '';
+      state.error= null;
     },
   },
   extraReducers: builder => {
@@ -50,7 +51,7 @@ const communityListSlice = createSlice({
         state.status = 'success';
         state.hasMore = !action.payload.last;
         state.communityList = [...state.communityList, ...action.payload.content];
-        state.page += 1; // page 값 증가
+        state.page += 1;
       })
       .addCase(getCommunityList.rejected, (state, action) => {
         state.status = 'failed';
