@@ -4,7 +4,7 @@ import { ReactComponent as Star } from "../assets/images/star.svg"
 import React, { useEffect, useRef, useState } from 'react';
 import SearchInput from "../components/common/SearchInput";
 import { ReactComponent as MenuDown } from '../assets/images/down.svg';
-import { ReactComponent as MenuUp } from '../assets/images/up.svg';
+// import { ReactComponent as MenuUp } from '../assets/images/up.svg';
 import FeedList from "../components/common/FeedList";
 import GalleryList from "../components/common/GalleryList";
 

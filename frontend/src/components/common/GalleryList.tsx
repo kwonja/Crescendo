@@ -1,6 +1,6 @@
 import React from 'react';
 import Gallery from './Gallery';
-import { useAppSelector } from '../../store/hooks/hook';
+// import { useAppSelector } from '../../store/hooks/hook';
 
 export default function GalleryList() {
   return (
