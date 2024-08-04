@@ -161,6 +161,8 @@ public class FeedServiceImpl implements FeedService {
             throw new UnAuthorizedAccessException();
         }
 
+        feed.minusCommentCnt();
+
         feedCommentRepository.delete(feedComment);
     }
 
@@ -228,6 +230,8 @@ public class FeedServiceImpl implements FeedService {
                 .user(user)
                 .content(feedCommentAddRequest.getContent())
                 .build();
+
+        feed.plusCommentCnt();
 
         feedCommentRepository.save(feedComment);
     }

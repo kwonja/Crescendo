@@ -78,5 +78,9 @@ public class Feed extends TimeStampedEntity {
         likeCnt++;
     }
 
+    public void plusCommentCnt(){commentCnt++; }
+
+    public void minusCommentCnt(){commentCnt--; }
+
 
 }
