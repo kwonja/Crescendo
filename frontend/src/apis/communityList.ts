@@ -19,5 +19,5 @@ export const getFavoriteListAPI = async () => {
 
   const response = await Authapi.get('/api/v1/community/favorites', {params})
 
-  return response.data.content as communityInfo;
+  return response.data.content as communityInfo[];
 }
