@@ -2,25 +2,21 @@ package com.sokpulee.crescendo.domain.dm.repository.dmgroup;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.sokpulee.crescendo.domain.dm.dto.response.DmGroupResponseDto;
-import com.sokpulee.crescendo.domain.dm.entity.QDmGroup;
-import com.sokpulee.crescendo.domain.dm.entity.QDmMessage;
-import com.sokpulee.crescendo.domain.dm.entity.QDmParticipants;
+import com.sokpulee.crescendo.domain.dm.dto.response.MyDmGroupResponseDto;
+import com.sokpulee.crescendo.domain.dm.entity.*;
 import com.sokpulee.crescendo.domain.user.entity.QUser;
 import com.sokpulee.crescendo.domain.user.entity.User;
+import com.sokpulee.crescendo.domain.user.repository.UserRepository;
+import com.sokpulee.crescendo.global.exception.custom.UserNotFoundException;
 import jakarta.persistence.EntityManager;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.support.PageableExecutionUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-public class DMGroupRepositoryImpl implements DMGroupRepositoryCustom{
+public class DMGroupRepositoryImpl implements DMGroupRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
@@ -44,32 +40,48 @@ public class DMGroupRepositoryImpl implements DMGroupRepositoryCustom{
         return fetchOne != null;
     }
 
-    public List<DmGroupResponseDto> findDmGroupsWithLastMessage(Long userId) {
-        QDmGroup dmGroup = QDmGroup.dmGroup;
-        QDmMessage dmMessage = QDmMessage.dmMessage;
-        QDmParticipants dmParticipants = QDmParticipants.dmParticipants;
-        QUser user = QUser.user;
+    public List<MyDmGroupResponseDto> findDmGroupsWithLastMessage(Long userId) {
+        QDmParticipants qDmParticipants = QDmParticipants.dmParticipants;
+        QDmMessage qDmMessage = QDmMessage.dmMessage;
+        QDmGroup qDmGroup = QDmGroup.dmGroup;
+        QUser qUser = QUser.user;
 
-        return queryFactory.select(Projections.constructor(
-                        DmGroupResponseDto.class,
-                        dmGroup.id,
-                        user.id,
-                        user.profilePath,
-                        user.nickname,
-                        dmMessage.content,
-                        dmMessage.createdAt
-                ))
-                .from(dmGroup)
-                .leftJoin(dmGroup.dmParticipantList, dmParticipants)
-                .leftJoin(dmParticipants.user, user)
-                .leftJoin(dmGroup.dmMessageList, dmMessage)
-                .where(dmParticipants.user.id.eq(userId)
-                        .and(dmMessage.id.in(
-                                JPAExpressions.select(dmMessage.id.max())
-                                        .from(dmMessage)
-                                        .where(dmMessage.dmGroup.id.eq(dmGroup.id))
-                        ))
-                )
+        List<DmGroup> dmGroups = queryFactory.selectFrom(qDmGroup)
+                .join(qDmGroup.dmParticipantList, qDmParticipants)
+                .where(qDmParticipants.user.id.eq(userId))
                 .fetch();
+
+        List<MyDmGroupResponseDto> dmList = dmGroups.stream().map(dmGroup -> {
+            DmParticipants opponent = queryFactory.selectFrom(qDmParticipants)
+                    .where(qDmParticipants.dmGroup.eq(dmGroup)
+                            .and(qDmParticipants.user.id.ne(userId)))
+                    .fetchOne();
+
+            Optional<DmMessage> lastMessageOpt = Optional.ofNullable(
+                    queryFactory.selectFrom(qDmMessage)
+                            .where(qDmMessage.dmGroup.eq(dmGroup))
+                            .orderBy(qDmMessage.createdAt.desc())
+                            .fetchFirst()
+            );
+
+            Long opponentId = opponent != null ? opponent.getUser().getId() : null;
+            String opponentProfilePath = opponent != null ? opponent.getUser().getProfilePath() : null;
+            String opponentNickName = opponent != null ? opponent.getUser().getNickname() : null;
+            String lastChatting = lastMessageOpt.map(DmMessage::getContent).orElse(null);
+            String lastChattingTime = lastMessageOpt.map(message -> message.getCreatedAt().toString()).orElse(null);
+
+            return new MyDmGroupResponseDto(
+                    dmGroup.getId(),
+                    opponentId,
+                    opponentProfilePath,
+                    opponentNickName,
+                    lastChatting,
+                    lastChattingTime
+            );
+        }).toList();
+
+        return dmList.stream()
+                .sorted((d1, d2) -> d2.getLastChattingTime().compareTo(d1.getLastChattingTime()))
+                .collect(Collectors.toList());
     }
 }
