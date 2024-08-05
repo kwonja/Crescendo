@@ -6,16 +6,22 @@ import { PromiseStatus } from '../follow/followerSlice';
 interface messageProps {
   messageList: Message[];
   status: PromiseStatus;
+  currentPage: number;
   error: string | undefined;
 }
 const inistalState: messageProps = {
   messageList: [],
   status: '',
   error: '',
+  currentPage: 0,
 };
 
-export const getMessages = createAsyncThunk('messageSlice/getMessages', async () => {
-  const response = await messagesAPI(1, 1, 10, 1);
+interface APIState{
+  userId : number,
+  dmGroupId : number,
+}
+export const getMessages = createAsyncThunk('messageSlice/getMessages', async ({userId, dmGroupId}: APIState) => {
+  const response = await messagesAPI(userId,0, 10, dmGroupId);
   console.log(response);
   return response;
 });
@@ -25,7 +31,6 @@ const messageSlice = createSlice({
   initialState: inistalState,
   reducers: {
     setMessage: (state, action: PayloadAction<Message>) => {
-      console.log(action.payload);
       state.messageList = [...state.messageList, action.payload];
       console.log(state.messageList);
     },
@@ -38,7 +43,8 @@ const messageSlice = createSlice({
       .addCase(getMessages.fulfilled, (state, action) => {
         state.status = 'success';
         console.log(action.payload);
-        state.messageList = action.payload.content;
+        state.messageList = [...action.payload.content.reverse(),...state.messageList];
+        state.currentPage += 1;
       })
       .addCase(getMessages.rejected, (state, action) => {
         state.status = 'failed';

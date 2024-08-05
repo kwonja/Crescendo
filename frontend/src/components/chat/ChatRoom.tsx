@@ -6,19 +6,21 @@ import { ReactComponent as Clip } from '../../assets/images/Chat/clip.svg';
 import { ReactComponent as Submit } from '../../assets/images/Chat/submit.svg';
 import MyMessage from './MyMessage';
 import OtherMessage from './OtherMessage';
-import { BASE_URL } from '../../apis/core';
+import { BASE_URL, getUserId } from '../../apis/core';
 import SockJS from 'sockjs-client';
 import { CompatClient, Stomp } from '@stomp/stompjs';
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
-import { setIsSelected, setSelectedGroupId } from '../../features/chat/chatroomSlice';
+import { setIsSelected, setSelectedGroup } from '../../features/chat/chatroomSlice';
 import { getMessages, setMessage } from '../../features/chat/messageSlice';
+import { ChatDateTransfer } from '../../utils/ChatDateTransfer';
 
 export default function Chatroom() {
   const client = useRef<CompatClient | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { selectedGroupId } = useAppSelector(state => state.chatroom);
+  const { dmGroupId,opponentNickName,lastChattingTime} = useAppSelector(state => state.chatroom.selectedGroup);
   const { messageList } = useAppSelector(state => state.message);
+  const messageListRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
 
   const connect = useCallback(() => {
@@ -27,29 +29,28 @@ export default function Chatroom() {
     client.current.connect(
       {},
       (frame: string) => {
-        console.log('Connected: ' + frame);
-        client.current?.subscribe(`/topic/messages/${selectedGroupId}`, content => {
+        // console.log('Connected: ' + frame);
+        client.current?.subscribe(`/topic/messages/${dmGroupId}`, content => {
           const newMessage = JSON.parse(content.body);
           dispatch(setMessage(newMessage));
         });
-        dispatch(getMessages());
+        dispatch(getMessages({userId : getUserId(),dmGroupId}));
       },
       (error: any) => {
         console.error('Connection error: ', error);
       },
     );
-  }, [selectedGroupId, dispatch]);
+  }, [dmGroupId, dispatch]);
 
   const HandleMessageSend = () => {
     const message = inputRef.current!.value;
-    console.log(message);
     client.current!.send(
       '/app/message',
       {},
       JSON.stringify({
-        dmGroupId: selectedGroupId,
+        dmGroupId: dmGroupId,
         message: message,
-        writerId: 1,
+        writerId: getUserId(),
       }),
     );
     inputRef.current!.value = '';
@@ -73,6 +74,13 @@ export default function Chatroom() {
     };
   }, [connect]);
 
+
+  useEffect( ()=>{
+    if(messageListRef.current)
+    {
+      messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
+    }
+  },[messageList])
   return (
     <div className="chatroom">
       <div className="upper">
@@ -80,31 +88,37 @@ export default function Chatroom() {
           <Back
             onClick={() => {
               dispatch(setIsSelected(false));
-              dispatch(setSelectedGroupId(0));
+              dispatch(setSelectedGroup({
+                dmGroupId: 0,
+                opponentId:0,
+              opponentProfilePath: '',
+              opponentNickName: '',
+              lastChatting: '',
+              lastChattingTime: ''
+              }));
             }}
           />
         </div>
-        <div>권자몬</div>
+        <div>{opponentNickName}</div>
         <Hamburger />
       </div>
       <div className="date">
         <Line style={{ width: 20 }} />
-        <div>2024 년 07 월 24 일</div>
+        <div>{ChatDateTransfer(lastChattingTime)}</div>
         <Line />
       </div>
+      <div className='messagelist' ref={messageListRef}>
       {messageList.map(message => (
+        
         <div key={message.dmMessageId}>
-          {message.writerId === 1 ? (
-            <div className="my-message">
+          {message.writerId === getUserId() ? (
               <MyMessage message={message} />
-            </div>
           ) : (
-            <div className="other-message">
-              <OtherMessage />
-            </div>
+              <OtherMessage message={message}/>
           )}
         </div>
       ))}
+      </div>
       <div className="send-container">
         <span>
           <input

@@ -11,7 +11,7 @@ interface chatProps {
   status: PromiseStatus;
   error: string | undefined;
   isSelected: boolean;
-  selectedGroupId: number;
+  selectedGroup: ChatRoom;
   writerId: number;
 }
 const inistalState: chatProps = {
@@ -19,14 +19,21 @@ const inistalState: chatProps = {
   status: '',
   error: '',
   isSelected: false,
-  selectedGroupId: 0,
+  selectedGroup: {
+    dmGroupId: 0,
+    opponentId: 0,
+    opponentProfilePath: '',
+    opponentNickName: '',
+    lastChatting: '',
+    lastChattingTime: '',
+  },
   writerId: 0,
 };
 
 export const getUserChatRoomList = createAsyncThunk(
   'chatroomSlice/getUserChatRoomList',
   async () => {
-    const response = await chatroomlistAPI(1, 1);
+    const response = await chatroomlistAPI();
     return response;
   },
 );
@@ -38,8 +45,8 @@ const chatroomSlice = createSlice({
     setIsSelected: (state, action: PayloadAction<boolean>) => {
       state.isSelected = action.payload;
     },
-    setSelectedGroupId: (state, action: PayloadAction<number>) => {
-      state.selectedGroupId = action.payload;
+    setSelectedGroup: (state, action: PayloadAction<ChatRoom>) => {
+      state.selectedGroup = action.payload;
     },
   },
   extraReducers: builder => {
@@ -49,7 +56,6 @@ const chatroomSlice = createSlice({
       })
       .addCase(getUserChatRoomList.fulfilled, (state, action) => {
         state.status = 'success';
-        console.log(action.payload);
         state.chatRoomList = action.payload;
       })
       .addCase(getUserChatRoomList.rejected, (state, action) => {
@@ -59,5 +65,5 @@ const chatroomSlice = createSlice({
   },
 });
 
-export const { setIsSelected, setSelectedGroupId } = chatroomSlice.actions;
+export const { setIsSelected, setSelectedGroup } = chatroomSlice.actions;
 export default chatroomSlice.reducer;

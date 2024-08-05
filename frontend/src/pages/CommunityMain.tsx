@@ -3,7 +3,8 @@ import CommunityList from '../components/community/CommunityList';
 import CommunitySearchInput from '../components/community/CommunitySearchInput';
 
 export default function CommunityMain() {
-  return <div className="communitymain">
+  return (
+    <div className="communitymain">
       <div className="communitymain_contents">
         <div className="communitymain_title">MY 커뮤니티</div>
       </div>
@@ -18,4 +19,5 @@ export default function CommunityMain() {
         <CommunityList />
       </div>
     </div>
+  );
 }

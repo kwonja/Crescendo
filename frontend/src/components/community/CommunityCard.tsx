@@ -7,12 +7,13 @@ type communityInfoProps = {
   profile: string; // 아이돌 그룹 프로필 사진 경로
 };
 
-
-export default function CommunityCard({idolGroupId,name,profile}:communityInfoProps) {
-  return <Link to={`${idolGroupId}`}>
-    <div className='communitycard'>
-      <img className='communitycard_img'  src={profile} alt={name}></img>
-      <div className='communitycard_name'>{name}</div>
-    </div>
-  </Link>
+export default function CommunityCard({ idolGroupId, name, profile }: communityInfoProps) {
+  return (
+    <Link to={`${idolGroupId}`}>
+      <div className="communitycard">
+        <img className="communitycard_img" src={profile} alt={name}></img>
+        <div className="communitycard_name">{name}</div>
+      </div>
+    </Link>
+  );
 }

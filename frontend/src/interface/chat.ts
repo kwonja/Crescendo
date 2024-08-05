@@ -8,7 +8,7 @@ export interface ChatRoom {
   dmGroupId: number;
   opponentId: number;
   opponentProfilePath: string;
-  opponentNickname: string;
+  opponentNickName: string;
   lastChatting: string;
   lastChattingTime: string;
 }

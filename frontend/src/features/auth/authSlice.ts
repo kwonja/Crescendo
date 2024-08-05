@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { api, getUserId, setAccessToken } from '../../apis/core';
+import { api, setAccessToken, setUserId } from '../../apis/core';
 
 // 인터페이스
 interface AuthState {
@@ -51,7 +51,7 @@ export const login = createAsyncThunk(
       } else {
         const response = await api.post('/api/v1/auth/login', { email, password });
         console.log(response);
-        getUserId(response.data.userId);
+        setUserId(response.data.userId);
         const accessToken = response.headers.authorization.split(' ')[1];
         setAccessToken(accessToken);
         return { email, accessToken };

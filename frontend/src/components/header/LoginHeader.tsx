@@ -8,8 +8,9 @@ import UserMenu from './UserMenu';
 import ChatLayout from '../chat/ChatLayout';
 import Chatroom from '../chat/ChatRoom';
 import { useAppSelector } from '../../store/hooks/hook';
+import SearchUser from '../userlist/SearchUser';
 
-type ModeState = 'chat' | 'alarm' | 'userlist' | 'user' | '';
+export type ModeState = 'chat' | 'alarm' | 'userlist' | 'user' | '';
 
 export default function LoginHeader() {
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
@@ -88,7 +89,7 @@ export default function LoginHeader() {
         {userMode === 'chat' && isSelected === false && <ChatLayout />}
         {userMode === 'chat' && isSelected === true && <Chatroom />}
         {userMode === 'alarm' && <UserMenu />}
-        {userMode === 'userlist' && <UserMenu />}
+        {userMode === 'userlist' && <SearchUser handleMode={setUserMode}/>}
         {userMode === 'user' && <UserMenu handleMode={() => setUserMode('')} />}
       </div>
     </div>

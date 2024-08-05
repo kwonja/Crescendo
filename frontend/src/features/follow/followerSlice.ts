@@ -2,13 +2,13 @@
 
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import { follow } from '../../interface/follow';
+import { user } from '../../interface/user';
 import { followerAPI } from '../../apis/follow';
 
 export type PromiseStatus = 'loading' | 'success' | 'failed' | '';
 
 interface followProps {
-  followerList: follow[];
+  followerList: user[];
   status: PromiseStatus;
   error: string | undefined;
 }
@@ -19,29 +19,12 @@ export const getUserFollower = createAsyncThunk(
   'followerSlice/getUserFollower',
   async (userId: number) => {
     const response = await followerAPI(userId);
-    console.log(response);
     return response;
   },
 );
 
 const inistalState: followProps = {
-  followerList: [
-    {
-      userId: 1,
-      nickname: 'Nickname1',
-      profilePath: 'https://cdn.topstarnews.net/news/photo/202301/15040596_1067813_363.jpg',
-    },
-    {
-      userId: 1,
-      nickname: 'Nickname1',
-      profilePath: 'https://cdn.topstarnews.net/news/photo/202301/15040596_1067813_363.jpg',
-    },
-    {
-      userId: 1,
-      nickname: 'Nickname1',
-      profilePath: 'https://cdn.topstarnews.net/news/photo/202301/15040596_1067813_363.jpg',
-    },
-  ],
+  followerList: [],
   status: '',
   error: '',
 };
@@ -57,9 +40,7 @@ const followerSlice = createSlice({
       })
       .addCase(getUserFollower.fulfilled, (state, action) => {
         state.status = 'success';
-        console.log(action.payload.followingList);
         state.followerList = action.payload.followerList;
-        console.log(state.followerList);
       })
       .addCase(getUserFollower.rejected, (state, action) => {
         state.status = 'failed';

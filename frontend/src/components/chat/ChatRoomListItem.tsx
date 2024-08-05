@@ -5,15 +5,15 @@ import { timeAgo } from '../../utils/TimeAgo';
 
 interface ChatRoomItemProps {
   room: ChatRoom;
-  HandleClick: (GroupId: number) => void;
+  HandleClick: (Group: ChatRoom) => void;
 }
 export default function ChatRoomListItem({ room, HandleClick }: ChatRoomItemProps) {
-  const { opponentProfilePath, opponentNickname, lastChattingTime, lastChatting, dmGroupId } = room;
+  const { opponentProfilePath, opponentNickName, lastChattingTime, lastChatting } = room;
   return (
-    <div className="chatroomlistitem" onClick={() => HandleClick(dmGroupId)}>
+    <div className="chatroomlistitem" onClick={() => HandleClick(room)}>
       <img src={`${BASE_URL}${opponentProfilePath}`} alt="상대방프로필" />
       <div className="content">
-        <div>{opponentNickname}</div>
+        <div>{opponentNickName}</div>
         <div>{lastChatting}</div>
       </div>
 

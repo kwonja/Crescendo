@@ -6,6 +6,7 @@ import { getUserFollower } from '../../features/follow/followerSlice';
 import { getUserFollowing } from '../../features/follow/followingSlice';
 import FollowingList from './FollowingList';
 import Followerlist from './FollowerList';
+import { getUserId } from '../../apis/core';
 
 export default function FriendList() {
   const dispatch = useAppDispatch();
@@ -15,10 +16,10 @@ export default function FriendList() {
 
   useEffect(() => {
     if (isSelected === 'follower') {
-      const promise = dispatch(getUserFollower(1));
+      const promise = dispatch(getUserFollower(getUserId()));
       return () => promise.abort();
     } else {
-      const promise = dispatch(getUserFollowing(1));
+      const promise = dispatch(getUserFollowing(getUserId()));
 
       return () => promise.abort();
     }

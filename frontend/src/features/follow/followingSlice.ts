@@ -2,12 +2,12 @@
 
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import { follow } from '../../interface/follow';
+import { user } from '../../interface/user';
 import { followingAPI } from '../../apis/follow';
 
 type PromiseStatus = 'loading' | 'success' | 'failed' | '';
 interface followProps {
-  followingList: follow[];
+  followingList: user[];
   status: PromiseStatus;
   error: string | undefined;
 }
@@ -23,23 +23,7 @@ export const getUserFollowing = createAsyncThunk(
 );
 
 const inistalState: followProps = {
-  followingList: [
-    {
-      userId: 1,
-      nickname: 'Nickname1',
-      profilePath: 'https://cdn.topstarnews.net/news/photo/202301/15040596_1067813_363.jpg',
-    },
-    {
-      userId: 1,
-      nickname: 'Nickname1',
-      profilePath: 'https://cdn.topstarnews.net/news/photo/202301/15040596_1067813_363.jpg',
-    },
-    {
-      userId: 1,
-      nickname: 'Nickname1',
-      profilePath: 'https://cdn.topstarnews.net/news/photo/202301/15040596_1067813_363.jpg',
-    },
-  ],
+  followingList: [],
   status: '',
   error: '',
 };
@@ -55,7 +39,6 @@ const followingSlice = createSlice({
       })
       .addCase(getUserFollowing.fulfilled, (state, action) => {
         state.status = 'success';
-        console.log(action.payload);
         state.followingList = action.payload.followingList;
       })
       .addCase(getUserFollowing.rejected, (state, action) => {
