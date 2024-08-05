@@ -7,6 +7,7 @@ import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedUpdateRequest;
 import com.sokpulee.crescendo.domain.feed.dto.response.FeedCommentResponse;
 import com.sokpulee.crescendo.domain.feed.dto.response.FeedDetailResponse;
+import com.sokpulee.crescendo.domain.feed.dto.response.FeedReplyResponse;
 import com.sokpulee.crescendo.domain.feed.dto.response.FeedResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +34,8 @@ public interface FeedService {
     FeedDetailResponse getFeedDetail(Long loggedInUserId, Long feedId);
 
     Page<FeedCommentResponse> getFeedComment(Long loggedInUserId, Long feedId, Pageable pageable);
+
+    Page<FeedReplyResponse> getFeedReply(Long loggedInUserId,Long feedId,Long feedCommentId,Pageable pageable);
 
     void likeFeedComment(Long loggedInUserId,Long feedCommentId);
 }
