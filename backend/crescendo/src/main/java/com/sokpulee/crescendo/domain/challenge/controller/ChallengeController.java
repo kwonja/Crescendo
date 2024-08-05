@@ -1,6 +1,7 @@
 package com.sokpulee.crescendo.domain.challenge.controller;
 
 import com.sokpulee.crescendo.domain.challenge.dto.request.CreateDanceChallengeRequest;
+import com.sokpulee.crescendo.domain.challenge.dto.request.JoinDanceChallengeRequest;
 import com.sokpulee.crescendo.domain.challenge.service.ChallengeService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
@@ -35,6 +36,19 @@ public class ChallengeController {
         }
 
         challengeService.createChallenge(loggedInUserId, createDanceChallengeRequest);
+
+        return ResponseEntity.status(NO_CONTENT).build();
+    }
+
+    @PostMapping(value = "/{challenge-id}/join", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "챌린지 참여", description = "챌린지 참여 API")
+    public ResponseEntity<?> joinChallenge(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("challenge-id") Long challengeId,
+            @Valid @ModelAttribute JoinDanceChallengeRequest joinDanceChallengeRequest
+    ) {
+
+        challengeService.joinChallenge(loggedInUserId, challengeId, joinDanceChallengeRequest);
 
         return ResponseEntity.status(NO_CONTENT).build();
     }
