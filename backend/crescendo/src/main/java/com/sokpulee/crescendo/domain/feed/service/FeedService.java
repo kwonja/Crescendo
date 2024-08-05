@@ -32,7 +32,9 @@ public interface FeedService {
 
     FeedDetailResponse getFeedDetail(Long loggedInUserId, Long feedId);
 
-    Page<FeedCommentResponse> getFeedComment(Long loggedInUserId, Pageable pageable);
+    Page<FeedCommentResponse> getFeedComment(Long loggedInUserId, Long feedId, Pageable pageable);
+
+    void likeFeedComment(Long loggedInUserId,Long feedCommentId);
 }
 
 

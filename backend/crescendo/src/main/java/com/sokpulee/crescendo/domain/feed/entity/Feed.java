@@ -98,7 +98,7 @@ public class Feed extends TimeStampedEntity {
 
     public void plusCommentCnt(){commentCnt++; }
 
-    public void minusCommentCnt(){commentCnt--; }
+    public void minusCommentCnt(int replyCnt){commentCnt-= replyCnt + 1; }
 
 
 }

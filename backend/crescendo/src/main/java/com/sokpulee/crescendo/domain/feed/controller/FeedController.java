@@ -70,7 +70,7 @@ public class FeedController {
         return ResponseEntity.ok(feedResponses);
     }
 
-    @GetMapping("{feed-id}")
+    @GetMapping("/{feed-id}")
     @Operation(summary = "피드 상세조회", description = "피드 상세조회 API")
     public ResponseEntity<FeedDetailResponse> getFeedDetail(
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
@@ -128,16 +128,17 @@ public class FeedController {
         return ResponseEntity.status(CREATED).build();
     }
 
-    @GetMapping("{feed-id}/comment")
+    @GetMapping("/{feed-id}/comment")
     @Operation(summary = "피드 댓글조회", description = "피드 댓글조회 API")
     public ResponseEntity<Page<FeedCommentResponse>> getFeedComment(
         @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+        @PathVariable("feed-id") Long feedId,
         @RequestParam int page,
         @RequestParam int size
     ){
         Pageable pageable = PageRequest.of(page,size);
 
-        Page<FeedCommentResponse> feedCommentResponses = feedService.getFeedComment(loggedInUserId,pageable);
+        Page<FeedCommentResponse> feedCommentResponses = feedService.getFeedComment(loggedInUserId,feedId,pageable);
 
         return ResponseEntity.ok(feedCommentResponses);
     }
@@ -156,7 +157,7 @@ public class FeedController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping(value = "{feed-id}/comment/{feed-comment-id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/{feed-id}/comment/{feed-comment-id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "피드 댓글 및 답글 수정", description = "피드 댓글 및 답글 수정 API")
     public ResponseEntity<?> updateFeedComment(
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
@@ -205,5 +206,21 @@ public class FeedController {
         feedService.likeFeed(loggedInUserId,feedId);
 
         return ResponseEntity.status(OK).build();
+    }
+
+    @PostMapping("/feed-comment-like/{feed-comment-id}")
+    @Operation(summary = "피드 댓글 및 답글 좋아요 & 좋아요 삭제", description = "피드 댓글 및 답글 좋아요 & 좋아요 삭제 API")
+    public ResponseEntity<?> likeFeedComment(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("feed-comment-id") Long feedCommentId
+    ){
+        if (loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+        feedService.likeFeedComment(loggedInUserId,feedCommentId);
+
+        return ResponseEntity.status(OK).build();
+
+
     }
 }

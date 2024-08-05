@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.sokpulee.crescendo.domain.feed.entity.QFeedCommentLike.feedCommentLike;
+
 public class FeedCommentCustomRepositoryImpl implements FeedCommentCustomRepository{
 
     private final JPAQueryFactory queryFactory;
@@ -25,7 +27,7 @@ public class FeedCommentCustomRepositoryImpl implements FeedCommentCustomReposit
 
 
     @Override
-    public Page<FeedCommentResponse> findFeedComments(Long userId, Pageable pageable) {
+    public Page<FeedCommentResponse> findFeedComments(Long userId,Long feedId, Pageable pageable) {
         QFeed feed = QFeed.feed;
         QUser user = QUser.user;
         QFeedComment feedComment = QFeedComment.feedComment;
@@ -34,34 +36,35 @@ public class FeedCommentCustomRepositoryImpl implements FeedCommentCustomReposit
                 .select(feedComment)
                 .from(feedComment)
                 .leftJoin(feedComment.user, user)
+                .where(feedComment.feed.feedId.eq(feedId).and(feedComment.parentFeedComment.isNull()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize());
 
-        List<FeedCommentResponse> feeds = query.fetch().stream()
+        List<FeedCommentResponse> feedComments = query.fetch().stream()
                 .map(f -> {
-//                    Boolean isLike = userId != null ? queryFactory
-//                            .select(feedLike.count())
-//                            .from(feedLike)
-//                            .where(feedLike.feed.eq(f).and(feedLike.user.id.eq(userId)))
-//                            .fetchOne() > 0 : false;
+                    Boolean isLike = userId != null ? queryFactory
+                            .select(feedCommentLike.count())
+                            .from(feedCommentLike)
+                            .where(feedCommentLike.feedComment.eq(f).and(feedCommentLike.user.id.eq(userId)))
+                            .fetchOne() > 0 : false;
 
                     return new FeedCommentResponse(
                             f.getUser().getId(),
                             f.getUser().getProfilePath(),
                             f.getUser().getNickname(),
                             f.getLikeCnt(),
-                            false,
+                            isLike,
                             f.getContent(),
-                            1
+                            f.getReplyCnt()
                     );
                 })
                 .collect(Collectors.toList());
 
         Long total = Optional.ofNullable(queryFactory
-                .select(feed.count())
-                .from(feed)
+                .select(feedComment.count())
+                .from(feedComment)
                 .fetchOne()).orElse(0L);
 
-        return new PageImpl<>(feeds, pageable, total);
+        return new PageImpl<>(feedComments, pageable, total);
     }
 }

@@ -5,5 +5,5 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface FeedCommentCustomRepository {
-    Page<FeedCommentResponse> findFeedComments(Long userId, Pageable pageable);
+    Page<FeedCommentResponse> findFeedComments(Long userId,Long feedId, Pageable pageable);
 }
