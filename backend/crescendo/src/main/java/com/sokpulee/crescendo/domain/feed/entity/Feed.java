@@ -64,6 +64,24 @@ public class Feed extends TimeStampedEntity {
         image.changeFeed(this);
     }
 
+    public List<String> getImagePathList(List<FeedImage> imageList){
+        List<String> list = new ArrayList<>();
+
+        for (FeedImage feedImage : imageList) {
+            list.add(feedImage.getImagePath());
+        }
+        return list;
+    }
+
+    public List<String> getTagList(List<FeedHashtag> hashtagList){
+        List<String> list = new ArrayList<>();
+
+        for (FeedHashtag hashtag : hashtagList) {
+            list.add(hashtag.getTag());
+        }
+        return list;
+    }
+
     public void changeFeed(IdolGroup idolGroup, String title, String content) {
         this.idolGroup = idolGroup;
         this.title = title;
@@ -80,7 +98,7 @@ public class Feed extends TimeStampedEntity {
 
     public void plusCommentCnt(){commentCnt++; }
 
-    public void minusCommentCnt(){commentCnt--; }
+    public void minusCommentCnt(int replyCnt){commentCnt-= replyCnt + 1; }
 
 
 }
