@@ -9,11 +9,14 @@ import com.sokpulee.crescendo.domain.challenge.repository.DanceChallengeReposito
 import com.sokpulee.crescendo.domain.user.entity.User;
 import com.sokpulee.crescendo.domain.user.repository.UserRepository;
 import com.sokpulee.crescendo.global.exception.custom.ChallengeNotFoundException;
+import com.sokpulee.crescendo.global.exception.custom.DanceChallengeJoinConflictException;
 import com.sokpulee.crescendo.global.exception.custom.UserNotFoundException;
 import com.sokpulee.crescendo.global.util.file.FileSaveHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Transactional
 @Service
@@ -47,12 +50,19 @@ public class ChallengeServiceImpl implements ChallengeService {
         DanceChallenge danceChallenge = danceChallengeRepository.findById(challengeId)
                 .orElseThrow(ChallengeNotFoundException::new);
 
-        String saveDanceChallengeVideo = fileSaveHelper.saveDanceChallengeVideo(joinDanceChallengeRequest.getVideo());
+        Optional<DanceChallengeJoin> byDanceChallengeAndUser = danceChallengeJoinRepository.findByDanceChallengeAndUser(danceChallenge, user);
 
-        danceChallengeJoinRepository.save(DanceChallengeJoin.builder()
-                        .user(user)
-                        .danceChallenge(danceChallenge)
-                        .videoPath(saveDanceChallengeVideo)
-                        .build());
+        if(byDanceChallengeAndUser.isPresent()) {
+            throw new DanceChallengeJoinConflictException();
+        }
+        else {
+            String saveDanceChallengeVideo = fileSaveHelper.saveDanceChallengeVideo(joinDanceChallengeRequest.getVideo());
+
+            danceChallengeJoinRepository.save(DanceChallengeJoin.builder()
+                    .user(user)
+                    .danceChallenge(danceChallenge)
+                    .videoPath(saveDanceChallengeVideo)
+                    .build());
+        }
     }
 }

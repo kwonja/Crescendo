@@ -9,4 +9,8 @@ public class JoinDanceChallengeRequest {
 
     @NotNull(message = "비디오 파일은 필수 값 입니다.")
     private MultipartFile video;
+
+    public JoinDanceChallengeRequest(MultipartFile video) {
+        this.video = video;
+    }
 }

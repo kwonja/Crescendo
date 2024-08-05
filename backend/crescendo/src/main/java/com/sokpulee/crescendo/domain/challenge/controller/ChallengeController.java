@@ -41,7 +41,7 @@ public class ChallengeController {
     }
 
     @PostMapping(value = "/{challenge-id}/join", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "챌린지 생성", description = "챌린지 생성 API")
+    @Operation(summary = "챌린지 참여", description = "챌린지 참여 API")
     public ResponseEntity<?> joinChallenge(
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
             @PathVariable("challenge-id") Long challengeId,
