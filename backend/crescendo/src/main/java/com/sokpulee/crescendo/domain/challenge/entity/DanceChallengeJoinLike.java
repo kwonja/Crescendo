@@ -3,6 +3,7 @@ package com.sokpulee.crescendo.domain.challenge.entity;
 import com.sokpulee.crescendo.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,4 +23,10 @@ public class DanceChallengeJoinLike {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dance_challenge_join_id")
     private DanceChallengeJoin danceChallengeJoin;
+
+    @Builder
+    public DanceChallengeJoinLike(User user, DanceChallengeJoin danceChallengeJoin) {
+        this.user = user;
+        this.danceChallengeJoin = danceChallengeJoin;
+    }
 }

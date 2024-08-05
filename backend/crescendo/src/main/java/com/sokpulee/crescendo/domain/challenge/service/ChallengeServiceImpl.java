@@ -4,12 +4,15 @@ import com.sokpulee.crescendo.domain.challenge.dto.request.CreateDanceChallengeR
 import com.sokpulee.crescendo.domain.challenge.dto.request.JoinDanceChallengeRequest;
 import com.sokpulee.crescendo.domain.challenge.entity.DanceChallenge;
 import com.sokpulee.crescendo.domain.challenge.entity.DanceChallengeJoin;
+import com.sokpulee.crescendo.domain.challenge.entity.DanceChallengeJoinLike;
+import com.sokpulee.crescendo.domain.challenge.repository.DanceChallengeJoinLikeRepository;
 import com.sokpulee.crescendo.domain.challenge.repository.DanceChallengeJoinRepository;
 import com.sokpulee.crescendo.domain.challenge.repository.DanceChallengeRepository;
 import com.sokpulee.crescendo.domain.user.entity.User;
 import com.sokpulee.crescendo.domain.user.repository.UserRepository;
 import com.sokpulee.crescendo.global.exception.custom.ChallengeNotFoundException;
 import com.sokpulee.crescendo.global.exception.custom.DanceChallengeJoinConflictException;
+import com.sokpulee.crescendo.global.exception.custom.DanceChallengeJoinNotFoundException;
 import com.sokpulee.crescendo.global.exception.custom.UserNotFoundException;
 import com.sokpulee.crescendo.global.util.file.FileSaveHelper;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +28,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 
     private final DanceChallengeRepository danceChallengeRepository;
     private final DanceChallengeJoinRepository danceChallengeJoinRepository;
+    private final DanceChallengeJoinLikeRepository danceChallengeJoinLikeRepository;
     private final UserRepository userRepository;
     private final FileSaveHelper fileSaveHelper;
 
@@ -64,5 +68,28 @@ public class ChallengeServiceImpl implements ChallengeService {
                     .videoPath(saveDanceChallengeVideo)
                     .build());
         }
+    }
+
+    @Override
+    public void likeChallengeJoin(Long loggedInUserId, Long challengeJoinId) {
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        DanceChallengeJoin danceChallengeJoin = danceChallengeJoinRepository.findById(challengeJoinId)
+                .orElseThrow(DanceChallengeJoinNotFoundException::new);
+
+        Optional<DanceChallengeJoinLike> danceChallengeJoinLike = danceChallengeJoinLikeRepository.findByDanceChallengeJoinAndUser(danceChallengeJoin, user);
+
+        if(danceChallengeJoinLike.isPresent()) {
+            danceChallengeJoinLikeRepository.delete(danceChallengeJoinLike.get());
+        }
+        else {
+            danceChallengeJoinLikeRepository.save(DanceChallengeJoinLike.builder()
+                            .user(user)
+                            .danceChallengeJoin(danceChallengeJoin)
+                            .build());
+        }
+
     }
 }

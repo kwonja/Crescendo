@@ -48,8 +48,27 @@ public class ChallengeController {
             @Valid @ModelAttribute JoinDanceChallengeRequest joinDanceChallengeRequest
     ) {
 
+        if(loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+
         challengeService.joinChallenge(loggedInUserId, challengeId, joinDanceChallengeRequest);
 
+        return ResponseEntity.status(NO_CONTENT).build();
+    }
+
+    @PostMapping(value = "/join/{challenge-join-id}")
+    @Operation(summary = "챌린지 참여 좋아요", description = "챌린지 참여 좋아요 API")
+    public ResponseEntity<?> likeChallengeJoin(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("challenge-join-id") Long challengeJoinId
+    ) {
+
+        if(loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+
+        challengeService.likeChallengeJoin(loggedInUserId, challengeJoinId);
         return ResponseEntity.status(NO_CONTENT).build();
     }
 }
