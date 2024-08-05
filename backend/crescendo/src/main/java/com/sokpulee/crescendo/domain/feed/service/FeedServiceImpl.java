@@ -6,6 +6,7 @@ import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedUpdateRequest;
 import com.sokpulee.crescendo.domain.feed.dto.response.FeedCommentResponse;
 import com.sokpulee.crescendo.domain.feed.dto.response.FeedDetailResponse;
+import com.sokpulee.crescendo.domain.feed.dto.response.FeedReplyResponse;
 import com.sokpulee.crescendo.domain.feed.dto.response.FeedResponse;
 import com.sokpulee.crescendo.domain.feed.entity.*;
 import com.sokpulee.crescendo.domain.feed.repository.*;
@@ -275,6 +276,11 @@ public class FeedServiceImpl implements FeedService {
     @Override
     public Page<FeedCommentResponse> getFeedComment(Long loggedInUserId,Long feedId, Pageable pageable) {
         return feedCommentRepository.findFeedComments(loggedInUserId, feedId, pageable);
+    }
+
+    @Override
+    public Page<FeedReplyResponse> getFeedReply(Long loggedInUserId, Long feedId, Long feedCommentId, Pageable pageable) {
+        return feedCommentRepository.findFeedReply(loggedInUserId,feedId,feedCommentId,pageable);
     }
 
     @Override
