@@ -2,6 +2,8 @@ package com.sokpulee.crescendo.domain.goods.service;
 
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentAddRequest;
+import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentUpdateRequest;
+import com.sokpulee.crescendo.domain.goods.dto.request.GoodsUpdateRequest;
 import com.sokpulee.crescendo.domain.goods.entity.Goods;
 import com.sokpulee.crescendo.domain.goods.entity.GoodsComment;
 import com.sokpulee.crescendo.domain.goods.entity.GoodsImage;
@@ -13,12 +15,16 @@ import com.sokpulee.crescendo.domain.user.entity.User;
 import com.sokpulee.crescendo.domain.user.repository.UserRepository;
 import com.sokpulee.crescendo.global.exception.custom.*;
 import com.sokpulee.crescendo.global.util.file.FileSaveHelper;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class GoodsServiceImpl implements GoodsService {
     private final UserRepository userRepository;
 
@@ -79,6 +85,76 @@ public class GoodsServiceImpl implements GoodsService {
         } else {
             throw new GoodsNotFoundException();
         }
+    }
+
+    @Override
+    public void updateGoods(Long loggedInUserId, Long goodsId, GoodsUpdateRequest goodsUpdateRequest) {
+        Goods goods = goodsRepository.findById(goodsId)
+                .orElseThrow(GoodsNotFoundException::new);
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        IdolGroup idolGroup = idolGroupRepository.findById(goodsUpdateRequest.getIdolGroupId())
+                .orElseThrow(IdolGroupNotFoundException::new);
+
+        if (!goods.getUser().getId().equals(loggedInUserId)) {
+            throw new UnAuthorizedAccessException();
+        }
+
+        goods.changeGoods(idolGroup, goodsUpdateRequest.getTitle(), goodsUpdateRequest.getContent());
+
+        goods.getImageList().clear();
+        if (!goodsUpdateRequest.getImageList().isEmpty()) {
+            for (MultipartFile goodsImageFile : goodsUpdateRequest.getImageList()) {
+                String savePath = fileSaveHelper.saveGoodsImage(goodsImageFile);
+
+                GoodsImage goodsImage = GoodsImage.builder()
+                        .imagePath(savePath)
+                        .build();
+
+                goods.addImage(goodsImage);
+            }
+        }
+        goodsRepository.save(goods);
+    }
+
+    @Override
+    public void deleteGoodsComment(Long loggedInUserId, Long goodsId, Long goodsCommentId) {
+        Goods goods = goodsRepository.findById(goodsId)
+                .orElseThrow(GoodsNotFoundException::new);
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        GoodsComment goodsComment = goodsCommentRepository.findById(goodsCommentId)
+                .orElseThrow(GoodsCommentNotFoundException::new);
+
+        if (!goodsComment.getUser().getId().equals(loggedInUserId)) {
+            throw new UnAuthorizedAccessException();
+        }
+
+        goodsCommentRepository.delete(goodsComment);
+    }
+
+    @Override
+    public void updateGoodsComment(Long loggedInUserId, Long goodsId, Long goodsCommentId, GoodsCommentUpdateRequest goodsCommentUpdateRequest) {
+        Goods goods = goodsRepository.findById(goodsId)
+                .orElseThrow(GoodsNotFoundException::new);
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        GoodsComment goodsComment = goodsCommentRepository.findById(goodsCommentId)
+                .orElseThrow(GoodsCommentNotFoundException::new);
+
+        if (!goodsComment.getUser().getId().equals(loggedInUserId)) {
+            throw new UnAuthorizedAccessException();
+        }
+
+        goodsComment.changeComment(goodsCommentUpdateRequest.getContent());
+
+        goodsCommentRepository.save(goodsComment);
     }
 
     @Override

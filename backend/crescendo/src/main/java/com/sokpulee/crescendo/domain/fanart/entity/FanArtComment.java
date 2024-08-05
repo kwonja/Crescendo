@@ -38,4 +38,8 @@ public class FanArtComment extends TimeStampedEntity {
         this.user = user;
         this.content = content;
     }
+
+    public void changeComment(String content){
+        this.content = content;
+    }
 }

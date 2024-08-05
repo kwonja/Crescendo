@@ -1,10 +1,13 @@
 import Main from '../pages/Main';
 import CommunityMainPage from '../pages/CommunityMain';
+import CommunityDetail from '../pages/CommunityDetail';
 import App from '../App';
 import { createBrowserRouter } from 'react-router-dom';
 import Login from '../pages/Login.tsx';
+import Signup from '../pages/Signup.tsx';
 import ErrorPage from '../components/error/ErrorPage';
 import MyPage from '../pages/MyPage';
+
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -20,8 +23,16 @@ export const router = createBrowserRouter([
         element: <Login />,
       },
       {
+        path: '/signup',
+        element: <Signup />,
+      },
+      {
         path: '/community',
         element: <CommunityMainPage />,
+      },
+      {
+        path: '/community/:idolGroupId',
+        element: <CommunityDetail />,
       },
       {
         path: '/favorite',

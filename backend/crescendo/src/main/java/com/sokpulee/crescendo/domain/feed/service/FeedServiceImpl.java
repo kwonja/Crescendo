@@ -1,16 +1,14 @@
 package com.sokpulee.crescendo.domain.feed.service;
 
+import com.sokpulee.crescendo.domain.fanart.entity.FanArt;
+import com.sokpulee.crescendo.domain.fanart.entity.FanArtComment;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedAddRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentAddRequest;
+import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedUpdateRequest;
-import com.sokpulee.crescendo.domain.feed.entity.Feed;
-import com.sokpulee.crescendo.domain.feed.entity.FeedComment;
-import com.sokpulee.crescendo.domain.feed.entity.FeedHashtag;
-import com.sokpulee.crescendo.domain.feed.entity.FeedImage;
-import com.sokpulee.crescendo.domain.feed.repository.FeedCommentRepository;
-import com.sokpulee.crescendo.domain.feed.repository.FeedHashtagRepository;
-import com.sokpulee.crescendo.domain.feed.repository.FeedImageRepository;
-import com.sokpulee.crescendo.domain.feed.repository.FeedRepository;
+import com.sokpulee.crescendo.domain.feed.dto.response.FeedResponse;
+import com.sokpulee.crescendo.domain.feed.entity.*;
+import com.sokpulee.crescendo.domain.feed.repository.*;
 import com.sokpulee.crescendo.domain.idol.entity.IdolGroup;
 import com.sokpulee.crescendo.domain.idol.repository.IdolGroupRepository;
 import com.sokpulee.crescendo.domain.user.entity.User;
@@ -19,8 +17,12 @@ import com.sokpulee.crescendo.global.exception.custom.*;
 import com.sokpulee.crescendo.global.util.file.FileSaveHelper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Optional;
 
 @Transactional
 @Service
@@ -34,6 +36,7 @@ public class FeedServiceImpl implements FeedService {
     private final IdolGroupRepository idolGroupRepository;
     private final FeedCommentRepository feedCommentRepository;
     private final FileSaveHelper fileSaveHelper;
+    private final FeedLikeRepository feedLikeRepository;
 
 
     @Override
@@ -115,7 +118,7 @@ public class FeedServiceImpl implements FeedService {
 
         feed.changeFeed(idolGroup, feedUpdateRequest.getTitle(), feedUpdateRequest.getContent());
 
-            feed.getImageList().clear();
+        feed.getImageList().clear();
         if (!feedUpdateRequest.getImageList().isEmpty()) {
             for (MultipartFile feedImageFile : feedUpdateRequest.getImageList()) {
                 String savePath = fileSaveHelper.saveFeedImage(feedImageFile);
@@ -128,7 +131,7 @@ public class FeedServiceImpl implements FeedService {
             }
         }
 
-            feed.getHashtagList().clear();
+        feed.getHashtagList().clear();
         if (!feedUpdateRequest.getTagList().isEmpty()) {
             for (String tag : feedUpdateRequest.getTagList()) {
                 FeedHashtag feedHashtag = FeedHashtag.builder()
@@ -141,6 +144,76 @@ public class FeedServiceImpl implements FeedService {
 
 
         feedRepository.save(feed);
+    }
+
+    @Override
+    public void deleteFeedComment(Long loggedInUserId, Long feedId, Long feedCommentId) {
+        Feed feed = feedRepository.findById(feedId)
+                .orElseThrow(FeedNotFoundException::new);
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        FeedComment feedComment = feedCommentRepository.findById(feedCommentId)
+                .orElseThrow(FeedCommentNotFoundException::new);
+
+        if (!feedComment.getUser().getId().equals(loggedInUserId)) {
+            throw new UnAuthorizedAccessException();
+        }
+
+        feed.minusCommentCnt();
+
+        feedCommentRepository.delete(feedComment);
+    }
+
+    @Override
+    public void updateFeedComment(Long loggedInUserId, Long feedId, Long feedCommentId, FeedCommentUpdateRequest feedCommentUpdateRequest) {
+        Feed feed = feedRepository.findById(feedId)
+                .orElseThrow(FeedNotFoundException::new);
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        FeedComment feedComment = feedCommentRepository.findById(feedCommentId)
+                .orElseThrow(FeedCommentNotFoundException::new);
+
+        if (!feedComment.getUser().getId().equals(loggedInUserId)) {
+            throw new UnAuthorizedAccessException();
+        }
+
+        feedComment.changeComment(feedCommentUpdateRequest.getContent());
+
+        feedCommentRepository.save(feedComment);
+    }
+
+    @Override
+    public void likeFeed(Long loggedInUserId, Long feedId) {
+        Feed feed = feedRepository.findById(feedId)
+                .orElseThrow(FeedNotFoundException::new);
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        Optional<FeedLike> existingFeedLike = feedLikeRepository.findByFeedAndUser(feed, user);
+
+
+        if (existingFeedLike.isPresent()) {
+            feedLikeRepository.delete(existingFeedLike.get());
+            feed.minusLikeCnt();
+        }
+        else {
+            FeedLike feedLike = FeedLike.builder()
+                    .user(user)
+                    .feed(feed)
+                    .build();
+            feed.plusLikeCnt();
+            feedLikeRepository.save(feedLike);
+        }
+    }
+
+    @Override
+    public Page<FeedResponse> getFeed(Long loggedInUserId, Pageable pageable) {
+        return feedRepository.findFeeds(loggedInUserId, pageable);
     }
 
     @Override
@@ -157,6 +230,8 @@ public class FeedServiceImpl implements FeedService {
                 .user(user)
                 .content(feedCommentAddRequest.getContent())
                 .build();
+
+        feed.plusCommentCnt();
 
         feedCommentRepository.save(feedComment);
     }

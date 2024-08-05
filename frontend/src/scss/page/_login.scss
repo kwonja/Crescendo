@@ -1,5 +1,3 @@
-// src/scss/page/_login.scss
-
 .login-container {
   position: relative;
   min-height: 100vh;
@@ -54,7 +52,9 @@
           border-bottom: 3px solid #ff6666;
           padding: 0.5rem 0;
           padding-left: 17px;
+          padding-right: 17px;
           font-size: 24px;
+          letter-spacing: 3.84px;
           width: 100%;
           &::placeholder {
             color: #bbbbbb;
@@ -79,6 +79,7 @@
           border-bottom: 3px solid #ff6666;
           padding: 0.5rem 0;
           padding-left: 17px;
+          padding-right: 37px;
           font-size: 24px;
           width: 100%;
           &::placeholder {
@@ -132,12 +133,14 @@
         .checkbox-group {
           display: flex;
           flex-direction: column;
+          margin-top: 21.5px;
 
           .form-checkbox {
             display: flex;
             align-items: center;
             position: relative;
             margin-left: 20px;
+            margin-bottom: 10px;
 
             input {
               opacity: 0; /* 기본 체크박스를 숨김 */
@@ -148,8 +151,8 @@
             }
 
             .custom-checkbox {
-              width: 20px;
-              height: 20px;
+              width: 24px;
+              height: 24px;
               border-radius: 5px;
               border: 3px solid #f66;
               display: flex;
@@ -163,9 +166,9 @@
             }
 
             label {
-              font-size: 20px;
+              font-size: 18px;
               color: #ff6666;
-              margin-left: 0.5rem;
+              margin-left: 15px;
               margin-top: 2px;
               letter-spacing: 2.88px;
             }

@@ -2,7 +2,9 @@ package com.sokpulee.crescendo.domain.feed.controller;
 
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedAddRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentAddRequest;
+import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedUpdateRequest;
+import com.sokpulee.crescendo.domain.feed.dto.response.FeedResponse;
 import com.sokpulee.crescendo.domain.feed.service.FeedService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
@@ -11,6 +13,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +52,20 @@ public class FeedController {
         feedService.addFeed(loggedInUserId, feedAddRequest);
 
         return ResponseEntity.status(CREATED).build();
+    }
+
+    @GetMapping
+    @Operation(summary = "피드 조회",description = "피드 조회 API")
+    public ResponseEntity<Page<FeedResponse>> getFeed(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<FeedResponse> feedResponses = feedService.getFeed(loggedInUserId,pageable);
+
+        return ResponseEntity.ok(feedResponses);
     }
     
     @DeleteMapping("/{feed-id}")
@@ -96,6 +115,37 @@ public class FeedController {
         return ResponseEntity.status(CREATED).build();
     }
 
+    @DeleteMapping("/{feed-id}/comment/{feed-comment-id}")
+    @Operation(summary = "피드 댓글 및 답글 삭제", description = "피드 댓글 및 답글 삭제 API")
+    public ResponseEntity<?> deleteFeedComment(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("feed-id") Long feedId,
+            @PathVariable("feed-comment-id") Long feedCommentId
+    ){
+        if (loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+        feedService.deleteFeedComment(loggedInUserId,feedId,feedCommentId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping(value = "{feed-id}/comment/{feed-comment-id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "피드 댓글 및 답글 수정", description = "피드 댓글 및 답글 수정 API")
+    public ResponseEntity<?> updateFeedComment(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("feed-id") Long feedId,
+            @PathVariable("feed-comment-id") Long feedCommentId,
+            @ModelAttribute FeedCommentUpdateRequest feedCommentUpdateRequest
+    ){
+        if (loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+
+        feedService.updateFeedComment(loggedInUserId, feedId, feedCommentId, feedCommentUpdateRequest);
+
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("{feed-id}/comment/{feed-comment-id}/reply")
     @Operation(summary = "피드 답글쓰기", description = "피드 답글쓰기 API")
     public ResponseEntity<?> addFeedReply(
@@ -113,5 +163,20 @@ public class FeedController {
         feedService.addFeedReply(loggedInUserId,feedId,feedCommentId,feedReplyAddRequest);
 
         return ResponseEntity.status(CREATED).build();
+    }
+
+    @PostMapping("/feed-like/{feed-id}")
+    @Operation(summary = "피드 좋아요 및 좋아요 삭제", description = "피드 좋아요 및 좋아요 삭제 API")
+    public ResponseEntity<?> likeFeed(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("feed-id") Long feedId
+    ){
+        if(loggedInUserId == null){
+            throw new AuthenticationRequiredException();
+        }
+
+        feedService.likeFeed(loggedInUserId,feedId);
+
+        return ResponseEntity.status(OK).build();
     }
 }

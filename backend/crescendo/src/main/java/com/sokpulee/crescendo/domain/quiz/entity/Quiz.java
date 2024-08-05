@@ -41,11 +41,6 @@ public class Quiz extends CreatedAtEntity {
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
     List<QuizQuestion> questions = new ArrayList<>();
 
-    public void addQuizQuestion(QuizQuestion quizQuestion) {
-        this.questions.add(quizQuestion);
-        quizQuestion.changeQuiz(this);
-    }
-
     @Builder
     public Quiz(User user, String title, String content, Integer questionNum, String thumbnailPath, Integer hit, List<QuizQuestion> questions) {
         this.user = user;
@@ -55,5 +50,14 @@ public class Quiz extends CreatedAtEntity {
         this.thumbnailPath = thumbnailPath;
         this.hit = hit;
         this.questions = questions;
+    }
+
+    public void addQuizQuestion(QuizQuestion quizQuestion) {
+        this.questions.add(quizQuestion);
+        quizQuestion.changeQuiz(this);
+    }
+
+    public void hit() {
+        this.hit++;
     }
 }

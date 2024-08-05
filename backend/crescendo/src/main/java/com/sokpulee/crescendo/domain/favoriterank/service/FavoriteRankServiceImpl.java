@@ -121,9 +121,19 @@ public class FavoriteRankServiceImpl implements FavoriteRankService {
 
         List<FavoriteRankBestPhotoDto> allBestRankedPhotos = favoriteRankRepository.findBestRankedPhotos();
 
-        // Shuffle and limit to 20 results
         Collections.shuffle(allBestRankedPhotos);
         List<FavoriteRankBestPhotoDto> bestRankList = allBestRankedPhotos.stream().limit(20).collect(Collectors.toList());
+
+        List<Long> idolIds = bestRankList.stream()
+                .map(FavoriteRankBestPhotoDto::getIdolId)
+                .collect(Collectors.toList());
+
+        List<Idol> idols = idolRepository.findByIdIn(idolIds);
+
+        Map<Long, String> idolGroupNameMap = idols.stream()
+                .collect(Collectors.toMap(Idol::getId, idol -> idol.getIdolGroup().getName()));
+
+        bestRankList.forEach(dto -> dto.changeIdolGroupName(idolGroupNameMap.get(dto.getIdolId())));
 
         return new FavoriteRankBestPhotoResponse(bestRankList);
 

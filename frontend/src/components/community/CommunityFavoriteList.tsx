@@ -60,7 +60,7 @@ export default function CommunityFavoriteList() {
     // 테스트용 코드
     setCommunityList(tmpList);
     setIdx(0);
-  }, [tmpList]);
+  }, [setCommunityList, tmpList]);
 
   useEffect(() => {
     if (idx === -1) return; // 로딩 전 로딩안함
