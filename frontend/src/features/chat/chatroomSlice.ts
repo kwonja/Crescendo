@@ -7,25 +7,25 @@ import { chatroomlistAPI } from '../../apis/chat';
 import { PromiseStatus } from '../follow/followerSlice';
 
 interface chatProps {
-  chatRoomList: ChatRoom[];
-  status: PromiseStatus;
+  chatRoomList : ChatRoom[];
+  status : PromiseStatus;
   error: string | undefined;
-  isSelected: boolean;
-  selectedGroup: ChatRoom;
-  writerId: number;
+  isSelected : boolean;
+  selectedGroup : ChatRoom;
+  writerId : number;
 }
 const inistalState: chatProps = {
   chatRoomList: [],
   status: '',
   error: '',
   isSelected: false,
-  selectedGroup: {
+  selectedGroup : {
     dmGroupId: 0,
-    opponentId: 0,
-    opponentProfilePath: '',
-    opponentNickName: '',
-    lastChatting: '',
-    lastChattingTime: '',
+    opponentId:0,
+  opponentProfilePath: '',
+  opponentNickName: '',
+  lastChatting: '',
+  lastChattingTime: ''
   },
   writerId: 0,
 };
