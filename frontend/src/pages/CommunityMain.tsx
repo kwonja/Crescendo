@@ -10,7 +10,6 @@ export default function CommunityMain() {
   const { isLoggedIn } = useAppSelector(state => state.auth);
   const dispatch = useAppDispatch();
   const [value, setValue] = useState<string>('');
-  dispatch(setKeyword(value));
 
   return <div className="communitymain">
       {
@@ -29,8 +28,8 @@ export default function CommunityMain() {
           value={value}
           onChange={(event)=>setValue(event.target.value)}
           onSearch={()=>{
-            dispatch(setKeyword(value))
             dispatch(resetPage());
+            dispatch(setKeyword(value))
             }} />
         </div>
       </div>
