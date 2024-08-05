@@ -101,9 +101,9 @@ public class DMServiceImpl implements DMService {
     }
 
     @Override
-    public Page<DmGroupResponseDto> findDmGroupsByUserId(Long loggedInUserId, Pageable pageable) {
+    public List<DmGroupResponseDto> findDmGroupsByUserId(Long loggedInUserId) {
 
-        return dmGroupRepository.findDmGroupsByUserId(loggedInUserId, pageable);
+        return dmGroupRepository.findDmGroupsWithLastMessage(loggedInUserId);
     }
 
     @Override

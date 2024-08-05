@@ -24,6 +24,9 @@ public class DmGroup extends CreatedAtEntity {
     @OneToMany(mappedBy = "dmGroup", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DmParticipants> dmParticipantList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "dmGroup", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DmMessage> dmMessageList = new ArrayList<>();
+
     public void addDmParticipant(DmParticipants dmParticipants) {
         this.dmParticipantList.add(dmParticipants);
         dmParticipants.changeDmGroup(this);

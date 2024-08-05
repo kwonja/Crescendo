@@ -14,21 +14,21 @@ import java.util.Random;
 @Component
 public class NaverMailSender implements MailSendHelper{
     /** 메일 HOST **/
-    @Value("{mail.host}")
+    @Value("${mail.host}")
     private String HOST;
     /** 메일 PORT **/
-    @Value("{mail.port}")
+    @Value("${mail.port}")
     private String PORT;
     /** 메일 ID **/
-    @Value("{mail.id}")
+    @Value("${mail.id}")
     private String MAIL_ID;
     /** 메일 PW **/
-    @Value("{mail.pw}")
+    @Value("${mail.pw}")
     private String MAIL_PW;
 
     @Override
     public void sendNewPassword(String email, String password) {
-        sendNotiMail(email, "여행 나침반에서 새로운 비밀번호를 안내드립니다.", "새로운 비밀번호는 아래와 같습니다. \n" + password);
+        sendNotiMail(email, "크레센도에서 새로운 비밀번호를 안내드립니다.", "새로운 비밀번호는 아래와 같습니다. \n" + password);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class NaverMailSender implements MailSendHelper{
                         "<br>" +
                         "해당 인증번호를 인증번호 확인란에 기입하여 주세요.";
 
-        sendNotiMail(email, "여행 나침반에서 이메일 인증코드를 안내드립니다.", content);
+        sendNotiMail(email, "크레센도에서 이메일 인증코드를 안내드립니다.", content);
 
         return randomKey;
     }

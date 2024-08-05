@@ -34,6 +34,10 @@ public class Feed extends TimeStampedEntity {
     @Column(length = 500)
     private String content;
 
+    private Integer likeCnt;
+
+    private Integer commentCnt;
+
     @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FeedHashtag> hashtagList = new ArrayList<>();
 
@@ -41,11 +45,13 @@ public class Feed extends TimeStampedEntity {
     private List<FeedImage> imageList = new ArrayList<>();
 
     @Builder
-    public Feed(IdolGroup idolGroup, User user, String title, String content) {
+    public Feed(IdolGroup idolGroup, User user, String title, String content,Integer likeCnt, Integer commentCnt) {
         this.idolGroup = idolGroup;
         this.user = user;
         this.title = title;
         this.content = content;
+        this.likeCnt = likeCnt;
+        this.commentCnt = commentCnt;
     }
 
     public void addHashtag(FeedHashtag hashtag) {
@@ -63,6 +69,18 @@ public class Feed extends TimeStampedEntity {
         this.title = title;
         this.content = content;
     }
+
+    public void minusLikeCnt() {
+        likeCnt--;
+    }
+
+    public void plusLikeCnt(){
+        likeCnt++;
+    }
+
+    public void plusCommentCnt(){commentCnt++; }
+
+    public void minusCommentCnt(){commentCnt--; }
 
 
 }

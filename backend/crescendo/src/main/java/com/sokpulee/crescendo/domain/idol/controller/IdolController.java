@@ -1,16 +1,14 @@
 package com.sokpulee.crescendo.domain.idol.controller;
 
-import com.sokpulee.crescendo.domain.idol.dto.request.IdolNameListResponse;
+import com.sokpulee.crescendo.domain.idol.dto.request.IdealWorldCupFinishRequest;
+import com.sokpulee.crescendo.domain.idol.dto.response.IdealWorldCupStartResponse;
 import com.sokpulee.crescendo.domain.idol.service.IdolService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -28,4 +26,23 @@ public class IdolController {
 
         return ResponseEntity.status(OK).body(idolService.getIdolNameListByGroupId(idolGroupId));
     }
+
+    @GetMapping("/ideal-world-cup")
+    @Operation(summary = "이상형 월드컵 시작", description = "이상형 월드컵 시작 API")
+    public ResponseEntity<?> startIdealWorldCup(@RequestParam(value = "num", required = true) Integer num) {
+
+        IdealWorldCupStartResponse randomIdols = idolService.getRandomIdols(num);
+
+        return ResponseEntity.status(OK).body(randomIdols);
+    }
+
+    @PostMapping("/ideal-world-cup/finish")
+    @Operation(summary = "이상형 월드컵 종료", description = "이상형 월드컵 종료 API")
+    public ResponseEntity<?> finishIdealWorldCup(@Valid @RequestBody IdealWorldCupFinishRequest idealWorldCupFinishRequest) {
+
+        idolService.plusIdealWorldCupWinNum(idealWorldCupFinishRequest);
+
+        return ResponseEntity.status(NO_CONTENT).build();
+    }
+
 }

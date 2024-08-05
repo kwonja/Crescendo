@@ -1,7 +1,10 @@
 package com.sokpulee.crescendo.domain.idol.service;
 
+import com.sokpulee.crescendo.domain.idol.dto.IdolInfoDto;
 import com.sokpulee.crescendo.domain.idol.dto.IdolNameDto;
+import com.sokpulee.crescendo.domain.idol.dto.request.IdealWorldCupFinishRequest;
 import com.sokpulee.crescendo.domain.idol.dto.request.IdolNameListResponse;
+import com.sokpulee.crescendo.domain.idol.dto.response.IdealWorldCupStartResponse;
 import com.sokpulee.crescendo.domain.idol.entity.Idol;
 import com.sokpulee.crescendo.domain.idol.entity.IdolGroup;
 import com.sokpulee.crescendo.domain.idol.repository.IdolGroupRepository;
@@ -11,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,5 +37,36 @@ public class IdolServiceImpl implements IdolService {
                 .toList();
 
         return new IdolNameListResponse(idolList);
+    }
+
+    @Override
+    public IdealWorldCupStartResponse getRandomIdols(int num) {
+        List<Idol> allIdols = idolRepository.findAllWithGroup();
+
+        Collections.shuffle(allIdols);
+
+        List<Idol> randomIdols = allIdols.stream()
+                .limit(num)
+                .toList();
+
+        List<IdolInfoDto> idolList = randomIdols.stream()
+                .map(idol -> new IdolInfoDto(
+                        idol.getId(),
+                        idol.getIdolGroup().getName(),
+                        idol.getName(),
+                        idol.getProfile()
+                ))
+                .toList();
+
+
+        return new IdealWorldCupStartResponse(idolList);
+    }
+
+    @Override
+    public void plusIdealWorldCupWinNum(IdealWorldCupFinishRequest idealWorldCupFinishRequest) {
+        Idol idol = idolRepository.findById(idealWorldCupFinishRequest.getIdolId())
+                .orElseThrow(IdolNotFoundException::new);
+
+        idol.plusWinNum();
     }
 }

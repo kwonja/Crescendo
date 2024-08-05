@@ -16,5 +16,9 @@
   &_searchbar {
     display: flex;
     margin-left: 20px;
+
+    input {
+      border: 2px solid #f66;
+    }
   }
 }
