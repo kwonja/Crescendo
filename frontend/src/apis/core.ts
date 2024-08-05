@@ -20,13 +20,12 @@ let accessToken: string | null = null;
 // userId 전역 변수
 let userId: number = 0;
 
-export const getUserId = (Id: number) => {
-  userId = Id;
-  console.log(userId);
+export const getUserId = () => {
+  return userId;
 };
 
-export const setUserId = () => {
-  return userId;
+export const setUserId = (Id: number) => {
+  userId = Id;
 };
 
 // 엑세스 토큰 설정 함수

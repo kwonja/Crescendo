@@ -19,7 +19,6 @@ export const getUserFollower = createAsyncThunk(
   'followSlice/getUserFollower',
   async (userId: number) => {
     const response = await followerAPI(userId);
-    console.log(response);
     return response;
   },
 );
@@ -57,9 +56,7 @@ const followerSlice = createSlice({
       })
       .addCase(getUserFollower.fulfilled, (state, action) => {
         state.status = 'sucess';
-        console.log(action.payload.followingList);
         state.followerList = action.payload.followerList;
-        console.log(state.followerList);
       })
       .addCase(getUserFollower.rejected, (state, action) => {
         state.status = 'failed';
