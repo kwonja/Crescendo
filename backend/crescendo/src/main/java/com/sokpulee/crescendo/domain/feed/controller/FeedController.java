@@ -6,6 +6,7 @@ import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedUpdateRequest;
 import com.sokpulee.crescendo.domain.feed.dto.response.FeedCommentResponse;
 import com.sokpulee.crescendo.domain.feed.dto.response.FeedDetailResponse;
+import com.sokpulee.crescendo.domain.feed.dto.response.FeedReplyResponse;
 import com.sokpulee.crescendo.domain.feed.dto.response.FeedResponse;
 import com.sokpulee.crescendo.domain.feed.service.FeedService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
@@ -193,6 +194,22 @@ public class FeedController {
         return ResponseEntity.status(CREATED).build();
     }
 
+    @GetMapping("/{feed-id}/comment/{feed-comment-id}/reply")
+    @Operation(summary = "피드 답글조회", description = "피드 답글조회 API")
+    public ResponseEntity<Page<FeedReplyResponse>> getFeedReply(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("feed-id") Long feedId,
+            @PathVariable("feed-comment-id") Long feedCommentId,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<FeedReplyResponse> feedReplyResponses = feedService.getFeedReply(loggedInUserId,feedId,feedCommentId,pageable);
+
+        return ResponseEntity.ok(feedReplyResponses);
+    }
+
     @PostMapping("/feed-like/{feed-id}")
     @Operation(summary = "피드 좋아요 및 좋아요 삭제", description = "피드 좋아요 및 좋아요 삭제 API")
     public ResponseEntity<?> likeFeed(
@@ -220,7 +237,5 @@ public class FeedController {
         feedService.likeFeedComment(loggedInUserId,feedCommentId);
 
         return ResponseEntity.status(OK).build();
-
-
     }
 }
