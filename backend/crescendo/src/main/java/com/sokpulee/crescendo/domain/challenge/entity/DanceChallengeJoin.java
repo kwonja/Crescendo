@@ -1,4 +1,4 @@
-package com.sokpulee.crescendo.domain.challange.entity;
+package com.sokpulee.crescendo.domain.challenge.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 public class DanceChallengeJoin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long danceChallengeJoinId;
+    @Column(name = "dance_challenge_join_id")
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dance_challenge_id")
