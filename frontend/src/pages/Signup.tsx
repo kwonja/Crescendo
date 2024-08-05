@@ -39,6 +39,7 @@ const SignUp = () => {
   const [isFirstVerification, setIsFirstVerification] = useState(true); // 첫 번째 인증 시도 여부
   const [isEmailLocked, setIsEmailLocked] = useState(false); // 이메일 입력 잠금
   const [isVerificationCodeLocked, setIsVerificationCodeLocked] = useState(false); // 인증번호 입력 잠금
+  const [verificationCodeValidity, setVerificationCodeValidity] = useState(0); // 인증번호 유효 시간
   const [fieldErrors, setFieldErrors] = useState({
     email: '',
     verificationCode: '',
@@ -66,6 +67,18 @@ const SignUp = () => {
   }, [verificationCountdown]);
 
   useEffect(() => {
+    let validityTimer: ReturnType<typeof setInterval>;
+    if (verificationCodeValidity > 0) {
+      validityTimer = setInterval(() => {
+        setVerificationCodeValidity(prev => prev - 1);
+      }, 1000);
+    }
+    return () => {
+      if (validityTimer) clearInterval(validityTimer);
+    };
+  }, [verificationCodeValidity]);
+
+  useEffect(() => {
     if (termsAccepted) {
       setFieldErrors(prev => ({ ...prev, termsAccepted: '' }));
     }
@@ -78,8 +91,9 @@ const SignUp = () => {
   };
 
   const handleVerificationCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, '');
     if (!isVerificationCodeLocked) {
-      setVerificationCode(e.target.value);
+      setVerificationCode(value);
     }
   };
 
@@ -103,7 +117,7 @@ const SignUp = () => {
 
     const emailExists = await dispatch(checkEmailExists(email));
     if (emailExists.type === `${checkEmailExists.rejected}`) {
-      setFieldErrors(prev => ({ ...prev, email: '이메일이 이미 존재합니다.' }));
+      setFieldErrors(prev => ({ ...prev, email: '사용중인 이메일입니다.' }));
       return;
     }
 
@@ -112,9 +126,9 @@ const SignUp = () => {
     setFieldErrors(prev => ({ ...prev, verificationCode: '인증번호가 전송되었습니다.' }));
     setIsVerificationButtonDisabled(true);
     setVerificationCountdown(15);
+    setVerificationCodeValidity(300); // 5분 유효 시간 설정
     setIsFirstVerification(false); // 첫 번째 시도 이후 false로 설정
     setIsEmailLocked(true); // 이메일 입력 잠금
-    console.log('emailAuthId:', emailAuthId); // emailAuthId 로그로 확인
   };
 
   const handleVerifyCode = async () => {
@@ -127,7 +141,7 @@ const SignUp = () => {
     if (result.type === `${verifyEmailCode.fulfilled}`) {
       setCodeVerified(true);
       setFieldErrors(prev => ({ ...prev, verificationCode: '인증이 완료되었습니다.' }));
-      setIsVerificationCodeLocked(true); // 인증번호 입력 잠금
+      setIsVerificationCodeLocked(true);
     } else {
       setFieldErrors(prev => ({ ...prev, verificationCode: '인증번호가 틀립니다.' }));
     }
@@ -135,27 +149,6 @@ const SignUp = () => {
 
   const handleModal = () => {
     setIsModalOpen(true);
-    toast(
-      <div className="toast-message">
-        <p className="toast-message-success">🎉 회원가입 성공! 🎉</p>
-        <p className="toast-message-movetologin">로그인 페이지로 이동합니다.</p>
-      </div>,
-      {
-        position: 'top-center',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'light',
-        transition: Bounce,
-        className: 'toast-signup',
-      },
-    );
-    setTimeout(() => {
-      navigate('/login');
-    }, 2000);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -317,6 +310,13 @@ const SignUp = () => {
             <p className={`error-message ${fieldErrors.verificationCode ? 'visible' : ''}`}>
               {fieldErrors.verificationCode}
             </p>
+            <p
+              className={`verification-message ${!isVerificationButtonDisabled && verificationCodeValidity === 0 ? 'hidden' : ''}`}
+            >
+              {verificationCodeValidity > 0
+                ? `인증 번호는 ${verificationCodeValidity}초간 유효합니다.`
+                : '인증번호를 다시 전송해 주세요.'}
+            </p>
           </div>
           <div className="password-group">
             <div className="input-group">
@@ -389,7 +389,6 @@ const SignUp = () => {
               />
               <div className="custom-checkbox"></div>
               <label>
-                {/* <span className="terms-link" onClick={() => setIsModalOpen(true)}> */}
                 <span className="terms-link" onClick={handleModal}>
                   약관
                 </span>
