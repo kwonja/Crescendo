@@ -11,6 +11,7 @@ interface CommunityListState {
   error: string | null;
   page: number;
   hasMore: boolean;
+  keyword: string;
 }
 
 const initialState: CommunityListState = {
@@ -18,7 +19,8 @@ const initialState: CommunityListState = {
   status: '',
   error: null,
   page: 0,
-  hasMore: true
+  hasMore: true,
+  keyword: ''
 };
 
 // 전체 커뮤니티 리스트 가져오는 함수
@@ -40,7 +42,12 @@ const communityListSlice = createSlice({
       state.hasMore= true;
       state.status= '';
       state.error= null;
+      state.keyword= '';
     },
+
+    setKeyword(state, action) {
+      state.keyword = action.payload;
+    }
   },
   extraReducers: builder => {
     builder
@@ -60,6 +67,6 @@ const communityListSlice = createSlice({
   },
 });
 
-export const { resetPage } = communityListSlice.actions;
+export const { resetPage, setKeyword } = communityListSlice.actions;
 
 export default communityListSlice.reducer;
