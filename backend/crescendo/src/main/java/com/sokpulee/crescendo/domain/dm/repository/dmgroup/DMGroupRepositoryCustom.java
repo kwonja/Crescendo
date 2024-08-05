@@ -1,11 +1,11 @@
 package com.sokpulee.crescendo.domain.dm.repository.dmgroup;
 
-import com.sokpulee.crescendo.domain.dm.dto.response.DmGroupResponseDto;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.sokpulee.crescendo.domain.dm.dto.response.MyDmGroupResponseDto;
+
+import java.util.List;
 
 public interface DMGroupRepositoryCustom {
-    Page<DmGroupResponseDto> findDmGroupsByUserId(Long userId, Pageable pageable);
-
     boolean existsByUserIdAndDmGroupId(Long loggedInUserId, Long dmGroupId);
+
+    List<MyDmGroupResponseDto> findDmGroupsWithLastMessage(Long userId);
 }

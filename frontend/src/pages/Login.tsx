@@ -1,21 +1,37 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux'; // Redux의 useDispatch와 useSelector 훅 임포트
-import { RootState, AppDispatch } from '../store/store'; // Redux 스토어의 타입 임포트
-import { login } from '../features/auth/authSlice'; // 로그인 액션 임포트
-import { isValidEmail } from '../utils/EmailValidation'; // 이메일 유효성 검사 함수 임포트
-import { isValidPassword } from '../utils/PasswordValidation'; // 비밀번호 유효성 검사 함수 임포트
-import { ReactComponent as Visualization } from '../assets/images/visualization.svg'; // 비밀번호 시각화 아이콘 임포트
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '../store/store';
+import { login } from '../features/auth/authSlice';
+import { isValidEmail } from '../utils/EmailValidation';
+import { isValidPassword } from '../utils/PasswordValidation';
+import { ReactComponent as Visualization } from '../assets/images/visualization.svg';
+import { Link, useNavigate } from 'react-router-dom';
 import '../scss/page/_login.scss';
 
 const Login: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>(); // Redux 디스패치를 사용하여 액션 전송
-  const { error, loading } = useSelector((state: RootState) => state.auth); // Redux 스토어에서 인증 상태 선택
+  const { error, loading, isLoggedIn } = useSelector((state: RootState) => state.auth); // Redux 스토어에서 인증 상태 선택
+  const navigate = useNavigate();
   const [email, setEmail] = useState(localStorage.getItem('email') || ''); // 로컬 스토리지에서 이메일 불러오기
   const [password, setPassword] = useState(''); // 비밀번호 상태 관리
   const [showPassword, setShowPassword] = useState(false); // 비밀번호 시각화 상태 관리
   const [rememberMe, setRememberMe] = useState(localStorage.getItem('rememberMe') === 'true'); // 로컬 스토리지에서 '아이디 저장' 체크박스 상태 불러오기
   const [autoLogin, setAutoLogin] = useState(localStorage.getItem('autoLogin') === 'true'); // 로컬 스토리지에서 '자동 로그인' 체크박스 상태 불러오기
   const [errorMessage, setErrorMessage] = useState(''); // 에러 메시지 상태 관리
+
+  useEffect(() => {
+    // 컴포넌트가 처음 마운트될 때만 실행
+    if (autoLogin && email && password) {
+      dispatch(login({ email, password }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // 빈 의존성 배열을 사용하여 처음 마운트될 때만 실행
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate('/'); // 로그인 성공 시 메인 페이지로 이동
+    }
+  }, [isLoggedIn, navigate]);
 
   // 이메일 입력이 변경될 때 호출되는 함수
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,7 +81,7 @@ const Login: React.FC = () => {
     <div className="login-container">
       {' '}
       {/* 로그인 페이지 컨테이너 */}
-      <h1 className="login-title">로그인</h1> {/* 타이틀 */}
+      <h1 className="login-title">로그인</h1>
       <div className="login-wrapper">
         <form onSubmit={handleSubmit} className="login-form">
           {' '}
@@ -112,10 +128,8 @@ const Login: React.FC = () => {
           </div>
           <div className="form-actions">
             {' '}
-            {/* 폼 액션 그룹 */}
             <div className="checkbox-group">
               {' '}
-              {/* 체크박스 그룹 */}
               <div className="form-checkbox">
                 <input
                   type="checkbox"
@@ -123,7 +137,7 @@ const Login: React.FC = () => {
                   onChange={() => setRememberMe(!rememberMe)}
                 />
                 <div className="custom-checkbox"></div>
-                <label>이메일 저장</label>
+                <label>이메일저장</label>
               </div>
               <div className="form-checkbox">
                 <input
@@ -132,16 +146,15 @@ const Login: React.FC = () => {
                   onChange={() => setAutoLogin(!autoLogin)}
                 />
                 <div className="custom-checkbox"></div>
-                <label>자동 로그인</label>
+                <label>자동로그인</label>
               </div>
             </div>
             <div className="button-group">
               {' '}
-              {/* 버튼 그룹 */}
               <div className="signup-link">
-                <button type="button" onClick={() => alert('회원가입 페이지로 이동')}>
-                  회원가입
-                </button>
+                <Link to="/signup">
+                  <button type="button">회원가입</button>
+                </Link>
               </div>
               {/* 로그인 버튼 */}
               {/* 로딩 중에는 비활성화 */}

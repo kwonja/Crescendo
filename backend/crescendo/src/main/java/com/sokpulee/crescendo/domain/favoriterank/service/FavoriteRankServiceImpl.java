@@ -10,7 +10,7 @@ import com.sokpulee.crescendo.domain.favoriterank.entity.FavoriteRankVoting;
 import com.sokpulee.crescendo.domain.favoriterank.repository.FavoriteRankRepository;
 import com.sokpulee.crescendo.domain.favoriterank.repository.FavoriteRankVotingRepository;
 import com.sokpulee.crescendo.domain.idol.entity.Idol;
-import com.sokpulee.crescendo.domain.idol.repository.IdolRepository;
+import com.sokpulee.crescendo.domain.idol.repository.idol.IdolRepository;
 import com.sokpulee.crescendo.domain.user.entity.User;
 import com.sokpulee.crescendo.domain.user.repository.UserRepository;
 import com.sokpulee.crescendo.global.exception.custom.*;
@@ -121,9 +121,19 @@ public class FavoriteRankServiceImpl implements FavoriteRankService {
 
         List<FavoriteRankBestPhotoDto> allBestRankedPhotos = favoriteRankRepository.findBestRankedPhotos();
 
-        // Shuffle and limit to 20 results
         Collections.shuffle(allBestRankedPhotos);
         List<FavoriteRankBestPhotoDto> bestRankList = allBestRankedPhotos.stream().limit(20).collect(Collectors.toList());
+
+        List<Long> idolIds = bestRankList.stream()
+                .map(FavoriteRankBestPhotoDto::getIdolId)
+                .collect(Collectors.toList());
+
+        List<Idol> idols = idolRepository.findByIdIn(idolIds);
+
+        Map<Long, String> idolGroupNameMap = idols.stream()
+                .collect(Collectors.toMap(Idol::getId, idol -> idol.getIdolGroup().getName()));
+
+        bestRankList.forEach(dto -> dto.changeIdolGroupName(idolGroupNameMap.get(dto.getIdolId())));
 
         return new FavoriteRankBestPhotoResponse(bestRankList);
 
