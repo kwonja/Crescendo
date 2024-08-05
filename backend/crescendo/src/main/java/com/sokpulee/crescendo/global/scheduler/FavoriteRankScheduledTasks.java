@@ -2,12 +2,12 @@ package com.sokpulee.crescendo.global.scheduler;
 
 import com.sokpulee.crescendo.domain.favoriterank.service.FavoriteRankService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Component
-@EnableScheduling
 @RequiredArgsConstructor
 public class FavoriteRankScheduledTasks {
 
