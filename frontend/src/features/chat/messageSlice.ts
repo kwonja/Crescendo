@@ -8,22 +8,26 @@ interface messageProps {
   status: PromiseStatus;
   currentPage: number;
   error: string | undefined;
+  totalPage : number;
 }
 const inistalState: messageProps = {
   messageList: [],
   status: '',
   error: '',
   currentPage: 0,
+  totalPage : 1,
 };
 
 interface APIState {
   userId: number;
   dmGroupId: number;
+  page : number;
+  size  : number
 }
 export const getMessages = createAsyncThunk(
   'messageSlice/getMessages',
-  async ({ userId, dmGroupId }: APIState) => {
-    const response = await messagesAPI(userId, 0, 10, dmGroupId);
+  async ({ userId, dmGroupId,page }: APIState) => {
+    const response = await messagesAPI(userId, page, 10, dmGroupId);
     console.log(response);
     return response;
   },
@@ -37,6 +41,15 @@ const messageSlice = createSlice({
       state.messageList = [...state.messageList, action.payload];
       console.log(state.messageList);
     },
+    initialMessage : (state)=>{
+      state.messageList = [];
+      console.log(state.messageList);
+      state.currentPage = 0;
+      state.totalPage = 1;
+    },
+    setPage : (state) =>{
+      state.currentPage= state.currentPage+1;
+    }
   },
   extraReducers: builder => {
     builder
@@ -45,9 +58,8 @@ const messageSlice = createSlice({
       })
       .addCase(getMessages.fulfilled, (state, action) => {
         state.status = 'success';
-        console.log(action.payload);
         state.messageList = [...action.payload.content.reverse(), ...state.messageList];
-        state.currentPage += 1;
+        state.totalPage = action.payload.totalPages;
       })
       .addCase(getMessages.rejected, (state, action) => {
         state.status = 'failed';
@@ -56,5 +68,5 @@ const messageSlice = createSlice({
   },
 });
 
-export const { setMessage } = messageSlice.actions;
+export const { setMessage,initialMessage,setPage } = messageSlice.actions;
 export default messageSlice.reducer;

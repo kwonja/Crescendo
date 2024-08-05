@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ReactComponent as Back } from '../../assets/images/Chat/back.svg';
 import { ReactComponent as Hamburger } from '../../assets/images/Chat/hamburger.svg';
 import { ReactComponent as Line } from '../../assets/images/Chat/line.svg';
@@ -11,17 +11,17 @@ import SockJS from 'sockjs-client';
 import { CompatClient, Stomp } from '@stomp/stompjs';
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
 import { setIsSelected, setSelectedGroup } from '../../features/chat/chatroomSlice';
-import { getMessages, setMessage } from '../../features/chat/messageSlice';
+import { getMessages, initialMessage, setMessage, setPage } from '../../features/chat/messageSlice';
 import { ChatDateTransfer } from '../../utils/ChatDateTransfer';
 
 export default function Chatroom() {
   const client = useRef<CompatClient | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-
+  const [isScroll,setScroll] = useState<boolean>(true);
   const { dmGroupId, opponentNickName, lastChattingTime } = useAppSelector(
     state => state.chatroom.selectedGroup,
   );
-  const { messageList } = useAppSelector(state => state.message);
+  const { messageList,currentPage } = useAppSelector(state => state.message);
   const messageListRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
 
@@ -31,12 +31,11 @@ export default function Chatroom() {
     client.current.connect(
       {},
       (frame: string) => {
-        // console.log('Connected: ' + frame);
         client.current?.subscribe(`/topic/messages/${dmGroupId}`, content => {
           const newMessage = JSON.parse(content.body);
+          setScroll(true);
           dispatch(setMessage(newMessage));
         });
-        dispatch(getMessages({ userId: getUserId(), dmGroupId }));
       },
       (error: any) => {
         console.error('Connection error: ', error);
@@ -64,23 +63,56 @@ export default function Chatroom() {
     }
   };
 
+
+  useEffect( ()=>{
+    dispatch(getMessages({ userId: getUserId(), dmGroupId, page : currentPage, size : 10}));
+  },[dmGroupId,currentPage,dispatch])
+  
   useEffect(() => {
     connect();
 
     return () => {
       if (client.current) {
         client.current.disconnect(() => {
+          dispatch(initialMessage());
           console.log('Disconnected');
         });
       }
     };
-  }, [connect]);
+  }, [connect,dispatch]);
 
   useEffect(() => {
-    if (messageListRef.current) {
+    if (isScroll && messageListRef.current) {
       messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
     }
-  }, [messageList]);
+  }, [messageList,isScroll]);
+
+
+
+  const handleObserver = useCallback((entries : IntersectionObserverEntry[]) => {
+    const target = entries[0];
+    console.log(target)
+    if (target.isIntersecting) {
+      dispatch(setPage());
+      setScroll(false);
+    }
+  }, [dispatch]);
+
+
+  useEffect(() => {
+    const option = {
+      root: messageListRef.current,
+      threshold: 0.1,
+    };
+    const observer = new IntersectionObserver(handleObserver, option);
+    console.log(messageListRef?.current?.firstElementChild)
+    if (messageListRef.current && messageListRef.current.firstElementChild) {
+      observer.observe(messageListRef.current.firstElementChild);
+    }
+  }, [handleObserver]);
+    
+
+
   return (
     <div className="chatroom">
       <div className="upper">
@@ -110,8 +142,9 @@ export default function Chatroom() {
         <Line />
       </div>
       <div className="messagelist" ref={messageListRef}>
-        {messageList.map(message => (
-          <div key={message.dmMessageId}>
+        <div></div>
+        {messageList.map( (message,index) => (
+          <div key={index}>
             {message.writerId === getUserId() ? (
               <MyMessage message={message} />
             ) : (
