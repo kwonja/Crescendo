@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux'; // Redux의 useDispatch와 useSelector 훅 임포트
-import { RootState, AppDispatch } from '../store/store'; // Redux 스토어의 타입 임포트
-import { login } from '../features/auth/authSlice'; // 로그인 액션 임포트
-import { isValidEmail } from '../utils/EmailValidation'; // 이메일 유효성 검사 함수 임포트
-import { isValidPassword } from '../utils/PasswordValidation'; // 비밀번호 유효성 검사 함수 임포트
-import { ReactComponent as Visualization } from '../assets/images/visualization.svg'; // 비밀번호 시각화 아이콘 임포트
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '../store/store';
+import { login } from '../features/auth/authSlice';
+import { isValidEmail } from '../utils/EmailValidation';
+import { isValidPassword } from '../utils/PasswordValidation';
+import { ReactComponent as Visualization } from '../assets/images/visualization.svg';
 import { Link, useNavigate } from 'react-router-dom';
 import '../scss/page/_login.scss';
 
@@ -20,11 +20,12 @@ const Login: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState(''); // 에러 메시지 상태 관리
 
   useEffect(() => {
-    // 자동 로그인 체크박스가 체크되어 있으면 로그인 연장 실행
-    if (autoLogin) {
+    // 컴포넌트가 처음 마운트될 때만 실행
+    if (autoLogin && email && password) {
       dispatch(login({ email, password }));
     }
-  }, [autoLogin, dispatch, email, password]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // 빈 의존성 배열을 사용하여 처음 마운트될 때만 실행
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -127,10 +128,8 @@ const Login: React.FC = () => {
           </div>
           <div className="form-actions">
             {' '}
-            {/* 폼 액션 그룹 */}
             <div className="checkbox-group">
               {' '}
-              {/* 체크박스 그룹 */}
               <div className="form-checkbox">
                 <input
                   type="checkbox"
@@ -152,7 +151,6 @@ const Login: React.FC = () => {
             </div>
             <div className="button-group">
               {' '}
-              {/* 버튼 그룹 */}
               <div className="signup-link">
                 <Link to="/signup">
                   <button type="button">회원가입</button>
