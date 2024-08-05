@@ -8,10 +8,10 @@ import { getFavoriteListAPI } from '../../apis/communityList';
 
 export default function CommunityFavoriteList() {
   // 상수 또는 변수(상태) 초기화
-  const SIZE_PER_PAGE = 4; // 한번에 몇개의 그룹이 보일지
-  const MOVE_STEP = 4; // 화살표 클릭시 몇개의 그룹을 넘길지
+  const SIZE_PER_PAGE = 4;
+  const MOVE_STEP = 4;
 
-  const [idx, setIdx] = useState<number>(-1); // 로딩 전 -1
+  const [idx, setIdx] = useState<number>(-1);
   const [communityList, setCommunityList] = useState<communityInfo[]>([]);
   const [showList, setShowList] = useState<communityInfo[]>([]);
 
@@ -19,8 +19,8 @@ export default function CommunityFavoriteList() {
   useEffect(() => { 
     const getFavoriteList = async () => {
       try {
-        const list = await getFavoriteListAPI();
-        setCommunityList(list);
+        const response = await getFavoriteListAPI();
+        setCommunityList(response);
         setIdx(0); // 데이터가 로드되면 idx를 0으로 설정
       } catch (error) {
         console.error('Failed to fetch favorite list:', error);
@@ -38,7 +38,7 @@ export default function CommunityFavoriteList() {
     setShowList(tmp);
   }, [idx]);
 
-  function increaseIdx() {
+  function incrementIdx() {
     if (idx + SIZE_PER_PAGE + MOVE_STEP < communityList.length - 1)
       setIdx(prev => prev + MOVE_STEP);
     else {
@@ -46,7 +46,7 @@ export default function CommunityFavoriteList() {
     }
   }
 
-  function decreaseIdx() {
+  function decrementIdx() {
     if (idx - MOVE_STEP > 0) setIdx(prev => prev - MOVE_STEP);
     else {
       setIdx(0);
@@ -56,24 +56,24 @@ export default function CommunityFavoriteList() {
   return (
     <div className="communityfavoritelist_container">
       {
-        <Button className={`square empty ${idx === 0 ? 'hidden ' : ''}`} onClick={decreaseIdx}>
+        <Button className={`square empty ${idx <= 0 ? 'hidden ' : ''}`} onClick={decrementIdx}>
           <LeftBtn />
         </Button>
       }
       <div className="communityfavoritelist_contents">
-        {showList.map(community => (
+        {showList.length>0?showList.map(community => (
           <CommunityCard
             idolGroupId={community.idolGroupId}
             name={community.name}
             profile={community.profile}
             key={community.idolGroupId}
           />
-        ))}
+        )):<div>"즐겨찾기 커뮤니티가 없습니다."</div>}
       </div>
       {
         <Button
           className={`square empty ${idx >= communityList.length - 4 ? 'hidden ' : ''}`}
-          onClick={increaseIdx}
+          onClick={incrementIdx}
         >
           <RightBtn />
         </Button>
