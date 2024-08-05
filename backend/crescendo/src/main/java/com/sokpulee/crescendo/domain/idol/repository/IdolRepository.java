@@ -12,8 +12,9 @@ public interface IdolRepository extends JpaRepository<Idol, Long> {
 
     List<Idol> findByIdolGroup(IdolGroup idolGroup);
 
-
     @Query("SELECT i FROM Idol i JOIN FETCH i.idolGroup WHERE i.id IN :idolIds")
     List<Idol> findByIdIn(@Param("idolIds") List<Long> idolIds);
 
+    @Query("SELECT i FROM Idol i JOIN FETCH i.idolGroup")
+    List<Idol> findAllWithGroup();
 }
