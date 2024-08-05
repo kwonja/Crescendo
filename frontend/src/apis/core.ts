@@ -23,7 +23,7 @@ export const getUserId = () => {
 };
 
 export const setUserId = (Id: number) => {
-  userId=Id;
+  userId = Id;
 };
 
 // 엑세스 토큰 설정 함수
@@ -32,14 +32,12 @@ export const setAccessToken = (token: string | null) => {
 };
 
 // Authapi 인스턴스에 요청 인터셉터 추가
-Authapi.interceptors.request.use(
-  (config) => {
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-    }
-    return config;
+Authapi.interceptors.request.use(config => {
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
   }
-);
+  return config;
+});
 
 // 응답 인터셉터 설정 (엑세스 토큰 갱신)
 // Authapi.interceptors.response.use(

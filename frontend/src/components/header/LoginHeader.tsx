@@ -89,7 +89,7 @@ export default function LoginHeader() {
         {userMode === 'chat' && isSelected === false && <ChatLayout />}
         {userMode === 'chat' && isSelected === true && <Chatroom />}
         {userMode === 'alarm' && <UserMenu />}
-        {userMode === 'userlist' && <SearchUser handleMode={setUserMode}/>}
+        {userMode === 'userlist' && <SearchUser handleMode={setUserMode} />}
         {userMode === 'user' && <UserMenu handleMode={() => setUserMode('')} />}
       </div>
     </div>

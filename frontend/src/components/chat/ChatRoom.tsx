@@ -18,7 +18,9 @@ export default function Chatroom() {
   const client = useRef<CompatClient | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { dmGroupId,opponentNickName,lastChattingTime} = useAppSelector(state => state.chatroom.selectedGroup);
+  const { dmGroupId, opponentNickName, lastChattingTime } = useAppSelector(
+    state => state.chatroom.selectedGroup,
+  );
   const { messageList } = useAppSelector(state => state.message);
   const messageListRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
@@ -34,7 +36,7 @@ export default function Chatroom() {
           const newMessage = JSON.parse(content.body);
           dispatch(setMessage(newMessage));
         });
-        dispatch(getMessages({userId : getUserId(),dmGroupId}));
+        dispatch(getMessages({ userId: getUserId(), dmGroupId }));
       },
       (error: any) => {
         console.error('Connection error: ', error);
@@ -74,13 +76,11 @@ export default function Chatroom() {
     };
   }, [connect]);
 
-
-  useEffect( ()=>{
-    if(messageListRef.current)
-    {
+  useEffect(() => {
+    if (messageListRef.current) {
       messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
     }
-  },[messageList])
+  }, [messageList]);
   return (
     <div className="chatroom">
       <div className="upper">
@@ -88,14 +88,16 @@ export default function Chatroom() {
           <Back
             onClick={() => {
               dispatch(setIsSelected(false));
-              dispatch(setSelectedGroup({
-                dmGroupId: 0,
-                opponentId:0,
-              opponentProfilePath: '',
-              opponentNickName: '',
-              lastChatting: '',
-              lastChattingTime: ''
-              }));
+              dispatch(
+                setSelectedGroup({
+                  dmGroupId: 0,
+                  opponentId: 0,
+                  opponentProfilePath: '',
+                  opponentNickName: '',
+                  lastChatting: '',
+                  lastChattingTime: '',
+                }),
+              );
             }}
           />
         </div>
@@ -107,17 +109,16 @@ export default function Chatroom() {
         <div>{ChatDateTransfer(lastChattingTime)}</div>
         <Line />
       </div>
-      <div className='messagelist' ref={messageListRef}>
-      {messageList.map(message => (
-        
-        <div key={message.dmMessageId}>
-          {message.writerId === getUserId() ? (
+      <div className="messagelist" ref={messageListRef}>
+        {messageList.map(message => (
+          <div key={message.dmMessageId}>
+            {message.writerId === getUserId() ? (
               <MyMessage message={message} />
-          ) : (
-              <OtherMessage message={message}/>
-          )}
-        </div>
-      ))}
+            ) : (
+              <OtherMessage message={message} />
+            )}
+          </div>
+        ))}
       </div>
       <div className="send-container">
         <span>

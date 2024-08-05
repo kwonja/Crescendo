@@ -16,15 +16,18 @@ const inistalState: messageProps = {
   currentPage: 0,
 };
 
-interface APIState{
-  userId : number,
-  dmGroupId : number,
+interface APIState {
+  userId: number;
+  dmGroupId: number;
 }
-export const getMessages = createAsyncThunk('messageSlice/getMessages', async ({userId, dmGroupId}: APIState) => {
-  const response = await messagesAPI(userId,0, 10, dmGroupId);
-  console.log(response);
-  return response;
-});
+export const getMessages = createAsyncThunk(
+  'messageSlice/getMessages',
+  async ({ userId, dmGroupId }: APIState) => {
+    const response = await messagesAPI(userId, 0, 10, dmGroupId);
+    console.log(response);
+    return response;
+  },
+);
 
 const messageSlice = createSlice({
   name: 'messages',
@@ -43,7 +46,7 @@ const messageSlice = createSlice({
       .addCase(getMessages.fulfilled, (state, action) => {
         state.status = 'success';
         console.log(action.payload);
-        state.messageList = [...action.payload.content.reverse(),...state.messageList];
+        state.messageList = [...action.payload.content.reverse(), ...state.messageList];
         state.currentPage += 1;
       })
       .addCase(getMessages.rejected, (state, action) => {

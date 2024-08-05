@@ -17,13 +17,12 @@ export const messagesAPI = async (
   return response.data;
 };
 
-export const createChatroom = async (opponentId : number)=>{
-  const response = await Authapi.post(`/api/v1/dm/dm-group`,{ "opponentId": opponentId});
+export const createChatroom = async (opponentId: number) => {
+  const response = await Authapi.post(`/api/v1/dm/dm-group`, { opponentId: opponentId });
   return response.data;
-}
+};
 
-
-export const getOpponent = async (opponentId : number) => {
+export const getOpponent = async (opponentId: number) => {
   const response = await Authapi.get(`/api/v1/dm/dm-group/user/${opponentId}`);
   return response;
 };

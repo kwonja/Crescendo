@@ -3,9 +3,8 @@ import { useAppSelector } from '../../store/hooks/hook';
 
 import FriendProfile from './FriendProfile';
 
-
 export default function FollowingList() {
-  const { followingList, error,status } = useAppSelector(state => state.following);
+  const { followingList, error, status } = useAppSelector(state => state.following);
   if (status === 'loading') {
     return <div>Loading...</div>;
   }

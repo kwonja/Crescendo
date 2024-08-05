@@ -16,7 +16,7 @@ interface SearchProps {
 
 export default function SearchUser({ handleMode }: SearchProps) {
   const [lists, setList] = useState<user[]>([]);
-  const [inputValue, setInputValue] = useState<string>("");
+  const [inputValue, setInputValue] = useState<string>('');
   const dispatch = useAppDispatch();
 
   const getUserList = async (nickname: string) => {
@@ -25,8 +25,7 @@ export default function SearchUser({ handleMode }: SearchProps) {
       console.log(response);
       setList(() => [...response.content]);
     } catch (error) {
-      console.error("Error fetching user list:", error);
-     
+      console.error('Error fetching user list:', error);
     }
   };
 
@@ -36,9 +35,12 @@ export default function SearchUser({ handleMode }: SearchProps) {
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debounceHandler = useCallback(DeBounce((input) => getUserList(input), 500), []);
+  const debounceHandler = useCallback(
+    DeBounce(input => getUserList(input), 500),
+    [],
+  );
 
-  const handleClick = async (list : user, e: React.MouseEvent<HTMLDivElement>) => {
+  const handleClick = async (list: user, e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
 
     let dmGroupId = 0;
@@ -54,35 +56,37 @@ export default function SearchUser({ handleMode }: SearchProps) {
             const response = await createChatroom(list.userId);
             dmGroupId = response.data.dmGroupId;
           } catch (createError) {
-            console.error("Error creating chatroom:", createError);
+            console.error('Error creating chatroom:', createError);
             return;
           }
         } else {
-          console.error("Error getting opponent:", error);
+          console.error('Error getting opponent:', error);
           return;
         }
       } else {
-        console.error("Unknown error:", error);
+        console.error('Unknown error:', error);
       }
     }
 
     handleMode('chat');
     dispatch(setIsSelected(true));
-    dispatch(setSelectedGroup({
-      dmGroupId : dmGroupId,
-      opponentId : list.userId,
-      opponentNickName : list.nickname,
-      opponentProfilePath : list.profilePath,
-      lastChatting: '',
-      lastChattingTime : '',
-    }));
+    dispatch(
+      setSelectedGroup({
+        dmGroupId: dmGroupId,
+        opponentId: list.userId,
+        opponentNickName: list.nickname,
+        opponentProfilePath: list.profilePath,
+        lastChatting: '',
+        lastChattingTime: '',
+      }),
+    );
   };
 
   return (
-    <div className='searchuser'>
-      <SearchInput placeholder='유저를 검색하세요' onChange={OnchangeHandler} value={inputValue} />
-      {lists.map((list) => (
-        <div key={list.userId} onClick={(e) => handleClick(list, e)}>
+    <div className="searchuser">
+      <SearchInput placeholder="유저를 검색하세요" onChange={OnchangeHandler} value={inputValue} />
+      {lists.map(list => (
+        <div key={list.userId} onClick={e => handleClick(list, e)}>
           <FriendProfile user={list} />
         </div>
       ))}
