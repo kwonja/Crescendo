@@ -6,6 +6,8 @@ import SearchInput from "../components/common/SearchInput";
 import FeedList from "../components/common/FeedList";
 import GalleryList from "../components/common/GalleryList";
 import Dropdown from "../components/common/Dropdown";
+import { toggleFavoriteAPI } from '../apis/communityList';
+import { useAppSelector } from '../store/hooks/hook';
 
 type communityDetailInfoType = {
   idolGroupId: number;
@@ -18,11 +20,15 @@ type communityDetailInfoType = {
 };
 
 export default function CommunityDetail() {
-  const { idolGroupId } = useParams();
+  const params = useParams();
+  if (params.idolGroupId === undefined || !/^[1-9]\d*$/.test(params.idolGroupId)) {
+    throw new Error('invalid parameter');
+  }
+  const idolGroupId: number = Number(params.idolGroupId);
 
   // 임시 데이터
   const communityDetailInfo: communityDetailInfoType = {
-    idolGroupId: Number(idolGroupId),
+    idolGroupId: 1,
     name: 'NewJeans',
     peopleNum: 5,
     introduction: '뉴진스입니다.',
@@ -31,21 +37,16 @@ export default function CommunityDetail() {
     isFavorite: false,
   };
   const favoriteNum = 0;
-  const isLogin = true;
   // 임시 데이터
 
+  const { isLoggedIn } = useAppSelector(state => state.auth);
   const [isSelected, setIsSelected] = useState<'feed' | 'gallery'>('feed');
-  const [isFavorite, setisFavorite] = useState<boolean>(false);
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
   const menuRef = useRef<HTMLDivElement>(null);
   const [filterOption, setFilterOption] = useState<string>('필터');
   const [sortOption, setSortOption] = useState<string>('정렬');
   const [searchOption, setSearchOption] = useState<string>('검색');
-
-  function clickStar() {
-    setisFavorite(prev => !prev);
-    // 이후 rest-api서버로 전송
-  }
 
   useEffect(() => {
     const menuElement = menuRef.current;
@@ -61,7 +62,12 @@ export default function CommunityDetail() {
     setFilterOption('필터');
     setSortOption('정렬');
     setSearchOption('검색');
-  }, [isSelected]);
+  }, [isSelected]); 
+
+  const clickStar = async () => {
+    setIsFavorite(prev => !prev);
+    await toggleFavoriteAPI(idolGroupId);
+  }
 
   return (
     <div className="communitydetail">
@@ -73,12 +79,12 @@ export default function CommunityDetail() {
         ></img>
         <div className="banner_name">{communityDetailInfo.name}</div>
         <div className="banner_favoritenum">{`${favoriteNum} Favorites`}</div>
-        {isLogin && (
+        {isLoggedIn && (
           <div className="banner_star">
             {isFavorite ? (
-              <FullStar className="hoverup" onClick={clickStar} />
+              <FullStar className="hoverup" onClick={()=>clickStar()} />
             ) : (
-              <Star className="hoverup" onClick={clickStar} />
+              <Star className="hoverup" onClick={()=>clickStar()} />
             )}
           </div>
         )}

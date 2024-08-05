@@ -21,3 +21,14 @@ export const getFavoriteListAPI = async () => {
 
   return response.data.content as communityInfo[];
 }
+
+export const toggleFavoriteAPI = async(idolGroupId:number) => {
+  console.log(idolGroupId);
+  try {
+    const response = await Authapi.post(`/api/v1/community/favorites/idol-group/${idolGroupId}`);
+    console.log('Favorite toggled successfully:', response.data);
+  } catch (error) {
+    console.error('Failed to toggle favorite:', error);
+    console.log("실패");
+  }
+}
