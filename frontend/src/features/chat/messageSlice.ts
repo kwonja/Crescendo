@@ -8,25 +8,25 @@ interface messageProps {
   status: PromiseStatus;
   currentPage: number;
   error: string | undefined;
-  totalPage : number;
+  totalPage: number;
 }
 const inistalState: messageProps = {
   messageList: [],
   status: '',
   error: '',
   currentPage: 0,
-  totalPage : 1,
+  totalPage: 1,
 };
 
 interface APIState {
   userId: number;
   dmGroupId: number;
-  page : number;
-  size  : number
+  page: number;
+  size: number;
 }
 export const getMessages = createAsyncThunk(
   'messageSlice/getMessages',
-  async ({ userId, dmGroupId,page }: APIState) => {
+  async ({ userId, dmGroupId, page }: APIState) => {
     const response = await messagesAPI(userId, page, 10, dmGroupId);
     console.log(response);
     return response;
@@ -41,15 +41,15 @@ const messageSlice = createSlice({
       state.messageList = [...state.messageList, action.payload];
       console.log(state.messageList);
     },
-    initialMessage : (state)=>{
+    initialMessage: state => {
       state.messageList = [];
       console.log(state.messageList);
       state.currentPage = 0;
       state.totalPage = 1;
     },
-    setPage : (state) =>{
-      state.currentPage= state.currentPage+1;
-    }
+    setPage: state => {
+      state.currentPage = state.currentPage + 1;
+    },
   },
   extraReducers: builder => {
     builder
@@ -68,5 +68,5 @@ const messageSlice = createSlice({
   },
 });
 
-export const { setMessage,initialMessage,setPage } = messageSlice.actions;
+export const { setMessage, initialMessage, setPage } = messageSlice.actions;
 export default messageSlice.reducer;

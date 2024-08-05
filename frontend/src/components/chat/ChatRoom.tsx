@@ -17,11 +17,11 @@ import { ChatDateTransfer } from '../../utils/ChatDateTransfer';
 export default function Chatroom() {
   const client = useRef<CompatClient | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [isScroll,setScroll] = useState<boolean>(true);
+  const [isScroll, setScroll] = useState<boolean>(true);
   const { dmGroupId, opponentNickName, lastChattingTime } = useAppSelector(
     state => state.chatroom.selectedGroup,
   );
-  const { messageList,currentPage } = useAppSelector(state => state.message);
+  const { messageList, currentPage } = useAppSelector(state => state.message);
   const messageListRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
 
@@ -63,11 +63,10 @@ export default function Chatroom() {
     }
   };
 
+  useEffect(() => {
+    dispatch(getMessages({ userId: getUserId(), dmGroupId, page: currentPage, size: 10 }));
+  }, [dmGroupId, currentPage, dispatch]);
 
-  useEffect( ()=>{
-    dispatch(getMessages({ userId: getUserId(), dmGroupId, page : currentPage, size : 10}));
-  },[dmGroupId,currentPage,dispatch])
-  
   useEffect(() => {
     connect();
 
@@ -79,25 +78,25 @@ export default function Chatroom() {
         });
       }
     };
-  }, [connect,dispatch]);
+  }, [connect, dispatch]);
 
   useEffect(() => {
     if (isScroll && messageListRef.current) {
       messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
     }
-  }, [messageList,isScroll]);
+  }, [messageList, isScroll]);
 
-
-
-  const handleObserver = useCallback((entries : IntersectionObserverEntry[]) => {
-    const target = entries[0];
-    console.log(target)
-    if (target.isIntersecting) {
-      dispatch(setPage());
-      setScroll(false);
-    }
-  }, [dispatch]);
-
+  const handleObserver = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const target = entries[0];
+      console.log(target);
+      if (target.isIntersecting) {
+        dispatch(setPage());
+        setScroll(false);
+      }
+    },
+    [dispatch],
+  );
 
   useEffect(() => {
     const option = {
@@ -105,13 +104,11 @@ export default function Chatroom() {
       threshold: 0.1,
     };
     const observer = new IntersectionObserver(handleObserver, option);
-    console.log(messageListRef?.current?.firstElementChild)
+    console.log(messageListRef?.current?.firstElementChild);
     if (messageListRef.current && messageListRef.current.firstElementChild) {
       observer.observe(messageListRef.current.firstElementChild);
     }
   }, [handleObserver]);
-    
-
 
   return (
     <div className="chatroom">
@@ -143,7 +140,7 @@ export default function Chatroom() {
       </div>
       <div className="messagelist" ref={messageListRef}>
         <div></div>
-        {messageList.map( (message,index) => (
+        {messageList.map((message, index) => (
           <div key={index}>
             {message.writerId === getUserId() ? (
               <MyMessage message={message} />
