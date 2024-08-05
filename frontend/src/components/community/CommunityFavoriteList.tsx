@@ -4,44 +4,9 @@ import { ReactComponent as RightBtn } from '../../assets/images/right.svg';
 import { ReactComponent as LeftBtn } from '../../assets/images/left.svg';
 import CommunityCard from './CommunityCard';
 import { communityInfo } from '../../interface/communityList';
+import { getFavoriteListAPI } from '../../apis/communityList';
 
 export default function CommunityFavoriteList() {
-
-  // 임시 데이터
-  const tmpList: communityInfo[] = [
-    // 현재 페이지의 데이터 목록 (커뮤니티 목록)
-    {
-      idolGroupId: 1,
-      name: 'NewJeans',
-      profile: 'https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg',
-    },
-    {
-      idolGroupId: 2,
-      name: 'BTS',
-      profile: 'https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg',
-    },
-    {
-      idolGroupId: 3,
-      name: 'Aespa',
-      profile: 'https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg',
-    },
-    {
-      idolGroupId: 4,
-      name: 'Black Pink',
-      profile: 'https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg',
-    },
-    {
-      idolGroupId: 5,
-      name: '소녀시대',
-      profile: 'https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg',
-    },
-    {
-      idolGroupId: 6,
-      name: '오마이걸',
-      profile: 'https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg',
-    },
-  ];
-
   // 상수 또는 변수(상태) 초기화
   const SIZE_PER_PAGE = 4; // 한번에 몇개의 그룹이 보일지
   const MOVE_STEP = 4; // 화살표 클릭시 몇개의 그룹을 넘길지
@@ -51,14 +16,23 @@ export default function CommunityFavoriteList() {
   const [showList, setShowList] = useState<communityInfo[]>([]);
 
   // 리스트 불러오기
-  useEffect(() => {
-    // 테스트용 코드
-    setCommunityList(tmpList);
-    setIdx(0);
+  useEffect(() => { 
+    const getFavoriteList = async () => {
+      try {
+        const list = await getFavoriteListAPI();
+        setCommunityList(list);
+        setIdx(0); // 데이터가 로드되면 idx를 0으로 설정
+      } catch (error) {
+        console.error('Failed to fetch favorite list:', error);
+      }
+    };
+
+    getFavoriteList();
+    
   }, []);
 
   useEffect(() => {
-    if (idx === -1) return; // 로딩 전 로딩안함
+    if (idx === -1) return;
     let tmp = [...communityList];
     tmp = tmp.slice(idx, idx + SIZE_PER_PAGE);
     setShowList(tmp);
