@@ -1,0 +1,105 @@
+.feed-form,
+.gallery-form {
+  .form-group {
+    margin-bottom: 20px;
+    width: 100%;
+
+    textarea {
+      color: #bbb;
+      font-size: 32px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 100%; /* 32px */
+      letter-spacing: 3.2px;
+    }
+  }
+
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  input[type='file'],
+  input[type='text'],
+  select,
+  textarea {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .image-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .image-wrapper {
+    position: relative;
+    img {
+      max-width: 100px;
+      max-height: 100px;
+    }
+    .remove-image {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: #f66;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+  }
+
+  .char-count {
+    display: block;
+    text-align: right;
+  }
+
+  .tags-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    flex: 1;
+    .tag {
+      background: #e0e0e0;
+      padding: 5px 10px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      span {
+        cursor: pointer;
+      }
+    }
+    input {
+      border: 1px solid #ccc;
+      padding: 5px;
+      border-radius: 5px;
+      width: 100px;
+    }
+    button {
+      background: #f66;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  }
+
+  .submit-button {
+    background: #f66;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 20px;
+  }
+}

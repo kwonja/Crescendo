@@ -6,6 +6,10 @@ import SearchInput from '../components/common/SearchInput';
 import { ReactComponent as MenuDown } from '../assets/images/down.svg';
 import FeedList from '../components/common/FeedList';
 import GalleryList from '../components/common/GalleryList';
+import FeedForm from '../components/community/PostFeed';
+import GalleryForm from '../components/community/PostGallery';
+import { ReactComponent as WriteButton } from '../assets/images/write.svg';
+import '../scss/page/_communitydetail.scss';
 
 type communityDetailInfoType = {
   idolGroupId: number;
@@ -39,6 +43,9 @@ export default function CommunityDetail() {
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
   const menuRef = useRef<HTMLDivElement>(null);
 
+  const [show, setShow] = useState(false);
+  const [activeTab, setActiveTab] = useState('feed');
+
   function clickStar() {
     setisFavorite(prev => !prev);
     // 이후 rest-api서버로 전송
@@ -56,6 +63,9 @@ export default function CommunityDetail() {
       }
     }
   }, [isSelected]);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   return (
     <div className="communitydetail">
@@ -113,6 +123,40 @@ export default function CommunityDetail() {
         {isSelected === 'feed' && <FeedList />}
         {isSelected === 'gallery' && <GalleryList />}
       </div>
+
+      <WriteButton className="write-button" onClick={handleShow}>
+        글 작성
+      </WriteButton>
+
+      {show && (
+        <div className="modal">
+          <div className="modal-content">
+            <span className="close" onClick={handleClose}>
+              &times;
+            </span>
+            <div className="modal-header">
+              <h2>글 작성</h2>
+              <div className="tabs">
+                <button
+                  className={`tab ${activeTab === 'feed' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('feed')}
+                >
+                  피드 작성
+                </button>
+                <button
+                  className={`tab ${activeTab === 'gallery' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('gallery')}
+                >
+                  갤러리 작성
+                </button>
+              </div>
+            </div>
+            <div className="modal-body">
+              {activeTab === 'feed' ? <FeedForm /> : <GalleryForm />}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
