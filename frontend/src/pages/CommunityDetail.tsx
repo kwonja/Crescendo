@@ -2,17 +2,10 @@ import { useParams } from 'react-router-dom';
 import { ReactComponent as FullStar } from '../assets/images/fullstar.svg';
 import { ReactComponent as Star } from '../assets/images/star.svg';
 import React, { useEffect, useRef, useState } from 'react';
-<<<<<<< HEAD
 import SearchInput from "../components/common/SearchInput";
 import FeedList from "../components/common/FeedList";
 import GalleryList from "../components/common/GalleryList";
 import Dropdown from "../components/common/Dropdown";
-=======
-import SearchInput from '../components/common/SearchInput';
-import { ReactComponent as MenuDown } from '../assets/images/down.svg';
-import FeedList from '../components/common/FeedList';
-import GalleryList from '../components/common/GalleryList';
->>>>>>> 4e6f76878c23e25eeecd72e187eacbb2acdcf89a
 
 type communityDetailInfoType = {
   idolGroupId: number;
