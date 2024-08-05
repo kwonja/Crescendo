@@ -2,7 +2,7 @@ import { useState } from 'react';
 import SearchInput from '../components/common/SearchInput';
 import CommunityFavoriteList from '../components/community/CommunityFavoriteList';
 import CommunityList from '../components/community/CommunityList';
-import { setKeyword } from '../features/communityList/communityListSlice';
+import { resetPage, setKeyword } from '../features/communityList/communityListSlice';
 import { useAppSelector } from '../store/hooks/hook';
 import { useAppDispatch } from '../store/hooks/hook';
 
@@ -24,7 +24,14 @@ export default function CommunityMain() {
       <div className="communitymain_contents">
         <div className="communitymain_title">ALL 커뮤니티</div>
         <div className="communitymain_searchbar">
-          <SearchInput placeholder='커뮤니티 검색' value={value} onChange={(event)=>setValue(event.target.value)} onSearch={()=>{dispatch(setKeyword(value))}} />
+          <SearchInput 
+          placeholder='커뮤니티 검색' 
+          value={value}
+          onChange={(event)=>setValue(event.target.value)}
+          onSearch={()=>{
+            dispatch(setKeyword(value))
+            dispatch(resetPage());
+            }} />
         </div>
       </div>
       <div className="communitymain_contents">
