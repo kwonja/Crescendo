@@ -1,3 +1,4 @@
+// src/components/community/PostFeed.tsx
 import React, { useState } from 'react';
 import '../../scss/components/community/_postfeed.scss';
 
@@ -55,8 +56,8 @@ const FeedForm = () => {
               </button>
             </div>
           ))}
-          <span>{images.length}/10</span>
         </div>
+        <span className="image-count">{images.length}/10</span>
       </div>
 
       <div className="form-group">

@@ -29,25 +29,38 @@
 
   .image-preview {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 10px;
+    overflow-x: auto; /* 가로 스크롤 추가 */
+    max-width: 100%;
   }
 
   .image-wrapper {
     position: relative;
+    flex: 0 0 auto; /* flex-grow, flex-shrink, flex-basis 설정 */
     img {
       max-width: 100px;
       max-height: 100px;
+      transform: rotate(-10deg); /* 도미노 효과 */
+      margin-right: -20px; /* 이미지 겹치기 */
     }
     .remove-image {
       position: absolute;
-      top: 0;
-      right: 0;
+      bottom: 0; /* 좌측 하단으로 위치 변경 */
+      left: 0;
       background: #f66;
       color: white;
       border: none;
       cursor: pointer;
+      padding: 2px 5px; /* 버튼 크기 조정 */
     }
+  }
+
+  .image-count {
+    text-align: right;
+    display: block;
+    margin-top: 10px;
+    color: #f66;
   }
 
   .char-count {
