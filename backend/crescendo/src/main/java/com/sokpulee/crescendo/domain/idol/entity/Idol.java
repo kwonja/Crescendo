@@ -44,4 +44,8 @@ public class Idol {
     public void updateProfile2(String favoriteImagePath) {
         this.profile2 = favoriteImagePath;
     }
+
+    public void plusWinNum() {
+        this.winNum++;
+    }
 }
