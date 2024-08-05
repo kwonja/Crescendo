@@ -51,7 +51,6 @@ export default function CommunityFavoriteList() {
   const SIZE_PER_PAGE = 4; // 한번에 몇개의 그룹이 보일지
   const MOVE_STEP = 4; // 화살표 클릭시 몇개의 그룹을 넘길지
 
-
   const [idx, setIdx] = useState<number>(-1); // 로딩 전 -1
   const [communityList, setCommunityList] = useState<communityInfo[]>([]);
   const [showList, setShowList] = useState<communityInfo[]>([]);
@@ -84,7 +83,6 @@ export default function CommunityFavoriteList() {
       setIdx(0);
     }
   }
-  
 
   return (
     <div className="communityfavoritelist_container">
