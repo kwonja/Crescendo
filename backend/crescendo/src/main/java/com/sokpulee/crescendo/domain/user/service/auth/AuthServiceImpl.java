@@ -112,7 +112,7 @@ public class AuthServiceImpl implements AuthService {
         EmailAuth emailAuth = emailAuthRepository.findById(emailAuthId)
                 .orElseThrow(EmailValidationNotFoundException::new);
 
-        if(randomKey.equals(emailAuth.getRandomKey())) {
+        if(!randomKey.equals(emailAuth.getRandomKey())) {
             emailAuthRepository.delete(emailAuth);
             throw new EmailAuthException();
         }
