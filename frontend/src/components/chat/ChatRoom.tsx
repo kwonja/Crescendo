@@ -18,7 +18,7 @@ export default function Chatroom() {
   const client = useRef<CompatClient | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [isScroll, setScroll] = useState<boolean>(true);
-  const { dmGroupId, opponentNickName, lastChattingTime } = useAppSelector(
+  const { dmGroupId, opponentNickName } = useAppSelector(
     state => state.chatroom.selectedGroup,
   );
   const { messageList,currentPage } = useAppSelector(state => state.message);
@@ -84,10 +84,12 @@ export default function Chatroom() {
   }, [connect,dispatch]);
 
   useEffect(() => {
+    //메세지를 입력한다면
     if (isScroll && messageListRef.current) {
+      console.log("스크롤")
       messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
     }
-  }, [messageList, isScroll]);
+  }, [isScroll]);
 
   const handleObserver = useCallback((entries: IntersectionObserverEntry[]) => {
     const target = entries[0];
@@ -99,17 +101,18 @@ export default function Chatroom() {
   }, [dispatch]);
 
   useEffect(() => {
+    //이전 스크롤이 있다면
     if (prevScrollHeight > 0) {
       const newScrollHeight = messageListRef.current?.scrollHeight || 0;
       if (messageListRef.current) {
-        messageListRef.current.scrollTop += (newScrollHeight - prevScrollHeight);
+        messageListRef.current.scrollTop = (newScrollHeight - prevScrollHeight);
       }
-      setPrevScrollHeight(0);
     }
     else{
+      //처음에 이전 스크롤 없이 들어올때!
       if(messageListRef.current) messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
     }
-  }, [messageList]);
+  }, [messageList,prevScrollHeight]);
 
   useEffect(() => {
     const option = {
@@ -148,22 +151,29 @@ export default function Chatroom() {
         <div>{opponentNickName}</div>
         <Hamburger />
       </div>
-      <div className="date">
-        <Line style={{ width: 20 }} />
-        <div>{ChatDateTransfer(lastChattingTime)}</div>
-        <Line />
-      </div>
+     
       <div className="messagelist" ref={messageListRef}>
         <div></div>
-        {messageList.map( (message,index) => (
-          <div key={index}>
-            {message.writerId === getUserId() ? (
-              <MyMessage message={message} />
-            ) : (
-              <OtherMessage message={message} />
-            )}
-          </div>
-        ))}
+        {messageList.map((message, index) => {
+          const messageDate = new Date(message.createdAt).toLocaleDateString();
+          const isNewDate = index === 0 || messageDate !== new Date(messageList[index - 1].createdAt).toLocaleDateString();
+          return (
+            <div key={index}>
+              {isNewDate && (
+                <div className="date">
+                <Line style={{ width: 20 }} />
+                <div>{ChatDateTransfer(messageDate)}</div>
+                <Line />
+              </div>
+              )}
+              {message.writerId === getUserId() ? (
+                <MyMessage message={message} />
+              ) : (
+                <OtherMessage message={message} />
+              )}
+            </div>
+          );
+        })}
       </div>
       <div className="send-container">
         <span>
