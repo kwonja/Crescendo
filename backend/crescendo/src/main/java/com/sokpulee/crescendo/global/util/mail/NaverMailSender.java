@@ -14,16 +14,16 @@ import java.util.Random;
 @Component
 public class NaverMailSender implements MailSendHelper{
     /** 메일 HOST **/
-    @Value("{mail.host}")
+    @Value("${mail.host}")
     private String HOST;
     /** 메일 PORT **/
-    @Value("{mail.port}")
+    @Value("${mail.port}")
     private String PORT;
     /** 메일 ID **/
-    @Value("{mail.id}")
+    @Value("${mail.id}")
     private String MAIL_ID;
     /** 메일 PW **/
-    @Value("{mail.pw}")
+    @Value("${mail.pw}")
     private String MAIL_PW;
 
     @Override
