@@ -1,7 +1,9 @@
 package com.sokpulee.crescendo.domain.idol.controller;
 
 import com.sokpulee.crescendo.domain.idol.dto.request.IdealWorldCupFinishRequest;
+import com.sokpulee.crescendo.domain.idol.dto.request.StartIdealWorldCupRequest;
 import com.sokpulee.crescendo.domain.idol.dto.response.IdealWorldCupStartResponse;
+import com.sokpulee.crescendo.domain.idol.enums.Gender;
 import com.sokpulee.crescendo.domain.idol.service.IdolService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,9 +31,9 @@ public class IdolController {
 
     @GetMapping("/ideal-world-cup")
     @Operation(summary = "이상형 월드컵 시작", description = "이상형 월드컵 시작 API")
-    public ResponseEntity<?> startIdealWorldCup(@RequestParam(value = "num", required = true) Integer num) {
+    public ResponseEntity<?> startIdealWorldCup(StartIdealWorldCupRequest startIdealWorldCupRequest) {
 
-        IdealWorldCupStartResponse randomIdols = idolService.getRandomIdols(num);
+        IdealWorldCupStartResponse randomIdols = idolService.getRandomIdols(startIdealWorldCupRequest);
 
         return ResponseEntity.status(OK).body(randomIdols);
     }
@@ -44,5 +46,11 @@ public class IdolController {
 
         return ResponseEntity.status(NO_CONTENT).build();
     }
-
+//
+//    @GetMapping("/ideal-world-cup/rank")
+//    @Operation(summary = "이상형 월드컵 랭킹 조회", description = "이상형 월드컵 랭킹 조회 API")
+//    public ResponseEntity<?> getIdealWorldCupRank() {
+//
+//
+//    }
 }

@@ -4,6 +4,7 @@ import com.sokpulee.crescendo.domain.idol.dto.IdolInfoDto;
 import com.sokpulee.crescendo.domain.idol.dto.IdolNameDto;
 import com.sokpulee.crescendo.domain.idol.dto.request.IdealWorldCupFinishRequest;
 import com.sokpulee.crescendo.domain.idol.dto.request.IdolNameListResponse;
+import com.sokpulee.crescendo.domain.idol.dto.request.StartIdealWorldCupRequest;
 import com.sokpulee.crescendo.domain.idol.dto.response.IdealWorldCupStartResponse;
 import com.sokpulee.crescendo.domain.idol.entity.Idol;
 import com.sokpulee.crescendo.domain.idol.entity.IdolGroup;
@@ -16,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -40,13 +40,13 @@ public class IdolServiceImpl implements IdolService {
     }
 
     @Override
-    public IdealWorldCupStartResponse getRandomIdols(int num) {
-        List<Idol> allIdols = idolRepository.findAllWithGroup();
+    public IdealWorldCupStartResponse getRandomIdols(StartIdealWorldCupRequest startIdealWorldCupRequest) {
+        List<Idol> allIdols = idolRepository.findAllWithGroup(startIdealWorldCupRequest.getGender());
 
         Collections.shuffle(allIdols);
 
         List<Idol> randomIdols = allIdols.stream()
-                .limit(num)
+                .limit(startIdealWorldCupRequest.getNum())
                 .toList();
 
         List<IdolInfoDto> idolList = randomIdols.stream()
@@ -54,7 +54,7 @@ public class IdolServiceImpl implements IdolService {
                         idol.getId(),
                         idol.getIdolGroup().getName(),
                         idol.getName(),
-                        idol.getProfile()
+                        idol.getProfile2()
                 ))
                 .toList();
 
