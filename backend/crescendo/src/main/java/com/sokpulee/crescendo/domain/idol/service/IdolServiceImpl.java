@@ -2,6 +2,7 @@ package com.sokpulee.crescendo.domain.idol.service;
 
 import com.sokpulee.crescendo.domain.idol.dto.IdolInfoDto;
 import com.sokpulee.crescendo.domain.idol.dto.IdolNameDto;
+import com.sokpulee.crescendo.domain.idol.dto.request.IdealWorldCupFinishRequest;
 import com.sokpulee.crescendo.domain.idol.dto.request.IdolNameListResponse;
 import com.sokpulee.crescendo.domain.idol.dto.response.IdealWorldCupStartResponse;
 import com.sokpulee.crescendo.domain.idol.entity.Idol;
@@ -59,5 +60,13 @@ public class IdolServiceImpl implements IdolService {
 
 
         return new IdealWorldCupStartResponse(idolList);
+    }
+
+    @Override
+    public void plusIdealWorldCupWinNum(IdealWorldCupFinishRequest idealWorldCupFinishRequest) {
+        Idol idol = idolRepository.findById(idealWorldCupFinishRequest.getIdolId())
+                .orElseThrow(IdolNotFoundException::new);
+
+        idol.plusWinNum();
     }
 }

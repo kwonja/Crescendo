@@ -1,5 +1,6 @@
 package com.sokpulee.crescendo.domain.idol.service;
 
+import com.sokpulee.crescendo.domain.idol.dto.request.IdealWorldCupFinishRequest;
 import com.sokpulee.crescendo.domain.idol.dto.request.IdolNameListResponse;
 import com.sokpulee.crescendo.domain.idol.dto.response.IdealWorldCupStartResponse;
 import com.sokpulee.crescendo.domain.idol.entity.Idol;
@@ -11,4 +12,7 @@ public interface IdolService {
     IdolNameListResponse getIdolNameListByGroupId(Long idolGroupId);
 
     IdealWorldCupStartResponse getRandomIdols(int num);
+
+    void plusIdealWorldCupWinNum(IdealWorldCupFinishRequest idealWorldCupFinishRequest);
+
 }
