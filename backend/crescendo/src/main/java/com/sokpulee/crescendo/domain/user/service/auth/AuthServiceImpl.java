@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Transactional
 @RequiredArgsConstructor
 @Service
@@ -44,7 +46,11 @@ public class AuthServiceImpl implements AuthService {
     public EmailRandomKeyResponse createEmailRandomKey(EmailRandomKeyRequest emailRandomKeyRequest) {
         String randomKey = mailSendHelper.sendEmailRandomKey(emailRandomKeyRequest.getEmail());
 
-        EmailAuth emailAuth = emailAuthRepository.save(EmailAuth.builder().randomKey(randomKey).build());
+        LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(5);
+        EmailAuth emailAuth = emailAuthRepository.save(EmailAuth.builder()
+                .randomKey(randomKey)
+                .expiresAt(expiresAt)
+                .build());
 
         return new EmailRandomKeyResponse(emailAuth.getEmailAuthId());
     }
