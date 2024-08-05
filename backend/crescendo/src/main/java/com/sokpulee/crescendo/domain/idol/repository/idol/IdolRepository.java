@@ -1,4 +1,4 @@
-package com.sokpulee.crescendo.domain.idol.repository;
+package com.sokpulee.crescendo.domain.idol.repository.idol;
 
 import com.sokpulee.crescendo.domain.idol.entity.Idol;
 import com.sokpulee.crescendo.domain.idol.entity.IdolGroup;
@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface IdolRepository extends JpaRepository<Idol, Long> {
+public interface IdolRepository extends JpaRepository<Idol, Long>, IdolRepositoryCustom{
 
     List<Idol> findByIdolGroup(IdolGroup idolGroup);
 

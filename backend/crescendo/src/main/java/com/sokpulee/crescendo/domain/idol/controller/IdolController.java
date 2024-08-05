@@ -46,11 +46,14 @@ public class IdolController {
 
         return ResponseEntity.status(NO_CONTENT).build();
     }
-//
-//    @GetMapping("/ideal-world-cup/rank")
-//    @Operation(summary = "이상형 월드컵 랭킹 조회", description = "이상형 월드컵 랭킹 조회 API")
-//    public ResponseEntity<?> getIdealWorldCupRank() {
-//
-//
-//    }
+
+    @GetMapping("/ideal-world-cup/rank")
+    @Operation(summary = "이상형 월드컵 랭킹 조회", description = "이상형 월드컵 랭킹 조회 API")
+    public ResponseEntity<?> getIdealWorldCupRank(@RequestParam int page,
+                                                  @RequestParam int size,
+                                                  @RequestParam(required = false) String idolName,
+                                                  @RequestParam Gender gender) {
+
+        return ResponseEntity.status(OK).body(idolService.getIdealWorldCupRank(page, size, idolName, gender));
+    }
 }
