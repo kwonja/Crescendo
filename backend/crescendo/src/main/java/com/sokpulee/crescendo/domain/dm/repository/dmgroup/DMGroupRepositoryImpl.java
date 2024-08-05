@@ -81,7 +81,17 @@ public class DMGroupRepositoryImpl implements DMGroupRepositoryCustom {
         }).toList();
 
         return dmList.stream()
-                .sorted((d1, d2) -> d2.getLastChattingTime().compareTo(d1.getLastChattingTime()))
+                .sorted((d1, d2) -> {
+                    if (d1.getLastChattingTime() == null && d2.getLastChattingTime() == null) {
+                        return 0;
+                    } else if (d1.getLastChattingTime() == null) {
+                        return 1;
+                    } else if (d2.getLastChattingTime() == null) {
+                        return -1;
+                    } else {
+                        return d2.getLastChattingTime().compareTo(d1.getLastChattingTime());
+                    }
+                })
                 .collect(Collectors.toList());
     }
 }
