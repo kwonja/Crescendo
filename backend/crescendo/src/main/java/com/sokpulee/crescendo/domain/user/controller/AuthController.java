@@ -71,6 +71,7 @@ public class AuthController {
                 .secure(true)
                 .path("/")
                 .maxAge(7 * 24 * 60 * 60) // 쿠키 유효기간 설정 (예: 7일)
+                .sameSite("Strict") // 추가: SameSite 속성 설정
                 .build();
 
         return ResponseEntity.status(OK)
