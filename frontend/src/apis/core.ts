@@ -17,6 +17,18 @@ export const Authapi = axios.create(config); // 인증이 필요한 요청용 �
 // 엑세스 토큰을 저장할 로컬 변수
 let accessToken: string | null = null;
 
+// userId 전역 변수
+let userId: number = 0;
+
+export const getUserId = (Id: number) => {
+  userId = Id;
+  console.log(userId);
+};
+
+export const setUserId = () => {
+  return userId;
+};
+
 // 엑세스 토큰 설정 함수
 export const setAccessToken = (token: string | null) => {
   accessToken = token;
