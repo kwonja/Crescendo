@@ -5,6 +5,8 @@ import lombok.Getter;
 @Getter
 public class FeedCommentResponse {
 
+    private Long feedCommentId;
+
     private Long userId;
 
     private String profileImagePath;
@@ -19,7 +21,9 @@ public class FeedCommentResponse {
 
     private int replyCnt;
 
-    public FeedCommentResponse(Long userId, String profileImagePath, String nickname, int likeCnt, boolean isLike, String content, int replyCnt) {
+
+    public FeedCommentResponse(Long feedCommentId,Long userId, String profileImagePath, String nickname, int likeCnt, boolean isLike, String content, int replyCnt) {
+        this.feedCommentId = feedCommentId;
         this.userId = userId;
         this.profileImagePath = profileImagePath;
         this.nickname = nickname;
