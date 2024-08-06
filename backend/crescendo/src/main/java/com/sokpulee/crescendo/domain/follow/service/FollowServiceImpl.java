@@ -42,7 +42,7 @@ public class FollowServiceImpl implements FollowService {
 
         followRepository.save(follow);
 
-        alarmService.followAlarm(loggedInUserId, followUser.getId(), follow.getFollowId());
+        alarmService.followAlarm(loggedInUser.getId(), followUser.getId(), loggedInUser.getId());
     }
 
     @Override

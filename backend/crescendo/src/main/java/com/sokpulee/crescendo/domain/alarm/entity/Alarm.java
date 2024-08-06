@@ -31,7 +31,7 @@ public class Alarm extends CreatedAtEntity {
     @Column(length = 100)
     private String content;
 
-    private Boolean isRead;
+    private boolean isRead;
 
     @Builder
     public Alarm(User user, AlarmChannel alarmChannel, Long relatedId, String content) {
