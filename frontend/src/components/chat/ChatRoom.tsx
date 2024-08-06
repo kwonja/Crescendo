@@ -18,9 +18,7 @@ export default function Chatroom() {
   const client = useRef<CompatClient | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [isScroll, setScroll] = useState<boolean>(false);
-  const { dmGroupId, opponentNickName } = useAppSelector(
-    state => state.chatroom.selectedGroup,
-  );
+  const { dmGroupId, opponentNickName } = useAppSelector(state => state.chatroom.selectedGroup);
   const { messageList, currentPage } = useAppSelector(state => state.message);
   const messageListRef = useRef<HTMLDivElement>(null);
   const [prevScrollHeight, setPrevScrollHeight] = useState(0);
@@ -64,11 +62,11 @@ export default function Chatroom() {
     }
   };
 
-  useEffect( ()=>{
+  useEffect(() => {
     setScroll(false);
-    dispatch(getMessages({ userId: getUserId(), dmGroupId, page : currentPage, size : 10}));
-  },[dmGroupId,currentPage,dispatch])
-  
+    dispatch(getMessages({ userId: getUserId(), dmGroupId, page: currentPage, size: 10 }));
+  }, [dmGroupId, currentPage, dispatch]);
+
   useEffect(() => {
     connect();
 
@@ -81,33 +79,32 @@ export default function Chatroom() {
       }
     };
   }, [connect, dispatch]);
+  const handleObserver = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const target = entries[0];
+      if (target.isIntersecting) {
+        const currentScrollHeight = messageListRef.current?.scrollHeight || 0;
+        setPrevScrollHeight(currentScrollHeight);
+        dispatch(setPage());
+      }
+    },
+    [dispatch],
+  );
 
   useEffect(() => {
-    //메세지를 입력한다면
-    if (isScroll && messageListRef.current) {
-      messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
-    }
-  }, [isScroll]);
-
-  const handleObserver = useCallback((entries: IntersectionObserverEntry[]) => {
-    const target = entries[0];
-    if (target.isIntersecting) {
-      const currentScrollHeight = messageListRef.current?.scrollHeight || 0;
-      setPrevScrollHeight(currentScrollHeight);
-      dispatch(setPage());
-    }
-  }, [dispatch]);
-
-  useEffect(() => {
-   //스크롤이 업데이트 된다면
+    //스크롤이 업데이트 된다면
     if (prevScrollHeight > 0) {
       const newScrollHeight = messageListRef.current?.scrollHeight || 0;
       if (messageListRef.current) {
-        messageListRef.current.scrollTop = (newScrollHeight - prevScrollHeight);
+        messageListRef.current.scrollTop = newScrollHeight - prevScrollHeight;
       }
     }
 
-  }, [messageList,prevScrollHeight]);
+    if (isScroll && messageListRef.current) {
+      messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
+    }
+    
+  }, [messageList, prevScrollHeight,isScroll]);
 
   useEffect(() => {
     const option = {
@@ -144,20 +141,22 @@ export default function Chatroom() {
         <div>{opponentNickName}</div>
         <Hamburger />
       </div>
-     
+
       <div className="messagelist" ref={messageListRef}>
         <div></div>
         {messageList.map((message, index) => {
           const messageDate = new Date(message.createdAt).toLocaleDateString();
-          const isNewDate = index === 0 || messageDate !== new Date(messageList[index - 1].createdAt).toLocaleDateString();
+          const isNewDate =
+            index === 0 ||
+            messageDate !== new Date(messageList[index - 1].createdAt).toLocaleDateString();
           return (
             <div key={index}>
               {isNewDate && (
                 <div className="date">
-                <Line style={{ width: 20 }} />
-                <div>{ChatDateTransfer(messageDate)}</div>
-                <Line />
-              </div>
+                  <Line style={{ width: 20 }} />
+                  <div>{ChatDateTransfer(messageDate)}</div>
+                  <Line />
+                </div>
               )}
               {message.writerId === getUserId() ? (
                 <MyMessage message={message} />

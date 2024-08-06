@@ -16,7 +16,7 @@ export default function CommunityFavoriteList() {
   const [showList, setShowList] = useState<communityInfo[]>([]);
 
   // 리스트 불러오기
-  useEffect(() => { 
+  useEffect(() => {
     const getFavoriteList = async () => {
       try {
         const response = await getFavoriteListAPI();
@@ -28,7 +28,6 @@ export default function CommunityFavoriteList() {
     };
 
     getFavoriteList();
-    
   }, []);
 
   useEffect(() => {
@@ -61,14 +60,18 @@ export default function CommunityFavoriteList() {
         </Button>
       }
       <div className="communityfavoritelist_contents">
-        {showList.length>0?showList.map(community => (
-          <CommunityCard
-            idolGroupId={community.idolGroupId}
-            name={community.name}
-            profile={community.profile}
-            key={community.idolGroupId}
-          />
-        )):<div>"즐겨찾기 커뮤니티가 없습니다."</div>}
+        {showList.length > 0 ? (
+          showList.map(community => (
+            <CommunityCard
+              idolGroupId={community.idolGroupId}
+              name={community.name}
+              profile={community.profile}
+              key={community.idolGroupId}
+            />
+          ))
+        ) : (
+          <div>"즐겨찾기 커뮤니티가 없습니다."</div>
+        )}
       </div>
       {
         <Button
