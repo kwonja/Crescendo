@@ -1,16 +1,49 @@
 .feed-form,
 .gallery-form {
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 20px;
+
   .form-group {
     margin-bottom: 20px;
     width: 100%;
 
-    textarea {
-      color: #bbb;
-      font-size: 32px;
-      font-style: normal;
-      font-weight: 400;
-      line-height: 100%; /* 32px */
-      letter-spacing: 3.2px;
+    .textarea-wrapper {
+      position: relative;
+      border-radius: 15px;
+      border: 3px solid #f66;
+      padding-left: 10px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      box-sizing: border-box;
+      overflow: hidden;
+
+      textarea {
+        width: calc(100% - 20px);
+        height: 100%;
+        border: none;
+        outline: none;
+        box-sizing: border-box;
+        border-radius: 12px;
+        padding-left: 10px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        font-size: 32px;
+        font-weight: 400;
+        line-height: 100%; /* 32px */
+        letter-spacing: 3.2px;
+        color: black;
+        resize: none;
+      }
+
+      textarea::placeholder {
+        color: #bbb;
+      }
+    }
+
+    textarea:focus {
+      border: none;
+      outline: none;
     }
   }
 
@@ -19,7 +52,39 @@
     margin-bottom: 5px;
   }
 
-  input[type='file'],
+  .image-upload-group {
+    display: flex;
+    align-items: center;
+    position: relative;
+
+    .add-image-container {
+      width: 150px;
+      height: 150px;
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.75);
+      filter: drop-shadow(3px 3px 4px rgba(0, 0, 0, 0.25));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .image-count {
+      color: #f66;
+      text-align: center;
+      font-size: 32px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 100%; /* 32px */
+      letter-spacing: 3.2px;
+
+      position: absolute;
+      top: 0px;
+      right: 0px;
+    }
+  }
+
   input[type='text'],
   select,
   textarea {
@@ -31,36 +96,35 @@
     display: flex;
     flex-wrap: nowrap;
     gap: 10px;
-    overflow-x: auto; /* 가로 스크롤 추가 */
     max-width: 100%;
+    margin-right: -75px;
+    margin-left: 80px;
   }
 
   .image-wrapper {
     position: relative;
-    flex: 0 0 auto; /* flex-grow, flex-shrink, flex-basis 설정 */
+    flex: 0 0 auto;
     img {
-      max-width: 100px;
-      max-height: 100px;
-      transform: rotate(-10deg); /* 도미노 효과 */
-      margin-right: -20px; /* 이미지 겹치기 */
+      max-width: 150px;
+      max-height: 150px;
+      margin-left: -77px;
+      border-radius: 15px;
+      border: 3px solid #f66;
+
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
     }
     .remove-image {
+      width: 22px;
+      height: 22px;
       position: absolute;
-      bottom: 0; /* 좌측 하단으로 위치 변경 */
-      left: 0;
-      background: #f66;
+      bottom: 15px;
+      left: -65px;
       color: white;
       border: none;
       cursor: pointer;
-      padding: 2px 5px; /* 버튼 크기 조정 */
     }
-  }
-
-  .image-count {
-    text-align: right;
-    display: block;
-    margin-top: 10px;
-    color: #f66;
   }
 
   .char-count {

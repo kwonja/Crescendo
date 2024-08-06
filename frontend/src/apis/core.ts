@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 export const BASE_URL = 'http://i11b108.p.ssafy.io:8000';
 
@@ -54,7 +53,6 @@ Authapi.interceptors.response.use(
   response => response,
   async error => {
     const originalRequest = error.config;
-    const navigate = useNavigate();
     // 401 Unauthorized 에러 발생 시 처리
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true; // 재시도를 방지하기 위한 플래그 설정
@@ -72,7 +70,7 @@ Authapi.interceptors.response.use(
       } catch (refreshError) {
         // 리프레시 토큰도 만료된 경우
         alert('세션이 만료되었습니다. 다시 로그인해 주세요.');
-        navigate('/login'); // 로그인 페이지로 리디렉션
+        window.location.href = '/login'; // 로그인 페이지로 리디렉션
         return Promise.reject(refreshError);
       }
     }

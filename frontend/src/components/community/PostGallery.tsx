@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+// import { ReactComponent as AddImage } from '../assets/images/img_add.svg';
+// import { ReactComponent as AddTag } from '../assets/images/tag_add.svg';
 import '../../scss/components/community/_postfeed.scss';
 
 const GalleryForm = () => {

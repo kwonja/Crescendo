@@ -124,32 +124,32 @@ export default function CommunityDetail() {
         {isSelected === 'gallery' && <GalleryList />}
       </div>
 
-      <WriteButton className="write-button" onClick={handleShow}>
-        글 작성
-      </WriteButton>
+      <WriteButton className="write-button" onClick={handleShow} />
 
       {show && (
         <div className="modal">
           <div className="modal-content">
-            <span className="close" onClick={handleClose}>
-              &times;
-            </span>
             <div className="modal-header">
-              <h2>글 작성</h2>
+              <div className="modal-header-title">
+                <h2>글 작성</h2>
+              </div>
               <div className="tabs">
                 <button
                   className={`tab ${activeTab === 'feed' ? 'active' : ''}`}
                   onClick={() => setActiveTab('feed')}
                 >
-                  피드 작성
+                  피드
                 </button>
                 <button
                   className={`tab ${activeTab === 'gallery' ? 'active' : ''}`}
                   onClick={() => setActiveTab('gallery')}
                 >
-                  갤러리 작성
+                  갤러리
                 </button>
               </div>
+              <span className="close" onClick={handleClose}>
+                &times;
+              </span>
             </div>
             <div className="modal-body">
               {activeTab === 'feed' ? <FeedForm /> : <GalleryForm />}
