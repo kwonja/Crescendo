@@ -2,12 +2,13 @@ package com.sokpulee.crescendo.domain.challenge.service;
 
 import com.sokpulee.crescendo.domain.challenge.dto.request.CreateDanceChallengeRequest;
 import com.sokpulee.crescendo.domain.challenge.dto.request.JoinDanceChallengeRequest;
+import com.sokpulee.crescendo.domain.challenge.dto.response.GetDanceChallengeJoinResponse;
 import com.sokpulee.crescendo.domain.challenge.dto.response.GetDanceChallengeResponse;
 import com.sokpulee.crescendo.domain.challenge.entity.DanceChallenge;
 import com.sokpulee.crescendo.domain.challenge.entity.DanceChallengeJoin;
 import com.sokpulee.crescendo.domain.challenge.entity.DanceChallengeJoinLike;
 import com.sokpulee.crescendo.domain.challenge.repository.DanceChallengeJoinLikeRepository;
-import com.sokpulee.crescendo.domain.challenge.repository.DanceChallengeJoinRepository;
+import com.sokpulee.crescendo.domain.challenge.repository.dancechallengejoin.DanceChallengeJoinRepository;
 import com.sokpulee.crescendo.domain.challenge.repository.dancechallenge.DanceChallengeRepository;
 import com.sokpulee.crescendo.domain.user.entity.User;
 import com.sokpulee.crescendo.domain.user.repository.UserRepository;
@@ -128,5 +129,10 @@ public class ChallengeServiceImpl implements ChallengeService {
     @Override
     public Page<GetDanceChallengeResponse> getChallenges(String title, String sortBy, Pageable pageable) {
         return danceChallengeRepository.searchChallenges(title, sortBy, pageable);
+    }
+
+    @Override
+    public Page<GetDanceChallengeJoinResponse> getChallengeJoins(Long challengeId, String nickname, String sortBy, Long loggedInUserId, Pageable pageable) {
+        return danceChallengeJoinRepository.searchChallengeJoins(challengeId, nickname, sortBy, loggedInUserId, pageable);
     }
 }

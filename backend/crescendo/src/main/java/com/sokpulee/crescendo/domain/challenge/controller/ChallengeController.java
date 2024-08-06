@@ -2,6 +2,7 @@ package com.sokpulee.crescendo.domain.challenge.controller;
 
 import com.sokpulee.crescendo.domain.challenge.dto.request.CreateDanceChallengeRequest;
 import com.sokpulee.crescendo.domain.challenge.dto.request.JoinDanceChallengeRequest;
+import com.sokpulee.crescendo.domain.challenge.dto.response.GetDanceChallengeJoinResponse;
 import com.sokpulee.crescendo.domain.challenge.dto.response.GetDanceChallengeResponse;
 import com.sokpulee.crescendo.domain.challenge.service.ChallengeService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
@@ -118,5 +119,21 @@ public class ChallengeController {
         Pageable pageable = PageRequest.of(page, size);
 
         return challengeService.getChallenges(title, sortBy, pageable);
+    }
+
+    @GetMapping("/{challenge-id}/join")
+    @Operation(summary = "챌린지 참여 조회", description = "챌린지 참여 조회 API")
+    public Page<GetDanceChallengeJoinResponse> getChallengeJoins(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @PathVariable("challenge-id") Long challengeId,
+            @RequestParam(defaultValue = "") String nickname,
+            @RequestParam(defaultValue = "createdAt") String sortBy
+    ) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return challengeService.getChallengeJoins(challengeId, nickname, sortBy, loggedInUserId, pageable);
     }
 }

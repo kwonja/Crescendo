@@ -1,4 +1,4 @@
-package com.sokpulee.crescendo.domain.challenge.repository;
+package com.sokpulee.crescendo.domain.challenge.repository.dancechallengejoin;
 
 import com.sokpulee.crescendo.domain.challenge.entity.DanceChallenge;
 import com.sokpulee.crescendo.domain.challenge.entity.DanceChallengeJoin;
@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface DanceChallengeJoinRepository extends JpaRepository<DanceChallengeJoin, Long> {
+public interface DanceChallengeJoinRepository extends JpaRepository<DanceChallengeJoin, Long>, DanceChallengeJoinRepositoryCustom{
 
     Optional<DanceChallengeJoin> findByDanceChallengeAndUser(DanceChallenge danceChallenge, User user);
 
