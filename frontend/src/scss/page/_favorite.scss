@@ -10,7 +10,44 @@
 
     &_container {
         display: flex;
+        flex-direction: column;
         width: 1300px;
         margin: auto;
     }
+
+    &_title {
+        color: #f66;
+        font-size: 50px;
+        margin-top: 50px;
+    }
+
+    .conditionbar {
+        display:flex;
+        justify-content: space-between;
+        padding: 20px;
+
+        .text {
+            color: #bbbbbb;
+            font-size: 24px;
+        }
+
+        .menu {
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+
+        .group {
+            width: 150px;
+        }
+
+        .member {
+            width: 120px;
+        }
+
+        .filter {
+            display: flex;
+            align-items: center;
+        }
+    }   
 }
