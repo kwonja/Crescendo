@@ -285,6 +285,11 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
+    public Page<MyFeedResponse> getMyFeed(Long loggedInUserId, Pageable pageable) {
+        return feedRepository.findMyFeeds(loggedInUserId,pageable);
+    }
+
+    @Override
     public void likeFeedComment(Long loggedInUserId, Long feedCommentId) {
         FeedComment feedComment = feedCommentRepository.findById(feedCommentId)
                 .orElseThrow(FeedCommentNotFoundException::new);
