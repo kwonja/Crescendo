@@ -31,4 +31,8 @@ public class Alarm extends CreatedAtEntity {
     private String content;
 
     private Boolean isRead;
+
+    public void readAlarm() {
+        isRead = true;
+    }
 }

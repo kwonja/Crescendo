@@ -1,8 +1,14 @@
 package com.sokpulee.crescendo.domain.alarm.service;
 
 import com.sokpulee.crescendo.domain.alarm.dto.response.GetAlarmResponse;
+import com.sokpulee.crescendo.domain.alarm.entity.Alarm;
 import com.sokpulee.crescendo.domain.alarm.repository.alarm.AlarmRepository;
 import com.sokpulee.crescendo.domain.alarm.repository.EmitterRepository;
+import com.sokpulee.crescendo.domain.user.entity.User;
+import com.sokpulee.crescendo.domain.user.repository.UserRepository;
+import com.sokpulee.crescendo.global.exception.custom.AlarmNotFoundException;
+import com.sokpulee.crescendo.global.exception.custom.UnAuthorizedAccessException;
+import com.sokpulee.crescendo.global.exception.custom.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +28,7 @@ public class AlarmServiceImpl implements AlarmService {
 
     private final EmitterRepository emitterRepository;
     private final AlarmRepository alarmRepository;
+    private final UserRepository userRepository;
 
     @Override
     public SseEmitter connect(Long userId) {
@@ -39,6 +46,22 @@ public class AlarmServiceImpl implements AlarmService {
     @Override
     public long countUnreadAlarmsByUserId(Long loggedInUserId) {
         return alarmRepository.countByUserIdAndIsReadFalse(loggedInUserId);
+    }
+
+    @Override
+    public void readAlarm(Long loggedInUserId, Long alarmId) {
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        Alarm alarm = alarmRepository.findById(alarmId)
+                .orElseThrow(AlarmNotFoundException::new);
+
+        if(!alarm.getUser().getId().equals(user.getId())) {
+            throw new UnAuthorizedAccessException();
+        }
+
+        alarm.readAlarm();
     }
 
     private void sendToClient(Long id, Object data) {

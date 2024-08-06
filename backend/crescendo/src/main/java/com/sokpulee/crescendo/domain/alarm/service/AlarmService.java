@@ -11,4 +11,6 @@ public interface AlarmService {
     Page<GetAlarmResponse> getAlarms(Long loggedInUserId, Pageable pageable);
 
     long countUnreadAlarmsByUserId(Long loggedInUserId);
+
+    void readAlarm(Long loggedInUserId, Long alarmId);
 }
