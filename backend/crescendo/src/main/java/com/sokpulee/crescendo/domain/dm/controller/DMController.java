@@ -90,7 +90,7 @@ public class DMController {
             throw new AuthenticationRequiredException();
         }
 
-        List<DmGroupResponseDto> response = dmService.findDmGroupsByUserId(loggedInUserId);
+        List<MyDmGroupResponseDto> response = dmService.findDmGroupsByUserId(loggedInUserId);
 
         return ResponseEntity.status(OK).body(response);
     }

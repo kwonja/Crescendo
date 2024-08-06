@@ -23,12 +23,6 @@ public class Idol {
     @Column(length = 50)
     private String name;
 
-    @Column(length = 500)
-    private String introduction;
-
-    @Column(length = 50)
-    private String part;
-
     @Enumerated(EnumType.STRING)
     @Column(length = 1)
     private Gender gender;
@@ -43,5 +37,9 @@ public class Idol {
 
     public void updateProfile2(String favoriteImagePath) {
         this.profile2 = favoriteImagePath;
+    }
+
+    public void plusWinNum() {
+        this.winNum++;
     }
 }

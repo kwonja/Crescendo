@@ -16,7 +16,7 @@ public interface DMService {
 
     MyDMGroupIdListResponse findAllDmGroupsByUserId(Long loggedInUserId);
 
-    List<DmGroupResponseDto> findDmGroupsByUserId(Long loggedInUserId);
+    List<MyDmGroupResponseDto> findDmGroupsByUserId(Long loggedInUserId);
 
     MessageResponse saveMessage(MessageRequest message);
 

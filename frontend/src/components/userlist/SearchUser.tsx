@@ -17,16 +17,15 @@ interface SearchProps {
 export default function SearchUser({ handleMode }: SearchProps) {
   const [lists, setList] = useState<user[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
-  const [isSearch,setSearch] = useState<boolean>(true);
+  const [isSearch, setSearch] = useState<boolean>(true);
   const dispatch = useAppDispatch();
 
   const getUserList = async (nickname: string) => {
     try {
       const response = await UserSearchApi(0, 10, nickname);
-      if(response.content.length > 0) {
+      if (response.content.length > 0) {
         setSearch(true);
-      }
-      else{
+      } else {
         setSearch(false);
       }
       setList(() => [...response.content]);
@@ -90,12 +89,16 @@ export default function SearchUser({ handleMode }: SearchProps) {
   return (
     <div className="searchuser">
       <SearchInput placeholder="유저를 검색하세요" onChange={OnchangeHandler} value={inputValue} />
-      {lists.length === 0 && !isSearch ? <div>검색하신 유저가 없습니다.</div> : null}
-      {lists.map(list => (
-        <div key={list.userId} onClick={e => handleClick(list, e)}>
-          <FriendProfile user={list} />
-        </div>
-      ))}
+      <div className='searchuser_item w-full'>
+        {lists.length === 0 && !isSearch ? <div>검색하신 유저가 없습니다.</div> : null}
+        {lists.map(list => (
+          <div
+          className='w-11/12 flex align-center p-2.5 border-b-2 border-white mx-auto' 
+          key={list.userId} onClick={e => handleClick(list, e)}>
+            <FriendProfile user={list} />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

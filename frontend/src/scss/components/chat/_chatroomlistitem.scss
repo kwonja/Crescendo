@@ -1,5 +1,5 @@
 .chatroomlistitem {
-  width: 300px;
+  width: 95%;
   height: 90px;
   margin: 0 auto;
   border-bottom: 1px solid #fff;
@@ -8,6 +8,7 @@
   flex-direction: row;
   align-items: center;
   margin: 0 auto;
+  padding: 10px;
   &:hover {
     transform: scale(1.03);
   }

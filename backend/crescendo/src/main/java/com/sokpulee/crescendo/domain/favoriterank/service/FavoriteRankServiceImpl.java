@@ -10,7 +10,7 @@ import com.sokpulee.crescendo.domain.favoriterank.entity.FavoriteRankVoting;
 import com.sokpulee.crescendo.domain.favoriterank.repository.FavoriteRankRepository;
 import com.sokpulee.crescendo.domain.favoriterank.repository.FavoriteRankVotingRepository;
 import com.sokpulee.crescendo.domain.idol.entity.Idol;
-import com.sokpulee.crescendo.domain.idol.repository.IdolRepository;
+import com.sokpulee.crescendo.domain.idol.repository.idol.IdolRepository;
 import com.sokpulee.crescendo.domain.user.entity.User;
 import com.sokpulee.crescendo.domain.user.repository.UserRepository;
 import com.sokpulee.crescendo.global.exception.custom.*;

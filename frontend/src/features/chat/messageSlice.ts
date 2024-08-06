@@ -28,7 +28,6 @@ export const getMessages = createAsyncThunk(
   'messageSlice/getMessages',
   async ({ userId, dmGroupId, page }: APIState) => {
     const response = await messagesAPI(userId, page, 10, dmGroupId);
-    console.log(response);
     return response;
   },
 );
@@ -39,16 +38,14 @@ const messageSlice = createSlice({
   reducers: {
     setMessage: (state, action: PayloadAction<Message>) => {
       state.messageList = [...state.messageList, action.payload];
-      console.log(state.messageList);
     },
     initialMessage: state => {
       state.messageList = [];
-      console.log(state.messageList);
       state.currentPage = 0;
       state.totalPage = 1;
     },
     setPage: state => {
-      if(state.totalPage > state.currentPage) state.currentPage = state.currentPage + 1;
+      if (state.totalPage > state.currentPage) state.currentPage = state.currentPage + 1;
     },
   },
   extraReducers: builder => {

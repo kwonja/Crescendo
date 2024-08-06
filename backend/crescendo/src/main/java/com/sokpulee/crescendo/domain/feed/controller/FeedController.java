@@ -4,7 +4,7 @@ import com.sokpulee.crescendo.domain.feed.dto.request.FeedAddRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentAddRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedUpdateRequest;
-import com.sokpulee.crescendo.domain.feed.dto.response.FeedResponse;
+import com.sokpulee.crescendo.domain.feed.dto.response.*;
 import com.sokpulee.crescendo.domain.feed.service.FeedService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
@@ -58,14 +58,26 @@ public class FeedController {
     @Operation(summary = "피드 조회",description = "피드 조회 API")
     public ResponseEntity<Page<FeedResponse>> getFeed(
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @RequestParam("idol-group-id") Long idolGroupId,
             @RequestParam int page,
             @RequestParam int size
     ){
         Pageable pageable = PageRequest.of(page,size);
 
-        Page<FeedResponse> feedResponses = feedService.getFeed(loggedInUserId,pageable);
+        Page<FeedResponse> feedResponses = feedService.getFeed(loggedInUserId,idolGroupId,pageable);
 
         return ResponseEntity.ok(feedResponses);
+    }
+
+    @GetMapping("/{feed-id}")
+    @Operation(summary = "피드 상세조회", description = "피드 상세조회 API")
+    public ResponseEntity<FeedDetailResponse> getFeedDetail(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("feed-id") Long feedId
+    ){
+        FeedDetailResponse feedDetailResponse = feedService.getFeedDetail(loggedInUserId, feedId);
+
+        return ResponseEntity.ok(feedDetailResponse);
     }
     
     @DeleteMapping("/{feed-id}")
@@ -115,6 +127,21 @@ public class FeedController {
         return ResponseEntity.status(CREATED).build();
     }
 
+    @GetMapping("/{feed-id}/comment")
+    @Operation(summary = "피드 댓글조회", description = "피드 댓글조회 API")
+    public ResponseEntity<Page<FeedCommentResponse>> getFeedComment(
+        @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+        @PathVariable("feed-id") Long feedId,
+        @RequestParam int page,
+        @RequestParam int size
+    ){
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<FeedCommentResponse> feedCommentResponses = feedService.getFeedComment(loggedInUserId,feedId,pageable);
+
+        return ResponseEntity.ok(feedCommentResponses);
+    }
+
     @DeleteMapping("/{feed-id}/comment/{feed-comment-id}")
     @Operation(summary = "피드 댓글 및 답글 삭제", description = "피드 댓글 및 답글 삭제 API")
     public ResponseEntity<?> deleteFeedComment(
@@ -129,7 +156,7 @@ public class FeedController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping(value = "{feed-id}/comment/{feed-comment-id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/{feed-id}/comment/{feed-comment-id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "피드 댓글 및 답글 수정", description = "피드 댓글 및 답글 수정 API")
     public ResponseEntity<?> updateFeedComment(
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
@@ -165,6 +192,22 @@ public class FeedController {
         return ResponseEntity.status(CREATED).build();
     }
 
+    @GetMapping("/{feed-id}/comment/{feed-comment-id}/reply")
+    @Operation(summary = "피드 답글조회", description = "피드 답글조회 API")
+    public ResponseEntity<Page<FeedReplyResponse>> getFeedReply(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("feed-id") Long feedId,
+            @PathVariable("feed-comment-id") Long feedCommentId,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<FeedReplyResponse> feedReplyResponses = feedService.getFeedReply(loggedInUserId,feedId,feedCommentId,pageable);
+
+        return ResponseEntity.ok(feedReplyResponses);
+    }
+
     @PostMapping("/feed-like/{feed-id}")
     @Operation(summary = "피드 좋아요 및 좋아요 삭제", description = "피드 좋아요 및 좋아요 삭제 API")
     public ResponseEntity<?> likeFeed(
@@ -178,5 +221,37 @@ public class FeedController {
         feedService.likeFeed(loggedInUserId,feedId);
 
         return ResponseEntity.status(OK).build();
+    }
+
+    @PostMapping("/feed-comment-like/{feed-comment-id}")
+    @Operation(summary = "피드 댓글 및 답글 좋아요 & 좋아요 삭제", description = "피드 댓글 및 답글 좋아요 & 좋아요 삭제 API")
+    public ResponseEntity<?> likeFeedComment(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("feed-comment-id") Long feedCommentId
+    ){
+        if (loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+        feedService.likeFeedComment(loggedInUserId,feedCommentId);
+
+        return ResponseEntity.status(OK).build();
+    }
+
+    @GetMapping("favorite")
+    @Operation(summary = "좋아요한 피드 조회", description = "좋아요한 피드 조회 API")
+    public ResponseEntity<Page<FavoriteFeedResponse>> favoriteFeed(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        if(loggedInUserId == null){
+            throw new AuthenticationRequiredException();
+        }
+
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<FavoriteFeedResponse> favoriteFeeds = feedService.getFavoriteFeed(loggedInUserId,pageable);
+
+        return ResponseEntity.ok(favoriteFeeds);
     }
 }

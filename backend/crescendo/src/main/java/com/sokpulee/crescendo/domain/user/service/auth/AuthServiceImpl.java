@@ -1,7 +1,7 @@
 package com.sokpulee.crescendo.domain.user.service.auth;
 
 import com.sokpulee.crescendo.domain.idol.entity.Idol;
-import com.sokpulee.crescendo.domain.idol.repository.IdolRepository;
+import com.sokpulee.crescendo.domain.idol.repository.idol.IdolRepository;
 import com.sokpulee.crescendo.domain.user.dto.request.auth.*;
 import com.sokpulee.crescendo.domain.user.dto.response.auth.EmailRandomKeyResponse;
 import com.sokpulee.crescendo.domain.user.entity.EmailAuth;
@@ -14,6 +14,8 @@ import com.sokpulee.crescendo.global.util.mail.MailSendHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Transactional
 @RequiredArgsConstructor
@@ -44,7 +46,11 @@ public class AuthServiceImpl implements AuthService {
     public EmailRandomKeyResponse createEmailRandomKey(EmailRandomKeyRequest emailRandomKeyRequest) {
         String randomKey = mailSendHelper.sendEmailRandomKey(emailRandomKeyRequest.getEmail());
 
-        EmailAuth emailAuth = emailAuthRepository.save(EmailAuth.builder().randomKey(randomKey).build());
+        LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(5);
+        EmailAuth emailAuth = emailAuthRepository.save(EmailAuth.builder()
+                .randomKey(randomKey)
+                .expiresAt(expiresAt)
+                .build());
 
         return new EmailRandomKeyResponse(emailAuth.getEmailAuthId());
     }

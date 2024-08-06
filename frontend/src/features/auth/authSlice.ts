@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { api, setAccessToken, setUserId } from '../../apis/core';
+import { api, setUserId, setAccessToken } from '../../apis/core';
 
 // 인터페이스
 interface AuthState {
@@ -25,37 +25,15 @@ const initialState: AuthState = {
 // 성공 시 액세스 토큰을 설정하고 email과 accessToken 반환
 // 실패 시 오류 메시지 반환
 // 리프레쉬 토큰은 httponly secure 쿠키로 오기 때문에 처리 x
-// export const login = createAsyncThunk(
-//   'auth/login',
-//   async ({ email, password }: { email: string; password: string }, { rejectWithValue }) => {
-//     try {
-//       const response = await api.post('/api/v1/auth/login', { email, password });
-//       const accessToken = response.headers.authorization.split(' ')[1];
-//       setAccessToken(accessToken);
-//       return { email, accessToken };
-//     } catch (error) {
-//       return rejectWithValue('로그인 실패');
-//     }
-//   },
-// );
-
 export const login = createAsyncThunk(
   'auth/login',
   async ({ email, password }: { email: string; password: string }, { rejectWithValue }) => {
     try {
-      // 특정 이메일과 비밀번호가 일치하는 경우
-      if (email === 'ssafy@ssafy.com' && password === '123qwe!@#') {
-        const accessToken = 'dummyAccessToken'; // 임시 엑세스 토큰
-        setAccessToken(accessToken);
-        return { email, accessToken };
-      } else {
-        const response = await api.post('/api/v1/auth/login', { email, password });
-        console.log(response);
-        setUserId(response.data.userId);
-        const accessToken = response.headers.authorization.split(' ')[1];
-        setAccessToken(accessToken);
-        return { email, accessToken };
-      }
+      const response = await api.post('/api/v1/auth/login', { email, password });
+      setUserId(response.data.userId);
+      const accessToken = response.headers.authorization.split(' ')[1];
+      setAccessToken(accessToken);
+      return { email, accessToken };
     } catch (error) {
       return rejectWithValue('로그인 실패');
     }
@@ -140,7 +118,7 @@ export const verifyEmailCode = createAsyncThunk(
 // 로그아웃 비동기 함수
 export const logoutUser = createAsyncThunk('auth/logoutUser', async (_, { rejectWithValue }) => {
   try {
-    await api.post('/api/v1/auth/logout', {});
+    await api.post('/api/v1/auth/logout', {}); // refresh token 만료 요청
     setAccessToken(null); // 엑세스 토큰 삭제
   } catch (error) {
     return rejectWithValue('로그아웃 실패');

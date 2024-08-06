@@ -12,6 +12,7 @@
   top: 68px;
   left: 0px;
   z-index: 1000;
+  
 
   .title {
     width: 300px;
@@ -24,8 +25,25 @@
     border-bottom: 1px solid #fff;
   }
   .chatroomlist {
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    overflow-y: scroll;
   }
+}
+
+.chatroomlist::-webkit-scrollbar {
+  width: 12px; /* 스크롤바의 너비 */
+}
+
+.chatroomlist::-webkit-scrollbar-thumb {
+  background-color: #fff; /* 스크롤바의 색상 */
+  border-radius: 6px; /* 스크롤바의 모서리 둥글게 */
+  border: 3px solid #fea3a3; /* 스크롤바와 컨테이너 사이의 여백 */
+}
+
+.chatroomlist::-webkit-scrollbar-track {
+  background-color: #fea3a3; /* 스크롤바 배경 색상 */
+  border-radius: 6px; /* 스크롤바 배경의 모서리 둥글게 */
 }

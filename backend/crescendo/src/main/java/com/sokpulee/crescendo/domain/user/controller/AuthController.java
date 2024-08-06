@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -24,6 +25,9 @@ import static org.springframework.http.HttpStatus.*;
 @RequestMapping("/api/v1/auth")
 @Tag(name = "Authentication", description = "사용자 인증 관련 API")
 public class AuthController {
+
+    @Value("${jwt.refresh-token.expiretime}")
+    private long refreshTokenExpireTime;
 
     private final AuthService authService;
     private final JWTUtil jwtUtil;
@@ -68,9 +72,10 @@ public class AuthController {
 
         ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", refreshToken)
                 .httpOnly(true)
-                .secure(true)
+//                .secure(true)
                 .path("/")
-                .maxAge(7 * 24 * 60 * 60) // 쿠키 유효기간 설정 (예: 7일)
+                .maxAge(refreshTokenExpireTime)
+                .sameSite("None")
                 .build();
 
         return ResponseEntity.status(OK)

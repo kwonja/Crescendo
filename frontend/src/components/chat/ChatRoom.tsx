@@ -76,7 +76,7 @@ export default function Chatroom() {
       if (client.current) {
         client.current.disconnect(() => {
           dispatch(initialMessage());
-          console.log('Disconnected');
+          // console.log('Disconnected');
         });
       }
     };
@@ -99,10 +99,9 @@ export default function Chatroom() {
   }, [dispatch]);
 
   useEffect(() => {
-    //이전 스크롤이 있다면
+   //스크롤이 업데이트 된다면
     if (prevScrollHeight > 0) {
       const newScrollHeight = messageListRef.current?.scrollHeight || 0;
-      console.log(prevScrollHeight + " " + newScrollHeight)
       if (messageListRef.current) {
         messageListRef.current.scrollTop = (newScrollHeight - prevScrollHeight);
       }
