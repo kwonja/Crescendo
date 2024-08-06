@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -18,7 +20,7 @@ public class DanceChallenge extends CreatedAtEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "dance_challenge_id")
-    private Long danceChallengeId;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -33,11 +35,15 @@ public class DanceChallenge extends CreatedAtEntity {
     @Column(updatable = false)
     private LocalDateTime endAt;
 
+    @OneToMany(mappedBy = "danceChallenge",  cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DanceChallengeJoin> danceChallengeJoins = new ArrayList<>();
+
     @Builder
-    public DanceChallenge(User user, String title, String videoPath, LocalDateTime endAt) {
+    public DanceChallenge(User user, String title, String videoPath, LocalDateTime endAt, List<DanceChallengeJoin> danceChallengeJoins) {
         this.user = user;
         this.title = title;
         this.videoPath = videoPath;
         this.endAt = endAt;
+        this.danceChallengeJoins = danceChallengeJoins;
     }
 }
