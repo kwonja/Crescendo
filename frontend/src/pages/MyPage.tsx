@@ -5,11 +5,22 @@ import { ReactComponent as Crown } from '../assets/images/crown.svg';
 import Feed from '../components/common/Feed';
 import { useAppSelector } from '../store/hooks/hook';
 import Gallery from '../components/common/Gallery';
+import { getMyFeedAPI } from '../apis/user';
 export default function MyPage() {
   const [isSelected, setIsSelected] = useState<'feed' | 'gallery'>('feed');
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
   const menuRef = useRef<HTMLDivElement>(null);
-  const feedlist = useAppSelector(state => state.feed);
+  const feedlist = useAppSelector(state => state.feed.myFeedList);
+
+
+  const getMyFeed = async()=>{
+    const response = await getMyFeedAPI(0,10);
+    console.log(response)
+  }
+
+  useEffect( ()=>{
+    getMyFeed();
+  },[])
 
   useEffect(() => {
     const menuElement = menuRef.current;
@@ -60,8 +71,8 @@ export default function MyPage() {
 
         {isSelected === 'feed' && (
           <div className="">
-            {feedlist.map((feed, index) => (
-              <Feed key={index} feed={feed} />
+            {feedlist.map((feed) => (
+              <Feed key={feed.feedId} feed={feed} />
             ))}
           </div>
         )}

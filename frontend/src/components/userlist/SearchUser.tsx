@@ -23,6 +23,7 @@ export default function SearchUser({ handleMode }: SearchProps) {
   const getUserList = async (nickname: string) => {
     try {
       const response = await UserSearchApi(0, 10, nickname);
+      console.log(response);
       if (response.content.length > 0) {
         setSearch(true);
       } else {
@@ -79,7 +80,7 @@ export default function SearchUser({ handleMode }: SearchProps) {
         dmGroupId: dmGroupId,
         opponentId: list.userId,
         opponentNickName: list.nickname,
-        opponentProfilePath: list.profilePath,
+        opponentProfilePath: list.userProfilePath,
         lastChatting: '',
         lastChattingTime: '',
       }),
