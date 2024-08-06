@@ -36,6 +36,8 @@ public interface FeedService {
     Page<FeedReplyResponse> getFeedReply(Long loggedInUserId,Long feedId,Long feedCommentId,Pageable pageable);
 
     Page<FavoriteFeedResponse> getFavoriteFeed(Long loggedInUserId, Pageable pageable);
+
+    Page<MyFeedResponse> getMyFeed(Long loggedInUserId,Pageable pageable);
 }
 
 

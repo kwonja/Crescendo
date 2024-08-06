@@ -110,6 +110,23 @@ public class FeedController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("my-feed")
+    @Operation(summary = "내가 쓴 피드", description = "내가 쓴 피드 API")
+    public ResponseEntity<Page<MyFeedResponse>> getMyFeed(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        if(loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<MyFeedResponse> myFeedResponses = feedService.getMyFeed(loggedInUserId,pageable);
+
+        return ResponseEntity.ok(myFeedResponses);
+    }
+
     @PostMapping("/{feed-id}/comment")
     @Operation(summary = "피드 댓글쓰기", description = "피드 댓글쓰기 API")
     public ResponseEntity<?> addFeedComment(
