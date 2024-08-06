@@ -5,6 +5,7 @@ import com.sokpulee.crescendo.global.CreatedAtEntity;
 import com.sokpulee.crescendo.global.TimeStampedEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,6 +32,14 @@ public class Alarm extends CreatedAtEntity {
     private String content;
 
     private Boolean isRead;
+
+    @Builder
+    public Alarm(User user, AlarmChannel alarmChannel, Long relatedId, String content) {
+        this.user = user;
+        this.alarmChannel = alarmChannel;
+        this.relatedId = relatedId;
+        this.content = content;
+    }
 
     public void readAlarm() {
         isRead = true;

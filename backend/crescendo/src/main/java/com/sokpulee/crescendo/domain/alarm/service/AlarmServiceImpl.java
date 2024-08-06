@@ -1,11 +1,16 @@
 package com.sokpulee.crescendo.domain.alarm.service;
 
+import com.sokpulee.crescendo.domain.alarm.dto.AlarmDto;
+import com.sokpulee.crescendo.domain.alarm.dto.AlarmType;
 import com.sokpulee.crescendo.domain.alarm.dto.response.GetAlarmResponse;
 import com.sokpulee.crescendo.domain.alarm.entity.Alarm;
+import com.sokpulee.crescendo.domain.alarm.entity.AlarmChannel;
+import com.sokpulee.crescendo.domain.alarm.repository.AlarmChannelRepository;
 import com.sokpulee.crescendo.domain.alarm.repository.alarm.AlarmRepository;
 import com.sokpulee.crescendo.domain.alarm.repository.EmitterRepository;
 import com.sokpulee.crescendo.domain.user.entity.User;
 import com.sokpulee.crescendo.domain.user.repository.UserRepository;
+import com.sokpulee.crescendo.global.exception.custom.AlarmChannelNotFoundException;
 import com.sokpulee.crescendo.global.exception.custom.AlarmNotFoundException;
 import com.sokpulee.crescendo.global.exception.custom.UnAuthorizedAccessException;
 import com.sokpulee.crescendo.global.exception.custom.UserNotFoundException;
@@ -28,6 +33,7 @@ public class AlarmServiceImpl implements AlarmService {
 
     private final EmitterRepository emitterRepository;
     private final AlarmRepository alarmRepository;
+    private final AlarmChannelRepository alarmChannelRepository;
     private final UserRepository userRepository;
 
     @Override
@@ -100,5 +106,37 @@ public class AlarmServiceImpl implements AlarmService {
         emitter.onTimeout(() -> emitterRepository.deleteById(userId));
 
         return emitter;
+    }
+
+    @Override
+    public void followAlarm(Long followingUserId, Long followerUserId, Long relatedId) {
+
+        User user = userRepository.findById(followingUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        String content = user.getNickname() + "님께서 회원님을 팔로우 하셨습니다.";
+
+        sendToAlarm(new AlarmDto(followerUserId, AlarmType.FOLLOW.getId(), relatedId, content, AlarmType.FOLLOW));
+    }
+
+    public void sendToAlarm(AlarmDto alarmDto) {
+
+        User user = userRepository.findById(alarmDto.getUserId())
+                .orElseThrow(UserNotFoundException::new);
+
+        AlarmChannel alarmChannel = alarmChannelRepository.findById(alarmDto.getAlarmChannelId())
+                .orElseThrow(AlarmChannelNotFoundException::new);
+
+        alarmRepository.save(alarmDto.toEntity(user, alarmChannel));
+
+        SseEmitter emitter = emitterRepository.get(alarmDto.getUserId());
+        if (emitter != null) {
+            try {
+                emitter.send(SseEmitter.event().name(alarmDto.getAlarmType().name()).data(alarmDto.getContent()));
+            } catch (IOException exception) {
+                emitterRepository.deleteById(alarmDto.getUserId());
+                emitter.completeWithError(exception);
+            }
+        }
     }
 }

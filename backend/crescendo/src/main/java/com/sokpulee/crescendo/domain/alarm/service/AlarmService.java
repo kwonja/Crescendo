@@ -15,4 +15,6 @@ public interface AlarmService {
     void readAlarm(Long loggedInUserId, Long alarmId);
 
     void deleteAlarm(Long loggedInUserId, Long alarmId);
+
+    void followAlarm(Long followingUserId, Long followerUserId, Long relatedId);
 }
