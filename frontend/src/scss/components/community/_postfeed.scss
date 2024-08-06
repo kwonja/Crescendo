@@ -27,7 +27,7 @@
         border-radius: 12px;
         padding-left: 10px;
         padding-top: 10px;
-        padding-bottom: 10px;
+        padding-bottom: 30px; /* 공간 확보 */
         font-size: 32px;
         font-weight: 400;
         line-height: 100%; /* 32px */
@@ -39,11 +39,23 @@
       textarea::placeholder {
         color: #bbb;
       }
-    }
 
-    textarea:focus {
-      border: none;
-      outline: none;
+      textarea:focus {
+        border: none;
+        outline: none;
+      }
+
+      .char-count {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        color: #f66;
+        text-align: right;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 100%; /* 16px */
+        letter-spacing: 1.6px;
+      }
     }
   }
 
@@ -171,12 +183,85 @@
   }
 
   .submit-button {
+    border-radius: 15px;
     background: #f66;
-    color: white;
+    width: 120px;
+    height: 50px;
+
+    float: right;
+
+    color: #fff;
+
+    text-align: center;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 100%; /* 32px */
+    letter-spacing: 3.2px;
+
     border: none;
     padding: 10px 20px;
-    border-radius: 5px;
     cursor: pointer;
-    margin-left: 20px;
+  }
+}
+
+.gallery-form {
+  .form-group {
+    .select-title-group {
+      display: flex;
+      flex-direction: row;
+
+      select {
+        width: 113px;
+        height: 40px;
+        border-radius: 15px;
+        border: 3px solid #f66;
+        box-sizing: border-box;
+        font-size: 24px;
+        text-align: center;
+        color: #f66;
+        font-weight: 400;
+        line-height: 100%; /* 24px */
+        letter-spacing: 2.4px;
+      }
+
+      .title-wrapper {
+        position: relative;
+        border-radius: 15px;
+        border: 3px solid #f66;
+        // padding-left: 10px;
+        // padding-top: 10px;
+        padding-bottom: 5px;
+        box-sizing: border-box;
+        overflow: hidden;
+
+        margin-left: 15px;
+
+        width: 782px;
+        height: 40px;
+
+        input {
+          width: calc(100% - 20px);
+          height: 100%;
+          border: none;
+          outline: none;
+          box-sizing: border-box;
+          border-radius: 12px;
+          padding-left: 10px;
+          padding-top: 10px;
+          font-size: 28px;
+          font-weight: 400;
+          line-height: 100%; /* 32px */
+          letter-spacing: 3.2px;
+          color: black;
+          resize: none;
+        }
+
+        input::placeholder {
+          color: #bbb;
+          font-size: 25px;
+        }
+      }
+    }
   }
 }

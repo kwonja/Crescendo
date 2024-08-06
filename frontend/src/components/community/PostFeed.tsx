@@ -1,4 +1,6 @@
 import React, { useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { Authapi } from '../../apis/core';
 import { ReactComponent as AddImage } from '../../assets/images/img_add.svg';
 import { ReactComponent as RemoveIcon } from '../../assets/images/remove_icon.svg';
 import '../../scss/components/community/_postfeed.scss';
@@ -14,6 +16,7 @@ const FeedForm = () => {
   const [tags, setTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { idolGroupId } = useParams<{ idolGroupId: string }>();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -55,9 +58,34 @@ const FeedForm = () => {
     setTags(tags.filter(t => t !== tag));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // API 호출 로직 추가
+
+    const formData = new FormData();
+    formData.append('title', '임시 제목'); // 임시 제목 추가
+    formData.append('content', content);
+    images.forEach(image => formData.append('imageList', image.file));
+    tags.forEach(tag => formData.append('tagList', tag));
+    formData.append('idolGroupId', idolGroupId ?? '');
+
+    // 데이터 확인용 로그 출력
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ': ' + pair[1]);
+    }
+
+    try {
+      const response = await Authapi.post('/api/v1/community/feed', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      if (response.status === 201) {
+        alert('피드가 성공적으로 작성되었습니다.');
+      }
+    } catch (error) {
+      alert('피드 작성에 실패했습니다.');
+      console.error(error);
+    }
   };
 
   const handleAddImageClick = () => {
@@ -112,12 +140,11 @@ const FeedForm = () => {
             value={content}
             onChange={handleContentChange}
           />
+          <span className="char-count">{content.length}/400</span>
         </div>
-        <span className="char-count">{content.length}/400</span>
       </div>
 
       <div className="form-group">
-        <label>태그</label>
         <div className="tags-wrapper">
           <div className="tags">
             {tags.map((tag, index) => (
@@ -136,11 +163,12 @@ const FeedForm = () => {
               +
             </button>
           </div>
-          <button type="submit" className="submit-button">
-            작성
-          </button>
         </div>
       </div>
+
+      <button type="submit" className="submit-button">
+        작성
+      </button>
     </form>
   );
 };
