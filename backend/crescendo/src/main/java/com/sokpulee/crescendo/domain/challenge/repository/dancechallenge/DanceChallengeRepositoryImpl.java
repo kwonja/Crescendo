@@ -31,6 +31,7 @@ public class DanceChallengeRepositoryImpl implements DanceChallengeRepositoryCus
 
         List<GetDanceChallengeResponse> results = queryFactory.select(
                 Projections.constructor(GetDanceChallengeResponse.class,
+                        danceChallenge.id,
                         danceChallenge.title,
                         danceChallenge.videoPath,
                         danceChallenge.createdAt,

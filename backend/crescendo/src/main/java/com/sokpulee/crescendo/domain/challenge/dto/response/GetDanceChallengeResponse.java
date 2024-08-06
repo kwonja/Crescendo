@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 
 @Getter
 public class GetDanceChallengeResponse {
+
+    private Long challengeId;
     private String title;
     private String challengeVideoPath;
     private LocalDateTime createdAt;
@@ -14,7 +16,8 @@ public class GetDanceChallengeResponse {
     private String nickname;
     private int participants;
 
-    public GetDanceChallengeResponse(String title, String challengeVideoPath, LocalDateTime createdAt, LocalDateTime endAt, Long userId, String nickname, int participants) {
+    public GetDanceChallengeResponse(Long challengeId, String title, String challengeVideoPath, LocalDateTime createdAt, LocalDateTime endAt, Long userId, String nickname, int participants) {
+        this.challengeId = challengeId;
         this.title = title;
         this.challengeVideoPath = challengeVideoPath;
         this.createdAt = createdAt;
