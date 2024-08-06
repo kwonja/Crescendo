@@ -4,6 +4,7 @@ import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtAddRequest;
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtCommentAddRequest;
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtUpdateRequest;
+import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtResponse;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArt;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArtComment;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArtImage;
@@ -20,6 +21,8 @@ import com.sokpulee.crescendo.global.exception.custom.*;
 import com.sokpulee.crescendo.global.util.file.FileSaveHelper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -190,6 +193,11 @@ public class FanArtServiceImpl implements FanArtService {
             fanArt.plusLikeCnt();
             fanArtLikeRepository.save(fanArtLike);
         }
+    }
+
+    @Override
+    public Page<FanArtResponse> getFanArt(Long loggedInUserId, Long idolGroupId, Pageable pageable) {
+        return fanArtRepository.findFanArts(loggedInUserId, idolGroupId, pageable);
     }
 
     @Override

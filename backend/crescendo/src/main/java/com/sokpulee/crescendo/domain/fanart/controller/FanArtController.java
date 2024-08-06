@@ -4,6 +4,7 @@ import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtAddRequest;
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtCommentAddRequest;
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtUpdateRequest;
+import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtResponse;
 import com.sokpulee.crescendo.domain.fanart.service.FanArtService;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentUpdateRequest;
@@ -14,6 +15,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -49,6 +53,21 @@ public class FanArtController {
         fanArtService.addFanArt(loggedInUserId, fanArtAddRequest);
 
         return ResponseEntity.status(CREATED).build();
+    }
+
+    @GetMapping
+    @Operation(summary = "팬아트 조회", description = "팬아트 조회 API")
+    public ResponseEntity<Page<FanArtResponse>> getFanArt(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @RequestParam("idol-group-id") Long idolGroupId,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<FanArtResponse> fanArtResponsePage = fanArtService.getFanArt(loggedInUserId,idolGroupId,pageable);
+
+        return ResponseEntity.ok(fanArtResponsePage);
     }
 
     @DeleteMapping("/{fan-art-id}")
