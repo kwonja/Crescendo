@@ -19,4 +19,6 @@ public interface FanArtService {
     void deleteFanArtComment(Long loggedInUserId,Long fanArtId,Long fanArtCommentId);
 
     void updateFanArtComment(Long loggedInUserId, Long fanArtId, Long fanArtCommentId, FanArtCommentUpdateRequest fanArtCommentUpdateRequest);
+
+    void likeFeed(Long loggedInUserId,Long fanArtId);
 }

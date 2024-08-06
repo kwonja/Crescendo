@@ -37,29 +37,30 @@ public class FanArtController {
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
             @RequestParam("title") String title,
             @RequestParam("content") String content,
-            @RequestParam(value = "imageList",required = false) List<MultipartFile> imageList,
+            @RequestParam(value = "imageList", required = false) List<MultipartFile> imageList,
             @RequestParam("idolGroupId") Long idolGroupId
     ) {
-        if(loggedInUserId == null) {
+        if (loggedInUserId == null) {
             throw new AuthenticationRequiredException();
         }
 
-        FanArtAddRequest fanArtAddRequest = new FanArtAddRequest(title,content,imageList,idolGroupId);
+        FanArtAddRequest fanArtAddRequest = new FanArtAddRequest(title, content, imageList, idolGroupId);
 
         fanArtService.addFanArt(loggedInUserId, fanArtAddRequest);
 
         return ResponseEntity.status(CREATED).build();
     }
+
     @DeleteMapping("/{fan-art-id}")
     @Operation(summary = "팬아트 글삭제", description = "팬아트 글삭제 API")
     public ResponseEntity<?> deleteFanArt(
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
             @PathVariable("fan-art-id") Long fanArtId
-    ){
-        if(loggedInUserId == null) {
+    ) {
+        if (loggedInUserId == null) {
             throw new AuthenticationRequiredException();
         }
-        fanArtService.deleteFanArt(fanArtId,loggedInUserId);
+        fanArtService.deleteFanArt(fanArtId, loggedInUserId);
         return ResponseEntity.noContent().build();
     }
 
@@ -69,17 +70,17 @@ public class FanArtController {
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
             @PathVariable("fan-art-id") Long fanArtId,
             @Valid @ModelAttribute FanArtUpdateRequest updateRequest
-            ){
-        if(loggedInUserId == null) {
+    ) {
+        if (loggedInUserId == null) {
             throw new AuthenticationRequiredException();
         }
 
-        fanArtService.updateFanArt(loggedInUserId,fanArtId,updateRequest);
+        fanArtService.updateFanArt(loggedInUserId, fanArtId, updateRequest);
 
         return ResponseEntity.ok().build();
 
     }
-    
+
 
     @PostMapping("/{fan-art-id}/comment")
     @Operation(summary = "팬아트 댓글쓰기", description = "팬아트 댓글쓰기 API")
@@ -87,14 +88,14 @@ public class FanArtController {
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
             @PathVariable("fan-art-id") Long fanArtId,
             @RequestParam String content
-    ){
-        if(loggedInUserId == null) {
+    ) {
+        if (loggedInUserId == null) {
             throw new AuthenticationRequiredException();
         }
 
         FanArtCommentAddRequest fanArtCommentAddRequest = new FanArtCommentAddRequest(content);
 
-        fanArtService.addFanArtComment(loggedInUserId,fanArtId,fanArtCommentAddRequest);
+        fanArtService.addFanArtComment(loggedInUserId, fanArtId, fanArtCommentAddRequest);
 
         return ResponseEntity.status(CREATED).build();
     }
@@ -105,27 +106,27 @@ public class FanArtController {
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
             @PathVariable("fan-art-id") Long fanArtId,
             @PathVariable("fan-art-comment-id") Long fanArtCommentId
-    ){
+    ) {
         if (loggedInUserId == null) {
             throw new AuthenticationRequiredException();
         }
-        fanArtService.deleteFanArtComment(loggedInUserId,fanArtId,fanArtCommentId);
+        fanArtService.deleteFanArtComment(loggedInUserId, fanArtId, fanArtCommentId);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping(value = "{fan-art-id}/comment/{fan-art-comment-id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "{fan-art-id}/comment/{fan-art-comment-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "팬아트 댓글 및 답글 수정", description = "팬아트 댓글 및 답글 수정 API")
     public ResponseEntity<?> updateFanArtComment(
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
             @PathVariable("fan-art-id") Long fanArtId,
             @PathVariable("fan-art-comment-id") Long fanArtCommentId,
             @ModelAttribute FanArtCommentUpdateRequest fanArtCommentUpdateRequest
-    ){
+    ) {
         if (loggedInUserId == null) {
             throw new AuthenticationRequiredException();
         }
 
-        fanArtService.updateFanArtComment(loggedInUserId,fanArtId,fanArtCommentId,fanArtCommentUpdateRequest);
+        fanArtService.updateFanArtComment(loggedInUserId, fanArtId, fanArtCommentId, fanArtCommentUpdateRequest);
 
         return ResponseEntity.ok().build();
     }
@@ -137,16 +138,31 @@ public class FanArtController {
             @PathVariable("fan-art-id") Long fanArtId,
             @PathVariable("fan-art-comment-id") Long fanArtCommentId,
             @RequestParam String content
-    ){
-        if(loggedInUserId == null) {
+    ) {
+        if (loggedInUserId == null) {
             throw new AuthenticationRequiredException();
         }
 
         FanArtCommentAddRequest fanArtReplyAddRequest = new FanArtCommentAddRequest(content);
 
-        fanArtService.addFanArtReply(loggedInUserId,fanArtId,fanArtCommentId,fanArtReplyAddRequest);
+        fanArtService.addFanArtReply(loggedInUserId, fanArtId, fanArtCommentId, fanArtReplyAddRequest);
 
         return ResponseEntity.status(CREATED).build();
+    }
+
+    @PostMapping("/fan-art-like/{fan-art-id}")
+    @Operation(summary = "팬아트 좋아요 및 좋아요 삭제", description = "팬아트 좋아요 및 좋아요 삭제 API")
+    public ResponseEntity<?> addFanArtLike(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("fan-art-id") Long fanArtId
+    ){
+        if (loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+
+        fanArtService.likeFeed(loggedInUserId,fanArtId);
+
+        return ResponseEntity.ok().build();
     }
 
 }

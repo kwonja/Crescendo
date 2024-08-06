@@ -163,6 +163,7 @@ public class FeedServiceImpl implements FeedService {
         if (feedComment.getParentFeedComment() != null) {
             feedComment.getParentFeedComment().minusReplyCnt();
         }
+
         feed.minusCommentCnt(feedComment.getReplyCnt());
 
         feedCommentRepository.delete(feedComment);
@@ -363,8 +364,6 @@ public class FeedServiceImpl implements FeedService {
         } else {
             throw new FeedCommentNotFoundException();
         }
-
-
     }
 
 

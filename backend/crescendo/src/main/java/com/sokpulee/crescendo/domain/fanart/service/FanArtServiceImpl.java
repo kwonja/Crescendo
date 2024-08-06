@@ -7,8 +7,11 @@ import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtUpdateRequest;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArt;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArtComment;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArtImage;
+import com.sokpulee.crescendo.domain.fanart.entity.FanArtLike;
 import com.sokpulee.crescendo.domain.fanart.repository.FanArtCommentRepository;
+import com.sokpulee.crescendo.domain.fanart.repository.FanArtLikeRepository;
 import com.sokpulee.crescendo.domain.fanart.repository.FanArtRepository;
+import com.sokpulee.crescendo.domain.feed.entity.FeedComment;
 import com.sokpulee.crescendo.domain.idol.entity.IdolGroup;
 import com.sokpulee.crescendo.domain.idol.repository.IdolGroupRepository;
 import com.sokpulee.crescendo.domain.user.entity.User;
@@ -19,6 +22,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +38,7 @@ public class FanArtServiceImpl implements FanArtService {
 
     private final FanArtRepository fanArtRepository;
     private final FanArtCommentRepository fanArtCommentRepository;
+    private final FanArtLikeRepository fanArtLikeRepository;
 
     @Override
     public void addFanArt(Long loggedInUserId, FanArtAddRequest fanArtAddRequest) {
@@ -103,7 +109,8 @@ public class FanArtServiceImpl implements FanArtService {
 
         fanArt.changeFanArt(idolGroup, fanArtUpdateRequest.getTitle(), fanArtUpdateRequest.getContent());
 
-            fanArt.getImageList().clear();
+        fanArt.getImageList().clear();
+
         if (!fanArtUpdateRequest.getImageList().isEmpty()) {
             for (MultipartFile fanArtImageFile : fanArtUpdateRequest.getImageList()) {
                 String savePath = fileSaveHelper.saveFanArtImage(fanArtImageFile);
@@ -133,6 +140,12 @@ public class FanArtServiceImpl implements FanArtService {
             throw new UnAuthorizedAccessException();
         }
 
+        if (fanArtComment.getParentFanArtComment() != null) {
+            fanArtComment.getParentFanArtComment().minusReplyCnt();
+        }
+
+        fanArt.minusCommentCnt(fanArtComment.getReplyCnt());
+
         fanArtCommentRepository.delete(fanArtComment);
     }
 
@@ -157,6 +170,29 @@ public class FanArtServiceImpl implements FanArtService {
     }
 
     @Override
+    public void likeFeed(Long loggedInUserId, Long fanArtId) {
+        FanArt fanArt = fanArtRepository.findById(fanArtId)
+                .orElseThrow(FanArtNotFoundException::new);
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        Optional<FanArtLike> existingFanArtLike = fanArtLikeRepository.findByFanArtAndUser(fanArt,user);
+
+        if(existingFanArtLike.isPresent()){
+            fanArtLikeRepository.delete(existingFanArtLike.get());
+            fanArt.minusLikeCnt();
+        }else{
+            FanArtLike fanArtLike = FanArtLike.builder()
+                    .user(user)
+                    .fanArt(fanArt)
+                    .build();
+            fanArt.plusLikeCnt();
+            fanArtLikeRepository.save(fanArtLike);
+        }
+    }
+
+    @Override
     public void addFanArtComment(Long loggedInUserId, Long fanArtId, FanArtCommentAddRequest fanArtCommentAddRequest) {
         User user = userRepository.findById(loggedInUserId)
                 .orElseThrow(UserNotFoundException::new);
@@ -169,6 +205,8 @@ public class FanArtServiceImpl implements FanArtService {
                 .user(user)
                 .content(fanArtCommentAddRequest.getContent())
                 .build();
+
+        fanArt.plusCommentCnt();
 
         fanArtCommentRepository.save(fanArtComment);
     }
@@ -184,15 +222,22 @@ public class FanArtServiceImpl implements FanArtService {
         FanArtComment parentFanArtComment = fanArtCommentRepository.findById(fanArtCommentId)
                 .orElseThrow(FanArtCommentNotFoundException::new);
 
-        FanArtComment fanArtComment = FanArtComment.builder()
-                .fanArt(fanArt)
-                .parentFanArtComment(parentFanArtComment)
-                .user(user)
-                .content(fanArtReplyAddRequest.getContent())
-                .build();
 
-        if (parentFanArtComment.getParentFanArtComment() == null) {
-            fanArtCommentRepository.save(fanArtComment);
+        if (parentFanArtComment.getFanArt().getFanArtId() == fanArtId) {
+            FanArtComment fanArtComment = FanArtComment.builder()
+                    .fanArt(fanArt)
+                    .parentFanArtComment(parentFanArtComment)
+                    .user(user)
+                    .content(fanArtReplyAddRequest.getContent())
+                    .build();
+
+            if (parentFanArtComment.getParentFanArtComment() == null) {
+                fanArtCommentRepository.save(fanArtComment);
+                fanArt.plusCommentCnt();
+                parentFanArtComment.plusReplyCnt();
+            } else {
+                throw new FanArtCommentNotFoundException();
+            }
         } else {
             throw new FanArtCommentNotFoundException();
         }
