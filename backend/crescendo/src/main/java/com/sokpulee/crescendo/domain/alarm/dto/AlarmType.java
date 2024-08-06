@@ -1,22 +1,16 @@
 package com.sokpulee.crescendo.domain.alarm.dto;
 
 public enum AlarmType {
-    FOLLOW(1L, "FOLLOW");
+    FOLLOW(1L);
 
     private final Long id;
-    private final String name;
 
-
-    AlarmType(Long id, String name) {
+    AlarmType(Long id) {
         this.id = id;
-        this.name = name;
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
 }

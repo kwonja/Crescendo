@@ -132,7 +132,7 @@ public class AlarmServiceImpl implements AlarmService {
         SseEmitter emitter = emitterRepository.get(alarmDto.getUserId());
         if (emitter != null) {
             try {
-                emitter.send(SseEmitter.event().name(alarmDto.getAlarmType().name()).data(alarmDto.getContent()));
+                emitter.send(SseEmitter.event().name("alarm").data(alarmDto.getContent()));
             } catch (IOException exception) {
                 emitterRepository.deleteById(alarmDto.getUserId());
                 emitter.completeWithError(exception);

@@ -1,7 +1,6 @@
 package com.sokpulee.crescendo.domain.alarm.controller;
 
 import com.sokpulee.crescendo.domain.alarm.dto.response.GetAlarmResponse;
-import com.sokpulee.crescendo.domain.alarm.entity.Alarm;
 import com.sokpulee.crescendo.domain.alarm.service.AlarmService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
@@ -12,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +25,7 @@ public class AlarmController {
 
     private final AlarmService alarmService;
 
-    @GetMapping(value="/connect/{user-id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(value="/sse/connect/{user-id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @Operation(summary = "알림 연결", description = "SSE 연결")
     public ResponseEntity<SseEmitter> connect(@PathVariable("user-id") Long userId) {
         return ResponseEntity.status(OK).body(alarmService.connect(userId));
