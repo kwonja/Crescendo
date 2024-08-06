@@ -1,5 +1,4 @@
 import axios from 'axios';
-
 export const BASE_URL = 'http://i11b108.p.ssafy.io:8000';
 
 const config = {
@@ -30,23 +29,15 @@ export const setUserId = (Id: number) => {
 // 엑세스 토큰 설정 함수
 export const setAccessToken = (token: string | null) => {
   accessToken = token;
-  if (token) {
-    Authapi.defaults.headers.common.Authorization = `Bearer ${token}`;
-  } else {
-    delete Authapi.defaults.headers.common.Authorization;
-  }
 };
 
 // Authapi 인스턴스에 요청 인터셉터 추가
-Authapi.interceptors.request.use(
-  config => {
-    if (accessToken) {
-      config.headers.common.Authorization = `Bearer ${accessToken}`;
-    }
-    return config;
-  },
-  error => Promise.reject(error),
-);
+Authapi.interceptors.request.use(config => {
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
+  }
+  return config;
+});
 
 // 응답 인터셉터 설정 (엑세스 토큰 갱신)
 Authapi.interceptors.response.use(

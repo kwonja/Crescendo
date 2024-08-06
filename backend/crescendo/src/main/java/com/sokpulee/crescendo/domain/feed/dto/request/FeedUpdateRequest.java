@@ -20,15 +20,12 @@ public class FeedUpdateRequest {
 
     private List<String> tagList;
 
-    @NotNull
-    private Long idolGroupId;
 
     public FeedUpdateRequest(String title, String content, List<MultipartFile> imageList, List<String> tagList, Long idolGroupId) {
         this.title = title;
         this.content = content;
         this.imageList = imageList;
         this.tagList = tagList;
-        this.idolGroupId = idolGroupId;
     }
 
     public List<MultipartFile> getImageList() {

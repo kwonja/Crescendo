@@ -1,13 +1,10 @@
 package com.sokpulee.crescendo.domain.feed.service;
 
-import com.sokpulee.crescendo.domain.favoriterank.dto.response.FavoriteRankResponse;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedAddRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentAddRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedUpdateRequest;
-import com.sokpulee.crescendo.domain.feed.dto.response.FeedCommentResponse;
-import com.sokpulee.crescendo.domain.feed.dto.response.FeedDetailResponse;
-import com.sokpulee.crescendo.domain.feed.dto.response.FeedResponse;
+import com.sokpulee.crescendo.domain.feed.dto.response.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -28,13 +25,19 @@ public interface FeedService {
 
     void likeFeed(Long loggedInUserId,Long feedId);
 
-    Page<FeedResponse> getFeed(Long loggedInUserId, Pageable pageable);
+    void likeFeedComment(Long loggedInUserId,Long feedCommentId);
+
+    Page<FeedResponse> getFeed(Long loggedInUserId,Long idolGroupId, Pageable pageable);
 
     FeedDetailResponse getFeedDetail(Long loggedInUserId, Long feedId);
 
     Page<FeedCommentResponse> getFeedComment(Long loggedInUserId, Long feedId, Pageable pageable);
 
-    void likeFeedComment(Long loggedInUserId,Long feedCommentId);
+    Page<FeedReplyResponse> getFeedReply(Long loggedInUserId,Long feedId,Long feedCommentId,Pageable pageable);
+
+    Page<FavoriteFeedResponse> getFavoriteFeed(Long loggedInUserId, Pageable pageable);
+
+    Page<MyFeedResponse> getMyFeed(Long loggedInUserId,Pageable pageable);
 }
 
 

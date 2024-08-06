@@ -5,15 +5,21 @@ import { ReactComponent as Alarm } from '../../assets/images/alarm.svg';
 import { ReactComponent as Chat } from '../../assets/images/chat.svg';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import UserMenu from './UserMenu';
-import ChatRoom from './ChatRoom';
+import ChatLayout from '../chat/ChatLayout';
+import Chatroom from '../chat/ChatRoom';
+import { useAppSelector } from '../../store/hooks/hook';
+import SearchUser from '../userlist/SearchUser';
+
+export type ModeState = 'chat' | 'alarm' | 'userlist' | 'user' | '';
 
 export default function LoginHeader() {
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
-  const [userMode, setUserMode] = useState<string>('');
+  const [userMode, setUserMode] = useState<ModeState>('');
   const menuRef = useRef<HTMLUListElement>(null);
   const location = useLocation();
 
-  const handleModeClick = (mode: string) => {
+  const { isSelected } = useAppSelector(state => state.chatroom);
+  const handleModeClick = (mode: ModeState) => {
     setUserMode(prevMode => (prevMode === mode ? '' : mode));
   };
 
@@ -80,9 +86,10 @@ export default function LoginHeader() {
         >
           <User />
         </div>
-        {userMode === 'chat' && <ChatRoom />}
+        {userMode === 'chat' && isSelected === false && <ChatLayout />}
+        {userMode === 'chat' && isSelected === true && <Chatroom />}
         {userMode === 'alarm' && <UserMenu />}
-        {userMode === 'userlist' && <UserMenu />}
+        {userMode === 'userlist' && <SearchUser handleMode={setUserMode} />}
         {userMode === 'user' && <UserMenu handleMode={() => setUserMode('')} />}
       </div>
     </div>

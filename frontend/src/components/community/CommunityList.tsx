@@ -14,7 +14,7 @@ export default function CommunityList() {
       dispatch(resetPage());
       if (observer.current) observer.current.disconnect();
     }
-  }, [])
+  }, [dispatch])
 
   const loadMoreElementRef = useCallback((node: HTMLDivElement | null) => {
     if (observer.current) observer.current.disconnect();
