@@ -4,7 +4,6 @@
 
 @import 'components/common/buttons';
 @import 'components/header/usermenu';
-@import 'components/header/chatroom';
 @import 'components/header/header';
 @import 'components/mypage/profile';
 @import 'components/mypage/friendlist';
@@ -17,9 +16,15 @@
 @import 'components/community/communityfavoritelist';
 @import 'components/community/communitylist';
 
+@import 'components/chat/chatlayout';
+@import 'components/chat/chatroomlistitem';
+@import 'components/chat/chatroom';
+@import 'components/chat/message';
+@import 'components/signup/termsmodal';
+
+@import 'components/searchuser/searchuser';
 @import 'base/font';
 @import 'page/mypage';
-@import 'components/signup/termsmodal';
 @import 'page/login';
 @import 'page/communitymain';
 @import 'page/communitydetail';

@@ -20,14 +20,14 @@ const initialState: CommunityListState = {
   error: null,
   page: 0,
   hasMore: true,
-  keyword: ''
+  keyword: '',
 };
 
 // 전체 커뮤니티 리스트 가져오는 함수
 export const getCommunityList = createAsyncThunk(
   'communityList/getCommunityList',
   async ({ page, size }: { page: number; size: number }) => {
-    const response = await getCommunityListAPI(page,size);
+    const response = await getCommunityListAPI(page, size);
     return response;
   },
 );
@@ -39,27 +39,30 @@ const communityListSlice = createSlice({
     resetPage(state) {
       state.page = 0;
       state.communityList = [];
-      state.hasMore= true;
-      state.status= '';
-      state.error= null;
-      state.keyword= '';
+      state.hasMore = true;
+      state.status = '';
+      state.error = null;
+      state.keyword = '';
     },
 
     setKeyword(state, action) {
       state.keyword = action.payload;
-    }
+    },
   },
   extraReducers: builder => {
     builder
       .addCase(getCommunityList.pending, state => {
         state.status = 'loading';
       })
-      .addCase(getCommunityList.fulfilled, (state, action: PayloadAction<communityListResponse>) => {
-        state.status = 'success';
-        state.hasMore = !action.payload.last;
-        state.communityList = [...state.communityList, ...action.payload.content];
-        state.page += 1;
-      })
+      .addCase(
+        getCommunityList.fulfilled,
+        (state, action: PayloadAction<communityListResponse>) => {
+          state.status = 'success';
+          state.hasMore = !action.payload.last;
+          state.communityList = [...state.communityList, ...action.payload.content];
+          state.page += 1;
+        },
+      )
       .addCase(getCommunityList.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message || 'Failed to fetch community list';

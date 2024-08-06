@@ -2,13 +2,13 @@
 
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import { follow } from '../../interface/follow';
+import { user } from '../../interface/user';
 import { followerAPI } from '../../apis/follow';
 
-type PromiseStatus = 'loading' | 'sucess' | 'failed' | '';
+export type PromiseStatus = 'loading' | 'success' | 'failed' | '';
 
 interface followProps {
-  followerList: follow[];
+  followerList: user[];
   status: PromiseStatus;
   error: string | undefined;
 }
@@ -16,7 +16,7 @@ interface followProps {
 //createAsyncThunk는 비동기 작업을 도와주는 액션함수이기때문에
 //타입이 있어야한다.
 export const getUserFollower = createAsyncThunk(
-  'followSlice/getUserFollower',
+  'followerSlice/getUserFollower',
   async (userId: number) => {
     const response = await followerAPI(userId);
     return response;
@@ -24,29 +24,13 @@ export const getUserFollower = createAsyncThunk(
 );
 
 const inistalState: followProps = {
-  followerList: [
-    {
-      userId: 1,
-      nickname: 'Nickname1',
-      profilePath: 'https://cdn.topstarnews.net/news/photo/202301/15040596_1067813_363.jpg',
-    },
-    {
-      userId: 1,
-      nickname: 'Nickname1',
-      profilePath: 'https://cdn.topstarnews.net/news/photo/202301/15040596_1067813_363.jpg',
-    },
-    {
-      userId: 1,
-      nickname: 'Nickname1',
-      profilePath: 'https://cdn.topstarnews.net/news/photo/202301/15040596_1067813_363.jpg',
-    },
-  ],
+  followerList: [],
   status: '',
   error: '',
 };
 
 const followerSlice = createSlice({
-  name: 'follwer',
+  name: 'follower',
   initialState: inistalState,
   reducers: {},
   extraReducers: builder => {
@@ -55,7 +39,7 @@ const followerSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(getUserFollower.fulfilled, (state, action) => {
-        state.status = 'sucess';
+        state.status = 'success';
         state.followerList = action.payload.followerList;
       })
       .addCase(getUserFollower.rejected, (state, action) => {

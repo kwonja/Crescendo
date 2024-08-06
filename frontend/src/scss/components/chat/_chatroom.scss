@@ -1,0 +1,73 @@
+.chatroom {
+  width: 330px;
+  height: 500px;
+  box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  border-radius: 0px 10px 10px 10px;
+  background: #fea3a3;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding-top: 15px;
+  position: absolute;
+  top: 68px;
+  left: 0px;
+  z-index: 1000;
+  gap: 5px;
+
+  .upper {
+    width: 300px;
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 25px;
+    margin: 0 auto;
+    border-bottom: 1px solid #fff;
+    .back {
+      cursor: pointer;
+    }
+  }
+  .date {
+    width: 300px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    gap: 15px;
+    font-size: 15px;
+    margin-top: 5px;
+  }
+  .messagelist {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    height: 337px;
+    overflow-y: scroll
+  }
+  .message_send {
+    width: 300px;
+    border-radius: 10px;
+    background: #fff;
+    color: #000;
+    font-size: 15px;
+    margin: 0 auto;
+    padding: 10px;
+  }
+}
+
+
+.messagelist::-webkit-scrollbar {
+  width: 12px; /* 스크롤바의 너비 */
+}
+
+.messagelist::-webkit-scrollbar-thumb {
+  background-color: #fff; /* 스크롤바의 색상 */
+  border-radius: 6px; /* 스크롤바의 모서리 둥글게 */
+  border: 3px solid #fea3a3; /* 스크롤바와 컨테이너 사이의 여백 */
+}
+
+.messagelist::-webkit-scrollbar-track {
+  background-color: #fea3a3; /* 스크롤바 배경 색상 */
+  border-radius: 6px; /* 스크롤바 배경의 모서리 둥글게 */
+}

@@ -4,7 +4,6 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sokpulee.crescendo.domain.feed.dto.response.FeedCommentResponse;
 import com.sokpulee.crescendo.domain.feed.dto.response.FeedReplyResponse;
-import com.sokpulee.crescendo.domain.feed.dto.response.FeedResponse;
 import com.sokpulee.crescendo.domain.feed.entity.*;
 import com.sokpulee.crescendo.domain.user.entity.QUser;
 import jakarta.persistence.EntityManager;
@@ -50,6 +49,7 @@ public class FeedCommentCustomRepositoryImpl implements FeedCommentCustomReposit
                             .fetchOne() > 0 : false;
 
                     return new FeedCommentResponse(
+                            f.getFeedCommentId(),
                             f.getUser().getId(),
                             f.getUser().getProfilePath(),
                             f.getUser().getNickname(),
