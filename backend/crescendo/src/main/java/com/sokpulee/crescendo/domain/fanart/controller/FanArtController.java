@@ -6,8 +6,10 @@ import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtCommentUpdateReque
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtUpdateRequest;
 import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtDetailResponse;
 import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtResponse;
+import com.sokpulee.crescendo.domain.fanart.dto.response.FavoriteFanArtResponse;
 import com.sokpulee.crescendo.domain.fanart.service.FanArtService;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedAddRequest;
+import com.sokpulee.crescendo.domain.feed.dto.response.FavoriteFeedResponse;
 import com.sokpulee.crescendo.domain.feed.dto.response.FeedDetailResponse;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentUpdateRequest;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
@@ -96,7 +98,7 @@ public class FanArtController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping(value = "{fan-art-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/{fan-art-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "팬아트 글수정", description = "팬아트 글수정 API")
     public ResponseEntity<?> updateFanArt(
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
@@ -146,7 +148,7 @@ public class FanArtController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping(value = "{fan-art-id}/comment/{fan-art-comment-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/{fan-art-id}/comment/{fan-art-comment-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "팬아트 댓글 및 답글 수정", description = "팬아트 댓글 및 답글 수정 API")
     public ResponseEntity<?> updateFanArtComment(
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
@@ -163,7 +165,7 @@ public class FanArtController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("{fan-art-id}/comment/{fan-art-comment-id}/reply")
+    @PostMapping("/{fan-art-id}/comment/{fan-art-comment-id}/reply")
     @Operation(summary = "팬아트 답글쓰기", description = "팬아트 답글쓰기 API")
     public ResponseEntity<?> addFanArtReply(
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
@@ -195,6 +197,24 @@ public class FanArtController {
         fanArtService.likeFanArt(loggedInUserId,fanArtId);
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/favorite")
+    @Operation(summary = "좋아요한 팬아트 조회", description = "좋아요한 팬아트 조회 API")
+    public ResponseEntity<Page<FavoriteFanArtResponse>> favoriteFanArt(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        if(loggedInUserId == null){
+            throw new AuthenticationRequiredException();
+        }
+
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<FavoriteFanArtResponse> favoriteFanArtResponses = fanArtService.getFavoriteFanArt(loggedInUserId,pageable);
+
+        return ResponseEntity.ok(favoriteFanArtResponses);
     }
 
 }

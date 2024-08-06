@@ -6,6 +6,7 @@ import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtCommentUpdateReque
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtUpdateRequest;
 import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtDetailResponse;
 import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtResponse;
+import com.sokpulee.crescendo.domain.fanart.dto.response.FavoriteFanArtResponse;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArt;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArtComment;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArtImage;
@@ -205,6 +206,11 @@ public class FanArtServiceImpl implements FanArtService {
     @Override
     public Page<FanArtResponse> getFanArt(Long loggedInUserId, Long idolGroupId, Pageable pageable) {
         return fanArtRepository.findFanArts(loggedInUserId, idolGroupId, pageable);
+    }
+
+    @Override
+    public Page<FavoriteFanArtResponse> getFavoriteFanArt(Long loggedInUserId, Pageable pageable) {
+        return fanArtRepository.findFavoriteFanArt(loggedInUserId, pageable);
     }
 
     @Override
