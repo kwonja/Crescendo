@@ -58,7 +58,11 @@ export default function BestPhotoSlide () {
                 {bestPhotoList.map((bestPhoto,idx)=>(
                 <div className='bestphotoslide_card' key={idx}>
                     <img src={bestPhoto.favoriteIdolImagePath} alt={bestPhoto.idolName} />
-                    <div className='bestphotoslide_idolname'>{bestPhoto.idolGroupName}-{bestPhoto.idolName}</div>
+                    <div className='bestphotoslide_card_label'>
+                        <div>{bestPhoto.idolGroupName}</div>
+                        <div className='separator'>-</div>
+                        <div>{bestPhoto.idolName}</div>
+                    </div>
                 </div>
                 ))}
             </div>
