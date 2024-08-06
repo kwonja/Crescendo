@@ -82,8 +82,7 @@ public class Feed extends TimeStampedEntity {
         return list;
     }
 
-    public void changeFeed(IdolGroup idolGroup, String title, String content) {
-        this.idolGroup = idolGroup;
+    public void changeFeed(String title, String content) {
         this.title = title;
         this.content = content;
     }
