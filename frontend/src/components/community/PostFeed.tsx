@@ -2,6 +2,8 @@ import React, { useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Authapi } from '../../apis/core';
 import { ReactComponent as AddImage } from '../../assets/images/img_add.svg';
+import { ReactComponent as AddTag } from '../../assets/images/tag_add.svg';
+import { ReactComponent as RemoveTag } from '../../assets/images/tag_remove.svg';
 import { ReactComponent as RemoveIcon } from '../../assets/images/remove_icon.svg';
 import '../../scss/components/community/_postfeed.scss';
 
@@ -48,9 +50,11 @@ const FeedForm = () => {
   };
 
   const handleTagAdd = () => {
-    if (newTag && !tags.includes(newTag)) {
+    if (newTag && !tags.includes(newTag) && tags.length < 10) {
       setTags([...tags, newTag]);
       setNewTag('');
+    } else if (tags.length >= 10) {
+      alert('태그는 최대 10개까지 추가 가능합니다.');
     }
   };
 
@@ -97,6 +101,13 @@ const FeedForm = () => {
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value.length <= 400) {
       setContent(e.target.value);
+    }
+  };
+
+  const handleNewTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleTagAdd();
     }
   };
 
@@ -149,26 +160,32 @@ const FeedForm = () => {
           <div className="tags">
             {tags.map((tag, index) => (
               <span key={index} className="tag">
-                #{tag} <span onClick={() => handleTagRemove(tag)}>x</span>
+                #{tag} <RemoveTag className='removetag-button' onClick={() => handleTagRemove(tag)} />
               </span>
             ))}
-            <input
-              type="text"
-              value={newTag}
-              onChange={e => setNewTag(e.target.value)}
-              placeholder="#태그 추가"
-              maxLength={10}
-            />
-            <button type="button" onClick={handleTagAdd}>
-              +
-            </button>
+            {tags.length < 10 && (
+              <div className='addtag-container'>
+                <input
+                  type="text"
+                  value={newTag}
+                  onChange={e => setNewTag(e.target.value)}
+                  onKeyDown={handleNewTagKeyDown}
+                  placeholder="#태그"
+                  maxLength={10}
+                  style={{ minWidth: '50px', width: 'auto' }}
+                />
+                <AddTag className='addtag-button' onClick={handleTagAdd}/>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      <button type="submit" className="submit-button">
-        작성
-      </button>
+      <div className="submit-container">
+        <button type="submit" className="submit-button">
+          작성
+        </button>
+      </div>
     </form>
   );
 };

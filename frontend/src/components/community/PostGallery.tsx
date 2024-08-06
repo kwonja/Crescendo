@@ -108,7 +108,7 @@ const GalleryForm = () => {
           <div className="title-wrapper">
             <input
               type="text"
-              placeholder="제목을 입력하세요"
+              placeholder="제목을 입력하세요 (최대 15자)"
               value={title}
               onChange={handleTitleChange}
             />
