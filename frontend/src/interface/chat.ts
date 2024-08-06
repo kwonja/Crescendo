@@ -17,6 +17,6 @@ export interface Message {
   message: string;
   createdAt: string;
   writerId: number;
-  writerNickname: string;
+  writerNickName: string;
   writerProfilePath: string;
 }
