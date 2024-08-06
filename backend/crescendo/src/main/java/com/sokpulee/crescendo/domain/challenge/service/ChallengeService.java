@@ -2,6 +2,9 @@ package com.sokpulee.crescendo.domain.challenge.service;
 
 import com.sokpulee.crescendo.domain.challenge.dto.request.CreateDanceChallengeRequest;
 import com.sokpulee.crescendo.domain.challenge.dto.request.JoinDanceChallengeRequest;
+import com.sokpulee.crescendo.domain.challenge.dto.response.GetDanceChallengeResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ChallengeService {
     void createChallenge(Long loggedInUserId, CreateDanceChallengeRequest createDanceChallengeRequest);
@@ -13,4 +16,6 @@ public interface ChallengeService {
     void deleteChallenge(Long loggedInUserId, Long challengeId);
 
     void deleteChallengeJoin(Long loggedInUserId, Long challengeJoinId);
+
+    Page<GetDanceChallengeResponse> getChallenges(String title, String sortBy, Pageable pageable);
 }

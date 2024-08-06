@@ -2,6 +2,7 @@ package com.sokpulee.crescendo.domain.challenge.controller;
 
 import com.sokpulee.crescendo.domain.challenge.dto.request.CreateDanceChallengeRequest;
 import com.sokpulee.crescendo.domain.challenge.dto.request.JoinDanceChallengeRequest;
+import com.sokpulee.crescendo.domain.challenge.dto.response.GetDanceChallengeResponse;
 import com.sokpulee.crescendo.domain.challenge.service.ChallengeService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
@@ -10,6 +11,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -100,5 +104,19 @@ public class ChallengeController {
 
         challengeService.deleteChallengeJoin(loggedInUserId, challengeJoinId);
         return ResponseEntity.status(NO_CONTENT).build();
+    }
+
+    @GetMapping
+    @Operation(summary = "챌린지 조회", description = "챌린지 조회 API")
+    public Page<GetDanceChallengeResponse> getChallenges(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "") String title,
+            @RequestParam(defaultValue = "createdAt") String sortBy
+    ){
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return challengeService.getChallenges(title, sortBy, pageable);
     }
 }

@@ -2,17 +2,20 @@ package com.sokpulee.crescendo.domain.challenge.service;
 
 import com.sokpulee.crescendo.domain.challenge.dto.request.CreateDanceChallengeRequest;
 import com.sokpulee.crescendo.domain.challenge.dto.request.JoinDanceChallengeRequest;
+import com.sokpulee.crescendo.domain.challenge.dto.response.GetDanceChallengeResponse;
 import com.sokpulee.crescendo.domain.challenge.entity.DanceChallenge;
 import com.sokpulee.crescendo.domain.challenge.entity.DanceChallengeJoin;
 import com.sokpulee.crescendo.domain.challenge.entity.DanceChallengeJoinLike;
 import com.sokpulee.crescendo.domain.challenge.repository.DanceChallengeJoinLikeRepository;
 import com.sokpulee.crescendo.domain.challenge.repository.DanceChallengeJoinRepository;
-import com.sokpulee.crescendo.domain.challenge.repository.DanceChallengeRepository;
+import com.sokpulee.crescendo.domain.challenge.repository.dancechallenge.DanceChallengeRepository;
 import com.sokpulee.crescendo.domain.user.entity.User;
 import com.sokpulee.crescendo.domain.user.repository.UserRepository;
 import com.sokpulee.crescendo.global.exception.custom.*;
 import com.sokpulee.crescendo.global.util.file.FileSaveHelper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -120,5 +123,10 @@ public class ChallengeServiceImpl implements ChallengeService {
         }
 
         danceChallengeJoinRepository.delete(danceChallengeJoin);
+    }
+
+    @Override
+    public Page<GetDanceChallengeResponse> getChallenges(String title, String sortBy, Pageable pageable) {
+        return danceChallengeRepository.searchChallenges(title, sortBy, pageable);
     }
 }
