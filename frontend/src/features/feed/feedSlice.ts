@@ -4,28 +4,23 @@ import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { FeedData } from '../../interface/feed';
 import { getMyFeedAPI } from '../../apis/user';
 
-
 export type PromiseStatus = 'loading' | 'success' | 'failed' | '';
 
-interface FeedProps{
-  myFeedList : FeedData[];
+interface FeedProps {
+  myFeedList: FeedData[];
   status: PromiseStatus;
   error: string | undefined;
 }
 const inistalState: FeedProps = {
-  myFeedList : [],
+  myFeedList: [],
   status: '',
   error: '',
 };
 
-
-export const getMyFeedList = createAsyncThunk(
-  'feedSlice/getMyFeedList',
-  async (userId: number) => {
-    const response = await getMyFeedAPI(0,10);
-    return response;
-  },
-);
+export const getMyFeedList = createAsyncThunk('feedSlice/getMyFeedList', async (userId: number) => {
+  const response = await getMyFeedAPI(0, 10);
+  return response;
+});
 
 const feedSlice = createSlice({
   name: 'feed',
@@ -48,17 +43,17 @@ const feedSlice = createSlice({
   },
   extraReducers(builder) {
     builder
-    .addCase(getMyFeedList.pending, state => {
-      state.status = 'loading';
-    })
-    .addCase(getMyFeedList.fulfilled, (state, action) => {
-      state.status = 'success';
-      state.myFeedList = action.payload.content;
-    })
-    .addCase(getMyFeedList.rejected, (state, action) => {
-      state.status = 'failed';
-      state.error = action.error.message;
-    });
+      .addCase(getMyFeedList.pending, state => {
+        state.status = 'loading';
+      })
+      .addCase(getMyFeedList.fulfilled, (state, action) => {
+        state.status = 'success';
+        state.myFeedList = action.payload.content;
+      })
+      .addCase(getMyFeedList.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      });
   },
 });
 

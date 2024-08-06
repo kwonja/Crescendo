@@ -12,15 +12,14 @@ export default function MyPage() {
   const menuRef = useRef<HTMLDivElement>(null);
   const feedlist = useAppSelector(state => state.feed.myFeedList);
 
+  const getMyFeed = async () => {
+    const response = await getMyFeedAPI(0, 10);
+    console.log(response);
+  };
 
-  const getMyFeed = async()=>{
-    const response = await getMyFeedAPI(0,10);
-    console.log(response)
-  }
-
-  useEffect( ()=>{
+  useEffect(() => {
     getMyFeed();
-  },[])
+  }, []);
 
   useEffect(() => {
     const menuElement = menuRef.current;
@@ -71,7 +70,7 @@ export default function MyPage() {
 
         {isSelected === 'feed' && (
           <div className="">
-            {feedlist.map((feed) => (
+            {feedlist.map(feed => (
               <Feed key={feed.feedId} feed={feed} />
             ))}
           </div>
