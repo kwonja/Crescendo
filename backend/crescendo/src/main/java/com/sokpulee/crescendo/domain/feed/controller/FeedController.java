@@ -4,10 +4,7 @@ import com.sokpulee.crescendo.domain.feed.dto.request.FeedAddRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentAddRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedUpdateRequest;
-import com.sokpulee.crescendo.domain.feed.dto.response.FeedCommentResponse;
-import com.sokpulee.crescendo.domain.feed.dto.response.FeedDetailResponse;
-import com.sokpulee.crescendo.domain.feed.dto.response.FeedReplyResponse;
-import com.sokpulee.crescendo.domain.feed.dto.response.FeedResponse;
+import com.sokpulee.crescendo.domain.feed.dto.response.*;
 import com.sokpulee.crescendo.domain.feed.service.FeedService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
@@ -61,12 +58,13 @@ public class FeedController {
     @Operation(summary = "피드 조회",description = "피드 조회 API")
     public ResponseEntity<Page<FeedResponse>> getFeed(
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @RequestParam("idol-group-id") Long idolGroupId,
             @RequestParam int page,
             @RequestParam int size
     ){
         Pageable pageable = PageRequest.of(page,size);
 
-        Page<FeedResponse> feedResponses = feedService.getFeed(loggedInUserId,pageable);
+        Page<FeedResponse> feedResponses = feedService.getFeed(loggedInUserId,idolGroupId,pageable);
 
         return ResponseEntity.ok(feedResponses);
     }
@@ -110,6 +108,23 @@ public class FeedController {
         feedService.updateFeed(loggedInUserId,feedId,feedUpdateRequest);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("my-feed")
+    @Operation(summary = "내가 쓴 피드", description = "내가 쓴 피드 API")
+    public ResponseEntity<Page<MyFeedResponse>> getMyFeed(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        if(loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<MyFeedResponse> myFeedResponses = feedService.getMyFeed(loggedInUserId,pageable);
+
+        return ResponseEntity.ok(myFeedResponses);
     }
 
     @PostMapping("/{feed-id}/comment")
@@ -237,5 +252,23 @@ public class FeedController {
         feedService.likeFeedComment(loggedInUserId,feedCommentId);
 
         return ResponseEntity.status(OK).build();
+    }
+
+    @GetMapping("favorite")
+    @Operation(summary = "좋아요한 피드 조회", description = "좋아요한 피드 조회 API")
+    public ResponseEntity<Page<FavoriteFeedResponse>> favoriteFeed(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        if(loggedInUserId == null){
+            throw new AuthenticationRequiredException();
+        }
+
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<FavoriteFeedResponse> favoriteFeeds = feedService.getFavoriteFeed(loggedInUserId,pageable);
+
+        return ResponseEntity.ok(favoriteFeeds);
     }
 }

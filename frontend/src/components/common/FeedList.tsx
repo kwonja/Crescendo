@@ -7,9 +7,9 @@ export default function FeedList() {
 
   return (
     <div className="feedlist">
-        {feedlist.map((feed, index) => (
-            <Feed key={index} feed={feed} />
-        ))}
-    </div>  
+      {feedlist.map((feed, index) => (
+        <Feed key={index} feed={feed} />
+      ))}
+    </div>
   );
 }
