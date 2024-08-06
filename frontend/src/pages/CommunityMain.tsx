@@ -11,26 +11,28 @@ export default function CommunityMain() {
   const dispatch = useAppDispatch();
   const [value, setValue] = useState<string>('');
 
-  return (<div className="communitymain">
-      {
-      isLoggedIn && <>
-      <div className="communitymain_contents">
-        <div className="communitymain_title">MY 커뮤니티</div>
-      </div>
-      <CommunityFavoriteList />
-      </>
-      }
+  return (
+    <div className="communitymain">
+      {isLoggedIn && (
+        <>
+          <div className="communitymain_contents">
+            <div className="communitymain_title">MY 커뮤니티</div>
+          </div>
+          <CommunityFavoriteList />
+        </>
+      )}
       <div className="communitymain_contents">
         <div className="communitymain_title">ALL 커뮤니티</div>
         <div className="communitymain_searchbar">
-          <SearchInput 
-          placeholder='커뮤니티 검색' 
-          value={value}
-          onChange={(event)=>setValue(event.target.value)}
-          onSearch={()=>{
-            dispatch(resetPage());
-            dispatch(setKeyword(value))
-            }} />
+          <SearchInput
+            placeholder="커뮤니티 검색"
+            value={value}
+            onChange={event => setValue(event.target.value)}
+            onSearch={() => {
+              dispatch(resetPage());
+              dispatch(setKeyword(value));
+            }}
+          />
         </div>
       </div>
       <div className="communitymain_contents">
