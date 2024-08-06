@@ -48,6 +48,15 @@ const chatroomSlice = createSlice({
     setSelectedGroup: (state, action: PayloadAction<ChatRoom>) => {
       state.selectedGroup = action.payload;
     },
+    setLastChatting: (state, action: PayloadAction<ChatRoom>)=>{
+      const index = state.chatRoomList.findIndex( chatRoom => chatRoom.dmGroupId === action.payload.dmGroupId);
+      console.log(index)
+      console.log(action.payload);
+      if(index !==null){
+        state.chatRoomList[index] = action.payload;
+        state.chatRoomList = [...state.chatRoomList];
+      }
+    }
   },
   extraReducers: builder => {
     builder
@@ -65,5 +74,5 @@ const chatroomSlice = createSlice({
   },
 });
 
-export const { setIsSelected, setSelectedGroup } = chatroomSlice.actions;
+export const { setIsSelected, setSelectedGroup,setLastChatting } = chatroomSlice.actions;
 export default chatroomSlice.reducer;

@@ -13,6 +13,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
 import { setIsSelected, setSelectedGroup } from '../../features/chat/chatroomSlice';
 import { getMessages, initialMessage, setMessage, setPage } from '../../features/chat/messageSlice';
 import { ChatDateTransfer } from '../../utils/ChatDateTransfer';
+import { Message } from '../../interface/chat';
 
 export default function Chatroom() {
   const client = useRef<CompatClient | null>(null);
@@ -31,9 +32,14 @@ export default function Chatroom() {
       {},
       (frame: string) => {
         client.current?.subscribe(`/topic/messages/${dmGroupId}`, content => {
-          const newMessage = JSON.parse(content.body);
+          const newMessage : Message = JSON.parse(content.body);
           setScroll(true);
           dispatch(setMessage(newMessage));
+
+          // if(getUserId() !== newMessage.writerId){
+          //   const  {writerId : opponentId , writerNickname : opponentNickName ,createdAt : lastChattingTime, message : lastChatting, writerProfilePath : opponentProfilePath} = newMessage;
+          //   dispatch(setLastChatting({dmGroupId,opponentId,opponentProfilePath,opponentNickName,lastChatting,lastChattingTime}))
+          // }
         });
       },
       (error: any) => {
@@ -103,8 +109,7 @@ export default function Chatroom() {
     if (isScroll && messageListRef.current) {
       messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
     }
-    
-  }, [messageList, prevScrollHeight,isScroll]);
+  }, [messageList, prevScrollHeight, isScroll]);
 
   useEffect(() => {
     const option = {
