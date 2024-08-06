@@ -11,6 +11,7 @@ export default function MyPage() {
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
   const menuRef = useRef<HTMLDivElement>(null);
   const feedlist = useAppSelector(state => state.feed.myFeedList);
+  
 
   const getMyFeed = async () => {
     const response = await getMyFeedAPI(0, 10);
