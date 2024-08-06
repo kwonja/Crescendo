@@ -81,4 +81,19 @@ public class AlarmController {
         return ResponseEntity.status(NO_CONTENT).build();
     }
 
+    @DeleteMapping("/api/v1/alarm/{alarm-id}")
+    @Operation(summary = "알림 삭제", description = "알림 삭제 API")
+    public ResponseEntity<?> deleteAlarm(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("alarm-id") Long alarmId
+    ) {
+
+        if(loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+
+        alarmService.deleteAlarm(loggedInUserId, alarmId);
+
+        return ResponseEntity.status(NO_CONTENT).build();
+    }
 }

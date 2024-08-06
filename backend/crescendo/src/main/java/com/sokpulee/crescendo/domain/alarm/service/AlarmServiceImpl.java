@@ -64,6 +64,22 @@ public class AlarmServiceImpl implements AlarmService {
         alarm.readAlarm();
     }
 
+    @Override
+    public void deleteAlarm(Long loggedInUserId, Long alarmId) {
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        Alarm alarm = alarmRepository.findById(alarmId)
+                .orElseThrow(AlarmNotFoundException::new);
+
+        if(!alarm.getUser().getId().equals(user.getId())) {
+            throw new UnAuthorizedAccessException();
+        }
+
+        alarmRepository.delete(alarm);
+    }
+
     private void sendToClient(Long id, Object data) {
         SseEmitter emitter = emitterRepository.get(id);
         if (emitter != null) {
