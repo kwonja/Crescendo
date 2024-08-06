@@ -36,7 +36,7 @@ export default function CommunityFavoriteList() {
     let tmp = [...communityList];
     tmp = tmp.slice(idx, idx + SIZE_PER_PAGE);
     setShowList(tmp);
-  }, [idx]);
+  }, [communityList, idx]);
 
   function incrementIdx() {
     if (idx + SIZE_PER_PAGE + MOVE_STEP < communityList.length - 1)

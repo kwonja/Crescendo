@@ -11,7 +11,7 @@ export default function CommunityMain() {
   const dispatch = useAppDispatch();
   const [value, setValue] = useState<string>('');
 
-  return <div className="communitymain">
+  return (<div className="communitymain">
       {
       isLoggedIn && <>
       <div className="communitymain_contents">
@@ -37,4 +37,5 @@ export default function CommunityMain() {
         <CommunityList />
       </div>
     </div>
+  );
 }
