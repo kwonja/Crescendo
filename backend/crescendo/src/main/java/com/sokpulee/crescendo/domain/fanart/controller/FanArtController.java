@@ -4,9 +4,11 @@ import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtAddRequest;
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtCommentAddRequest;
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtUpdateRequest;
+import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtDetailResponse;
 import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtResponse;
 import com.sokpulee.crescendo.domain.fanart.service.FanArtService;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedAddRequest;
+import com.sokpulee.crescendo.domain.feed.dto.response.FeedDetailResponse;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentUpdateRequest;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
@@ -68,6 +70,17 @@ public class FanArtController {
         Page<FanArtResponse> fanArtResponsePage = fanArtService.getFanArt(loggedInUserId,idolGroupId,pageable);
 
         return ResponseEntity.ok(fanArtResponsePage);
+    }
+
+    @GetMapping("/{fan-art-id}")
+    @Operation(summary = "팬아트 상세조회", description = "팬아트 상세조회 API")
+    public ResponseEntity<FanArtDetailResponse> getFanArtDetail(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("fan-art-id") Long fanArtId
+    ){
+        FanArtDetailResponse fanArtDetailResponse = fanArtService.getFanArtDetail(loggedInUserId, fanArtId);
+
+        return ResponseEntity.ok(fanArtDetailResponse);
     }
 
     @DeleteMapping("/{fan-art-id}")
@@ -179,7 +192,7 @@ public class FanArtController {
             throw new AuthenticationRequiredException();
         }
 
-        fanArtService.likeFeed(loggedInUserId,fanArtId);
+        fanArtService.likeFanArt(loggedInUserId,fanArtId);
 
         return ResponseEntity.ok().build();
     }

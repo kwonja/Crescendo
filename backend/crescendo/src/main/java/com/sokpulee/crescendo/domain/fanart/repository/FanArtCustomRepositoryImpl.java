@@ -63,12 +63,10 @@ public class FanArtCustomRepositoryImpl implements FanArtCustomRepository{
                             f.getUser().getId(),
                             f.getUser().getProfilePath(),
                             f.getUser().getNickname(),
-                            f.getLikeCnt(),
-                            isLike,
+                            Optional.ofNullable(f.getLikeCnt()).orElse(0),                            isLike,
                             imagePaths,
                             f.getContent(),
-                            f.getCommentCnt(),
-                            f.getCreatedAt(),
+                            Optional.ofNullable(f.getCommentCnt()).orElse(0),                            f.getCreatedAt(),
                             f.getLastModified()
                     );
                 })

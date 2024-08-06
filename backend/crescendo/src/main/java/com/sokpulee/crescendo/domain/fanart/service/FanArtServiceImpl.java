@@ -4,6 +4,7 @@ import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtAddRequest;
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtCommentAddRequest;
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtUpdateRequest;
+import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtDetailResponse;
 import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtResponse;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArt;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArtComment;
@@ -12,7 +13,10 @@ import com.sokpulee.crescendo.domain.fanart.entity.FanArtLike;
 import com.sokpulee.crescendo.domain.fanart.repository.FanArtCommentRepository;
 import com.sokpulee.crescendo.domain.fanart.repository.FanArtLikeRepository;
 import com.sokpulee.crescendo.domain.fanart.repository.FanArtRepository;
+import com.sokpulee.crescendo.domain.feed.dto.response.FeedDetailResponse;
+import com.sokpulee.crescendo.domain.feed.entity.Feed;
 import com.sokpulee.crescendo.domain.feed.entity.FeedComment;
+import com.sokpulee.crescendo.domain.feed.entity.FeedLike;
 import com.sokpulee.crescendo.domain.idol.entity.IdolGroup;
 import com.sokpulee.crescendo.domain.idol.repository.IdolGroupRepository;
 import com.sokpulee.crescendo.domain.user.entity.User;
@@ -26,6 +30,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -59,6 +64,8 @@ public class FanArtServiceImpl implements FanArtService {
                 .user(user)
                 .title(fanArtAddRequest.getTitle())
                 .content(fanArtAddRequest.getContent())
+                .likeCnt(0)
+                .commentCnt(0)
                 .build();
 
         if (!fanArtAddRequest.getImageList().isEmpty()) {
@@ -173,7 +180,7 @@ public class FanArtServiceImpl implements FanArtService {
     }
 
     @Override
-    public void likeFeed(Long loggedInUserId, Long fanArtId) {
+    public void likeFanArt(Long loggedInUserId, Long fanArtId) {
         FanArt fanArt = fanArtRepository.findById(fanArtId)
                 .orElseThrow(FanArtNotFoundException::new);
 
@@ -198,6 +205,54 @@ public class FanArtServiceImpl implements FanArtService {
     @Override
     public Page<FanArtResponse> getFanArt(Long loggedInUserId, Long idolGroupId, Pageable pageable) {
         return fanArtRepository.findFanArts(loggedInUserId, idolGroupId, pageable);
+    }
+
+    @Override
+    public FanArtDetailResponse getFanArtDetail(Long loggedInUserId, Long fanArtId) {
+        FanArt fanArt = fanArtRepository.findById(fanArtId)
+                .orElseThrow(FanArtNotFoundException::new);
+
+        User user = fanArt.getUser();
+
+        List<String> fanArtImagePathList = fanArt.getImagePathList(fanArt.getImageList());
+
+        FanArtDetailResponse response;
+
+        if (loggedInUserId == null) {
+            response = FanArtDetailResponse.builder()
+                    .userId(user.getId())
+                    .profileImagePath(user.getProfilePath())
+                    .nickname(user.getNickname())
+                    .createdAt(fanArt.getCreatedAt())
+                    .lastModified(fanArt.getLastModified())
+                    .likeCnt(fanArt.getLikeCnt())
+                    .isLike(false)
+                    .fanArtImagePathList(fanArtImagePathList)
+                    .content(fanArt.getContent())
+                    .commentCnt(fanArt.getCommentCnt())
+                    .build();
+        } else {
+            User user1 = userRepository.findById(loggedInUserId)
+                    .orElseThrow(UserNotFoundException::new);
+
+            Optional<FanArtLike> fanArtLike = fanArtLikeRepository.findByFanArtAndUser(fanArt,user1);
+            boolean isLike = fanArtLike.isPresent();
+
+
+            response = FanArtDetailResponse.builder()
+                    .userId(user.getId())
+                    .profileImagePath(user.getProfilePath())
+                    .nickname(user.getNickname())
+                    .createdAt(fanArt.getCreatedAt())
+                    .lastModified(fanArt.getLastModified())
+                    .likeCnt(fanArt.getLikeCnt())
+                    .isLike(isLike)
+                    .fanArtImagePathList(fanArtImagePathList)
+                    .content(fanArt.getContent())
+                    .commentCnt(fanArt.getCommentCnt())
+                    .build();
+        }
+        return response;
     }
 
     @Override
