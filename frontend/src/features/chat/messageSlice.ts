@@ -48,7 +48,7 @@ const messageSlice = createSlice({
       state.totalPage = 1;
     },
     setPage: state => {
-      state.currentPage = state.currentPage + 1;
+      if(state.totalPage > state.currentPage) state.currentPage = state.currentPage + 1;
     },
   },
   extraReducers: builder => {

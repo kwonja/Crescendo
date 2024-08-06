@@ -17,12 +17,18 @@ interface SearchProps {
 export default function SearchUser({ handleMode }: SearchProps) {
   const [lists, setList] = useState<user[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
+  const [isSearch,setSearch] = useState<boolean>(true);
   const dispatch = useAppDispatch();
 
   const getUserList = async (nickname: string) => {
     try {
       const response = await UserSearchApi(0, 10, nickname);
-      console.log(response);
+      if(response.content.length > 0) {
+        setSearch(true);
+      }
+      else{
+        setSearch(false);
+      }
       setList(() => [...response.content]);
     } catch (error) {
       console.error('Error fetching user list:', error);
@@ -47,7 +53,6 @@ export default function SearchUser({ handleMode }: SearchProps) {
 
     try {
       const response = await getOpponent(list.userId);
-      console.log(response);
       dmGroupId = response.data.dmGroupId;
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
@@ -85,6 +90,7 @@ export default function SearchUser({ handleMode }: SearchProps) {
   return (
     <div className="searchuser">
       <SearchInput placeholder="유저를 검색하세요" onChange={OnchangeHandler} value={inputValue} />
+      {lists.length === 0 && !isSearch ? <div>검색하신 유저가 없습니다.</div> : null}
       {lists.map(list => (
         <div key={list.userId} onClick={e => handleClick(list, e)}>
           <FriendProfile user={list} />
