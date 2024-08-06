@@ -11,4 +11,6 @@ public interface ChallengeService {
     void likeChallengeJoin(Long loggedInUserId, Long challengeJoinId);
 
     void deleteChallenge(Long loggedInUserId, Long challengeId);
+
+    void deleteChallengeJoin(Long loggedInUserId, Long challengeJoinId);
 }

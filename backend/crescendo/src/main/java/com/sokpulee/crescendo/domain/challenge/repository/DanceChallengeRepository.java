@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface DanceChallengeRepository extends JpaRepository<DanceChallenge, Long> {
 
-    @Query("SELECT dc FROM DanceChallenge dc JOIN FETCH dc.user WHERE dc.danceChallengeId = :danceChallengeId")
+    @Query("SELECT dc FROM DanceChallenge dc JOIN FETCH dc.user WHERE dc.id = :danceChallengeId")
     Optional<DanceChallenge> findByIdWithUser(@Param("danceChallengeId") Long challengeId);
 }

@@ -87,4 +87,18 @@ public class ChallengeController {
         return ResponseEntity.status(NO_CONTENT).build();
     }
 
+    @DeleteMapping("/join/{challenge-join-id}")
+    @Operation(summary = "챌린지 참여 삭제", description = "챌린지 참여 삭제 API")
+    public ResponseEntity<?> deleteChallengeJoin(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("challenge-join-id") Long challengeJoinId
+    ) {
+
+        if(loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+
+        challengeService.deleteChallengeJoin(loggedInUserId, challengeJoinId);
+        return ResponseEntity.status(NO_CONTENT).build();
+    }
 }

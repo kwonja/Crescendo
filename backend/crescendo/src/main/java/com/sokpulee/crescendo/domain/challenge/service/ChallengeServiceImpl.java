@@ -105,4 +105,20 @@ public class ChallengeServiceImpl implements ChallengeService {
         danceChallengeRepository.delete(danceChallenge);
 
     }
+
+    @Override
+    public void deleteChallengeJoin(Long loggedInUserId, Long challengeJoinId) {
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        DanceChallengeJoin danceChallengeJoin = danceChallengeJoinRepository.findByIdWithUser(challengeJoinId)
+                .orElseThrow(DanceChallengeJoinNotFoundException::new);
+
+        if(!danceChallengeJoin.getUser().getId().equals(user.getId())) {
+            throw new UnAuthorizedAccessException();
+        }
+
+        danceChallengeJoinRepository.delete(danceChallengeJoin);
+    }
 }
