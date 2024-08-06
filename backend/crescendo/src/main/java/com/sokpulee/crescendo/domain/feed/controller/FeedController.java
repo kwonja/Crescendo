@@ -110,7 +110,7 @@ public class FeedController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("my-feed")
+    @GetMapping("/my-feed")
     @Operation(summary = "내가 쓴 피드", description = "내가 쓴 피드 API")
     public ResponseEntity<Page<MyFeedResponse>> getMyFeed(
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
@@ -190,7 +190,7 @@ public class FeedController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("{feed-id}/comment/{feed-comment-id}/reply")
+    @PostMapping("/{feed-id}/comment/{feed-comment-id}/reply")
     @Operation(summary = "피드 답글쓰기", description = "피드 답글쓰기 API")
     public ResponseEntity<?> addFeedReply(
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
@@ -254,7 +254,7 @@ public class FeedController {
         return ResponseEntity.status(OK).build();
     }
 
-    @GetMapping("favorite")
+    @GetMapping("/favorite")
     @Operation(summary = "좋아요한 피드 조회", description = "좋아요한 피드 조회 API")
     public ResponseEntity<Page<FavoriteFeedResponse>> favoriteFeed(
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
