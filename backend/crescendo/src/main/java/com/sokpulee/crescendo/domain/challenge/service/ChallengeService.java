@@ -9,4 +9,6 @@ public interface ChallengeService {
     void joinChallenge(Long loggedInUserId, Long challengeId, JoinDanceChallengeRequest joinDanceChallengeRequest);
 
     void likeChallengeJoin(Long loggedInUserId, Long challengeJoinId);
+
+    void deleteChallenge(Long loggedInUserId, Long challengeId);
 }

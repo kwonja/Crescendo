@@ -18,7 +18,7 @@ import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/challange")
+@RequestMapping("/api/v1/challenge")
 @Tag(name = "Challenge", description = "챌린지 관련 API")
 public class ChallengeController {
 
@@ -71,4 +71,20 @@ public class ChallengeController {
         challengeService.likeChallengeJoin(loggedInUserId, challengeJoinId);
         return ResponseEntity.status(NO_CONTENT).build();
     }
+
+    @DeleteMapping("/{challenge-id}")
+    @Operation(summary = "챌린지 삭제", description = "챌린지 삭제 API")
+    public ResponseEntity<?> deleteChallenge(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("challenge-id") Long challengeId
+    ) {
+
+        if(loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+
+        challengeService.deleteChallenge(loggedInUserId, challengeId);
+        return ResponseEntity.status(NO_CONTENT).build();
+    }
+
 }

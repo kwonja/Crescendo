@@ -10,10 +10,7 @@ import com.sokpulee.crescendo.domain.challenge.repository.DanceChallengeJoinRepo
 import com.sokpulee.crescendo.domain.challenge.repository.DanceChallengeRepository;
 import com.sokpulee.crescendo.domain.user.entity.User;
 import com.sokpulee.crescendo.domain.user.repository.UserRepository;
-import com.sokpulee.crescendo.global.exception.custom.ChallengeNotFoundException;
-import com.sokpulee.crescendo.global.exception.custom.DanceChallengeJoinConflictException;
-import com.sokpulee.crescendo.global.exception.custom.DanceChallengeJoinNotFoundException;
-import com.sokpulee.crescendo.global.exception.custom.UserNotFoundException;
+import com.sokpulee.crescendo.global.exception.custom.*;
 import com.sokpulee.crescendo.global.util.file.FileSaveHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -90,6 +87,22 @@ public class ChallengeServiceImpl implements ChallengeService {
                             .danceChallengeJoin(danceChallengeJoin)
                             .build());
         }
+
+    }
+
+    @Override
+    public void deleteChallenge(Long loggedInUserId, Long challengeId) {
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        DanceChallenge danceChallenge = danceChallengeRepository.findByIdWithUser(challengeId)
+                .orElseThrow(ChallengeNotFoundException::new);
+
+        if(!danceChallenge.getUser().getId().equals(user.getId())) {
+            throw new UnAuthorizedAccessException();
+        }
+        danceChallengeRepository.delete(danceChallenge);
 
     }
 }
