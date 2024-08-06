@@ -9,6 +9,7 @@ import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
 import com.sokpulee.crescendo.global.util.jwt.JWTUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -74,7 +75,7 @@ public class UserController {
     @PatchMapping(value = "/mypage/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "프로필 수정", description = "프로필 수정 API")
     public ResponseEntity<?> updateProfile(
-            @AuthPrincipal Long userId,
+            @Parameter(hidden = true) @AuthPrincipal Long userId,
             @Valid @ModelAttribute ProfileUpdateRequest request
     ) {
 
