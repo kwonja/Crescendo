@@ -1,6 +1,7 @@
 import BestPhotoSlide from "../components/favorite/BestPhotoSlide";
 import Dropdown from "../components/common/Dropdown";
 import { useEffect, useState } from "react";
+import FavoriteRankList from "../components/favorite/FavoriteRankList";
 
 interface idolGroupInfo {
   groupId: number;
@@ -102,12 +103,12 @@ export default function Favorite() {
     }
     setIdolOption('멤버');
     const selectedGroup = idolGroupList.find((group)=> group.groupName===idolGroupOption)
+    if (!selectedGroup) throw new Error('not found idol group');
     const getIdolGroupList = async (groupId:number) => {
       groupId === 1?setIdolList(idolTmp1):setIdolList(idolTmp2);
     }
-    if (!selectedGroup) throw new Error('not found idol group');
     getIdolGroupList(selectedGroup.groupId);
-  }, [idolGroupOption])
+  }, [idolGroupOption, idolGroupList])
 
 
   return <div className="favorite">
@@ -147,6 +148,7 @@ export default function Favorite() {
             />
           </div>
         </div>
+        <FavoriteRankList />
       </div>
     </div>
 

@@ -1,0 +1,53 @@
+.favoriteranklist {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px;
+
+
+    &_card {
+        position: relative;
+        border: 5px solid #f66;
+        border-radius: 0px 20px 0 20px;
+        width: 400px;
+        height: 560px;
+
+        > .dotsbox {
+            position: absolute;
+            right: 10px;
+            top: 20px;
+        }
+
+        &_label {
+            display: flex;
+            color: #f66;
+            height: 80px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        > img {
+            width: 400px;
+            height: 400px;
+        }
+        
+        &_info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+            padding: 10px;
+
+            .heartbox {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-size: 20px;
+            }
+        }
+
+        .hoverup:hover {
+            transform: scale(1.1);
+        }
+    }
+    
+}
