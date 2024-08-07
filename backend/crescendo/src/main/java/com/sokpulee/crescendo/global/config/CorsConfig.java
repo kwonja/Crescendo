@@ -22,7 +22,7 @@ public class CorsConfig implements WebMvcConfigurer {
                 )
                 .allowedMethods(ALLOWED_METHOD_NAMES.split(","))
                 .allowedHeaders("*")
-                .exposedHeaders(HttpHeaders.LOCATION, "Authorization")
+                .exposedHeaders(HttpHeaders.LOCATION, "Authorization", "Set-Cookie")
                 .allowCredentials(true);
     }
 }
