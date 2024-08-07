@@ -4,13 +4,11 @@ import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtAddRequest;
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtCommentAddRequest;
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtUpdateRequest;
-import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtDetailResponse;
-import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtResponse;
-import com.sokpulee.crescendo.domain.fanart.dto.response.FavoriteFanArtResponse;
-import com.sokpulee.crescendo.domain.fanart.dto.response.MyFanArtResponse;
+import com.sokpulee.crescendo.domain.fanart.dto.response.*;
 import com.sokpulee.crescendo.domain.fanart.service.FanArtService;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedAddRequest;
 import com.sokpulee.crescendo.domain.feed.dto.response.FavoriteFeedResponse;
+import com.sokpulee.crescendo.domain.feed.dto.response.FeedCommentResponse;
 import com.sokpulee.crescendo.domain.feed.dto.response.FeedDetailResponse;
 import com.sokpulee.crescendo.domain.feed.dto.response.MyFeedResponse;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentUpdateRequest;
@@ -138,7 +136,20 @@ public class FanArtController {
     }
 
 
+    @GetMapping("/{fan-art-id}/comment")
+    @Operation(summary = "팬아트 댓글조회", description = "팬아트 댓글조회 API")
+    public ResponseEntity<Page<FanArtCommentResponse>> getFanArtComment(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("fan-art-id") Long fanArtId,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        Pageable pageable = PageRequest.of(page,size);
 
+        Page<FanArtCommentResponse> fanArtCommentResponses = fanArtService.getFanArtComment(loggedInUserId,fanArtId,pageable);
+
+        return ResponseEntity.ok(fanArtCommentResponses);
+    }
 
     @DeleteMapping("/{fan-art-id}/comment/{fan-art-comment-id}")
     @Operation(summary = "팬아트 댓글 및 답글 삭제", description = "팬아트 댓글 및 답글 삭제 API")
