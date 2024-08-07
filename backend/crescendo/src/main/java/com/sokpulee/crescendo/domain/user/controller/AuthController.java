@@ -110,6 +110,8 @@ public class AuthController {
 
         String newAccessToken = jwtUtil.createAccessToken(userId);
 
+        System.out.println("newAccessToken" + newAccessToken);
+
         return ResponseEntity.status(OK)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + newAccessToken)
                 .build();
