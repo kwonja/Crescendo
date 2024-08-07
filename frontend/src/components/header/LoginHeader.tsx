@@ -9,6 +9,7 @@ import ChatLayout from '../chat/ChatLayout';
 import Chatroom from '../chat/ChatRoom';
 import { useAppSelector } from '../../store/hooks/hook';
 import SearchUser from '../userlist/SearchUser';
+import AlarmLayout from '../alaram/AlarmLayout';
 
 export type ModeState = 'chat' | 'alarm' | 'userlist' | 'user' | '';
 
@@ -88,7 +89,7 @@ export default function LoginHeader() {
         </div>
         {userMode === 'chat' && isSelected === false && <ChatLayout />}
         {userMode === 'chat' && isSelected === true && <Chatroom />}
-        {userMode === 'alarm' && <UserMenu />}
+        {userMode === 'alarm' && <AlarmLayout />}
         {userMode === 'userlist' && <SearchUser handleMode={setUserMode} />}
         {userMode === 'user' && <UserMenu handleMode={() => setUserMode('')} />}
       </div>

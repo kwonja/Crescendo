@@ -9,6 +9,7 @@ import { setIsSelected, setSelectedGroup } from '../../features/chat/chatroomSli
 import { ModeState } from '../header/LoginHeader';
 import { createChatroom, getOpponent } from '../../apis/chat';
 import { AxiosError } from 'axios';
+import { followAPI } from '../../apis/follow';
 
 interface SearchProps {
   handleMode: (mode: ModeState) => void;
@@ -40,8 +41,7 @@ export default function SearchUser({ handleMode }: SearchProps) {
     debounceHandler(e.target.value);
   };
   const debounceHandler = useMemo(() => DeBounce(input => getUserList(input), 500), []);
-
-  const handleClick = async (list: user, e: React.MouseEvent<HTMLDivElement>) => {
+  const handleChatClick = async (list: user, e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
 
     let dmGroupId = 0;
@@ -82,6 +82,17 @@ export default function SearchUser({ handleMode }: SearchProps) {
     );
   };
 
+  const HandleFollowClick = async(userId : number)=>{
+    try{
+      const response = await followAPI(userId);
+      console.log(response);
+      alert("팔로우가 되었습니다");
+    }catch(err : unknown){
+      console.log(err);
+    }
+
+  }
+
   return (
     <div className="searchuser">
       <SearchInput placeholder="유저를 검색하세요" onChange={OnchangeHandler} value={inputValue} />
@@ -89,11 +100,14 @@ export default function SearchUser({ handleMode }: SearchProps) {
         {lists.length === 0 && !isSearch ? <div>검색하신 유저가 없습니다.</div> : null}
         {lists.map(list => (
           <div
-            className="w-11/12 flex align-center p-2.5 border-b-2 border-white mx-auto"
+            className="w-11/12 flex flex-row align-center justgap-2 p-2.5 border-b-2 border-white mx-auto"
             key={list.userId}
-            onClick={e => handleClick(list, e)}
           >
-            <FriendProfile user={list} />
+            <div><FriendProfile user={list}/></div>
+            <div className='flex flex-col gap-0.5 ml-auto mr-5 justify-center'>
+            <div className="cursor-pointer" onClick={ (e) => handleChatClick(list, e)}>채팅</div>
+            <div className="cursor-pointer" onClick={ () => HandleFollowClick(list.userId)}>팔로우</div>
+            </div>
           </div>
         ))}
       </div>
