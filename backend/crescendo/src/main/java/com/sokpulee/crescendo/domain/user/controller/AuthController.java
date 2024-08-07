@@ -92,7 +92,7 @@ public class AuthController {
                 .secure(true)
                 .path("/")
                 .maxAge(refreshTokenExpireTime)
-                .sameSite("Strict")
+                .sameSite("None")
                 .build();
 
         return ResponseEntity.status(OK)
