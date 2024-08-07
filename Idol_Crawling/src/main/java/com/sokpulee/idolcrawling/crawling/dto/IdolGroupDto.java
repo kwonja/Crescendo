@@ -1,9 +1,11 @@
 package com.sokpulee.idolcrawling.crawling.dto;
 
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.ToString;
 
-@Setter
+@AllArgsConstructor
+@Getter
 @ToString
 public class IdolGroupDto {
     private String name;
