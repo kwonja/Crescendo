@@ -8,16 +8,15 @@ import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtDetailResponse;
 import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtResponse;
 import com.sokpulee.crescendo.domain.fanart.dto.response.FavoriteFanArtResponse;
 import com.sokpulee.crescendo.domain.fanart.dto.response.MyFanArtResponse;
-import com.sokpulee.crescendo.domain.fanart.entity.FanArt;
-import com.sokpulee.crescendo.domain.fanart.entity.FanArtComment;
-import com.sokpulee.crescendo.domain.fanart.entity.FanArtImage;
-import com.sokpulee.crescendo.domain.fanart.entity.FanArtLike;
+import com.sokpulee.crescendo.domain.fanart.entity.*;
+import com.sokpulee.crescendo.domain.fanart.repository.FanArtCommentLikeRepository;
 import com.sokpulee.crescendo.domain.fanart.repository.FanArtCommentRepository;
 import com.sokpulee.crescendo.domain.fanart.repository.FanArtLikeRepository;
 import com.sokpulee.crescendo.domain.fanart.repository.FanArtRepository;
 import com.sokpulee.crescendo.domain.feed.dto.response.FeedDetailResponse;
 import com.sokpulee.crescendo.domain.feed.entity.Feed;
 import com.sokpulee.crescendo.domain.feed.entity.FeedComment;
+import com.sokpulee.crescendo.domain.feed.entity.FeedCommentLike;
 import com.sokpulee.crescendo.domain.feed.entity.FeedLike;
 import com.sokpulee.crescendo.domain.idol.entity.IdolGroup;
 import com.sokpulee.crescendo.domain.idol.repository.IdolGroupRepository;
@@ -47,8 +46,12 @@ public class FanArtServiceImpl implements FanArtService {
     private final FileSaveHelper fileSaveHelper;
 
     private final FanArtRepository fanArtRepository;
+
     private final FanArtCommentRepository fanArtCommentRepository;
+
     private final FanArtLikeRepository fanArtLikeRepository;
+
+    private final FanArtCommentLikeRepository fanArtCommentLikeRepository;
 
     @Override
     public void addFanArt(Long loggedInUserId, FanArtAddRequest fanArtAddRequest) {
@@ -201,6 +204,30 @@ public class FanArtServiceImpl implements FanArtService {
                     .build();
             fanArt.plusLikeCnt();
             fanArtLikeRepository.save(fanArtLike);
+        }
+    }
+
+    @Override
+    public void likeFanArtComment(Long loggedInUserId, Long fanArtCommentId) {
+        FanArtComment fanArtComment = fanArtCommentRepository.findById(fanArtCommentId)
+                .orElseThrow(FanArtCommentNotFoundException::new);
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        Optional<FanArtCommentLike> existingFanArtCommentLike = fanArtCommentLikeRepository.findByFanArtCommentAndUser(fanArtComment, user);
+
+
+        if (existingFanArtCommentLike.isPresent()) {
+            fanArtCommentLikeRepository.delete(existingFanArtCommentLike.get());
+            fanArtComment.minusLikeCnt();
+        } else {
+            FanArtCommentLike fanArtCommentLike = FanArtCommentLike.builder()
+                    .user(user)
+                    .fanArtComment(fanArtComment)
+                    .build();
+            fanArtComment.plusLikeCnt();
+            fanArtCommentLikeRepository.save(fanArtCommentLike);
         }
     }
 

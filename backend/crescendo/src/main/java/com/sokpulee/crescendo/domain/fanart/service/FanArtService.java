@@ -28,6 +28,8 @@ public interface FanArtService {
 
     void likeFanArt(Long loggedInUserId,Long fanArtId);
 
+    void likeFanArtComment(Long loggedInUserId,Long fanArtCommentId);
+
     Page<FanArtResponse> getFanArt(Long loggedInUserId, Long idolGroupId, Pageable pageable);
 
     Page<FavoriteFanArtResponse> getFavoriteFanArt(Long loggedInUserId,Pageable pageable);

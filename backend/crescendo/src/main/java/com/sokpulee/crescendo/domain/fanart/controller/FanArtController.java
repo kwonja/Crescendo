@@ -32,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequiredArgsConstructor
@@ -136,6 +137,9 @@ public class FanArtController {
         return ResponseEntity.status(CREATED).build();
     }
 
+
+
+
     @DeleteMapping("/{fan-art-id}/comment/{fan-art-comment-id}")
     @Operation(summary = "팬아트 댓글 및 답글 삭제", description = "팬아트 댓글 및 답글 삭제 API")
     public ResponseEntity<?> deleteGoodsComment(
@@ -234,6 +238,20 @@ public class FanArtController {
         Page<MyFanArtResponse> myFanArtResponses = fanArtService.getMyFanArt(loggedInUserId,pageable);
 
         return ResponseEntity.ok(myFanArtResponses);
+    }
+
+    @PostMapping("/fan-art-comment-like/{fan-art-comment-id}")
+    @Operation(summary = "팬아트 댓글 및 답글 좋아요 & 좋아요 삭제", description = "팬아트 댓글 및 답글 좋아요 & 좋아요 삭제 API")
+    public ResponseEntity<?> likeFanArtComment(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("fan-art-comment-id") Long fanArtCommentId
+    ){
+        if (loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+        fanArtService.likeFanArtComment(loggedInUserId,fanArtCommentId);
+
+        return ResponseEntity.status(OK).build();
     }
 
 }
