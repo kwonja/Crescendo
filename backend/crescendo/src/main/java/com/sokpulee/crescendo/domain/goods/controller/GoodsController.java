@@ -1,5 +1,6 @@
 package com.sokpulee.crescendo.domain.goods.controller;
 
+import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtResponse;
 import com.sokpulee.crescendo.domain.fanart.dto.response.FavoriteFanArtResponse;
 import com.sokpulee.crescendo.domain.fanart.dto.response.MyFanArtResponse;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsAddRequest;
@@ -7,6 +8,7 @@ import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsUpdateRequest;
 import com.sokpulee.crescendo.domain.goods.dto.response.FavoriteGoodsResponse;
+import com.sokpulee.crescendo.domain.goods.dto.response.GoodsResponse;
 import com.sokpulee.crescendo.domain.goods.dto.response.MyGoodsResponse;
 import com.sokpulee.crescendo.domain.goods.service.GoodsService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
@@ -199,6 +201,21 @@ public class GoodsController {
         Page<MyGoodsResponse> myGoodsResponses = goodsService.getMyGoods(loggedInUserId,pageable);
 
         return ResponseEntity.ok(myGoodsResponses);
+    }
+
+    @GetMapping
+    @Operation(summary = "굿즈 조회", description = "굿즈 조회 API")
+    public ResponseEntity<Page<GoodsResponse>> getGoods(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @RequestParam("idol-group-id") Long idolGroupId,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<GoodsResponse> goodsResponses = goodsService.getGoods(loggedInUserId,idolGroupId,pageable);
+
+        return ResponseEntity.ok(goodsResponses);
     }
 
 

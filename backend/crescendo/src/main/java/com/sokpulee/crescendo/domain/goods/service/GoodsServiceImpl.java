@@ -8,6 +8,7 @@ import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsUpdateRequest;
 import com.sokpulee.crescendo.domain.goods.dto.response.FavoriteGoodsResponse;
+import com.sokpulee.crescendo.domain.goods.dto.response.GoodsResponse;
 import com.sokpulee.crescendo.domain.goods.dto.response.MyGoodsResponse;
 import com.sokpulee.crescendo.domain.goods.entity.Goods;
 import com.sokpulee.crescendo.domain.goods.entity.GoodsComment;
@@ -210,6 +211,11 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public Page<MyGoodsResponse> getMyGoods(Long loggedInUserId, Pageable pageable) {
         return goodsRepository.findMyGoods(loggedInUserId,pageable);
+    }
+
+    @Override
+    public Page<GoodsResponse> getGoods(Long loggedInUserId, Long idolGroupId, Pageable pageable) {
+        return goodsRepository.findGoods(loggedInUserId,idolGroupId,pageable);
     }
 
     @Override

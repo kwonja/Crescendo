@@ -8,10 +8,6 @@ import com.sokpulee.crescendo.domain.fanart.entity.FanArt;
 import com.sokpulee.crescendo.domain.fanart.entity.QFanArt;
 import com.sokpulee.crescendo.domain.fanart.entity.QFanArtImage;
 import com.sokpulee.crescendo.domain.fanart.entity.QFanArtLike;
-import com.sokpulee.crescendo.domain.feed.dto.response.FavoriteFeedResponse;
-import com.sokpulee.crescendo.domain.feed.dto.response.FeedResponse;
-import com.sokpulee.crescendo.domain.feed.dto.response.MyFeedResponse;
-import com.sokpulee.crescendo.domain.feed.entity.*;
 import com.sokpulee.crescendo.domain.idol.entity.QIdolGroup;
 import com.sokpulee.crescendo.domain.user.entity.QUser;
 import jakarta.persistence.EntityManager;
@@ -22,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class FanArtCustomRepositoryImpl implements FanArtCustomRepository{
     private final JPAQueryFactory queryFactory;
