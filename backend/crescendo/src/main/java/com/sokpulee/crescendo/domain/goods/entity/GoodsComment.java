@@ -31,15 +31,29 @@ public class GoodsComment extends TimeStampedEntity {
     @Column(length = 200)
     private String content;
 
+    private int likeCnt;
+
+    private int replyCnt;
+
     @Builder
-    public GoodsComment(Goods goods, User user, String content, GoodsComment parentGoodsComment) {
+    public GoodsComment(Goods goods, User user, String content, GoodsComment parentGoodsComment, int likeCnt, int replyCnt) {
         this.goods = goods;
         this.user = user;
         this.content = content;
         this.parentGoodsComment = parentGoodsComment;
+        this.likeCnt = likeCnt;
+        this.replyCnt = replyCnt;
     }
 
     public void changeComment(String content){
         this.content = content;
     }
+
+    public void minusLikeCnt(){ likeCnt--; }
+
+    public void plusLikeCnt(){ likeCnt++; }
+
+    public void plusReplyCnt(){ replyCnt++; }
+
+    public void minusReplyCnt(){ replyCnt--; }
 }

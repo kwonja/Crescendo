@@ -1,9 +1,11 @@
 package com.sokpulee.crescendo.domain.goods.controller;
 
+import com.sokpulee.crescendo.domain.fanart.dto.response.FavoriteFanArtResponse;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsUpdateRequest;
+import com.sokpulee.crescendo.domain.goods.dto.response.FavoriteGoodsResponse;
 import com.sokpulee.crescendo.domain.goods.service.GoodsService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
@@ -12,6 +14,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequiredArgsConstructor
@@ -141,6 +147,39 @@ public class GoodsController {
         goodsService.addGoodsReply(loggedInUserId,goodsId,goodsCommentId,goodsReplyAddRequest);
 
         return ResponseEntity.status(CREATED).build();
+    }
+
+    @PostMapping("/goods-like/{goods-id}")
+    @Operation(summary = "굿즈 좋아요 및 좋아요 삭제", description = "굿즈 좋아요 및 좋아요 삭제 API")
+    public ResponseEntity<?> likeGoods(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("goods-id") Long goodsId
+    ){
+        if(loggedInUserId == null){
+            throw new AuthenticationRequiredException();
+        }
+
+        goodsService.likeGoods(loggedInUserId,goodsId);
+
+        return ResponseEntity.status(OK).build();
+    }
+
+    @GetMapping("/favorite")
+    @Operation(summary = "좋아요한 굿즈 조회", description = "좋아요한 굿즈 조회 API")
+    public ResponseEntity<Page<FavoriteGoodsResponse>> favoriteGoods(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        if(loggedInUserId == null){
+            throw new AuthenticationRequiredException();
+        }
+
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<FavoriteGoodsResponse> favoriteGoodsResponses = goodsService.getFavoriteGoods(loggedInUserId,pageable);
+
+        return ResponseEntity.ok(favoriteGoodsResponses);
     }
 
 
