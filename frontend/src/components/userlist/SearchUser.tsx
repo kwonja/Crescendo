@@ -39,7 +39,7 @@ export default function SearchUser({ handleMode }: SearchProps) {
     setInputValue(e.target.value);
     debounceHandler(e.target.value);
   };
-  const debounceHandler = useMemo(  ()=> DeBounce( (input) => getUserList(input), 500),[]);
+  const debounceHandler = useMemo(() => DeBounce(input => getUserList(input), 500), []);
 
   const handleClick = async (list: user, e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
