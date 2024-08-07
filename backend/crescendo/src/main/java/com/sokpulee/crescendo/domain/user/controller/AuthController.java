@@ -96,12 +96,12 @@ public class AuthController {
     @PostMapping("/refresh-token")
     @Operation(summary = "AccessToken 재발급", description = "AccessToken 재발급 API")
     public ResponseEntity<?> refreshAccessToken(@CookieValue(value = "refreshToken", required = false) String refreshToken) {
-
-        if (refreshToken == null || !jwtUtil.checkToken(refreshToken)) {
+        
+        if (refreshToken == null || !jwtUtil.checkRefreshToken(refreshToken)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
         }
 
-        Long userId = jwtUtil.getUserId(refreshToken);
+        Long userId = jwtUtil.getUserIdByRefreshToken(refreshToken);
         if (userId == null || !authService.isRefreshTokenValid(userId, refreshToken)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
         }
