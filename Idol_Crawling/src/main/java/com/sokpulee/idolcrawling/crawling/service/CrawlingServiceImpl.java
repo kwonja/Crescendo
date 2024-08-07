@@ -84,7 +84,7 @@ public class CrawlingServiceImpl implements CrawlingService {
     }
 
     @Override
-    public List<IdolGroupDto> getIdolGroupList(String param, String groupTag, String nameTag) throws Exception {
+    public List<IdolGroupDto> getIdolGroupList(String param, String groupTag, String nameTag, String gender) throws Exception {
         List<IdolGroupDto> idolGroupDtoList = new ArrayList<>();
 
         try {
@@ -97,7 +97,7 @@ public class CrawlingServiceImpl implements CrawlingService {
                     String imgUrl = getImgUrl(rows);
                     List<String> memberParamList = getMemberParamList(rows);
                     if (memberParamList == null) continue;
-                    idolGroupDtoList.add(new IdolGroupDto(name, memberParamList.size(), name, imgUrl, imgUrl, memberParamList));
+                    idolGroupDtoList.add(new IdolGroupDto(name, memberParamList.size(), name, imgUrl, imgUrl, gender, memberParamList));
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -110,7 +110,7 @@ public class CrawlingServiceImpl implements CrawlingService {
     }
 
     @Override
-    public List<IdolDto> getIdolMemberList(List<IdolGroupDto> idolGroupDtoList, String nameTag, String gender) throws Exception {
+    public List<IdolDto> getIdolMemberList(List<IdolGroupDto> idolGroupDtoList, String nameTag) throws Exception {
         List<IdolDto> idolDtoList = new ArrayList<>();
 
         for (IdolGroupDto idolGroupDto : idolGroupDtoList) {
@@ -119,7 +119,7 @@ public class CrawlingServiceImpl implements CrawlingService {
                     Elements rows = getInfoTableRows(memberParam);
                     String name = getName(rows, nameTag);
                     String imgUrl = getImgUrl(rows);
-                    idolDtoList.add(new IdolDto(idolGroupDto.getName(), name, gender, imgUrl, imgUrl));
+                    idolDtoList.add(new IdolDto(idolGroupDto.getName(), name, idolGroupDto.getGender(), imgUrl, imgUrl));
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }

@@ -22,8 +22,8 @@ public interface CrawlingService {
 
     List<String> getMemberParamList(Elements rows) throws Exception;
 
-    List<IdolGroupDto> getIdolGroupList(String param, String groupTag, String nameTag) throws Exception;
+    List<IdolGroupDto> getIdolGroupList(String param, String groupTag, String nameTag, String gender) throws Exception;
 
-    List<IdolDto> getIdolMemberList(List<IdolGroupDto> idolGroupDtoList, String nameTag, String gender) throws Exception;
-
+    List<IdolDto> getIdolMemberList(List<IdolGroupDto> idolGroupDtoList, String nameTag) throws Exception;
+    
 }

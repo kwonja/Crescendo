@@ -15,5 +15,6 @@ public class IdolGroupDto {
     private String introduction;
     private String profile;
     private String banner;
+    private String gender;
     private List<String> memberParamList;
 }
