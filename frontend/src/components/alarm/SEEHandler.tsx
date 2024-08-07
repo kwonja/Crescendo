@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, } from 'react'
 import { BASE_URL, getUserId } from '../../apis/core';
-import { useAppSelector } from '../../store/hooks/hook';
+import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
+import { incrementUnRead } from '../../features/alarm/alarmSlice';
 
 export default function SEEHandler() {
-    
+   const dispatch = useAppDispatch();
     // const [notifications, setNotifications] = useState<Notification[]>([]);
     // const [unreadCount, setUnreadCount] = useState<number>(0);
     const {isLoggedIn} =  useAppSelector( (state)=> state.auth)
@@ -22,9 +23,7 @@ export default function SEEHandler() {
           sse.current.addEventListener('alarm', (e: Event) => {
             const { data } = e as MessageEvent;
             console.log(data);
-            // const notification: Notification = JSON.parse(data);
-            // setNotifications((prevNotifications) => [...prevNotifications, notification]);
-            // setUnreadCount((prevCount) => prevCount + 1);
+            dispatch(incrementUnRead());
           });
     
           sse.current.onerror = () => {
@@ -44,7 +43,7 @@ export default function SEEHandler() {
         return () => {
           sse.current?.close();
         };
-      }, [isLoggedIn]);
+      }, [isLoggedIn,dispatch]);
 
   
     return (

@@ -80,7 +80,6 @@ export default function Chatroom() {
       if (client.current) {
         client.current.disconnect(() => {
           dispatch(initialMessage());
-          // console.log('Disconnected');
         });
       }
     };

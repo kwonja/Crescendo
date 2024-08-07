@@ -28,7 +28,7 @@ export default function ChatRoomListItem({ room, HandleClick }: ChatRoomItemProp
       )}
       <div className="content w-8/12">
         <div className="nickname">{opponentNickName}</div>
-        <div className="lastchat ">{lastChatting}</div>
+        <div className="lastchat">{lastChatting}</div>
       </div>
 
       <div className="lastchattime">{timeAgo(lastChattingTime)}</div>

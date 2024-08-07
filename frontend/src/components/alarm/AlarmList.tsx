@@ -1,7 +1,23 @@
 import React from 'react'
+import { useAppSelector } from '../../store/hooks/hook'
+import AlarmListItem from './AlarmListItem'
 
 export default function AlarmList() {
+  
+  const {alramList} = useAppSelector( (state)=> state.alarm)
   return (
-    <div>AlarmList</div>
+    <>
+      {
+        alramList.map((item, index) => (
+          <div 
+          key={item.alarmId}
+          className='w-full'
+          >
+          
+            <AlarmListItem alarm={item}/>
+          </div>
+        ))
+      }
+    </>
   )
 }

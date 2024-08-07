@@ -6,6 +6,8 @@ import followerReducer from '../features/follow/followerSlice';
 import followingReducer from '../features/follow/followingSlice';
 import chatroomReducer from '../features/chat/chatroomSlice';
 import messagesReducer from '../features/chat/messageSlice';
+import alarmReducer from '../features/alarm/alarmSlice';
+
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +18,7 @@ export const store = configureStore({
     following: followingReducer,
     chatroom: chatroomReducer,
     message: messagesReducer,
+    alarm: alarmReducer,
   },
 });
 
