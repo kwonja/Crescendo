@@ -5,10 +5,7 @@ import com.sokpulee.crescendo.domain.fanart.entity.FanArt;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArtComment;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArtCommentLike;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArtLike;
-import com.sokpulee.crescendo.domain.goods.dto.request.GoodsAddRequest;
-import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentAddRequest;
-import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentUpdateRequest;
-import com.sokpulee.crescendo.domain.goods.dto.request.GoodsUpdateRequest;
+import com.sokpulee.crescendo.domain.goods.dto.request.*;
 import com.sokpulee.crescendo.domain.goods.dto.response.*;
 import com.sokpulee.crescendo.domain.goods.entity.*;
 import com.sokpulee.crescendo.domain.goods.repository.GoodsCommentLikeRepository;
@@ -235,8 +232,8 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public Page<GoodsResponse> getGoods(Long loggedInUserId, Long idolGroupId, Pageable pageable) {
-        return goodsRepository.findGoods(loggedInUserId,idolGroupId,pageable);
+    public Page<GoodsResponse> getGoods(Long loggedInUserId, Long idolGroupId, Pageable pageable, GoodsSearchCondition condition) {
+        return goodsRepository.findGoods(loggedInUserId,idolGroupId,pageable,condition);
     }
 
     @Override

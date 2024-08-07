@@ -1,6 +1,8 @@
 package com.sokpulee.crescendo.domain.goods.repository;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.sokpulee.crescendo.domain.goods.dto.request.GoodsSearchCondition;
 import com.sokpulee.crescendo.domain.goods.dto.response.FavoriteGoodsResponse;
 import com.sokpulee.crescendo.domain.goods.dto.response.GoodsResponse;
 import com.sokpulee.crescendo.domain.goods.dto.response.MyGoodsResponse;
@@ -149,19 +151,35 @@ public class GoodsCustomRepositoryImpl implements GoodsCustomRepository{
     }
 
     @Override
-    public Page<GoodsResponse> findGoods(Long loggedInUserId, Long idolGroupId, Pageable pageable) {
+    public Page<GoodsResponse> findGoods(Long loggedInUserId, Long idolGroupId, Pageable pageable, GoodsSearchCondition condition) {
 
         QGoods goods = QGoods.goods;
         QUser user = QUser.user;
         QGoodsImage goodsImage = QGoodsImage.goodsImage;
         QGoodsLike goodsLike = QGoodsLike.goodsLike;
 
+        // 검색 조건 추가
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        booleanBuilder.and(goods.idolGroup.id.eq(idolGroupId));
+
+        if (condition != null) {
+            if (condition.getTitle() != null && !condition.getTitle().isEmpty()) {
+                booleanBuilder.and(goods.title.containsIgnoreCase(condition.getTitle()));
+            }
+            if (condition.getNickname() != null && !condition.getNickname().isEmpty()) {
+                booleanBuilder.and(user.nickname.containsIgnoreCase(condition.getNickname()));
+            }
+            if (condition.getContent() != null && !condition.getContent().isEmpty()) {
+                booleanBuilder.and(goods.content.containsIgnoreCase(condition.getContent()));
+            }
+        }
+
 
         // 페이징 및 기본 정보 조회
         List<Goods> goodsList = queryFactory
                 .selectFrom(goods)
                 .leftJoin(goods.user,user).fetchJoin()
-                .where(goods.idolGroup.id.eq(idolGroupId))
+                .where(booleanBuilder)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .distinct()
@@ -200,7 +218,7 @@ public class GoodsCustomRepositoryImpl implements GoodsCustomRepository{
         Long total = Optional.ofNullable(queryFactory
                 .select(goods.count())
                 .from(goods)
-                .where(goods.idolGroup.id.eq(idolGroupId))
+                .where(booleanBuilder)
                 .fetchOne()).orElse(0L);
 
         return new PageImpl<>(goodsResponses, pageable, total);

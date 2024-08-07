@@ -1,9 +1,6 @@
 package com.sokpulee.crescendo.domain.feed.service;
 
-import com.sokpulee.crescendo.domain.feed.dto.request.FeedAddRequest;
-import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentAddRequest;
-import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentUpdateRequest;
-import com.sokpulee.crescendo.domain.feed.dto.request.FeedUpdateRequest;
+import com.sokpulee.crescendo.domain.feed.dto.request.*;
 import com.sokpulee.crescendo.domain.feed.dto.response.*;
 import com.sokpulee.crescendo.domain.feed.entity.*;
 import com.sokpulee.crescendo.domain.feed.repository.*;
@@ -213,8 +210,8 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
-    public Page<FeedResponse> getFeed(Long loggedInUserId, Long idolGroupId, Pageable pageable) {
-        return feedRepository.findFeeds(loggedInUserId, idolGroupId, pageable);
+    public Page<FeedResponse> getFeed(Long loggedInUserId, Long idolGroupId, Pageable pageable, FeedSearchCondition condition) {
+        return feedRepository.findFeeds(loggedInUserId, idolGroupId, pageable, condition);
     }
 
     @Override

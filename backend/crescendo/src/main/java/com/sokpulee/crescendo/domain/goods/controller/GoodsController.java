@@ -1,9 +1,7 @@
 package com.sokpulee.crescendo.domain.goods.controller;
 
-import com.sokpulee.crescendo.domain.goods.dto.request.GoodsAddRequest;
-import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentAddRequest;
-import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentUpdateRequest;
-import com.sokpulee.crescendo.domain.goods.dto.request.GoodsUpdateRequest;
+import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtSearchCondition;
+import com.sokpulee.crescendo.domain.goods.dto.request.*;
 import com.sokpulee.crescendo.domain.goods.dto.response.*;
 import com.sokpulee.crescendo.domain.goods.service.GoodsService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
@@ -204,11 +202,20 @@ public class GoodsController {
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
             @RequestParam("idol-group-id") Long idolGroupId,
             @RequestParam int page,
-            @RequestParam int size
+            @RequestParam int size,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String nickname,
+            @RequestParam(required = false) String content
     ){
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<GoodsResponse> goodsResponses = goodsService.getGoods(loggedInUserId,idolGroupId,pageable);
+        GoodsSearchCondition condition = GoodsSearchCondition.builder()
+                .title(title)
+                .nickname(nickname)
+                .content(content)
+                .build();
+
+        Page<GoodsResponse> goodsResponses = goodsService.getGoods(loggedInUserId,idolGroupId,pageable,condition);
 
         return ResponseEntity.ok(goodsResponses);
     }
