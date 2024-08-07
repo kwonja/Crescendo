@@ -1,12 +1,12 @@
-package com.sokpulee.crescendo.domain.feed.dto.response;
+package com.sokpulee.crescendo.domain.fanart.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 @Getter
-public class FeedCommentResponse {
+public class FanArtCommentResponse {
 
-    private Long feedCommentId;
+    private Long fanArtCommentId;
 
     private Long userId;
 
@@ -23,9 +23,8 @@ public class FeedCommentResponse {
 
     private int replyCnt;
 
-
-    public FeedCommentResponse(Long feedCommentId,Long userId, String profileImagePath, String nickname, int likeCnt, boolean isLike, String content, int replyCnt) {
-        this.feedCommentId = feedCommentId;
+    public FanArtCommentResponse(Long fanArtCommentId, Long userId, String profileImagePath, String nickname, int likeCnt, boolean isLike, String content, int replyCnt) {
+        this.fanArtCommentId = fanArtCommentId;
         this.userId = userId;
         this.profileImagePath = profileImagePath;
         this.nickname = nickname;

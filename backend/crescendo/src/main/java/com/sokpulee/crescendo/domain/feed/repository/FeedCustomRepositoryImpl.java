@@ -1,7 +1,6 @@
 package com.sokpulee.crescendo.domain.feed.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.sokpulee.crescendo.domain.feed.dto.response.FavoriteFeedResponse;
 import com.sokpulee.crescendo.domain.feed.dto.response.FeedResponse;
 import com.sokpulee.crescendo.domain.feed.dto.response.MyFeedResponse;

@@ -37,7 +37,6 @@ public class FeedController {
     @Operation(summary = "피드 글쓰기", description = "피드 글쓰기 API")
     public ResponseEntity<?> addFeed(
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
-            @RequestParam String title,
             @RequestParam String content,
             @RequestParam(required = false) List<MultipartFile> imageList,
             @RequestParam(required = false) List<String> tagList,
@@ -47,7 +46,7 @@ public class FeedController {
             throw new AuthenticationRequiredException();
         }
 
-        FeedAddRequest feedAddRequest = new FeedAddRequest(title,content,imageList,tagList,idolGroupId);
+        FeedAddRequest feedAddRequest = new FeedAddRequest(content,imageList,tagList,idolGroupId);
 
         feedService.addFeed(loggedInUserId, feedAddRequest);
 
