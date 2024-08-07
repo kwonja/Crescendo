@@ -2,13 +2,12 @@ import React from 'react';
 import { user } from '../../interface/user';
 import { IMAGE_BASE_URL } from '../../apis/core';
 
-
 interface UserProps {
   user: user;
 }
 
 export default function FriendProfile({ user }: UserProps) {
-  const { nickname, userProfilePath} = user;
+  const { nickname, userProfilePath } = user;
 
   return (
     <div className="friendprofile">

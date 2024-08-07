@@ -82,16 +82,15 @@ export default function SearchUser({ handleMode }: SearchProps) {
     );
   };
 
-  const HandleFollowClick = async(userId : number)=>{
-    try{
+  const HandleFollowClick = async (userId: number) => {
+    try {
       const response = await followAPI(userId);
       console.log(response);
-      alert("팔로우가 되었습니다");
-    }catch(err : unknown){
+      alert('팔로우가 되었습니다');
+    } catch (err: unknown) {
       console.log(err);
     }
-
-  }
+  };
 
   return (
     <div className="searchuser">
@@ -103,10 +102,16 @@ export default function SearchUser({ handleMode }: SearchProps) {
             className="w-11/12 flex flex-row align-center justgap-2 p-2.5 border-b-2 border-white mx-auto"
             key={list.userId}
           >
-            <div><FriendProfile user={list}/></div>
-            <div className='flex flex-col gap-0.5 ml-auto mr-5 justify-center'>
-            <div className="cursor-pointer" onClick={ (e) => handleChatClick(list, e)}>채팅</div>
-            <div className="cursor-pointer" onClick={ () => HandleFollowClick(list.userId)}>팔로우</div>
+            <div>
+              <FriendProfile user={list} />
+            </div>
+            <div className="flex flex-col gap-0.5 ml-auto mr-5 justify-center">
+              <div className="cursor-pointer" onClick={e => handleChatClick(list, e)}>
+                채팅
+              </div>
+              <div className="cursor-pointer" onClick={() => HandleFollowClick(list.userId)}>
+                팔로우
+              </div>
             </div>
           </div>
         ))}

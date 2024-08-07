@@ -7,12 +7,14 @@ import LoginHeader from './components/header/LoginHeader';
 
 import { ToastContainer, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import SEEHandler from './components/alarm/SEEHandler';
 
 export default function App() {
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
   return (
     <>
       {isLoggedIn ? <LoginHeader /> : <NotLoginHeader />}
+      <SEEHandler/>
       <Outlet />
       <ToastContainer
         position="top-center"

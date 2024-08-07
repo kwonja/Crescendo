@@ -9,7 +9,7 @@ import ChatLayout from '../chat/ChatLayout';
 import Chatroom from '../chat/ChatRoom';
 import { useAppSelector } from '../../store/hooks/hook';
 import SearchUser from '../userlist/SearchUser';
-import AlarmLayout from '../alaram/AlarmLayout';
+import AlarmLayout from '../alarm/AlarmLayout';
 
 export type ModeState = 'chat' | 'alarm' | 'userlist' | 'user' | '';
 
