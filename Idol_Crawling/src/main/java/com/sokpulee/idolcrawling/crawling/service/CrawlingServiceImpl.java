@@ -35,7 +35,6 @@ public class CrawlingServiceImpl implements CrawlingService {
                 Element row = rows.get(i);
                 idolGroupParamList.add(row.select(tag).attr("href"));
             }
-
         }
 
         return idolGroupParamList;
@@ -61,11 +60,9 @@ public class CrawlingServiceImpl implements CrawlingService {
 
     @Override
     public List<String> getMemberParamList(Elements rows) throws Exception {
-        List<String> memberParamList = new ArrayList<>();
         int memberIdx = getMemberIdx(rows);
-
         if (memberIdx == 0) return null;
-
+        List<String> memberParamList = new ArrayList<>();
         Elements members = rows.get(memberIdx).select("td").select("a");
 
         for (Element member : members) {
