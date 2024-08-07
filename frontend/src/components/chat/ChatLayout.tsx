@@ -26,35 +26,34 @@ export default function ChatLayout() {
     return () => promise.abort();
   }, [dispatch]);
 
-   // WebSocket 연결 설정
-   useEffect(() => {
+  // WebSocket 연결 설정
+  useEffect(() => {
     client.current = Stomp.over(() => new SockJS(`${BASE_URL}/ws`));
 
     client.current.connect(
       {},
       (frame: string) => {
-
         // 모든 채팅방에 대한 구독 설정
         chatRoomList.forEach(room => {
           client.current?.subscribe(`/topic/messages/${room.dmGroupId}`, content => {
-            
             const newMessage: Message = JSON.parse(content.body);
-            if(newMessage.writerId !== getUserId()){
-              console.log(newMessage)
-              dispatch(setLastChatting({
-                dmGroupId: room.dmGroupId,
-                opponentId: newMessage.writerId,
-                opponentProfilePath: newMessage.writerProfilePath,
-                opponentNickName: newMessage.writerNickName,
-                lastChatting: newMessage.message,
-                lastChattingTime: newMessage.createdAt,
-              }));
+            if (newMessage.writerId !== getUserId()) {
+              console.log(newMessage);
+              dispatch(
+                setLastChatting({
+                  dmGroupId: room.dmGroupId,
+                  opponentId: newMessage.writerId,
+                  opponentProfilePath: newMessage.writerProfilePath,
+                  opponentNickName: newMessage.writerNickName,
+                  lastChatting: newMessage.message,
+                  lastChattingTime: newMessage.createdAt,
+                }),
+              );
             }
           });
         });
       },
-      (error: any) => {
-      },
+      (error: any) => {},
     );
 
     return () => {
