@@ -1,4 +1,4 @@
-package com.sokpulee.crescendo.domain.fanart.dto.response;
+package com.sokpulee.crescendo.domain.goods.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -7,9 +7,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-public class MyFanArtResponse {
-
-    private Long fanArtId;
+public class FavoriteGoodsResponse {
+    private Long goodsId;
 
     private Long userId;
 
@@ -26,7 +25,7 @@ public class MyFanArtResponse {
     @JsonProperty("isLike")
     private boolean isLike;
 
-    private List<String> fanArtImagePathList;
+    private List<String> goodsImagePathList;
 
     private String content;
 
@@ -34,8 +33,8 @@ public class MyFanArtResponse {
 
     private String title;
 
-    public MyFanArtResponse(Long fanArtId, Long userId, String profileImagePath, String nickname, LocalDateTime createdAt, LocalDateTime lastModified, int likeCnt, boolean isLike, List<String> fanArtImagePathList, String content, int commentCnt, String title) {
-        this.fanArtId = fanArtId;
+    public FavoriteGoodsResponse(Long goodsId, Long userId, String profileImagePath, String nickname, LocalDateTime createdAt, LocalDateTime lastModified, int likeCnt, boolean isLike, List<String> goodsImagePathList, String content, int commentCnt, String title) {
+        this.goodsId = goodsId;
         this.userId = userId;
         this.profileImagePath = profileImagePath;
         this.nickname = nickname;
@@ -43,7 +42,7 @@ public class MyFanArtResponse {
         this.lastModified = lastModified;
         this.likeCnt = likeCnt;
         this.isLike = isLike;
-        this.fanArtImagePathList = fanArtImagePathList;
+        this.goodsImagePathList = goodsImagePathList;
         this.content = content;
         this.commentCnt = commentCnt;
         this.title = title;

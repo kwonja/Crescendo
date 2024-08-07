@@ -1,4 +1,4 @@
-package com.sokpulee.crescendo.domain.fanart.dto.response;
+package com.sokpulee.crescendo.domain.goods.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-public class MyFanArtResponse {
+public class MyGoodsResponse {
 
     private Long fanArtId;
 
@@ -34,7 +34,7 @@ public class MyFanArtResponse {
 
     private String title;
 
-    public MyFanArtResponse(Long fanArtId, Long userId, String profileImagePath, String nickname, LocalDateTime createdAt, LocalDateTime lastModified, int likeCnt, boolean isLike, List<String> fanArtImagePathList, String content, int commentCnt, String title) {
+    public MyGoodsResponse(Long fanArtId, Long userId, String profileImagePath, String nickname, LocalDateTime createdAt, LocalDateTime lastModified, int likeCnt, boolean isLike, List<String> fanArtImagePathList, String content, int commentCnt, String title) {
         this.fanArtId = fanArtId;
         this.userId = userId;
         this.profileImagePath = profileImagePath;

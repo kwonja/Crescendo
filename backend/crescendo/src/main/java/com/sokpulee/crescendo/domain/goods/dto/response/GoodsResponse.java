@@ -1,15 +1,14 @@
-package com.sokpulee.crescendo.domain.fanart.dto.response;
+package com.sokpulee.crescendo.domain.goods.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 @Getter
-public class MyFanArtResponse {
+public class GoodsResponse {
 
-    private Long fanArtId;
+    private Long goodsId;
 
     private Long userId;
 
@@ -17,35 +16,35 @@ public class MyFanArtResponse {
 
     private String nickname;
 
-    private LocalDateTime createdAt;
-
-    private LocalDateTime lastModified;
-
     private int likeCnt;
 
     @JsonProperty("isLike")
     private boolean isLike;
 
-    private List<String> fanArtImagePathList;
+    private List<String> goodsImagePathList;
 
     private String content;
 
     private int commentCnt;
 
+    private LocalDateTime createdAt;
+
+    private LocalDateTime lastModified;
+
     private String title;
 
-    public MyFanArtResponse(Long fanArtId, Long userId, String profileImagePath, String nickname, LocalDateTime createdAt, LocalDateTime lastModified, int likeCnt, boolean isLike, List<String> fanArtImagePathList, String content, int commentCnt, String title) {
-        this.fanArtId = fanArtId;
+    public GoodsResponse(Long goodsId, Long userId, String profileImagePath, String nickname, int likeCnt, boolean isLike, List<String> goodsImagePathList, String content, int commentCnt, LocalDateTime createdAt, LocalDateTime lastModified, String title) {
+        this.goodsId = goodsId;
         this.userId = userId;
         this.profileImagePath = profileImagePath;
         this.nickname = nickname;
-        this.createdAt = createdAt;
-        this.lastModified = lastModified;
         this.likeCnt = likeCnt;
         this.isLike = isLike;
-        this.fanArtImagePathList = fanArtImagePathList;
+        this.goodsImagePathList = goodsImagePathList;
         this.content = content;
         this.commentCnt = commentCnt;
+        this.createdAt = createdAt;
+        this.lastModified = lastModified;
         this.title = title;
     }
 }
