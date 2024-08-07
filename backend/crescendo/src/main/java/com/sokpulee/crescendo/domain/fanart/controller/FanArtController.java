@@ -7,10 +7,12 @@ import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtUpdateRequest;
 import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtDetailResponse;
 import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtResponse;
 import com.sokpulee.crescendo.domain.fanart.dto.response.FavoriteFanArtResponse;
+import com.sokpulee.crescendo.domain.fanart.dto.response.MyFanArtResponse;
 import com.sokpulee.crescendo.domain.fanart.service.FanArtService;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedAddRequest;
 import com.sokpulee.crescendo.domain.feed.dto.response.FavoriteFeedResponse;
 import com.sokpulee.crescendo.domain.feed.dto.response.FeedDetailResponse;
+import com.sokpulee.crescendo.domain.feed.dto.response.MyFeedResponse;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentUpdateRequest;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
@@ -215,6 +217,23 @@ public class FanArtController {
         Page<FavoriteFanArtResponse> favoriteFanArtResponses = fanArtService.getFavoriteFanArt(loggedInUserId,pageable);
 
         return ResponseEntity.ok(favoriteFanArtResponses);
+    }
+
+    @GetMapping("/my-fan-art")
+    @Operation(summary = "내가 쓴 팬아트", description = "내가 쓴 팬아트 API")
+    public ResponseEntity<Page<MyFanArtResponse>> getMyFanArt(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        if(loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<MyFanArtResponse> myFanArtResponses = fanArtService.getMyFanArt(loggedInUserId,pageable);
+
+        return ResponseEntity.ok(myFanArtResponses);
     }
 
 }
