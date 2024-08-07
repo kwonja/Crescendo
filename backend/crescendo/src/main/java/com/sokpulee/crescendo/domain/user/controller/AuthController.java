@@ -125,7 +125,7 @@ public class AuthController {
         }
 
         String newAccessToken = jwtUtil.createAccessToken(userId);
-        
+
         return ResponseEntity.status(OK)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + newAccessToken)
                 .build();
@@ -134,11 +134,11 @@ public class AuthController {
     @PostMapping("/logout")
     @Operation(summary = "로그아웃", description = "로그아웃 API")
     public ResponseEntity<?> logout(@CookieValue(value = "refreshToken", required = false) String refreshToken) {
-        if (refreshToken == null || !jwtUtil.checkToken(refreshToken)) {
+        if (refreshToken == null || !jwtUtil.checkRefreshToken(refreshToken)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
         }
 
-        Long userId = jwtUtil.getUserId(refreshToken);
+        Long userId = jwtUtil.getUserIdByRefreshToken(refreshToken);
         if (userId != null) {
             authService.deleteRefreshToken(userId);
         }
