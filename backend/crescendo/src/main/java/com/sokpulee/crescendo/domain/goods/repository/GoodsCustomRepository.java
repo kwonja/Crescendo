@@ -1,5 +1,6 @@
 package com.sokpulee.crescendo.domain.goods.repository;
 
+import com.sokpulee.crescendo.domain.goods.dto.request.GoodsSearchCondition;
 import com.sokpulee.crescendo.domain.goods.dto.response.FavoriteGoodsResponse;
 import com.sokpulee.crescendo.domain.goods.dto.response.GoodsResponse;
 import com.sokpulee.crescendo.domain.goods.dto.response.MyGoodsResponse;
@@ -11,5 +12,5 @@ public interface GoodsCustomRepository {
 
     Page<MyGoodsResponse> findMyGoods(Long loggedInUserId,Pageable pageable);
 
-    Page<GoodsResponse> findGoods(Long loggedInUserId, Long idolGroupId, Pageable pageable);
+    Page<GoodsResponse> findGoods(Long loggedInUserId, Long idolGroupId, Pageable pageable, GoodsSearchCondition condition);
 }
