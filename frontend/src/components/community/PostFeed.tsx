@@ -66,15 +66,16 @@ const FeedForm = () => {
     e.preventDefault();
 
     const formData = new FormData();
+    formData.append('title', '임시 제목'); // 임시 제목 추가
     formData.append('content', content);
     images.forEach(image => formData.append('imageList', image.file));
     tags.forEach(tag => formData.append('tagList', tag));
     formData.append('idolGroupId', idolGroupId ?? '');
 
     // 데이터 확인용 로그 출력
-    // for (let pair of formData.entries()) {
-    //   console.log(pair[0] + ': ' + pair[1]);
-    // }
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ': ' + pair[1]);
+    }
 
     try {
       const response = await Authapi.post('/api/v1/community/feed', formData, {
@@ -87,6 +88,7 @@ const FeedForm = () => {
       }
     } catch (error) {
       alert('피드 작성에 실패했습니다.');
+      console.error(error);
     }
   };
 
@@ -178,11 +180,11 @@ const FeedForm = () => {
             )}
           </div>
         </div>
-        <div className="submit-container">
-          <button type="submit" className="submit-button">
-            작성
-          </button>
-        </div>
+      </div>
+      <div className="submit-container">
+        <button type="submit" className="submit-button">
+          작성
+        </button>
       </div>
     </form>
   );
