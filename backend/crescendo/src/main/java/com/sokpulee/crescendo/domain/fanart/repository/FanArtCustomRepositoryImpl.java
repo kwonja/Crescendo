@@ -68,7 +68,8 @@ public class FanArtCustomRepositoryImpl implements FanArtCustomRepository{
                             imagePaths,
                             f.getContent(),
                             Optional.ofNullable(f.getCommentCnt()).orElse(0),                            f.getCreatedAt(),
-                            f.getLastModified()
+                            f.getLastModified(),
+                            f.getTitle()
                     );
                 })
                 .toList();
@@ -128,7 +129,8 @@ public class FanArtCustomRepositoryImpl implements FanArtCustomRepository{
                             isLike,
                             imagePaths,
                             f.getContent(),
-                            f.getCommentCnt()
+                            f.getCommentCnt(),
+                            f.getTitle()
                     );
                 })
                 .filter(Objects::nonNull) // null 값을 제거
@@ -187,7 +189,8 @@ public class FanArtCustomRepositoryImpl implements FanArtCustomRepository{
                             isLike,
                             imagePaths,
                             f.getContent(),
-                            Optional.ofNullable(f.getCommentCnt()).orElse(0) // 여기에서 null 체크
+                            Optional.ofNullable(f.getCommentCnt()).orElse(0), // 여기에서 null 체크
+                            f.getTitle()
                     );
                 })
                 .toList();

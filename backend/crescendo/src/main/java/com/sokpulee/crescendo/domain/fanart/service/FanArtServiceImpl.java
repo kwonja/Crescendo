@@ -112,14 +112,11 @@ public class FanArtServiceImpl implements FanArtService {
         User user = userRepository.findById(loggedInUserId)
                 .orElseThrow(UserNotFoundException::new);
 
-        IdolGroup idolGroup = idolGroupRepository.findById(fanArtUpdateRequest.getIdolGroupId())
-                .orElseThrow(IdolGroupNotFoundException::new);
-
         if (!fanArt.getUser().getId().equals(loggedInUserId)) {
             throw new UnAuthorizedAccessException();
         }
 
-        fanArt.changeFanArt(idolGroup, fanArtUpdateRequest.getTitle(), fanArtUpdateRequest.getContent());
+        fanArt.changeFanArt(fanArtUpdateRequest.getTitle(), fanArtUpdateRequest.getContent());
 
         fanArt.getImageList().clear();
 
