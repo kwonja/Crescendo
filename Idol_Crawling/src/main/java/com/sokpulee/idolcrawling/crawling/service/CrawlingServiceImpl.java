@@ -109,4 +109,24 @@ public class CrawlingServiceImpl implements CrawlingService {
         return idolGroupDtoList;
     }
 
+    @Override
+    public List<IdolDto> getIdolMemberList(List<IdolGroupDto> idolGroupDtoList, String nameTag, String gender) throws Exception {
+        List<IdolDto> idolDtoList = new ArrayList<>();
+
+        for (IdolGroupDto idolGroupDto : idolGroupDtoList) {
+            for (String memberParam : idolGroupDto.getMemberParamList()) {
+                try {
+                    Elements rows = getInfoTableRows(memberParam);
+                    String name = getName(rows, nameTag);
+                    String imgUrl = getImgUrl(rows);
+                    idolDtoList.add(new IdolDto(idolGroupDto.getName(), name, gender, imgUrl, imgUrl));
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        }
+
+        return idolDtoList;
+    }
+
 }
