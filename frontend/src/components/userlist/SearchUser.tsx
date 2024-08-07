@@ -89,12 +89,14 @@ export default function SearchUser({ handleMode }: SearchProps) {
   return (
     <div className="searchuser">
       <SearchInput placeholder="유저를 검색하세요" onChange={OnchangeHandler} value={inputValue} />
-      <div className='searchuser_item w-full'>
+      <div className="searchuser_item w-full">
         {lists.length === 0 && !isSearch ? <div>검색하신 유저가 없습니다.</div> : null}
         {lists.map(list => (
           <div
-          className='w-11/12 flex align-center p-2.5 border-b-2 border-white mx-auto' 
-          key={list.userId} onClick={e => handleClick(list, e)}>
+            className="w-11/12 flex align-center p-2.5 border-b-2 border-white mx-auto"
+            key={list.userId}
+            onClick={e => handleClick(list, e)}
+          >
             <FriendProfile user={list} />
           </div>
         ))}

@@ -12,9 +12,9 @@ export default function ChatRoomListItem({ room, HandleClick }: ChatRoomItemProp
   return (
     <div className="chatroomlistitem" onClick={() => HandleClick(room)}>
       <img src={`${BASE_URL}${opponentProfilePath}`} alt="상대방프로필" />
-      <div className="content">
-        <div>{opponentNickName}</div>
-        <div>{lastChatting}</div>
+      <div className="content w-8/12">
+        <div className="nickname">{opponentNickName}</div>
+        <div className="lastchat " >{lastChatting}</div>
       </div>
 
       <div className="lastchattime">{timeAgo(lastChattingTime)}</div>

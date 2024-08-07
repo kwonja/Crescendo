@@ -7,6 +7,7 @@ import com.sokpulee.crescendo.domain.follow.service.FollowService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class FollowController {
     @PostMapping
     @Operation(summary = "팔로우", description = "팔로우 API")
     public ResponseEntity<?> follow(
-            @AuthPrincipal Long loggedInUserId,
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
             @RequestBody FollowRequest followRequest
     ) {
         if(loggedInUserId == null) {

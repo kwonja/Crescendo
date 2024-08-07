@@ -1,19 +1,22 @@
 package com.sokpulee.crescendo.domain.alarm.entity;
 
 import com.sokpulee.crescendo.domain.user.entity.User;
+import com.sokpulee.crescendo.global.CreatedAtEntity;
 import com.sokpulee.crescendo.global.TimeStampedEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Alarm extends TimeStampedEntity {
+public class Alarm extends CreatedAtEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long alarmId;
+    @Column(name = "alarm_id")
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -28,5 +31,17 @@ public class Alarm extends TimeStampedEntity {
     @Column(length = 100)
     private String content;
 
-    private Boolean isRead;
+    private boolean isRead;
+
+    @Builder
+    public Alarm(User user, AlarmChannel alarmChannel, Long relatedId, String content) {
+        this.user = user;
+        this.alarmChannel = alarmChannel;
+        this.relatedId = relatedId;
+        this.content = content;
+    }
+
+    public void readAlarm() {
+        isRead = true;
+    }
 }

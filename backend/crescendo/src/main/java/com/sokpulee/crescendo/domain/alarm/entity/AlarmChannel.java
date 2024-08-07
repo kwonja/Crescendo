@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 public class AlarmChannel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long alarmChannelId;
+    @Column(name = "alarm_channel_id")
+    private Long id;
 
     @Column(length = 50)
     private String name;
