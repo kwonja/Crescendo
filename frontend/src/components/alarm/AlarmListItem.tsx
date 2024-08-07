@@ -1,16 +1,16 @@
-import React from 'react'
+import React from 'react';
 import { ChatRoom } from '../../interface/chat';
 import { IMAGE_BASE_URL } from '../../apis/core';
 import { ReactComponent as User } from '../../assets/images/Chat/user.svg';
 import { timeAgo } from '../../utils/TimeAgo';
 
 interface ChatRoomItemProps {
-    room: ChatRoom;
-    HandleClick: (Group: ChatRoom) => void;
-  }
+  room: ChatRoom;
+  HandleClick: (Group: ChatRoom) => void;
+}
 
 export default function AlarmListItem({ room, HandleClick }: ChatRoomItemProps) {
-    const { opponentProfilePath, opponentNickName, lastChattingTime, lastChatting } = room;
+  const { opponentProfilePath, opponentNickName, lastChattingTime, lastChatting } = room;
   return (
     <div className="chatroomlistitem" onClick={() => HandleClick(room)}>
       {opponentProfilePath ? (

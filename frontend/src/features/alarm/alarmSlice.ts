@@ -1,17 +1,17 @@
-import {  createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getAlarmAPI } from "../../apis/alarm";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { getAlarmAPI } from '../../apis/alarm';
 
 export type PromiseStatus = 'loading' | 'success' | 'failed' | '';
-interface Alarm{
-    alarmId: number;
-    alarmChannelId: number;
-    relatedId: number;
-    content: string;
-    isRead: boolean;
-    createdAt: string;
+interface Alarm {
+  alarmId: number;
+  alarmChannelId: number;
+  relatedId: number;
+  content: string;
+  isRead: boolean;
+  createdAt: string;
 }
 interface FeedProps {
-  alramLsit : Alarm[];
+  alramLsit: Alarm[];
   status: PromiseStatus;
   error: string | undefined;
 }
