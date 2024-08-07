@@ -1,17 +1,11 @@
 package com.sokpulee.crescendo.domain.goods.controller;
 
-import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtDetailResponse;
-import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtResponse;
-import com.sokpulee.crescendo.domain.fanart.dto.response.FavoriteFanArtResponse;
-import com.sokpulee.crescendo.domain.fanart.dto.response.MyFanArtResponse;
+import com.sokpulee.crescendo.domain.fanart.dto.response.*;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsUpdateRequest;
-import com.sokpulee.crescendo.domain.goods.dto.response.FavoriteGoodsResponse;
-import com.sokpulee.crescendo.domain.goods.dto.response.GoodsDetailResponse;
-import com.sokpulee.crescendo.domain.goods.dto.response.GoodsResponse;
-import com.sokpulee.crescendo.domain.goods.dto.response.MyGoodsResponse;
+import com.sokpulee.crescendo.domain.goods.dto.response.*;
 import com.sokpulee.crescendo.domain.goods.service.GoodsService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
@@ -229,6 +223,21 @@ public class GoodsController {
         GoodsDetailResponse goodsDetailResponse = goodsService.getGoodsDetail(loggedInUserId, goodsId);
 
         return ResponseEntity.ok(goodsDetailResponse);
+    }
+
+    @GetMapping("/{goods-id}/comment")
+    @Operation(summary = "굿즈 댓글조회", description = "굿즈 댓글조회 API")
+    public ResponseEntity<Page<GoodsCommentResponse>> getGoodsComment(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("goods-id") Long goodsId,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<GoodsCommentResponse> goodsCommentResponses = goodsService.getGoodsComment(loggedInUserId,goodsId,pageable);
+
+        return ResponseEntity.ok(goodsCommentResponses);
     }
 
 
