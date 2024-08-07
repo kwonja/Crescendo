@@ -20,6 +20,12 @@ public class CrawlingServiceImpl implements CrawlingService {
     @Value("${BASE_CRAWLING_URL}")
     private String baseCrawlingUrl;
 
+    @Value("${BOY_GROUP_LIST_PARAM}")
+    private String boyGroupListParam;
+
+    @Value("${GIRL_GROUP_LIST_PARAM}")
+    private String girlGroupListParam;
+
     @Override
     public Elements getTables(String param) throws Exception {
         Document html = Jsoup.connect(baseCrawlingUrl + param).get();
@@ -127,6 +133,19 @@ public class CrawlingServiceImpl implements CrawlingService {
         }
 
         return idolDtoList;
+    }
+
+    @Override
+    public void crawlingIdol() throws Exception {
+        String boyGroupTag = "td > b > a";
+        String girlGroupTag = "td > a";
+        String idolGroupNameTag = "th > div > span > big";
+        String idolNameTag = "th > div > span";
+
+        List<IdolGroupDto> idolGroupDtoList = new ArrayList<>();
+        idolGroupDtoList.addAll(getIdolGroupList(boyGroupListParam, boyGroupTag, idolGroupNameTag, "M"));
+        idolGroupDtoList.addAll(getIdolGroupList(girlGroupListParam, girlGroupTag, idolGroupNameTag, "F"));
+        List<IdolDto> idolDtoList = new ArrayList<>(getIdolMemberList(idolGroupDtoList, idolNameTag));
     }
 
 }
