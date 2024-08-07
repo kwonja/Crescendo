@@ -40,6 +40,7 @@ export const login = createAsyncThunk(
       setAccessToken(accessToken);
       return { email, accessToken, redirectTo };
     } catch (error) {
+      console.log(error);
       return rejectWithValue('로그인 실패');
     }
   },
