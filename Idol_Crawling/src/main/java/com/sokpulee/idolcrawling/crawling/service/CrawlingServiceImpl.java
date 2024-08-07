@@ -53,4 +53,11 @@ public class CrawlingServiceImpl implements CrawlingService {
         return infoTableRows.select(tag).get(0).html().split("<br>")[0];
     }
 
+    @Override
+    public String getImgUrl(Elements infoTableRows) {
+        Elements parseImgUrl = infoTableRows.select("td > span > a").select("img");
+        String imgUrl = parseImgUrl.get(parseImgUrl.size() - 1).attr("src");
+        return imgUrl.replaceAll("/\\d+px-", "/" + "1000" + "px-");
+    }
+
 }

@@ -15,4 +15,6 @@ public interface CrawlingService {
 
     String getName(Elements infoTableRows, String tag);
 
+    String getImgUrl(Elements infoTableRows);
+
 }
