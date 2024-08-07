@@ -1,9 +1,13 @@
 package com.sokpulee.idolcrawling.crawling.dto;
 
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.ToString;
 
-@Setter
+import java.util.List;
+
+@AllArgsConstructor
+@Getter
 @ToString
 public class IdolGroupDto {
     private String name;
@@ -11,4 +15,6 @@ public class IdolGroupDto {
     private String introduction;
     private String profile;
     private String banner;
+    private String gender;
+    private List<String> memberParamList;
 }

@@ -1,9 +1,6 @@
 package com.sokpulee.crescendo.domain.fanart.service;
 
-import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtAddRequest;
-import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtCommentAddRequest;
-import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtCommentUpdateRequest;
-import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtUpdateRequest;
+import com.sokpulee.crescendo.domain.fanart.dto.request.*;
 import com.sokpulee.crescendo.domain.fanart.dto.response.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +24,7 @@ public interface FanArtService {
 
     void likeFanArtComment(Long loggedInUserId,Long fanArtCommentId);
 
-    Page<FanArtResponse> getFanArt(Long loggedInUserId, Long idolGroupId, Pageable pageable);
+    Page<FanArtResponse> getFanArt(Long loggedInUserId, Long idolGroupId, Pageable pageable, FanArtSearchCondition condition);
 
     Page<FavoriteFanArtResponse> getFavoriteFanArt(Long loggedInUserId,Pageable pageable);
 

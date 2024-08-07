@@ -33,10 +33,7 @@ public class AuthServiceImpl implements AuthService {
 
         authenticateEmail(signUpRequest.getEmailAuthId(), signUpRequest.getRandomKey());
 
-        Idol idol = idolRepository.findById(signUpRequest.getIdolId())
-                .orElseThrow(IdolNotFoundException::new);
-
-        User user = signUpRequest.toEntity(idol);
+        User user = signUpRequest.toEntity();
         user.encryptPassword(enctyptHelper);
 
         userRepository.save(user);

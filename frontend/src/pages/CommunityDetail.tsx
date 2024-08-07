@@ -1,4 +1,6 @@
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 import { ReactComponent as FullStar } from '../assets/images/fullstar.svg';
 import { ReactComponent as Star } from '../assets/images/star.svg';
 import React, { useEffect, useRef, useState } from 'react';
@@ -6,6 +8,10 @@ import SearchInput from '../components/common/SearchInput';
 import { ReactComponent as MenuDown } from '../assets/images/down.svg';
 import FeedList from '../components/common/FeedList';
 import GalleryList from '../components/common/GalleryList';
+import FeedForm from '../components/community/PostFeed';
+import GalleryForm from '../components/community/PostGallery';
+import { ReactComponent as WriteButton } from '../assets/images/write.svg';
+import '../scss/page/_communitydetail.scss';
 
 type communityDetailInfoType = {
   idolGroupId: number;
@@ -19,6 +25,7 @@ type communityDetailInfoType = {
 
 export default function CommunityDetail() {
   const { idolGroupId } = useParams();
+  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
 
   // 임시 데이터
   const communityDetailInfo: communityDetailInfoType = {
@@ -39,6 +46,9 @@ export default function CommunityDetail() {
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
   const menuRef = useRef<HTMLDivElement>(null);
 
+  const [show, setShow] = useState(false);
+  const [activeTab, setActiveTab] = useState('feed');
+
   function clickStar() {
     setisFavorite(prev => !prev);
     // 이후 rest-api서버로 전송
@@ -56,6 +66,9 @@ export default function CommunityDetail() {
       }
     }
   }, [isSelected]);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   return (
     <div className="communitydetail">
@@ -113,6 +126,40 @@ export default function CommunityDetail() {
         {isSelected === 'feed' && <FeedList />}
         {isSelected === 'gallery' && <GalleryList />}
       </div>
+
+      {isLoggedIn && <WriteButton className="write-button" onClick={handleShow} />}
+
+      {show && (
+        <div className="modal">
+          <div className="modal-content">
+            <div className="modal-header">
+              <div className="modal-header-title">
+                <h2>글작성</h2>
+              </div>
+              <div className="tabs">
+                <button
+                  className={`tab ${activeTab === 'feed' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('feed')}
+                >
+                  피드
+                </button>
+                <button
+                  className={`tab ${activeTab === 'gallery' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('gallery')}
+                >
+                  갤러리
+                </button>
+              </div>
+              <span className="close" onClick={handleClose}>
+                &times;
+              </span>
+            </div>
+            <div className="modal-body">
+              {activeTab === 'feed' ? <FeedForm /> : <GalleryForm />}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
