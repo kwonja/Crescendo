@@ -14,7 +14,11 @@ public class CrawlingController {
 
     @PostConstruct
     public void init() {
-        System.out.println("Hello, World!");
+        try {
+            crawlingService.crawlingIdol();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
