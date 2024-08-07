@@ -1,9 +1,6 @@
 package com.sokpulee.crescendo.domain.fanart.service;
 
-import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtAddRequest;
-import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtCommentAddRequest;
-import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtCommentUpdateRequest;
-import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtUpdateRequest;
+import com.sokpulee.crescendo.domain.fanart.dto.request.*;
 import com.sokpulee.crescendo.domain.fanart.dto.response.*;
 import com.sokpulee.crescendo.domain.fanart.entity.*;
 import com.sokpulee.crescendo.domain.fanart.repository.FanArtCommentLikeRepository;
@@ -226,8 +223,8 @@ public class FanArtServiceImpl implements FanArtService {
     }
 
     @Override
-    public Page<FanArtResponse> getFanArt(Long loggedInUserId, Long idolGroupId, Pageable pageable) {
-        return fanArtRepository.findFanArts(loggedInUserId, idolGroupId, pageable);
+    public Page<FanArtResponse> getFanArt(Long loggedInUserId, Long idolGroupId, Pageable pageable, FanArtSearchCondition condition) {
+        return fanArtRepository.findFanArts(loggedInUserId, idolGroupId, pageable, condition);
     }
 
     @Override

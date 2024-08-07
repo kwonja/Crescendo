@@ -1,6 +1,9 @@
 package com.sokpulee.crescendo.domain.fanart.repository;
 
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtSearchCondition;
 import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtResponse;
 import com.sokpulee.crescendo.domain.fanart.dto.response.FavoriteFanArtResponse;
 import com.sokpulee.crescendo.domain.fanart.dto.response.MyFanArtResponse;
@@ -27,18 +30,34 @@ public class FanArtCustomRepositoryImpl implements FanArtCustomRepository{
     }
 
     @Override
-    public Page<FanArtResponse> findFanArts(Long loggedInUserId, Long idolGroupId, Pageable pageable) {
+    public Page<FanArtResponse> findFanArts(Long loggedInUserId, Long idolGroupId, Pageable pageable, FanArtSearchCondition condition) {
         QFanArt fanArt = QFanArt.fanArt;
         QUser user = QUser.user;
         QFanArtImage fanArtImage = QFanArtImage.fanArtImage;
         QFanArtLike fanArtLike = QFanArtLike.fanArtLike;
         QIdolGroup idolGroup = QIdolGroup.idolGroup;
 
+        // 검색 조건 추가
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        booleanBuilder.and(fanArt.idolGroup.id.eq(idolGroupId));
+
+        if (condition != null) {
+            if (condition.getTitle() != null && !condition.getTitle().isEmpty()) {
+                booleanBuilder.and(fanArt.title.containsIgnoreCase(condition.getTitle()));
+            }
+            if (condition.getNickname() != null && !condition.getNickname().isEmpty()) {
+                booleanBuilder.and(user.nickname.containsIgnoreCase(condition.getNickname()));
+            }
+            if (condition.getContent() != null && !condition.getContent().isEmpty()) {
+                booleanBuilder.and(fanArt.content.containsIgnoreCase(condition.getContent()));
+            }
+        }
+
         // 페이징 및 기본 정보 조회
         List<FanArt> fanArts = queryFactory
                 .selectFrom(fanArt)
-                .leftJoin(fanArt.user,user).fetchJoin()
-                .where(fanArt.idolGroup.id.eq(idolGroupId))
+                .leftJoin(fanArt.user, user).fetchJoin()
+                .where(booleanBuilder)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .distinct()
@@ -64,10 +83,12 @@ public class FanArtCustomRepositoryImpl implements FanArtCustomRepository{
                             f.getUser().getId(),
                             f.getUser().getProfilePath(),
                             f.getUser().getNickname(),
-                            Optional.ofNullable(f.getLikeCnt()).orElse(0),                            isLike,
+                            Optional.ofNullable(f.getLikeCnt()).orElse(0),
+                            isLike,
                             imagePaths,
                             f.getContent(),
-                            Optional.ofNullable(f.getCommentCnt()).orElse(0),                            f.getCreatedAt(),
+                            Optional.ofNullable(f.getCommentCnt()).orElse(0),
+                            f.getCreatedAt(),
                             f.getLastModified(),
                             f.getTitle()
                     );
@@ -77,11 +98,12 @@ public class FanArtCustomRepositoryImpl implements FanArtCustomRepository{
         Long total = Optional.ofNullable(queryFactory
                 .select(fanArt.count())
                 .from(fanArt)
-                .where(fanArt.idolGroup.id.eq(idolGroupId))
+                .where(booleanBuilder)
                 .fetchOne()).orElse(0L);
 
         return new PageImpl<>(fanArtResponses, pageable, total);
     }
+
 
     @Override
     public Page<FavoriteFanArtResponse> findFavoriteFanArt(Long loggedInUserId, Pageable pageable) {
