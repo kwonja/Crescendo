@@ -25,6 +25,8 @@ public interface GoodsService {
 
     void likeGoods(Long loggedInUserId,Long goodsId);
 
+    void likeGoodsComment(Long loggedInUserId,Long goodsCommentId);
+
     Page<FavoriteGoodsResponse> getFavoriteGoods(Long loggedInUserId, Pageable pageable);
 
     Page<MyGoodsResponse> getMyGoods(Long loggedInUserId,Pageable pageable);

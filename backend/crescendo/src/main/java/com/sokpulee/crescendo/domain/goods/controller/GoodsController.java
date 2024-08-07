@@ -240,6 +240,20 @@ public class GoodsController {
         return ResponseEntity.ok(goodsCommentResponses);
     }
 
+    @PostMapping("/goods-comment-like/{goods-comment-id}")
+    @Operation(summary = "굿즈 댓글 및 답글 좋아요 & 좋아요 삭제", description = "굿즈 댓글 및 답글 좋아요 & 좋아요 삭제 API")
+    public ResponseEntity<?> likeGoodsComment(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("goods-comment-id") Long goodsCommentId
+    ){
+        if (loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+        goodsService.likeGoodsComment(loggedInUserId,goodsCommentId);
+
+        return ResponseEntity.status(OK).build();
+    }
+
 
 
 

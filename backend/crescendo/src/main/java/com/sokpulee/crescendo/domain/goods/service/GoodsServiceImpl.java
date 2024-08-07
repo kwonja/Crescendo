@@ -3,16 +3,15 @@ package com.sokpulee.crescendo.domain.goods.service;
 import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtDetailResponse;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArt;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArtComment;
+import com.sokpulee.crescendo.domain.fanart.entity.FanArtCommentLike;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArtLike;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsUpdateRequest;
 import com.sokpulee.crescendo.domain.goods.dto.response.*;
-import com.sokpulee.crescendo.domain.goods.entity.Goods;
-import com.sokpulee.crescendo.domain.goods.entity.GoodsComment;
-import com.sokpulee.crescendo.domain.goods.entity.GoodsImage;
-import com.sokpulee.crescendo.domain.goods.entity.GoodsLike;
+import com.sokpulee.crescendo.domain.goods.entity.*;
+import com.sokpulee.crescendo.domain.goods.repository.GoodsCommentLikeRepository;
 import com.sokpulee.crescendo.domain.goods.repository.GoodsCommentRepository;
 import com.sokpulee.crescendo.domain.goods.repository.GoodsLikeRepository;
 import com.sokpulee.crescendo.domain.goods.repository.GoodsRepository;
@@ -47,6 +46,8 @@ public class GoodsServiceImpl implements GoodsService {
     private final GoodsCommentRepository goodsCommentRepository;
 
     private final GoodsLikeRepository goodsLikeRepository;
+
+    private final GoodsCommentLikeRepository goodsCommentLikeRepository;
 
 
     @Override
@@ -199,6 +200,30 @@ public class GoodsServiceImpl implements GoodsService {
                     .build();
             goods.plusLikeCnt();
             goodsLikeRepository.save(goodsLike);
+        }
+    }
+
+    @Override
+    public void likeGoodsComment(Long loggedInUserId, Long goodsCommentId) {
+        GoodsComment goodsComment = goodsCommentRepository.findById(goodsCommentId)
+                .orElseThrow(GoodsCommentNotFoundException::new);
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        Optional<GoodsCommentLike> existingGoodsCommentLike = goodsCommentLikeRepository.findByGoodsCommentAndUser(goodsComment, user);
+
+
+        if (existingGoodsCommentLike.isPresent()) {
+            goodsCommentLikeRepository.delete(existingGoodsCommentLike.get());
+            goodsComment.minusLikeCnt();
+        } else {
+            GoodsCommentLike goodsCommentLike = GoodsCommentLike.builder()
+                    .user(user)
+                    .goodsComment(goodsComment)
+                    .build();
+            goodsComment.plusLikeCnt();
+            goodsCommentLikeRepository.save(goodsCommentLike);
         }
     }
 
