@@ -2,6 +2,12 @@ package com.sokpulee.idolcrawling.crawling.service;
 
 import com.sokpulee.idolcrawling.crawling.dto.IdolDto;
 import com.sokpulee.idolcrawling.crawling.dto.IdolGroupDto;
+import com.sokpulee.idolcrawling.crawling.entity.Gender;
+import com.sokpulee.idolcrawling.crawling.entity.Idol;
+import com.sokpulee.idolcrawling.crawling.entity.IdolGroup;
+import com.sokpulee.idolcrawling.crawling.repository.IdolGroupRepository;
+import com.sokpulee.idolcrawling.crawling.repository.IdolRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -25,6 +31,10 @@ public class CrawlingServiceImpl implements CrawlingService {
 
     @Value("${GIRL_GROUP_LIST_PARAM}")
     private String girlGroupListParam;
+
+    private final IdolGroupRepository idolGroupRepository;
+
+    private final IdolRepository idolRepository;
 
     @Override
     public Elements getTables(String param) throws Exception {
@@ -135,6 +145,7 @@ public class CrawlingServiceImpl implements CrawlingService {
         return idolDtoList;
     }
 
+    @Transactional
     @Override
     public void crawlingIdol() throws Exception {
         String boyGroupTag = "td > b > a";
@@ -146,6 +157,36 @@ public class CrawlingServiceImpl implements CrawlingService {
         idolGroupDtoList.addAll(getIdolGroupList(boyGroupListParam, boyGroupTag, idolGroupNameTag, "M"));
         idolGroupDtoList.addAll(getIdolGroupList(girlGroupListParam, girlGroupTag, idolGroupNameTag, "F"));
         List<IdolDto> idolDtoList = new ArrayList<>(getIdolMemberList(idolGroupDtoList, idolNameTag));
+
+        saveCrawlingData(idolGroupDtoList, idolDtoList);
+    }
+
+    @Transactional
+    @Override
+    public void saveCrawlingData(List<IdolGroupDto> idolGroupDtoList, List<IdolDto> idolDtoList) throws Exception {
+        for (IdolGroupDto idolGroupDto : idolGroupDtoList) {
+            IdolGroup idolGroup = new IdolGroup();
+            idolGroup.setName(idolGroupDto.getName());
+            idolGroup.setPeopleNum(idolGroupDto.getPeopleNum());
+            idolGroup.setIntroduction(idolGroupDto.getIntroduction());
+            idolGroup.setProfile(idolGroupDto.getProfile());
+            idolGroup.setBanner(idolGroupDto.getBanner());
+
+            idolGroupRepository.save(idolGroup);
+
+            for (IdolDto idolDto : idolDtoList) {
+                if (idolDto.getIdolGroupName().equals(idolGroupDto.getName())) {
+                    Idol idol = new Idol();
+                    idol.setName(idolDto.getName());
+                    idol.setGender(Gender.valueOf(idolDto.getGender()));
+                    idol.setProfile(idolDto.getProfile1());
+                    idol.setProfile2(idolDto.getProfile2());
+                    idol.setIdolGroup(idolGroup);
+
+                    idolRepository.save(idol);
+                }
+            }
+        }
     }
 
 }

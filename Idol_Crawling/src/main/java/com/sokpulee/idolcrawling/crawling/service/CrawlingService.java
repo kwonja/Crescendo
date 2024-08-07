@@ -28,4 +28,6 @@ public interface CrawlingService {
 
     void crawlingIdol() throws Exception;
 
+    void saveCrawlingData(List<IdolGroupDto> idolGroupDtoList, List<IdolDto> idolDtoList) throws Exception;
+
 }
