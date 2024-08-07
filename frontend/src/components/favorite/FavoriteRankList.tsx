@@ -27,7 +27,7 @@ export default function FavoriteRankList() {
               userId={rankEntry.writerId} 
               userNickname={rankEntry.writerNickname} 
               userProfilePath={rankEntry.writerProfilePath} 
-              date={rankEntry.createdAt.split('T')[0]}
+              date={rankEntry.createdAt?rankEntry.createdAt.split('T')[0]:""}
             />
             <div className='heartbox'>
               {rankEntry.likeCnt}

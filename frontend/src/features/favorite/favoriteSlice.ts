@@ -30,7 +30,7 @@ const initialState: favoriteState = {
       writerId: 2,
       writerNickname: '사니',
       writerProfilePath: null,
-      favoriteRankId: 1,
+      favoriteRankId: 2,
       favoriteIdolImagePath: 'https://i.ibb.co/JFqgZck/minji.jpg',
       likeCnt: 0,
       isLike: false,
@@ -40,7 +40,7 @@ const initialState: favoriteState = {
       writerId: 2,
       writerNickname: '사니',
       writerProfilePath: null,
-      favoriteRankId: 2,
+      favoriteRankId: 3,
       favoriteIdolImagePath: 'https://i.ibb.co/JFqgZck/minji.jpg',
       likeCnt: 0,
       isLike: false,
@@ -50,11 +50,11 @@ const initialState: favoriteState = {
       writerId: 2,
       writerNickname: '사니',
       writerProfilePath: null,
-      favoriteRankId: 2,
+      favoriteRankId: 4,
       favoriteIdolImagePath: 'https://i.ibb.co/JFqgZck/minji.jpg',
       likeCnt: 0,
       isLike: false,
-      createdAt: "2024-08-06T13:27:40.882Z"
+      createdAt: "2024-08-06T13:27:40.882Z" 
     }
   ],
   status: '',
@@ -70,8 +70,7 @@ export const getFavoriteRankList = createAsyncThunk<favoriteRankListResponse,voi
   'communityList/getCommunityList',
   async (_, thunkAPI) => {
     const state = thunkAPI.getState().favorite;
-    const page = state.page;
-    const response = await getFavoriteRankListAPI(page, 4);
+    const response = await getFavoriteRankListAPI(state.page, 3, state.idolId, state.sortByVotes);
     return response;
   },
 );

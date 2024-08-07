@@ -2,82 +2,8 @@ import BestPhotoSlide from "../components/favorite/BestPhotoSlide";
 import Dropdown from "../components/common/Dropdown";
 import { useEffect, useState } from "react";
 import FavoriteRankList from "../components/favorite/FavoriteRankList";
-
-interface idolGroupInfo {
-  groupId: number;
-  groupName: string;
-};
-
-interface idolInfo {
-  idolId: number;
-  idolName: string;
-};
-
-const idolGroupTmp:idolGroupInfo[] = [
-  {
-    groupId: 1,
-    groupName: 'NewJeans'
-  },
-  {
-    groupId: 2,
-    groupName: 'BTS'
-  },
-];
-
-const idolTmp1:idolInfo[] = [
-  {
-    idolId: 1,
-    idolName: '민지'
-  },
-  {
-    idolId: 2,
-    idolName: '하니'
-  },
-  {
-    idolId: 3,
-    idolName: '다니엘'
-  },
-  {
-    idolId: 4,
-    idolName: '해린'
-  },
-  {
-    idolId: 5,
-    idolName: '혜인'
-  },
-];
-
-const idolTmp2:idolInfo[] = [
-  {
-    idolId: 6,
-    idolName: '진'
-  },
-  {
-    idolId: 7,
-    idolName: '슈가 '
-  },
-  {
-    idolId: 8,
-    idolName: '제이홉'
-  },
-  {
-    idolId: 9,
-    idolName: 'RM'
-  },
-  {
-    idolId: 10,
-    idolName: '지민'
-  },
-  {
-    idolId: 11,
-    idolName: '뷔'
-  },
-  {
-    idolId: 12,
-    idolName: '정국'
-  },
-];
-
+import {idolGroupInfo, idolInfo} from '../interface/favorite'
+import { getidolGroupListAPI, getIdolListAPI } from "../apis/favorite";
 
 export default function Favorite() {
 
@@ -90,7 +16,8 @@ export default function Favorite() {
   //그룹 리스트 가져오기
   useEffect(()=> {
     const getIdolGroupList = async () => {
-      setIdolGroupList(idolGroupTmp);
+      const response = await getidolGroupListAPI();
+      setIdolGroupList(response);
     }
     getIdolGroupList();
   }, [])
@@ -102,12 +29,14 @@ export default function Favorite() {
       return;
     }
     setIdolOption('멤버');
-    const selectedGroup = idolGroupList.find((group)=> group.groupName===idolGroupOption)
-    if (!selectedGroup) throw new Error('not found idol group');
-    const getIdolGroupList = async (groupId:number) => {
-      groupId === 1?setIdolList(idolTmp1):setIdolList(idolTmp2);
+    const selectedGroupId = idolGroupList.find((group)=> group.groupName===idolGroupOption)?.groupId;
+    if (!selectedGroupId) throw new Error('not found idol group');
+    const getIdolList = async (groupId:number) => {
+      const response = await getIdolListAPI(groupId);
+      setIdolList(response);
     }
-    getIdolGroupList(selectedGroup.groupId);
+    getIdolList(selectedGroupId);
+  
   }, [idolGroupOption, idolGroupList])
 
 

@@ -33,3 +33,13 @@ export interface favoriteRankListResponse {
 	number: number,
 	empty: boolean
 }
+
+export interface idolGroupInfo {
+	groupId: number;
+	groupName: string;
+  };
+  
+export interface idolInfo {
+idolId: number;
+idolName: string;
+};
