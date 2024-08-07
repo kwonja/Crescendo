@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import FavoriteRankList from "../components/favorite/FavoriteRankList";
 import {idolGroupInfo, idolInfo} from '../interface/favorite'
 import { getidolGroupListAPI, getIdolListAPI } from "../apis/favorite";
+import { useAppDispatch } from "../store/hooks/hook";
+import { getFavoriteRankList, setIdolId } from "../features/favorite/favoriteSlice";
 
 export default function Favorite() {
 
@@ -12,6 +14,7 @@ export default function Favorite() {
   const [idolOption, setIdolOption] = useState<string>('멤버');
   const [idolList, setIdolList] = useState<idolInfo[]>([]);
   const [sortOption, setSortOption] = useState<string>('정렬');
+  const dispatch = useAppDispatch();
 
   //그룹 리스트 가져오기
   useEffect(()=> {
@@ -38,6 +41,15 @@ export default function Favorite() {
     getIdolList(selectedGroupId);
   
   }, [idolGroupOption, idolGroupList])
+
+  // 최애 자랑 리스트 가져오기
+  useEffect(()=>{
+    const selectedIdolId = idolList.find((idol)=> idol.idolName===idolOption)?.idolId;
+    if (selectedIdolId) {
+      dispatch(setIdolId(selectedIdolId));
+      dispatch(getFavoriteRankList());
+    }
+  }, [idolOption])
 
 
   return <div className="favorite">

@@ -3,6 +3,7 @@ import { useAppSelector } from '../../store/hooks/hook';
 import { ReactComponent as Dots} from '../../assets/images/Favorite/smalldots.svg'
 import { ReactComponent as Heart} from '../../assets/images/Favorite/heart.svg'
 import { ReactComponent as FullHeart} from '../../assets/images/Favorite/fullheart.svg'
+import { IMAGE_BASE_URL } from '../../apis/core';
 import UserProfile from '../common/UserProfile';
 
 export default function FavoriteRankList() {
@@ -20,13 +21,13 @@ export default function FavoriteRankList() {
             <div className='separator mx-3'>-</div>
             <div>{idolName}</div>
           </div>
-          <img src={rankEntry.favoriteIdolImagePath} alt={idolName} />
+          <img src={IMAGE_BASE_URL+rankEntry.favoriteIdolImagePath} alt={idolName} />
           <div className='favoriteranklist_card_info'>
             <UserProfile
               className='favoriteranklist_card_user'
               userId={rankEntry.writerId} 
               userNickname={rankEntry.writerNickname} 
-              userProfilePath={rankEntry.writerProfilePath} 
+              userProfilePath={IMAGE_BASE_URL+rankEntry.writerProfilePath} 
               date={rankEntry.createdAt?rankEntry.createdAt.split('T')[0]:""}
             />
             <div className='heartbox'>

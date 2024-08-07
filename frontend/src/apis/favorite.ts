@@ -25,5 +25,6 @@ export const getFavoriteRankListAPI = async (page: number, size: number, idolId:
       sortByVotes
     };
     const response = await api.get(`/api/v1/favorite-rank`, { params });
+    console.log(response.data);
     return response.data as favoriteRankListResponse;
 };    

@@ -15,48 +15,7 @@ interface favoriteState {
 }
 
 const initialState: favoriteState = {
-  favoriteRankList: [
-    {// 임시 데이터
-    writerId: 1,
-    writerNickname: '카페모카',
-    writerProfilePath: 'https://i.ibb.co/qnNRwbY/haerin.jpg',
-    favoriteRankId: 1,
-    favoriteIdolImagePath: 'https://i.ibb.co/JFqgZck/minji.jpg',
-    likeCnt: 0,
-    isLike: false,
-    createdAt: "2024-08-07T02:57:20.882Z"
-    },
-    {
-      writerId: 2,
-      writerNickname: '사니',
-      writerProfilePath: null,
-      favoriteRankId: 2,
-      favoriteIdolImagePath: 'https://i.ibb.co/JFqgZck/minji.jpg',
-      likeCnt: 0,
-      isLike: false,
-      createdAt: "2024-08-07T13:27:40.882Z"
-    },
-    {
-      writerId: 2,
-      writerNickname: '사니',
-      writerProfilePath: null,
-      favoriteRankId: 3,
-      favoriteIdolImagePath: 'https://i.ibb.co/JFqgZck/minji.jpg',
-      likeCnt: 0,
-      isLike: false,
-      createdAt: "2024-08-06T13:27:40.882Z"
-    },
-    {
-      writerId: 2,
-      writerNickname: '사니',
-      writerProfilePath: null,
-      favoriteRankId: 4,
-      favoriteIdolImagePath: 'https://i.ibb.co/JFqgZck/minji.jpg',
-      likeCnt: 0,
-      isLike: false,
-      createdAt: "2024-08-06T13:27:40.882Z" 
-    }
-  ],
+  favoriteRankList: [],
   status: '',
   error: null,
   page: 0,
@@ -93,10 +52,10 @@ const favoriteSlice = createSlice({
 
     setsortOption(state, action) {
         if (action.payload === '최신순' || action.payload === '정렬') {
-            state.sortByVotes = true;    
+            state.sortByVotes = false;    
         }
         else if (action.payload === '좋아요순') {
-            state.sortByVotes = false;    
+            state.sortByVotes = true;    
         }
     },
   },
