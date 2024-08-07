@@ -96,7 +96,9 @@ public class AuthController {
     @PostMapping("/refresh-token")
     @Operation(summary = "AccessToken 재발급", description = "AccessToken 재발급 API")
     public ResponseEntity<?> refreshAccessToken(@CookieValue(value = "refreshToken", required = false) String refreshToken) {
-        
+
+        System.out.println("refreshToken" + refreshToken);
+
         if (refreshToken == null || !jwtUtil.checkRefreshToken(refreshToken)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
         }
