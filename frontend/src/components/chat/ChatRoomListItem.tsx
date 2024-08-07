@@ -2,6 +2,7 @@ import React from 'react';
 import { ChatRoom } from '../../interface/chat';
 import { timeAgo } from '../../utils/TimeAgo';
 import { ReactComponent as User } from '../../assets/images/user.svg';
+import { IMAGE_BASE_URL } from '../../apis/core';
 
 interface ChatRoomItemProps {
   room: ChatRoom;
@@ -14,7 +15,7 @@ export default function ChatRoomListItem({ room, HandleClick }: ChatRoomItemProp
     <div className="chatroomlistitem" onClick={() => HandleClick(room)}>
       {opponentProfilePath ? (
         <img
-          src={`${process.env.REACT_APP_IMAGE_BASEURL}${opponentProfilePath}`}
+          src={`${IMAGE_BASE_URL}${opponentProfilePath}`}
           alt="상대방프로필"
         />
       ) : (
