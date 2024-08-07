@@ -6,10 +6,11 @@
 
     &_card {
         position: relative;
-        border: 5px solid #f66;
+        border: 5px solid #FEA3A3;
         border-radius: 0px 20px 0 20px;
         width: 400px;
         height: 560px;
+        color: #f66;
 
         > .dotsbox {
             position: absolute;
@@ -19,7 +20,6 @@
 
         &_label {
             display: flex;
-            color: #f66;
             height: 80px;
             align-items: center;
             justify-content: center;
@@ -43,6 +43,10 @@
                 gap: 10px;
                 font-size: 20px;
             }
+        }
+
+        &_user img {
+            border: 3px #f66 solid;
         }
 
         .hoverup:hover {

@@ -22,11 +22,12 @@ export default function FavoriteRankList() {
           </div>
           <img src={rankEntry.favoriteIdolImagePath} alt={idolName} />
           <div className='favoriteranklist_card_info'>
-            <UserProfile  
+            <UserProfile
+              className='favoriteranklist_card_user'
               userId={rankEntry.writerId} 
               userNickname={rankEntry.writerNickname} 
               userProfilePath={rankEntry.writerProfilePath} 
-              date={rankEntry.createdAt}
+              date={rankEntry.createdAt.split('T')[0]}
             />
             <div className='heartbox'>
               {rankEntry.likeCnt}
