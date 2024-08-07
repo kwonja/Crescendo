@@ -11,4 +11,6 @@ public interface CrawlingService {
 
     List<String> getIdolGroupParamList(Elements tables, String tag);
 
+    Elements getInfoTableRows(String param) throws IOException;
+
 }

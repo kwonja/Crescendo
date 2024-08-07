@@ -43,4 +43,9 @@ public class CrawlingServiceImpl implements CrawlingService {
         return idolGroupParamList;
     }
 
+    @Override
+    public Elements getInfoTableRows(String param) throws IOException {
+        return getTables(param).get(0).select("tbody > tr");
+    }
+
 }
