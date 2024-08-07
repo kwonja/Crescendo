@@ -135,7 +135,7 @@ export const refreshToken = createAsyncThunk(
       setAccessToken(newAccessToken);
       return newAccessToken;
     } catch (error) {
-      return rejectWithValue('토큰 갱신 실패');
+      return rejectWithValue(''); // 토큰 갱신 실패
     }
   },
 );
