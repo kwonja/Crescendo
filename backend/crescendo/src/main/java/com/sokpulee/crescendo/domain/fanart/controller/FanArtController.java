@@ -7,10 +7,7 @@ import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtUpdateRequest;
 import com.sokpulee.crescendo.domain.fanart.dto.response.*;
 import com.sokpulee.crescendo.domain.fanart.service.FanArtService;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedAddRequest;
-import com.sokpulee.crescendo.domain.feed.dto.response.FavoriteFeedResponse;
-import com.sokpulee.crescendo.domain.feed.dto.response.FeedCommentResponse;
-import com.sokpulee.crescendo.domain.feed.dto.response.FeedDetailResponse;
-import com.sokpulee.crescendo.domain.feed.dto.response.MyFeedResponse;
+import com.sokpulee.crescendo.domain.feed.dto.response.*;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentUpdateRequest;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
@@ -199,6 +196,22 @@ public class FanArtController {
         fanArtService.addFanArtReply(loggedInUserId, fanArtId, fanArtCommentId, fanArtReplyAddRequest);
 
         return ResponseEntity.status(CREATED).build();
+    }
+
+    @GetMapping("/{fan-art-id}/comment/{fan-art-comment-id}/reply")
+    @Operation(summary = "팬아트 답글조회", description = "팬아트 답글조회 API")
+    public ResponseEntity<Page<FanArtReplyResponse>> getFanArtReply(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("fan-art-id") Long fanArtId,
+            @PathVariable("fan-art-comment-id") Long fanArtCommentId,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<FanArtReplyResponse> fanArtReply = fanArtService.getFanArtReply(loggedInUserId,fanArtId,fanArtCommentId,pageable);
+
+        return ResponseEntity.ok(fanArtReply);
     }
 
     @PostMapping("/fan-art-like/{fan-art-id}")

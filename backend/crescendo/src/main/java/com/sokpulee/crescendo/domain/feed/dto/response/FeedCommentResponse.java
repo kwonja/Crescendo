@@ -1,5 +1,6 @@
 package com.sokpulee.crescendo.domain.feed.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 @Getter
@@ -15,6 +16,7 @@ public class FeedCommentResponse {
 
     private int likeCnt;
 
+    @JsonProperty("isLike")
     private boolean isLike;
 
     private String content;

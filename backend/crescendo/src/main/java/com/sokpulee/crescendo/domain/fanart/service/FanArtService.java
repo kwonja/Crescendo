@@ -33,6 +33,8 @@ public interface FanArtService {
 
     Page<MyFanArtResponse> getMyFanArt(Long loggedInUserId,Pageable pageable);
 
+    Page<FanArtReplyResponse> getFanArtReply(Long loggedInUserId,Long fanArtId,Long fanArtCommentId,Pageable pageable);
+
     Page<FanArtCommentResponse> getFanArtComment(Long loggedInUserId,Long fanArtId,Pageable pageable);
 
     FanArtDetailResponse getFanArtDetail(Long loggedInUserId, Long fanArtId);

@@ -245,6 +245,11 @@ public class FanArtServiceImpl implements FanArtService {
     }
 
     @Override
+    public Page<FanArtReplyResponse> getFanArtReply(Long loggedInUserId, Long fanArtId, Long fanArtCommentId, Pageable pageable) {
+        return fanArtCommentRepository.findFanArtReply(loggedInUserId,fanArtId,fanArtCommentId,pageable);
+    }
+
+    @Override
     public Page<FanArtCommentResponse> getFanArtComment(Long loggedInUserId, Long fanArtId, Pageable pageable) {
         return fanArtCommentRepository.findFanArtComments(loggedInUserId,fanArtId,pageable);
     }

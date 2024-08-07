@@ -4,11 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 @Getter
-public class FanArtCommentResponse {
+public class FanArtReplyResponse {
 
-    private Long fanArtCommentId;
-
-    private Long userId;
+    private Long writerId;
 
     private String profileImagePath;
 
@@ -21,16 +19,13 @@ public class FanArtCommentResponse {
 
     private String content;
 
-    private int replyCnt;
 
-    public FanArtCommentResponse(Long fanArtCommentId, Long userId, String profileImagePath, String nickname, int likeCnt, boolean isLike, String content, int replyCnt) {
-        this.fanArtCommentId = fanArtCommentId;
-        this.userId = userId;
+    public FanArtReplyResponse(Long writerId, String profileImagePath, String nickname, int likeCnt, boolean isLike, String content) {
+        this.writerId = writerId;
         this.profileImagePath = profileImagePath;
         this.nickname = nickname;
         this.likeCnt = likeCnt;
         this.isLike = isLike;
         this.content = content;
-        this.replyCnt = replyCnt;
     }
 }

@@ -1,5 +1,6 @@
 package com.sokpulee.crescendo.domain.fanart.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -21,6 +22,7 @@ public class FanArtDetailResponse {
 
     private int likeCnt;
 
+    @JsonProperty("isLike")
     private boolean isLike;
 
     private List<String> fanArtImagePathList;
