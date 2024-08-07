@@ -131,7 +131,7 @@ export default function CommunityDetail() {
           <div className="modal-content">
             <div className="modal-header">
               <div className="modal-header-title">
-                <h2>글 작성</h2>
+                <h2>글작성</h2>
               </div>
               <div className="tabs">
                 <button

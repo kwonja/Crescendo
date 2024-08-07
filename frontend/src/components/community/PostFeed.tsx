@@ -19,6 +19,7 @@ const FeedForm = () => {
   const [newTag, setNewTag] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { idolGroupId } = useParams<{ idolGroupId: string }>();
+  const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -28,10 +29,18 @@ const FeedForm = () => {
         file: file,
       }));
 
-      // 중복 검사
+      // 중복 검사 및 용량 제한 검사
       const existingFiles = new Set(images.map(image => image.file.name));
-      const filteredImages = newImages.filter(image => !existingFiles.has(image.file.name));
-
+      const filteredImages = newImages.filter(image => {
+        if (existingFiles.has(image.file.name)) {
+          return false;
+        }
+        if (image.file.size > MAX_FILE_SIZE) {
+          alert(`${image.file.name} 파일이 너무 큽니다. 20MB 이하의 파일만 업로드 가능합니다.`);
+          return false;
+        }
+        return true;
+      });
       if (images.length + filteredImages.length <= 10) {
         setImages(prevImages => [...prevImages, ...filteredImages]);
       } else {

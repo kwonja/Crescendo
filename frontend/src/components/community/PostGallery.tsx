@@ -15,6 +15,7 @@ const GalleryForm = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [images, setImages] = useState<ImageWithId[]>([]);
+  const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
 
   const [category, setCategory] = useState('팬아트');
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -27,10 +28,18 @@ const GalleryForm = () => {
         file: file,
       }));
 
-      // 중복 검사
+      // 중복 검사 및 용량 제한 검사
       const existingFiles = new Set(images.map(image => image.file.name));
-      const filteredImages = newImages.filter(image => !existingFiles.has(image.file.name));
-
+      const filteredImages = newImages.filter(image => {
+        if (existingFiles.has(image.file.name)) {
+          return false;
+        }
+        if (image.file.size > MAX_FILE_SIZE) {
+          alert(`${image.file.name} 파일이 너무 큽니다. 20MB 이하의 파일만 업로드 가능합니다.`);
+          return false;
+        }
+        return true;
+      });
       if (images.length + filteredImages.length <= 10) {
         setImages(prevImages => [...prevImages, ...filteredImages]);
       } else {
@@ -50,6 +59,11 @@ const GalleryForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (images.length === 0) {
+      alert('최소 한 장의 이미지를 업로드해야 합니다.');
+      return;
+    }
 
     const formData = new FormData();
     formData.append('title', title);
