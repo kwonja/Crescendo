@@ -1,5 +1,6 @@
 package com.sokpulee.crescendo.domain.fanart.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -18,6 +19,7 @@ public class FanArtResponse {
 
     private int likeCnt;
 
+    @JsonProperty("isLike")
     private boolean isLike;
 
     private List<String> fanArtImagePathList;

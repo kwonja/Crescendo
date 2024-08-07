@@ -51,7 +51,6 @@ public class FeedServiceImpl implements FeedService {
         Feed feed = Feed.builder()
                 .idolGroup(idolGroup)
                 .user(user)
-                .title(feedAddRequest.getTitle())
                 .content(feedAddRequest.getContent())
                 .likeCnt(0)
                 .commentCnt(0)
@@ -114,7 +113,7 @@ public class FeedServiceImpl implements FeedService {
             throw new UnAuthorizedAccessException();
         }
 
-        feed.changeFeed(feedUpdateRequest.getTitle(), feedUpdateRequest.getContent());
+        feed.changeFeed(feedUpdateRequest.getContent());
 
         feed.getImageList().clear();
 

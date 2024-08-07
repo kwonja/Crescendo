@@ -14,8 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 public class FeedAddRequest {
 
-    private String title;
-
     private String content;
 
     private List<MultipartFile> imageList;
@@ -24,8 +22,7 @@ public class FeedAddRequest {
 
     private Long idolGroupId;
 
-    public FeedAddRequest(String title, String content, List<MultipartFile> imageList, List<String> tagList, Long idolGroupId) {
-        this.title = title;
+    public FeedAddRequest(String content, List<MultipartFile> imageList, List<String> tagList, Long idolGroupId) {
         this.content = content;
         this.imageList = imageList;
         this.tagList = tagList;

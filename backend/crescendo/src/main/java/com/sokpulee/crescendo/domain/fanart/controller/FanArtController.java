@@ -4,13 +4,10 @@ import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtAddRequest;
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtCommentAddRequest;
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtUpdateRequest;
-import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtDetailResponse;
-import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtResponse;
-import com.sokpulee.crescendo.domain.fanart.dto.response.FavoriteFanArtResponse;
+import com.sokpulee.crescendo.domain.fanart.dto.response.*;
 import com.sokpulee.crescendo.domain.fanart.service.FanArtService;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedAddRequest;
-import com.sokpulee.crescendo.domain.feed.dto.response.FavoriteFeedResponse;
-import com.sokpulee.crescendo.domain.feed.dto.response.FeedDetailResponse;
+import com.sokpulee.crescendo.domain.feed.dto.response.*;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentUpdateRequest;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
@@ -30,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequiredArgsConstructor
@@ -134,6 +132,22 @@ public class FanArtController {
         return ResponseEntity.status(CREATED).build();
     }
 
+
+    @GetMapping("/{fan-art-id}/comment")
+    @Operation(summary = "팬아트 댓글조회", description = "팬아트 댓글조회 API")
+    public ResponseEntity<Page<FanArtCommentResponse>> getFanArtComment(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("fan-art-id") Long fanArtId,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<FanArtCommentResponse> fanArtCommentResponses = fanArtService.getFanArtComment(loggedInUserId,fanArtId,pageable);
+
+        return ResponseEntity.ok(fanArtCommentResponses);
+    }
+
     @DeleteMapping("/{fan-art-id}/comment/{fan-art-comment-id}")
     @Operation(summary = "팬아트 댓글 및 답글 삭제", description = "팬아트 댓글 및 답글 삭제 API")
     public ResponseEntity<?> deleteGoodsComment(
@@ -184,6 +198,22 @@ public class FanArtController {
         return ResponseEntity.status(CREATED).build();
     }
 
+    @GetMapping("/{fan-art-id}/comment/{fan-art-comment-id}/reply")
+    @Operation(summary = "팬아트 답글조회", description = "팬아트 답글조회 API")
+    public ResponseEntity<Page<FanArtReplyResponse>> getFanArtReply(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("fan-art-id") Long fanArtId,
+            @PathVariable("fan-art-comment-id") Long fanArtCommentId,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<FanArtReplyResponse> fanArtReply = fanArtService.getFanArtReply(loggedInUserId,fanArtId,fanArtCommentId,pageable);
+
+        return ResponseEntity.ok(fanArtReply);
+    }
+
     @PostMapping("/fan-art-like/{fan-art-id}")
     @Operation(summary = "팬아트 좋아요 및 좋아요 삭제", description = "팬아트 좋아요 및 좋아요 삭제 API")
     public ResponseEntity<?> addFanArtLike(
@@ -215,6 +245,37 @@ public class FanArtController {
         Page<FavoriteFanArtResponse> favoriteFanArtResponses = fanArtService.getFavoriteFanArt(loggedInUserId,pageable);
 
         return ResponseEntity.ok(favoriteFanArtResponses);
+    }
+
+    @GetMapping("/my-fan-art")
+    @Operation(summary = "내가 쓴 팬아트", description = "내가 쓴 팬아트 API")
+    public ResponseEntity<Page<MyFanArtResponse>> getMyFanArt(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        if(loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<MyFanArtResponse> myFanArtResponses = fanArtService.getMyFanArt(loggedInUserId,pageable);
+
+        return ResponseEntity.ok(myFanArtResponses);
+    }
+
+    @PostMapping("/fan-art-comment-like/{fan-art-comment-id}")
+    @Operation(summary = "팬아트 댓글 및 답글 좋아요 & 좋아요 삭제", description = "팬아트 댓글 및 답글 좋아요 & 좋아요 삭제 API")
+    public ResponseEntity<?> likeFanArtComment(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("fan-art-comment-id") Long fanArtCommentId
+    ){
+        if (loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+        fanArtService.likeFanArtComment(loggedInUserId,fanArtCommentId);
+
+        return ResponseEntity.status(OK).build();
     }
 
 }
