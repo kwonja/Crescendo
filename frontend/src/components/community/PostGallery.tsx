@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { ReactComponent as AddImage } from '../../assets/images/img_add.svg';
 import { ReactComponent as RemoveIcon } from '../../assets/images/remove_icon.svg';
 import '../../scss/components/community/_postfeed.scss';
@@ -9,9 +10,11 @@ type ImageWithId = {
 };
 
 const GalleryForm = () => {
-  const [images, setImages] = useState<ImageWithId[]>([]);
-  const [content, setContent] = useState('');
+  const { idolGroupId } = useParams<{ idolGroupId: string }>();
   const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [images, setImages] = useState<ImageWithId[]>([]);
+
   const [category, setCategory] = useState('팬아트');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -46,7 +49,11 @@ const GalleryForm = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // API 호출 로직 추가
+
+    const formData = new FormData();
+    formData.append('content', content);
+    images.forEach(image => formData.append('imageList', image.file));
+    formData.append('idolGroupId', idolGroupId ?? '');
   };
 
   const handleAddImageClick = () => {
@@ -128,9 +135,11 @@ const GalleryForm = () => {
         </div>
       </div>
 
-      <button type="submit" className="submit-button">
-        작성
-      </button>
+      <div className="submit-container">
+        <button type="submit" className="submit-button">
+          작성
+        </button>
+      </div>
     </form>
   );
 };

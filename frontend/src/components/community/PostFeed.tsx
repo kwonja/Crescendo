@@ -50,12 +50,18 @@ const FeedForm = () => {
   };
 
   const handleTagAdd = () => {
-    if (newTag && !tags.includes(newTag) && tags.length < 10) {
+    const formattedTag = newTag.trim();
+    if (formattedTag && !tags.includes(formattedTag) && tags.length < 10) {
       setTags([...tags, newTag]);
       setNewTag('');
     } else if (tags.length >= 10) {
       alert('태그는 최대 10개까지 추가 가능합니다.');
     }
+  };
+
+  const handleNewTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^\w가-힣ㄱ-ㅎㅏ-ㅣ]/g, '');
+    setNewTag(value);
   };
 
   const handleTagRemove = (tag: string) => {
@@ -168,7 +174,7 @@ const FeedForm = () => {
                 <input
                   type="text"
                   value={newTag}
-                  onChange={e => setNewTag(e.target.value)}
+                  onChange={handleNewTagChange}
                   onKeyDown={handleNewTagKeyDown}
                   placeholder="#태그"
                   maxLength={10}
