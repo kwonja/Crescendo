@@ -13,4 +13,6 @@ public interface CrawlingService {
 
     Elements getInfoTableRows(String param) throws IOException;
 
+    String getName(Elements infoTableRows, String tag);
+
 }

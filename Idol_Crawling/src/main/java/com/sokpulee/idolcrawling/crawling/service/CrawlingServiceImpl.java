@@ -47,4 +47,10 @@ public class CrawlingServiceImpl implements CrawlingService {
         return getTables(param).get(0).select("tbody > tr");
     }
 
+    @Override
+    public String getName(Elements infoTableRows, String tag) {
+        infoTableRows.select("sup").remove();
+        return infoTableRows.select(tag).get(0).html().split("<br>")[0];
+    }
+
 }
