@@ -9,6 +9,7 @@ interface AuthState {
   isLoggedIn: boolean; // 사용자 로그인 상태 여부
   accessToken: string | null; // 로그인 후 받은 엑세스 토큰
   emailAuthId: number | null; // 이메일 인증 ID
+  redirectTo: string | null; // 리다이렉션할 URL
 }
 
 // 초기 상태 정의 (초기값)
@@ -19,6 +20,7 @@ const initialState: AuthState = {
   isLoggedIn: false,
   accessToken: null,
   emailAuthId: null,
+  redirectTo: null,
 };
 
 // 로그인 비동기 함수
@@ -27,13 +29,16 @@ const initialState: AuthState = {
 // 리프레쉬 토큰은 httponly secure 쿠키로 오기 때문에 처리 x
 export const login = createAsyncThunk(
   'auth/login',
-  async ({ email, password }: { email: string; password: string }, { rejectWithValue }) => {
+  async (
+    { email, password, redirectTo }: { email: string; password: string; redirectTo: string },
+    { rejectWithValue },
+  ) => {
     try {
       const response = await api.post('/api/v1/auth/login', { email, password });
       setUserId(response.data.userId);
       const accessToken = response.headers.authorization.split(' ')[1];
       setAccessToken(accessToken);
-      return { email, accessToken };
+      return { email, accessToken, redirectTo };
     } catch (error) {
       return rejectWithValue('로그인 실패');
     }
@@ -153,6 +158,7 @@ const authSlice = createSlice({
       state.isLoggedIn = false;
       state.accessToken = null;
       state.emailAuthId = null;
+      state.redirectTo = null;
     },
     // logout : 로그아웃, 액세스 토큰 제거
     logout(state) {
@@ -162,6 +168,7 @@ const authSlice = createSlice({
       state.isLoggedIn = false;
       state.accessToken = null;
       state.emailAuthId = null;
+      state.redirectTo = null;
       setAccessToken(null); // 엑세스 토큰 삭제
     },
     setAccessToken(state, action: PayloadAction<string | null>) {
@@ -177,11 +184,15 @@ const authSlice = createSlice({
       })
       .addCase(
         login.fulfilled,
-        (state, action: PayloadAction<{ email: string; accessToken: string }>) => {
+        (
+          state,
+          action: PayloadAction<{ email: string; accessToken: string; redirectTo: string }>,
+        ) => {
           state.loading = false;
           state.isLoggedIn = true;
           state.email = action.payload.email;
           state.accessToken = action.payload.accessToken;
+          state.redirectTo = action.payload.redirectTo;
         },
       )
       .addCase(login.rejected, (state, action) => {

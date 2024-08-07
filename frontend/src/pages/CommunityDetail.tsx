@@ -1,4 +1,6 @@
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 import { ReactComponent as FullStar } from '../assets/images/fullstar.svg';
 import { ReactComponent as Star } from '../assets/images/star.svg';
 import React, { useEffect, useRef, useState } from 'react';
@@ -23,6 +25,7 @@ type communityDetailInfoType = {
 
 export default function CommunityDetail() {
   const { idolGroupId } = useParams();
+  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
 
   // 임시 데이터
   const communityDetailInfo: communityDetailInfoType = {
@@ -124,7 +127,7 @@ export default function CommunityDetail() {
         {isSelected === 'gallery' && <GalleryList />}
       </div>
 
-      <WriteButton className="write-button" onClick={handleShow} />
+      {isLoggedIn && <WriteButton className="write-button" onClick={handleShow} />}
 
       {show && (
         <div className="modal">

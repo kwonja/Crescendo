@@ -19,13 +19,16 @@ const Login: React.FC = () => {
   const [autoLogin, setAutoLogin] = useState(localStorage.getItem('autoLogin') === 'true'); // 로컬 스토리지에서 '자동 로그인' 체크박스 상태 불러오기
   const [errorMessage, setErrorMessage] = useState(''); // 에러 메시지 상태 관리
 
+  // 컴포넌트가 처음 마운트될 때만 실행
   useEffect(() => {
-    // 컴포넌트가 처음 마운트될 때만 실행
-    if (autoLogin && email && password) {
-      dispatch(login({ email, password }));
+    if (autoLogin && email) {
+      const storedPassword = localStorage.getItem('password');
+      if (storedPassword) {
+        setPassword(storedPassword);
+        dispatch(login({ email, password: storedPassword, redirectTo: '/' }));
+      }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // 빈 의존성 배열을 사용하여 처음 마운트될 때만 실행
+  }, [autoLogin, email, dispatch]);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -58,6 +61,11 @@ const Login: React.FC = () => {
 
     // '자동 로그인' 체크박스 상태를 로컬 스토리지에 저장
     localStorage.setItem('autoLogin', autoLogin.toString());
+    if (autoLogin) {
+      localStorage.setItem('password', password); // '자동 로그인' 시 비밀번호 저장
+    } else {
+      localStorage.removeItem('password'); // '자동 로그인' 해제 시 비밀번호 제거
+    }
 
     // 이메일 유효성 검사
     if (!isValidEmail(email)) {
@@ -74,7 +82,7 @@ const Login: React.FC = () => {
     }
 
     setErrorMessage(''); // 에러 메시지를 초기화
-    dispatch(login({ email, password })); // 로그인 액션 디스패치
+    dispatch(login({ email, password, redirectTo: '/' })); // 로그인 액션 디스패치
   };
 
   return (
@@ -127,9 +135,7 @@ const Login: React.FC = () => {
             </button>
           </div>
           <div className="form-actions">
-            {' '}
             <div className="checkbox-group">
-              {' '}
               <div className="form-checkbox">
                 <input
                   type="checkbox"
@@ -150,14 +156,11 @@ const Login: React.FC = () => {
               </div>
             </div>
             <div className="button-group">
-              {' '}
               <div className="signup-link">
                 <Link to="/signup">
                   <button type="button">회원가입</button>
                 </Link>
               </div>
-              {/* 로그인 버튼 */}
-              {/* 로딩 중에는 비활성화 */}
               <button type="submit" className="submit-button" disabled={loading}>
                 로그인
               </button>
