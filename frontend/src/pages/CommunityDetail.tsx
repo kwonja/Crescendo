@@ -11,6 +11,7 @@ import GalleryList from '../components/common/GalleryList';
 import FeedForm from '../components/community/PostFeed';
 import GalleryForm from '../components/community/PostGallery';
 import { ReactComponent as WriteButton } from '../assets/images/write.svg';
+import FeedDetailModal from '../components/community/FeedDetailModal'; // 피드 상세 모달 임포트
 import '../scss/page/_communitydetail.scss';
 
 type communityDetailInfoType = {
@@ -48,6 +49,8 @@ export default function CommunityDetail() {
 
   const [show, setShow] = useState(false);
   const [activeTab, setActiveTab] = useState('feed');
+  const [showDetail, setShowDetail] = useState(false);
+  const [selectedFeedId, setSelectedFeedId] = useState<number | null>(null);
 
   function clickStar() {
     setisFavorite(prev => !prev);
@@ -69,6 +72,17 @@ export default function CommunityDetail() {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const handleCloseDetail = () => {
+    console.log('Closing detail modal');
+    setShowDetail(false);
+  };
+
+  const handleShowDetail = () => {
+    console.log('Showing detail modal');
+    setSelectedFeedId(1); // 테스트용 피드 ID를 1로 설정
+    setShowDetail(true);
+  };
 
   return (
     <div className="communitydetail">
@@ -128,6 +142,19 @@ export default function CommunityDetail() {
       </div>
 
       {isLoggedIn && <WriteButton className="write-button" onClick={handleShow} />}
+
+      {/* 테스트용 피드 상세 모달 열기 버튼 */}
+      <button onClick={handleShowDetail} style={{ position: 'fixed', bottom: '20px', right: '20px', padding: '10px 20px', background: '#007BFF', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+        테스트용 피드 상세 모달 열기
+      </button>
+
+      {selectedFeedId && (
+        <FeedDetailModal
+          show={showDetail}
+          onClose={handleCloseDetail}
+          feedId={selectedFeedId}
+        />
+      )}
 
       {show && (
         <div className="modal">
