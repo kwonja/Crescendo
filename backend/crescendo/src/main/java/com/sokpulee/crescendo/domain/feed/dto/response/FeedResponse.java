@@ -1,5 +1,6 @@
 package com.sokpulee.crescendo.domain.feed.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -7,17 +8,30 @@ import java.util.List;
 
 @Getter
 public class FeedResponse {
+
     private Long feedId;
+
     private Long userId;
+
     private String profilePath;
+
     private String nickname;
+
     private LocalDateTime createdAt;
+
     private LocalDateTime lastModified;
+
     private Integer likeCnt;
+
+    @JsonProperty("isLike")
     private Boolean isLike;
+
     private List<String> imagePaths; // 리스트 형태
+
     private String content;
+
     private Integer commentCnt;
+
     private List<String> tags; // 리스트 형태
 
     public FeedResponse(Long feedId, Long userId, String profilePath, String nickname,
