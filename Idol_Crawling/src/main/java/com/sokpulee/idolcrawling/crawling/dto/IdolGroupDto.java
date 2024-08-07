@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.util.List;
+
 @AllArgsConstructor
 @Getter
 @ToString
@@ -13,4 +15,5 @@ public class IdolGroupDto {
     private String introduction;
     private String profile;
     private String banner;
+    private List<String> memberParamList;
 }

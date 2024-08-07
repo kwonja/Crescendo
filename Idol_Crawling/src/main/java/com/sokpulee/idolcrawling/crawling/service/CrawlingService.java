@@ -1,5 +1,7 @@
 package com.sokpulee.idolcrawling.crawling.service;
 
+import com.sokpulee.idolcrawling.crawling.dto.IdolDto;
+import com.sokpulee.idolcrawling.crawling.dto.IdolGroupDto;
 import org.jsoup.select.Elements;
 
 import java.util.List;
@@ -19,5 +21,7 @@ public interface CrawlingService {
     List<String> getMemberParamList(Elements rows) throws Exception;
 
     int getMemberIdx(Elements rows) throws Exception;
+
+    List<IdolGroupDto> getIdolGroupList(String param, String groupTag, String nameTag) throws Exception;
 
 }

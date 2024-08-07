@@ -1,5 +1,7 @@
 package com.sokpulee.idolcrawling.crawling.service;
 
+import com.sokpulee.idolcrawling.crawling.dto.IdolDto;
+import com.sokpulee.idolcrawling.crawling.dto.IdolGroupDto;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -79,6 +81,32 @@ public class CrawlingServiceImpl implements CrawlingService {
         }
 
         return 0;
+    }
+
+    @Override
+    public List<IdolGroupDto> getIdolGroupList(String param, String groupTag, String nameTag) throws Exception {
+        List<IdolGroupDto> idolGroupDtoList = new ArrayList<>();
+
+        try {
+            List<String> idolGroupParamList = getIdolGroupParamList(getTables(param), groupTag);
+
+            for (String idolGroupParam : idolGroupParamList) {
+                try {
+                    Elements rows = getInfoTableRows(idolGroupParam);
+                    String name = getName(rows, nameTag);
+                    String imgUrl = getImgUrl(rows);
+                    List<String> memberParamList = getMemberParamList(rows);
+                    if (memberParamList == null) continue;
+                    idolGroupDtoList.add(new IdolGroupDto(name, memberParamList.size(), name, imgUrl, imgUrl, memberParamList));
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return idolGroupDtoList;
     }
 
 }
