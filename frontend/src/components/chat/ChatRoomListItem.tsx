@@ -1,7 +1,7 @@
 import React from 'react';
 import { ChatRoom } from '../../interface/chat';
 import { timeAgo } from '../../utils/TimeAgo';
-import { ReactComponent as User } from '../../assets/images/user.svg';
+import { ReactComponent as User } from '../../assets/images/Chat/user.svg';
 import { IMAGE_BASE_URL } from '../../apis/core';
 
 interface ChatRoomItemProps {
@@ -14,12 +14,9 @@ export default function ChatRoomListItem({ room, HandleClick }: ChatRoomItemProp
   return (
     <div className="chatroomlistitem" onClick={() => HandleClick(room)}>
       {opponentProfilePath ? (
-        <img
-          src={`${IMAGE_BASE_URL}${opponentProfilePath}`}
-          alt="상대방프로필"
-        />
+        <div className='m-1.5 h-12 w-12'><img src={`${IMAGE_BASE_URL}${opponentProfilePath}`} alt="프로필" className='w-full h-full rounded-full'/></div>
       ) : (
-        <User className="user" />
+        <div className='m-1.5 w-12 h-12'><User className='w-full h-full'/></div>
       )}
       <div className="content w-8/12">
         <div className="nickname">{opponentNickName}</div>
