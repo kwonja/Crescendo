@@ -39,6 +39,7 @@ public class AuthController {
     public String setCookie(HttpServletResponse response) {
         // 쿠키 생성
         Cookie cookie = new Cookie("testCookie", "testValue");
+        cookie.setSecure(true);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setMaxAge(7 * 24 * 60 * 60); // 7일 동안 유효
