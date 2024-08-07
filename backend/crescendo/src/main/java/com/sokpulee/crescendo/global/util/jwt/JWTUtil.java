@@ -101,11 +101,40 @@ public class JWTUtil {
         }
     }
 
+    public boolean checkRefreshToken(String token) {
+
+        try {
+            // Json Web Signature? 서버에서 인증을 근거로 인증 정보를 서버의 private key 서명 한것을 토큰화 한것
+            // setSigningKey : JWS 서명 검증을 위한 secret key 세팅
+            // parseClaimsJws : 파싱하여 원본 jws 만들기
+            Jws<Claims> claims = Jwts.parser().setSigningKey(this.generateKey()).parseClaimsJws(token);
+            // Claims 는 Map 구현체 형태
+            log.debug("claims: {}", claims);
+            return true;
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return false;
+        }
+    }
+
     public Long getUserId(String authorizationHeader) {
         if(authorizationHeader == null) {
             return null;
         }
         String token = extractToken(authorizationHeader);
+
+        try {
+            Jws<Claims> claims = Jwts.parser().setSigningKey(this.generateKey()).parseClaimsJws(token);
+            Map<String, Object> value = claims.getBody();
+            log.info("value : {}", value);
+            return ((Number) value.get("userId")).longValue();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new AuthenticationRequiredException();
+        }
+    }
+
+    public Long getUserIdByRefreshToken(String token) {
 
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(this.generateKey()).parseClaimsJws(token);

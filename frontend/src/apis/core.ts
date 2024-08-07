@@ -1,6 +1,8 @@
 import axios from 'axios';
 // export const BASE_URL = 'http://i11b108.p.ssafy.io:8000';
 export const BASE_URL = 'https://i11b108.p.ssafy.io/server';
+export const IMAGE_BASE_URL = 'https://i11b108.p.ssafy.io/server/files/';
+
 const config = {
   baseURL: BASE_URL,
   headers: {

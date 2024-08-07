@@ -67,8 +67,7 @@ public class FanArt extends TimeStampedEntity {
     }
 
 
-    public void changeFanArt(IdolGroup idolGroup, String title, String content) {
-        this.idolGroup = idolGroup;
+    public void changeFanArt(String title, String content) {
         this.title = title;
         this.content = content;
     }

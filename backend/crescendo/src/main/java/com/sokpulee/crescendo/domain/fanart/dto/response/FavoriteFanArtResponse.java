@@ -1,5 +1,6 @@
 package com.sokpulee.crescendo.domain.fanart.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -21,6 +22,7 @@ public class FavoriteFanArtResponse {
 
     private int likeCnt;
 
+    @JsonProperty("isLike")
     private boolean isLike;
 
     private List<String> fanArtImagePathList;
@@ -29,7 +31,9 @@ public class FavoriteFanArtResponse {
 
     private int commentCnt;
 
-    public FavoriteFanArtResponse(Long fanArtId,Long userId, String profileImagePath, String nickname, LocalDateTime createdAt, LocalDateTime lastModified, int likeCnt, boolean isLike, List<String> fanArtImagePathList, String content, int commentCnt) {
+    private String title;
+
+    public FavoriteFanArtResponse(Long fanArtId,Long userId, String profileImagePath, String nickname, LocalDateTime createdAt, LocalDateTime lastModified, int likeCnt, boolean isLike, List<String> fanArtImagePathList, String content, int commentCnt, String title) {
         this.fanArtId = fanArtId;
         this.userId = userId;
         this.profileImagePath = profileImagePath;
@@ -41,5 +45,6 @@ public class FavoriteFanArtResponse {
         this.fanArtImagePathList = fanArtImagePathList;
         this.content = content;
         this.commentCnt = commentCnt;
+        this.title = title;
     }
 }

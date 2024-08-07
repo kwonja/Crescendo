@@ -1,22 +1,16 @@
 package com.sokpulee.crescendo.domain.fanart.service;
 
-import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtAddRequest;
-import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtCommentAddRequest;
-import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtCommentUpdateRequest;
-import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtUpdateRequest;
-import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtDetailResponse;
-import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtResponse;
-import com.sokpulee.crescendo.domain.fanart.dto.response.FavoriteFanArtResponse;
-import com.sokpulee.crescendo.domain.fanart.entity.FanArt;
-import com.sokpulee.crescendo.domain.fanart.entity.FanArtComment;
-import com.sokpulee.crescendo.domain.fanart.entity.FanArtImage;
-import com.sokpulee.crescendo.domain.fanart.entity.FanArtLike;
+import com.sokpulee.crescendo.domain.fanart.dto.request.*;
+import com.sokpulee.crescendo.domain.fanart.dto.response.*;
+import com.sokpulee.crescendo.domain.fanart.entity.*;
+import com.sokpulee.crescendo.domain.fanart.repository.FanArtCommentLikeRepository;
 import com.sokpulee.crescendo.domain.fanart.repository.FanArtCommentRepository;
 import com.sokpulee.crescendo.domain.fanart.repository.FanArtLikeRepository;
 import com.sokpulee.crescendo.domain.fanart.repository.FanArtRepository;
 import com.sokpulee.crescendo.domain.feed.dto.response.FeedDetailResponse;
 import com.sokpulee.crescendo.domain.feed.entity.Feed;
 import com.sokpulee.crescendo.domain.feed.entity.FeedComment;
+import com.sokpulee.crescendo.domain.feed.entity.FeedCommentLike;
 import com.sokpulee.crescendo.domain.feed.entity.FeedLike;
 import com.sokpulee.crescendo.domain.idol.entity.IdolGroup;
 import com.sokpulee.crescendo.domain.idol.repository.IdolGroupRepository;
@@ -46,8 +40,12 @@ public class FanArtServiceImpl implements FanArtService {
     private final FileSaveHelper fileSaveHelper;
 
     private final FanArtRepository fanArtRepository;
+
     private final FanArtCommentRepository fanArtCommentRepository;
+
     private final FanArtLikeRepository fanArtLikeRepository;
+
+    private final FanArtCommentLikeRepository fanArtCommentLikeRepository;
 
     @Override
     public void addFanArt(Long loggedInUserId, FanArtAddRequest fanArtAddRequest) {
@@ -111,14 +109,11 @@ public class FanArtServiceImpl implements FanArtService {
         User user = userRepository.findById(loggedInUserId)
                 .orElseThrow(UserNotFoundException::new);
 
-        IdolGroup idolGroup = idolGroupRepository.findById(fanArtUpdateRequest.getIdolGroupId())
-                .orElseThrow(IdolGroupNotFoundException::new);
-
         if (!fanArt.getUser().getId().equals(loggedInUserId)) {
             throw new UnAuthorizedAccessException();
         }
 
-        fanArt.changeFanArt(idolGroup, fanArtUpdateRequest.getTitle(), fanArtUpdateRequest.getContent());
+        fanArt.changeFanArt(fanArtUpdateRequest.getTitle(), fanArtUpdateRequest.getContent());
 
         fanArt.getImageList().clear();
 
@@ -204,13 +199,53 @@ public class FanArtServiceImpl implements FanArtService {
     }
 
     @Override
-    public Page<FanArtResponse> getFanArt(Long loggedInUserId, Long idolGroupId, Pageable pageable) {
-        return fanArtRepository.findFanArts(loggedInUserId, idolGroupId, pageable);
+    public void likeFanArtComment(Long loggedInUserId, Long fanArtCommentId) {
+        FanArtComment fanArtComment = fanArtCommentRepository.findById(fanArtCommentId)
+                .orElseThrow(FanArtCommentNotFoundException::new);
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        Optional<FanArtCommentLike> existingFanArtCommentLike = fanArtCommentLikeRepository.findByFanArtCommentAndUser(fanArtComment, user);
+
+
+        if (existingFanArtCommentLike.isPresent()) {
+            fanArtCommentLikeRepository.delete(existingFanArtCommentLike.get());
+            fanArtComment.minusLikeCnt();
+        } else {
+            FanArtCommentLike fanArtCommentLike = FanArtCommentLike.builder()
+                    .user(user)
+                    .fanArtComment(fanArtComment)
+                    .build();
+            fanArtComment.plusLikeCnt();
+            fanArtCommentLikeRepository.save(fanArtCommentLike);
+        }
+    }
+
+    @Override
+    public Page<FanArtResponse> getFanArt(Long loggedInUserId, Long idolGroupId, Pageable pageable, FanArtSearchCondition condition) {
+        return fanArtRepository.findFanArts(loggedInUserId, idolGroupId, pageable, condition);
     }
 
     @Override
     public Page<FavoriteFanArtResponse> getFavoriteFanArt(Long loggedInUserId, Pageable pageable) {
         return fanArtRepository.findFavoriteFanArt(loggedInUserId, pageable);
+    }
+
+    @Override
+    public Page<MyFanArtResponse> getMyFanArt(Long loggedInUserId, Pageable pageable) {
+        return fanArtRepository.findMyFanArts(loggedInUserId,pageable);
+
+    }
+
+    @Override
+    public Page<FanArtReplyResponse> getFanArtReply(Long loggedInUserId, Long fanArtId, Long fanArtCommentId, Pageable pageable) {
+        return fanArtCommentRepository.findFanArtReply(loggedInUserId,fanArtId,fanArtCommentId,pageable);
+    }
+
+    @Override
+    public Page<FanArtCommentResponse> getFanArtComment(Long loggedInUserId, Long fanArtId, Pageable pageable) {
+        return fanArtCommentRepository.findFanArtComments(loggedInUserId,fanArtId,pageable);
     }
 
     @Override

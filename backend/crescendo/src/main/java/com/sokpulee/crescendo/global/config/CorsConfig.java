@@ -16,13 +16,20 @@ public class CorsConfig implements WebMvcConfigurer {
                         "http://localhost:3000",
                         "http://localhost:8080",
                         "http://localhost:8000",
+                        "https://localhost:3000",
+                        "https://localhost:8080",
+                        "https://localhost:8000",
                         "http://i11b108.p.ssafy.io:3000",
                         "http://i11b108.p.ssafy.io:8000",
-                        "http://i11b108.p.ssafy.io:8080"
+                        "http://i11b108.p.ssafy.io:8080",
+                        "https://i11b108.p.ssafy.io",
+                        "https://i11b108.p.ssafy.io:3000",
+                        "https://i11b108.p.ssafy.io:8000",
+                        "https://i11b108.p.ssafy.io:8080"
                 )
                 .allowedMethods(ALLOWED_METHOD_NAMES.split(","))
                 .allowedHeaders("*")
-                .exposedHeaders(HttpHeaders.LOCATION, "Authorization")
+                .exposedHeaders(HttpHeaders.LOCATION, "Authorization", "Set-Cookie")
                 .allowCredentials(true);
     }
 }

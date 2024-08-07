@@ -32,7 +32,7 @@ export default function Chatroom() {
       {},
       (frame: string) => {
         client.current?.subscribe(`/topic/messages/${dmGroupId}`, content => {
-          const newMessage : Message = JSON.parse(content.body);
+          const newMessage: Message = JSON.parse(content.body);
           setScroll(true);
           dispatch(setMessage(newMessage));
 

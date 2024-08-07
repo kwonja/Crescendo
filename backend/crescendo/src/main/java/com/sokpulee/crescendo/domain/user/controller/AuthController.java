@@ -7,6 +7,8 @@ import com.sokpulee.crescendo.domain.user.service.auth.AuthService;
 import com.sokpulee.crescendo.global.util.jwt.JWTUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +33,22 @@ public class AuthController {
 
     private final AuthService authService;
     private final JWTUtil jwtUtil;
+
+    @GetMapping("/set-cookie")
+    @Operation(summary = "쿠키 테스트용", description = "쿠키 테스트 API")
+    public String setCookie(HttpServletResponse response) {
+        // 쿠키 생성
+        Cookie cookie = new Cookie("testCookie", "testValue");
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(7 * 24 * 60 * 60); // 7일 동안 유효
+
+        // 응답에 쿠키 추가
+        response.addCookie(cookie);
+
+        return "쿠키가 설정되었습니다.";
+    }
 
     @PostMapping("/sign-up")
     @Operation(summary = "회원가입", description = "회원가입 API")
@@ -72,7 +90,7 @@ public class AuthController {
 
         ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", refreshToken)
                 .httpOnly(true)
-//                .secure(true)
+                .secure(true)
                 .path("/")
                 .maxAge(refreshTokenExpireTime)
                 .sameSite("None")
@@ -97,11 +115,11 @@ public class AuthController {
     @Operation(summary = "AccessToken 재발급", description = "AccessToken 재발급 API")
     public ResponseEntity<?> refreshAccessToken(@CookieValue(value = "refreshToken", required = false) String refreshToken) {
 
-        if (refreshToken == null || !jwtUtil.checkToken(refreshToken)) {
+        if (refreshToken == null || !jwtUtil.checkRefreshToken(refreshToken)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
         }
 
-        Long userId = jwtUtil.getUserId(refreshToken);
+        Long userId = jwtUtil.getUserIdByRefreshToken(refreshToken);
         if (userId == null || !authService.isRefreshTokenValid(userId, refreshToken)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
         }
@@ -116,11 +134,11 @@ public class AuthController {
     @PostMapping("/logout")
     @Operation(summary = "로그아웃", description = "로그아웃 API")
     public ResponseEntity<?> logout(@CookieValue(value = "refreshToken", required = false) String refreshToken) {
-        if (refreshToken == null || !jwtUtil.checkToken(refreshToken)) {
+        if (refreshToken == null || !jwtUtil.checkRefreshToken(refreshToken)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
         }
 
-        Long userId = jwtUtil.getUserId(refreshToken);
+        Long userId = jwtUtil.getUserIdByRefreshToken(refreshToken);
         if (userId != null) {
             authService.deleteRefreshToken(userId);
         }

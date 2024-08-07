@@ -9,7 +9,7 @@ import {
   signUp,
 } from '../features/auth/authSlice';
 import { isValidEmail } from '../utils/EmailValidation';
-import { isValidPassword } from '../utils/PasswordValidation';
+// import { isValidPassword } from '../utils/PasswordValidation';
 import {
   isValidNickname,
   isExactForbiddenNickname,
@@ -174,11 +174,11 @@ const SignUp = () => {
       hasError = true;
     }
 
-    if (!isValidPassword(password)) {
-      errors.password =
-        '비밀번호는 최소 8자 이상, 32자 이하이며, 영어, 숫자, 특수문자를 각각 1개 이상 포함해야 합니다.';
-      hasError = true;
-    }
+    // if (!isValidPassword(password)) {
+    //   errors.password =
+    //     '비밀번호는 최소 8자 이상, 32자 이하이며, 영어, 숫자, 특수문자를 각각 1개 이상 포함해야 합니다.';
+    //   hasError = true;
+    // }
 
     if (password !== confirmPassword) {
       errors.confirmPassword = '비밀번호가 일치하지 않습니다.';
