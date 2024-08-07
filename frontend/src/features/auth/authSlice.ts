@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { api, setUserId, setAccessToken } from '../../apis/core';
+import { api, Authapi, setUserId, setAccessToken } from '../../apis/core';
 
 // 인터페이스
 interface AuthState {
@@ -118,7 +118,7 @@ export const verifyEmailCode = createAsyncThunk(
 // 로그아웃 비동기 함수
 export const logoutUser = createAsyncThunk('auth/logoutUser', async (_, { rejectWithValue }) => {
   try {
-    await api.post('/api/v1/auth/logout', {}); // refresh token 만료 요청
+    await Authapi.post('/api/v1/auth/logout', {}); // refresh token 만료 요청
     setAccessToken(null); // 엑세스 토큰 삭제
   } catch (error) {
     return rejectWithValue('로그아웃 실패');
@@ -163,6 +163,10 @@ const authSlice = createSlice({
       state.accessToken = null;
       state.emailAuthId = null;
       setAccessToken(null); // 엑세스 토큰 삭제
+    },
+    setAccessToken(state, action: PayloadAction<string | null>) {
+      state.accessToken = action.payload;
+      state.isLoggedIn = !!action.payload;
     },
   },
   extraReducers: builder => {
@@ -251,6 +255,7 @@ const authSlice = createSlice({
         state.email = '';
         state.accessToken = null;
         state.emailAuthId = null;
+        setAccessToken(null);
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.loading = false;
@@ -263,10 +268,12 @@ const authSlice = createSlice({
       .addCase(refreshToken.fulfilled, (state, action: PayloadAction<string>) => {
         state.loading = false;
         state.accessToken = action.payload;
+        state.isLoggedIn = true;
       })
       .addCase(refreshToken.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+        state.isLoggedIn = false;
       });
   },
 });

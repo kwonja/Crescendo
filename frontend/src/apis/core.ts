@@ -1,5 +1,6 @@
 import axios from 'axios';
-export const BASE_URL = 'http://i11b108.p.ssafy.io:8000';
+// export const BASE_URL = 'http://i11b108.p.ssafy.io:8000';
+export const BASE_URL = 'https://i11b108.p.ssafy.io';
 const config = {
   baseURL: BASE_URL,
   headers: {
@@ -34,12 +35,15 @@ export const setAccessToken = (token: string | null) => {
 // 리프레쉬 토큰을 사용한 엑세스 토큰 재발급
 export const refreshAccessToken = async (): Promise<string | null> => {
   try {
-    const response = await api.post(`${BASE_URL}/api/v1/auth/refresh-token`, {}, { withCredentials: true });
+    const response = await api.post(
+      `${BASE_URL}/api/v1/auth/refresh-token`,
+      {},
+      { withCredentials: true },
+    );
     const newAccessToken = response.headers.authorization.split(' ')[1];
-    setAccessToken(newAccessToken); 
+    setAccessToken(newAccessToken);
     return newAccessToken;
   } catch (error) {
-    console.error('엑세스 토큰 재발급 실패:', error);
     return null;
   }
 };
