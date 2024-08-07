@@ -1,11 +1,13 @@
 package com.sokpulee.crescendo.domain.goods.controller;
 
 import com.sokpulee.crescendo.domain.fanart.dto.response.FavoriteFanArtResponse;
+import com.sokpulee.crescendo.domain.fanart.dto.response.MyFanArtResponse;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsUpdateRequest;
 import com.sokpulee.crescendo.domain.goods.dto.response.FavoriteGoodsResponse;
+import com.sokpulee.crescendo.domain.goods.dto.response.MyGoodsResponse;
 import com.sokpulee.crescendo.domain.goods.service.GoodsService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
@@ -180,6 +182,23 @@ public class GoodsController {
         Page<FavoriteGoodsResponse> favoriteGoodsResponses = goodsService.getFavoriteGoods(loggedInUserId,pageable);
 
         return ResponseEntity.ok(favoriteGoodsResponses);
+    }
+
+    @GetMapping("/my-goods")
+    @Operation(summary = "내가 쓴 굿즈", description = "내가 쓴 굿즈 API")
+    public ResponseEntity<Page<MyGoodsResponse>> getMyGoods(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        if(loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<MyGoodsResponse> myGoodsResponses = goodsService.getMyGoods(loggedInUserId,pageable);
+
+        return ResponseEntity.ok(myGoodsResponses);
     }
 
 
