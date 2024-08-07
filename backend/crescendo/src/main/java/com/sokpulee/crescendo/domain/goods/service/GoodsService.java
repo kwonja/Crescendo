@@ -5,6 +5,7 @@ import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsUpdateRequest;
 import com.sokpulee.crescendo.domain.goods.dto.response.FavoriteGoodsResponse;
+import com.sokpulee.crescendo.domain.goods.dto.response.GoodsDetailResponse;
 import com.sokpulee.crescendo.domain.goods.dto.response.GoodsResponse;
 import com.sokpulee.crescendo.domain.goods.dto.response.MyGoodsResponse;
 import org.springframework.data.domain.Page;
@@ -32,4 +33,6 @@ public interface GoodsService {
     Page<MyGoodsResponse> getMyGoods(Long loggedInUserId,Pageable pageable);
 
     Page<GoodsResponse> getGoods(Long loggedInUserId,Long idolGroupId,Pageable pageable);
+
+    GoodsDetailResponse getGoodsDetail(Long loggedInUserId, Long goodsId);
 }

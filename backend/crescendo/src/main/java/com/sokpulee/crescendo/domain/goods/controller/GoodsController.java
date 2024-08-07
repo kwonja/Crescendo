@@ -1,5 +1,6 @@
 package com.sokpulee.crescendo.domain.goods.controller;
 
+import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtDetailResponse;
 import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtResponse;
 import com.sokpulee.crescendo.domain.fanart.dto.response.FavoriteFanArtResponse;
 import com.sokpulee.crescendo.domain.fanart.dto.response.MyFanArtResponse;
@@ -8,6 +9,7 @@ import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsUpdateRequest;
 import com.sokpulee.crescendo.domain.goods.dto.response.FavoriteGoodsResponse;
+import com.sokpulee.crescendo.domain.goods.dto.response.GoodsDetailResponse;
 import com.sokpulee.crescendo.domain.goods.dto.response.GoodsResponse;
 import com.sokpulee.crescendo.domain.goods.dto.response.MyGoodsResponse;
 import com.sokpulee.crescendo.domain.goods.service.GoodsService;
@@ -216,6 +218,17 @@ public class GoodsController {
         Page<GoodsResponse> goodsResponses = goodsService.getGoods(loggedInUserId,idolGroupId,pageable);
 
         return ResponseEntity.ok(goodsResponses);
+    }
+
+    @GetMapping("/{goods-id}")
+    @Operation(summary = "굿즈 상세조회", description = "굿즈 상세조회 API")
+    public ResponseEntity<GoodsDetailResponse> getGoodsDetail(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("goods-id") Long goodsId
+    ){
+        GoodsDetailResponse goodsDetailResponse = goodsService.getGoodsDetail(loggedInUserId, goodsId);
+
+        return ResponseEntity.ok(goodsDetailResponse);
     }
 
 

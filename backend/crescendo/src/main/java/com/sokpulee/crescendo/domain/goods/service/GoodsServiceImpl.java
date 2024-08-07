@@ -1,5 +1,6 @@
 package com.sokpulee.crescendo.domain.goods.service;
 
+import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtDetailResponse;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArt;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArtComment;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArtLike;
@@ -8,6 +9,7 @@ import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentUpdateRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsUpdateRequest;
 import com.sokpulee.crescendo.domain.goods.dto.response.FavoriteGoodsResponse;
+import com.sokpulee.crescendo.domain.goods.dto.response.GoodsDetailResponse;
 import com.sokpulee.crescendo.domain.goods.dto.response.GoodsResponse;
 import com.sokpulee.crescendo.domain.goods.dto.response.MyGoodsResponse;
 import com.sokpulee.crescendo.domain.goods.entity.Goods;
@@ -216,6 +218,54 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public Page<GoodsResponse> getGoods(Long loggedInUserId, Long idolGroupId, Pageable pageable) {
         return goodsRepository.findGoods(loggedInUserId,idolGroupId,pageable);
+    }
+
+    @Override
+    public GoodsDetailResponse getGoodsDetail(Long loggedInUserId, Long goodsId) {
+        Goods goods = goodsRepository.findById(goodsId)
+                .orElseThrow(GoodsNotFoundException::new);
+
+        User user = goods.getUser();
+
+        List<String> goodsImagePathList = goods.getImagePathList(goods.getImageList());
+
+        GoodsDetailResponse response;
+
+        if (loggedInUserId == null) {
+            response = GoodsDetailResponse.builder()
+                    .userId(user.getId())
+                    .profileImagePath(user.getProfilePath())
+                    .nickname(user.getNickname())
+                    .createdAt(goods.getCreatedAt())
+                    .lastModified(goods.getLastModified())
+                    .likeCnt(goods.getLikeCnt())
+                    .isLike(false)
+                    .goodsImagePathList(goodsImagePathList)
+                    .content(goods.getContent())
+                    .commentCnt(goods.getCommentCnt())
+                    .build();
+        } else {
+            User user1 = userRepository.findById(loggedInUserId)
+                    .orElseThrow(UserNotFoundException::new);
+
+            Optional<GoodsLike> goodsLike = goodsLikeRepository.findByGoodsAndUser(goods,user1);
+            boolean isLike = goodsLike.isPresent();
+
+
+            response = GoodsDetailResponse.builder()
+                    .userId(user.getId())
+                    .profileImagePath(user.getProfilePath())
+                    .nickname(user.getNickname())
+                    .createdAt(goods.getCreatedAt())
+                    .lastModified(goods.getLastModified())
+                    .likeCnt(goods.getLikeCnt())
+                    .isLike(isLike)
+                    .goodsImagePathList(goodsImagePathList)
+                    .content(goods.getContent())
+                    .commentCnt(goods.getCommentCnt())
+                    .build();
+        }
+        return response;
     }
 
     @Override

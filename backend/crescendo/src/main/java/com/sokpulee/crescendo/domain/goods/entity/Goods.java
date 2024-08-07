@@ -57,11 +57,11 @@ public class Goods extends TimeStampedEntity {
         goodsImage.changeGoods(this);
     }
 
-    public List<String> getImagePathList(List<FanArtImage> imageList){
+    public List<String> getImagePathList(List<GoodsImage> imageList){
         List<String> list = new ArrayList<>();
 
-        for (FanArtImage fanArtImage : imageList) {
-            list.add(fanArtImage.getImagePath());
+        for (GoodsImage goodsImage : imageList) {
+            list.add(goodsImage.getImagePath());
         }
         return list;
     }
