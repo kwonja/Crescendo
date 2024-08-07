@@ -6,10 +6,10 @@ interface UserProps {
 }
 
 export default function FriendProfile({ user }: UserProps) {
-  const { nickname, profilePath } = user;
+  const { nickname, userProfilePath } = user;
   return (
     <div className="friendprofile">
-      <img src={`${process.env.REACT_APP_IMAGE_BASEURL}${profilePath}`} alt="유저 프로필" />
+      <img src={`${process.env.REACT_APP_IMAGE_BASEURL}${userProfilePath}`} alt="유저 프로필" />
       <span>{nickname}</span>
     </div>
   );

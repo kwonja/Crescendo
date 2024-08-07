@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import SearchInput from '../common/SearchInput';
 import FriendProfile from '../mypage/FriendProfile';
 import { UserSearchApi } from '../../apis/user';
@@ -23,6 +23,7 @@ export default function SearchUser({ handleMode }: SearchProps) {
   const getUserList = async (nickname: string) => {
     try {
       const response = await UserSearchApi(0, 10, nickname);
+      console.log(response);
       if (response.content.length > 0) {
         setSearch(true);
       } else {
@@ -38,12 +39,7 @@ export default function SearchUser({ handleMode }: SearchProps) {
     setInputValue(e.target.value);
     debounceHandler(e.target.value);
   };
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debounceHandler = useCallback(
-    DeBounce(input => getUserList(input), 500),
-    [],
-  );
+  const debounceHandler = useMemo(() => DeBounce(input => getUserList(input), 500), []);
 
   const handleClick = async (list: user, e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -79,7 +75,7 @@ export default function SearchUser({ handleMode }: SearchProps) {
         dmGroupId: dmGroupId,
         opponentId: list.userId,
         opponentNickName: list.nickname,
-        opponentProfilePath: list.profilePath,
+        opponentProfilePath: list.userProfilePath,
         lastChatting: '',
         lastChattingTime: '',
       }),
