@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { PromiseStatus } from '../follow/followerSlice';
 import { favoriteRankInfo, favoriteRankListResponse } from '../../interface/favorite';
-import { getFavoriteRankListAPI } from '../../apis/favorite';
+import { getFavoriteRankListAPI, voteFavoriteRankAPI } from '../../apis/favorite';
 import { RootState } from '../../store/store';
 
 interface favoriteState {
@@ -26,12 +26,26 @@ const initialState: favoriteState = {
 
 // 전체 커뮤니티 리스트 가져오는 함수
 export const getFavoriteRankList = createAsyncThunk<favoriteRankListResponse,void,{state:RootState}>(
-  'communityList/getCommunityList',
+  'favoriteRankList/getFavoriteRankList',
   async (_, thunkAPI) => {
     const state = thunkAPI.getState().favorite;
     const response = await getFavoriteRankListAPI(state.page, 3, state.idolId, state.sortByVotes);
     return response;
   },
+);
+
+// 투표
+export const toggleIsLike = createAsyncThunk(
+  'favoriteRankList/toggleIsLike',
+  async (favorriteRankId:number, { rejectWithValue }) => {
+    try {
+      await voteFavoriteRankAPI(favorriteRankId);
+      return favorriteRankId;
+    } catch (error) {
+      return rejectWithValue('Failed to vote');
+    }
+
+  }
 );
 
 const favoriteSlice = createSlice({
@@ -50,7 +64,7 @@ const favoriteSlice = createSlice({
       state.idolId = action.payload;
     },
 
-    setsortOption(state, action) {
+    setSortByVotes(state, action) {
         if (action.payload === '최신순' || action.payload === '정렬') {
             state.sortByVotes = false;    
         }
@@ -76,10 +90,21 @@ const favoriteSlice = createSlice({
       .addCase(getFavoriteRankList.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message || 'Failed to fetch favorite idol photo list';
+      })
+      .addCase(toggleIsLike.fulfilled, (state, action: PayloadAction<number>) => {
+        const votedRankId = action.payload;
+        const rankPost = state.favoriteRankList.find((rankPost) => rankPost.favoriteRankId === votedRankId);
+        if (rankPost) {
+          rankPost.isLike = !rankPost.isLike;
+          rankPost.isLike?rankPost.likeCnt++:rankPost.likeCnt--;
+        }
+      })
+      .addCase(toggleIsLike.rejected, (state, action) => {
+        state.error = action.payload as string;
       });
   },
 });
 
-export const { resetPage, setIdolId, setsortOption} = favoriteSlice.actions;
+export const { resetPage, setIdolId, setSortByVotes} = favoriteSlice.actions;
 
 export default favoriteSlice.reducer;

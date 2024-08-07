@@ -43,3 +43,10 @@ export interface idolInfo {
 idolId: number;
 idolName: string;
 };
+
+export interface bestPhotoInfo {
+	idolId: number;
+	idolGroupName: string;
+	idolName: string;
+	favoriteIdolImagePath: string;
+};

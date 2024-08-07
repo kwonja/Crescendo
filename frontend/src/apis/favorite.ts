@@ -1,5 +1,5 @@
-import { api } from './core';
-import { favoriteRankListResponse, idolGroupInfo, idolInfo } from "../interface/favorite";
+import { api, Authapi } from './core';
+import { bestPhotoInfo, favoriteRankListResponse, idolGroupInfo, idolInfo } from "../interface/favorite";
 import { communityInfo } from '../interface/communityList';
 
 export const getidolGroupListAPI = async () => {
@@ -24,7 +24,18 @@ export const getFavoriteRankListAPI = async (page: number, size: number, idolId:
       idolId,
       sortByVotes
     };
-    const response = await api.get(`/api/v1/favorite-rank`, { params });
+    const response = await Authapi.get(`/api/v1/favorite-rank`, { params });
     console.log(response.data);
     return response.data as favoriteRankListResponse;
-};    
+};
+
+export const voteFavoriteRankAPI = async (favorriteRankId:number) => {
+  const response = await Authapi.post(`/api/v1/favorite-rank/${favorriteRankId}/vote`);
+  return response;
+}
+
+export const getBestPhotoListAPI = async () => {
+  const response = await api.get('/api/v1/favorite-rank/bestphoto');
+  const bestRankList:bestPhotoInfo[] = response.data.bestRankList;
+  return bestRankList;
+}

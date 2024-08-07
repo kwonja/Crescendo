@@ -1,48 +1,27 @@
 import { useEffect, useState } from "react"
-
-
-type bestPhotoInfo = {
-        idolId: number, // 아이돌 ID
-        idolGroupName: string, // 그룹 이름 
-        idolName: string, // 아이돌 이름
-        favoriteIdolImagePath: string // 아이돌 이미지 경로
-    }
+import { bestPhotoInfo } from "../../interface/favorite";
+import { getBestPhotoListAPI } from "../../apis/favorite";
+import { IMAGE_BASE_URL } from "../../apis/core";
+import { useAppSelector } from "../../store/hooks/hook";
 
 export default function BestPhotoSlide () {
-
-    //임시 데이터
-    const tmpList:bestPhotoInfo[] = [
-        {
-            idolId: 1,
-            idolGroupName: "NewJeans",
-            idolName: "민지",
-            favoriteIdolImagePath: 'https://i.ibb.co/JFqgZck/minji.jpg'
-        },
-        {
-            idolId: 2,
-            idolGroupName: "NewJeans",
-            idolName: "해린",
-            favoriteIdolImagePath: 'https://i.ibb.co/qnNRwbY/haerin.jpg'
-        },
-        {
-            idolId: 3,
-            idolGroupName: "NewJeans",
-            idolName: "하니",
-            favoriteIdolImagePath: 'https://i.ibb.co/FbVfHxH/hani.jpg'
-        },
-    ]
-    
     const [bestPhotoList, setBestPhotoList] = useState<bestPhotoInfo[]>([]);
     const [animationDuration, setAnimationDuration] = useState<number>(10);
+    const [isAnimationActive, setIsAnimationActive] = useState<boolean>(false);
+    const favoriteRankList = useAppSelector(state => state.favorite).favoriteRankList;
     const ANIMATION_SPEED = 150;
 
     useEffect(()=>{
         const getBestPhotoList = async () => {
-            const tmp = [...tmpList, ...tmpList];
-            setBestPhotoList(tmp);
+            let tmpPhotoList = await getBestPhotoListAPI();
+            if (tmpPhotoList.length > 3) {
+                setIsAnimationActive(true);
+                tmpPhotoList = [...tmpPhotoList, ...tmpPhotoList];
+            }
+            setBestPhotoList(tmpPhotoList);
         }
         getBestPhotoList();
-    }, [])
+    }, [favoriteRankList])
 
     useEffect(()=>{
         if (bestPhotoList.length === 0) return;
@@ -53,20 +32,26 @@ export default function BestPhotoSlide () {
     return (
         <div className="bestphotoslide_container">
           <div className='bestphotoslide_title'>Best Photos</div>
+          {bestPhotoList.length>0?
           <div className="bestphotoslide_track_container">
-            <div className="bestphotoslide_track" style={{ animation: `slide ${animationDuration}s linear infinite` }}>
-                {bestPhotoList.map((bestPhoto,idx)=>(
-                <div className='bestphotoslide_card' key={idx}>
-                    <img src={bestPhoto.favoriteIdolImagePath} alt={bestPhoto.idolName} />
-                    <div className='bestphotoslide_card_label'>
-                        <div>{bestPhoto.idolGroupName}</div>
-                        <div className='separator'>-</div>
-                        <div>{bestPhoto.idolName}</div>
-                    </div>
+            <div className="bestphotoslide_track" style={{ animation: isAnimationActive?`slide ${animationDuration}s linear infinite`:'none' }}>
+              {bestPhotoList.map((bestPhoto,idx)=>(
+              <div className='bestphotoslide_card' key={idx}>
+                <img src={IMAGE_BASE_URL+bestPhoto.favoriteIdolImagePath} alt={bestPhoto.idolName} />
+                <div className='bestphotoslide_card_label'>
+                  <div>{bestPhoto.idolGroupName}</div>
+                  <div className='separator'>-</div>
+                  <div>{bestPhoto.idolName}</div>
                 </div>
-                ))}
+              </div>))}
             </div>
           </div>
+          :
+          <div className="bestphotoslide_nocard">
+            <p>현재 투표 받은 최애 사진이 없어요 😅</p>
+            <p>최애 자랑 갤러리에서 마음에 드는 사진을 투표해주세요</p>
+          </div>
+          }
         </div>
     )
 }

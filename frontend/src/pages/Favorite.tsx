@@ -5,7 +5,7 @@ import FavoriteRankList from "../components/favorite/FavoriteRankList";
 import {idolGroupInfo, idolInfo} from '../interface/favorite'
 import { getidolGroupListAPI, getIdolListAPI } from "../apis/favorite";
 import { useAppDispatch } from "../store/hooks/hook";
-import { getFavoriteRankList, setIdolId } from "../features/favorite/favoriteSlice";
+import { getFavoriteRankList, resetPage, setIdolId, setSortByVotes } from "../features/favorite/favoriteSlice";
 
 export default function Favorite() {
 
@@ -44,6 +44,7 @@ export default function Favorite() {
 
   // 최애 자랑 리스트 가져오기
   useEffect(()=>{
+    dispatch(resetPage());
     const selectedIdolId = idolList.find((idol)=> idol.idolName===idolOption)?.idolId;
     if (selectedIdolId) {
       dispatch(setIdolId(selectedIdolId));
@@ -84,7 +85,10 @@ export default function Favorite() {
               className="sort text"
               selected={sortOption}
               options={["최신순", "좋아요순"]}
-              onSelect={(selected)=>setSortOption(selected)}
+              onSelect={(selected)=>{
+                setSortOption(selected);
+                dispatch(setSortByVotes(selected))
+              }}
               iconPosition="left"
             />
           </div>

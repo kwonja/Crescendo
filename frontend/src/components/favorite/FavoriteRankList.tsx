@@ -1,15 +1,17 @@
 import React from 'react';
-import { useAppSelector } from '../../store/hooks/hook';
+import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
 import { ReactComponent as Dots} from '../../assets/images/Favorite/smalldots.svg'
 import { ReactComponent as Heart} from '../../assets/images/Favorite/heart.svg'
 import { ReactComponent as FullHeart} from '../../assets/images/Favorite/fullheart.svg'
 import { IMAGE_BASE_URL } from '../../apis/core';
 import UserProfile from '../common/UserProfile';
+import { toggleIsLike } from '../../features/favorite/favoriteSlice';
 
 export default function FavoriteRankList() {
   const favoriteRankList = useAppSelector(state => state.favorite).favoriteRankList;
-  const idolName = "민지";
-  const idolGroupName = "NewJeans"
+  const idolName = "미연";
+  const idolGroupName = "(여자)아이들"
+  const dispatch = useAppDispatch();
 
   return (
     <div className="favoriteranklist">
@@ -32,7 +34,7 @@ export default function FavoriteRankList() {
             />
             <div className='heartbox'>
               {rankEntry.likeCnt}
-              {rankEntry.isLike?<FullHeart className='hoverup' />:<Heart className='hoverup' />}
+              {rankEntry.isLike?<FullHeart className='hoverup' onClick={()=>dispatch(toggleIsLike(rankEntry.favoriteRankId))}/>:<Heart className='hoverup' onClick={()=>dispatch(toggleIsLike(rankEntry.favoriteRankId))} />}
             </div>
           </div>
         </div>
