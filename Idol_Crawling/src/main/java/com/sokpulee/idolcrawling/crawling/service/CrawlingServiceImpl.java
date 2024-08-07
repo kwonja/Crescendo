@@ -61,6 +61,15 @@ public class CrawlingServiceImpl implements CrawlingService {
     }
 
     @Override
+    public int getMemberIdx(Elements rows) throws Exception {
+        for (int i = 0; i < rows.size(); i++) {
+            if (rows.get(i).text().equals("구성원")) return i + 1;
+        }
+
+        return 0;
+    }
+
+    @Override
     public List<String> getMemberParamList(Elements rows) throws Exception {
         int memberIdx = getMemberIdx(rows);
         if (memberIdx == 0) return null;
@@ -72,15 +81,6 @@ public class CrawlingServiceImpl implements CrawlingService {
         }
 
         return memberParamList;
-    }
-
-    @Override
-    public int getMemberIdx(Elements rows) throws Exception {
-        for (int i = 0; i < rows.size(); i++) {
-            if (rows.get(i).text().equals("구성원")) return i + 1;
-        }
-
-        return 0;
     }
 
     @Override

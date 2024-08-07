@@ -18,9 +18,9 @@ public interface CrawlingService {
 
     String getImgUrl(Elements infoTableRows) throws Exception;
 
-    List<String> getMemberParamList(Elements rows) throws Exception;
-
     int getMemberIdx(Elements rows) throws Exception;
+
+    List<String> getMemberParamList(Elements rows) throws Exception;
 
     List<IdolGroupDto> getIdolGroupList(String param, String groupTag, String nameTag) throws Exception;
 
