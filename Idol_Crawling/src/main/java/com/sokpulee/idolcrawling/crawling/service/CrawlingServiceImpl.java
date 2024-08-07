@@ -60,4 +60,29 @@ public class CrawlingServiceImpl implements CrawlingService {
         return imgUrl.replaceAll("/\\d+px-", "/" + "1000" + "px-");
     }
 
+    @Override
+    public List<String> getMemberParamList(Elements rows) {
+        List<String> memberParamList = new ArrayList<>();
+        int memberIdx = getMemberIdx(rows);
+
+        if (memberIdx == 0) return null;
+
+        Elements members = rows.get(memberIdx).select("td").select("a");
+
+        for (Element member : members) {
+            memberParamList.add(member.attr("href"));
+        }
+
+        return memberParamList;
+    }
+
+    @Override
+    public int getMemberIdx(Elements rows) {
+        for (int i = 0; i < rows.size(); i++) {
+            if (rows.get(i).text().equals("구성원")) return i + 1;
+        }
+
+        return 0;
+    }
+
 }

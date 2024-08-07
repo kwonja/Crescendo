@@ -17,4 +17,8 @@ public interface CrawlingService {
 
     String getImgUrl(Elements infoTableRows);
 
+    List<String> getMemberParamList(Elements rows);
+
+    int getMemberIdx(Elements rows);
+
 }
