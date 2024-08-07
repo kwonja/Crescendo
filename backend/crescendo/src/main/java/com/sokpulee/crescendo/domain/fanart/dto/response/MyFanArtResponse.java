@@ -32,7 +32,9 @@ public class MyFanArtResponse {
 
     private int commentCnt;
 
-    public MyFanArtResponse(Long fanArtId, Long userId, String profileImagePath, String nickname, LocalDateTime createdAt, LocalDateTime lastModified, int likeCnt, boolean isLike, List<String> fanArtImagePathList, String content, int commentCnt) {
+    private String title;
+
+    public MyFanArtResponse(Long fanArtId, Long userId, String profileImagePath, String nickname, LocalDateTime createdAt, LocalDateTime lastModified, int likeCnt, boolean isLike, List<String> fanArtImagePathList, String content, int commentCnt, String title) {
         this.fanArtId = fanArtId;
         this.userId = userId;
         this.profileImagePath = profileImagePath;
@@ -44,5 +46,6 @@ public class MyFanArtResponse {
         this.fanArtImagePathList = fanArtImagePathList;
         this.content = content;
         this.commentCnt = commentCnt;
+        this.title = title;
     }
 }

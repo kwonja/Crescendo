@@ -7,8 +7,10 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 import UserMenu from './UserMenu';
 import ChatLayout from '../chat/ChatLayout';
 import Chatroom from '../chat/ChatRoom';
-import { useAppSelector } from '../../store/hooks/hook';
+import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
 import SearchUser from '../userlist/SearchUser';
+import AlarmLayout from '../alarm/AlarmLayout';
+import { getUnReadAlarmCount } from '../../features/alarm/alarmSlice';
 
 export type ModeState = 'chat' | 'alarm' | 'userlist' | 'user' | '';
 
@@ -18,11 +20,15 @@ export default function LoginHeader() {
   const menuRef = useRef<HTMLUListElement>(null);
   const location = useLocation();
 
+  const {unReadAlarmCount} = useAppSelector( state => state.alarm);
+  const dispatch = useAppDispatch();
   const { isSelected } = useAppSelector(state => state.chatroom);
   const handleModeClick = (mode: ModeState) => {
     setUserMode(prevMode => (prevMode === mode ? '' : mode));
   };
-
+  useEffect(()=>{
+    dispatch(getUnReadAlarmCount());
+  },[dispatch])
   useEffect(() => {
     const menuElement = menuRef.current;
     if (menuElement) {
@@ -69,9 +75,10 @@ export default function LoginHeader() {
           <Chat />
         </div>
         <div
-          className={` header_icon_div ${userMode === 'alarm' ? 'alarm' : ''}`}
+          className={` header_icon_div count ${userMode === 'alarm' ? 'alarm' : ''}`}
           onClick={() => handleModeClick('alarm')}
         >
+          <div className='absolute top-1 right-1 text-xs'>{unReadAlarmCount}</div>
           <Alarm />
         </div>
         <div
@@ -88,7 +95,7 @@ export default function LoginHeader() {
         </div>
         {userMode === 'chat' && isSelected === false && <ChatLayout />}
         {userMode === 'chat' && isSelected === true && <Chatroom />}
-        {userMode === 'alarm' && <UserMenu />}
+        {userMode === 'alarm' && <AlarmLayout />}
         {userMode === 'userlist' && <SearchUser handleMode={setUserMode} />}
         {userMode === 'user' && <UserMenu handleMode={() => setUserMode('')} />}
       </div>

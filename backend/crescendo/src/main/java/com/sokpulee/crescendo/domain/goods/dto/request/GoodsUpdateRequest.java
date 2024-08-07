@@ -18,14 +18,10 @@ public class GoodsUpdateRequest {
 
     private List<MultipartFile> imageList;
 
-    @NotNull
-    private Long idolGroupId;
-
-    public GoodsUpdateRequest(String title, String content, List<MultipartFile> imageList, Long idolGroupId) {
+    public GoodsUpdateRequest(String title, String content, List<MultipartFile> imageList) {
         this.title = title;
         this.content = content;
         this.imageList = imageList;
-        this.idolGroupId = idolGroupId;
     }
 
     public List<MultipartFile> getImageList() {

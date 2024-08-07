@@ -22,6 +22,7 @@ public class CorsConfig implements WebMvcConfigurer {
                         "http://i11b108.p.ssafy.io:3000",
                         "http://i11b108.p.ssafy.io:8000",
                         "http://i11b108.p.ssafy.io:8080",
+                        "https://i11b108.p.ssafy.io",
                         "https://i11b108.p.ssafy.io:3000",
                         "https://i11b108.p.ssafy.io:8000",
                         "https://i11b108.p.ssafy.io:8080"
