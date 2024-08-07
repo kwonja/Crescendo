@@ -80,6 +80,11 @@ const FeedForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (content.trim() === '') {
+      alert('내용을 입력해주세요.');
+      return;
+    }
+
     const formData = new FormData();
     formData.append('content', content);
     images.forEach(image => formData.append('imageList', image.file));
@@ -162,7 +167,7 @@ const FeedForm = () => {
             placeholder="내용을 입력하세요"
             rows={5}
             value={content}
-            onChange={handleContentChange}
+            onChange={handleContentChange} // 내용 변경 시 content 상태 업데이트
           />
           <span className="char-count">{content.length}/400</span>
         </div>

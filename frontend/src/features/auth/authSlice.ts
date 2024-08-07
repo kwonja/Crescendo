@@ -9,7 +9,6 @@ interface AuthState {
   isLoggedIn: boolean; // 사용자 로그인 상태 여부
   accessToken: string | null; // 로그인 후 받은 엑세스 토큰
   emailAuthId: number | null; // 이메일 인증 ID
-  redirectTo: string | null; // 리다이렉션할 URL
 }
 
 // 초기 상태 정의 (초기값)
@@ -20,7 +19,6 @@ const initialState: AuthState = {
   isLoggedIn: false,
   accessToken: null,
   emailAuthId: null,
-  redirectTo: null,
 };
 
 // 로그인 비동기 함수
@@ -30,7 +28,7 @@ const initialState: AuthState = {
 export const login = createAsyncThunk(
   'auth/login',
   async (
-    { email, password, redirectTo }: { email: string; password: string; redirectTo: string },
+    { email, password }: { email: string; password: string },
     { rejectWithValue },
   ) => {
     try {
@@ -38,7 +36,7 @@ export const login = createAsyncThunk(
       setUserId(response.data.userId);
       const accessToken = response.headers.authorization.split(' ')[1];
       setAccessToken(accessToken);
-      return { email, accessToken, redirectTo };
+      return { email, accessToken};
     } catch (error) {
       console.log(error);
       return rejectWithValue('로그인 실패');
@@ -126,6 +124,8 @@ export const logoutUser = createAsyncThunk('auth/logoutUser', async (_, { reject
   try {
     await Authapi.post('/api/v1/auth/logout', {}); // refresh token 만료 요청
     setAccessToken(null); // 엑세스 토큰 삭제
+    localStorage.removeItem('autoLogin');
+    localStorage.removeItem('password');
   } catch (error) {
     return rejectWithValue('로그아웃 실패');
   }
@@ -159,7 +159,6 @@ const authSlice = createSlice({
       state.isLoggedIn = false;
       state.accessToken = null;
       state.emailAuthId = null;
-      state.redirectTo = null;
     },
     // logout : 로그아웃, 액세스 토큰 제거
     logout(state) {
@@ -169,7 +168,6 @@ const authSlice = createSlice({
       state.isLoggedIn = false;
       state.accessToken = null;
       state.emailAuthId = null;
-      state.redirectTo = null;
       setAccessToken(null); // 엑세스 토큰 삭제
     },
     setAccessToken(state, action: PayloadAction<string | null>) {
@@ -187,13 +185,12 @@ const authSlice = createSlice({
         login.fulfilled,
         (
           state,
-          action: PayloadAction<{ email: string; accessToken: string; redirectTo: string }>,
+          action: PayloadAction<{ email: string; accessToken: string}>,
         ) => {
           state.loading = false;
           state.isLoggedIn = true;
           state.email = action.payload.email;
           state.accessToken = action.payload.accessToken;
-          state.redirectTo = action.payload.redirectTo;
         },
       )
       .addCase(login.rejected, (state, action) => {
