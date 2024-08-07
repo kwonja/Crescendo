@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { Authapi } from '../../apis/core';
 import { ReactComponent as AddImage } from '../../assets/images/img_add.svg';
 import { ReactComponent as RemoveIcon } from '../../assets/images/remove_icon.svg';
 import '../../scss/components/community/_postfeed.scss';
@@ -47,13 +48,35 @@ const GalleryForm = () => {
     setImages(images.filter(image => image.id !== id));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const formData = new FormData();
+    formData.append('title', title);
     formData.append('content', content);
     images.forEach(image => formData.append('imageList', image.file));
     formData.append('idolGroupId', idolGroupId ?? '');
+
+    let apiEndpoint = '';
+    if (category === '팬아트') {
+      apiEndpoint = '/api/v1/community/fan-art';
+    } else if (category === '굿즈') {
+      apiEndpoint = '/api/v1/community/goods';
+    }
+
+    try {
+      const response = await Authapi.post(`${apiEndpoint}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.status === 201) {
+        alert('성공적으로 등록되었습니다.');
+      }
+    } catch (error) {
+      alert('작성에 실패했습니다.');
+    }
   };
 
   const handleAddImageClick = () => {

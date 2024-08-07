@@ -89,11 +89,10 @@ const FeedForm = () => {
         },
       });
       if (response.status === 201) {
-        alert('피드가 성공적으로 작성되었습니다.');
+        alert('피드가 성공적으로 등록되었습니다.');
       }
     } catch (error) {
       alert('피드 작성에 실패했습니다.');
-      console.error(error);
     }
   };
 
