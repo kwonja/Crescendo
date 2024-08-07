@@ -21,7 +21,6 @@ public class CrawlingServiceImpl implements CrawlingService {
 
     @Override
     public Elements getTables(String param) throws IOException {
-        String a = baseCrawlingUrl + param;
         Document html = Jsoup.connect(baseCrawlingUrl + param).get();
         return html.select("body > div > div > div > main > div > div > div > table");
     }
