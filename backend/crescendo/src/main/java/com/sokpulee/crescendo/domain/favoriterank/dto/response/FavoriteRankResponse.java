@@ -11,6 +11,7 @@ public class FavoriteRankResponse {
 
     private Long writerId;
     private String writerNickname;
+    private String writerProfilePath;
     private Long favoriteRankId;
     private String favoriteIdolImagePath;
     private Long likeCnt;
@@ -18,9 +19,10 @@ public class FavoriteRankResponse {
     private Boolean isLike;
     private LocalDateTime createdAt;
 
-    public FavoriteRankResponse(Long writerId, String writerNickname, Long favoriteRankId, String favoriteIdolImagePath, Long likeCnt, Boolean isLike, LocalDateTime createdAt) {
+    public FavoriteRankResponse(Long writerId, String writerNickname, String writerProfilePath, Long favoriteRankId, String favoriteIdolImagePath, Long likeCnt, Boolean isLike, LocalDateTime createdAt) {
         this.writerId = writerId;
         this.writerNickname = writerNickname;
+        this.writerProfilePath = writerProfilePath;
         this.favoriteRankId = favoriteRankId;
         this.favoriteIdolImagePath = favoriteIdolImagePath;
         this.likeCnt = likeCnt;
@@ -28,9 +30,10 @@ public class FavoriteRankResponse {
         this.createdAt = createdAt;
     }
 
-    public FavoriteRankResponse(Long writerId, String writerNickname, Long favoriteRankId, String favoriteIdolImagePath, Long likeCnt, LocalDateTime createdAt) {
+    public FavoriteRankResponse(Long writerId, String writerNickname, String writerProfilePath, Long favoriteRankId, String favoriteIdolImagePath, Long likeCnt, LocalDateTime createdAt) {
         this.writerId = writerId;
         this.writerNickname = writerNickname;
+        this.writerProfilePath = writerProfilePath;
         this.favoriteRankId = favoriteRankId;
         this.favoriteIdolImagePath = favoriteIdolImagePath;
         this.likeCnt = likeCnt;

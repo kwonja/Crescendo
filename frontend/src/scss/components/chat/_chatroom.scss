@@ -43,7 +43,7 @@
     flex-direction: column;
     gap: 5px;
     height: 337px;
-    overflow-y: scroll
+    overflow-y: scroll;
   }
   .message_send {
     width: 300px;
@@ -55,7 +55,6 @@
     padding: 10px;
   }
 }
-
 
 .messagelist::-webkit-scrollbar {
   width: 12px; /* 스크롤바의 너비 */

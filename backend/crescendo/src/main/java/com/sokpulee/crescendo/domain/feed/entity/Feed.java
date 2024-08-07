@@ -28,9 +28,6 @@ public class Feed extends TimeStampedEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(length = 50)
-    private String title;
-
     @Column(length = 500)
     private String content;
 
@@ -45,10 +42,9 @@ public class Feed extends TimeStampedEntity {
     private List<FeedImage> imageList = new ArrayList<>();
 
     @Builder
-    public Feed(IdolGroup idolGroup, User user, String title, String content,Integer likeCnt, Integer commentCnt) {
+    public Feed(IdolGroup idolGroup, User user, String content,Integer likeCnt, Integer commentCnt) {
         this.idolGroup = idolGroup;
         this.user = user;
-        this.title = title;
         this.content = content;
         this.likeCnt = likeCnt;
         this.commentCnt = commentCnt;
@@ -82,8 +78,7 @@ public class Feed extends TimeStampedEntity {
         return list;
     }
 
-    public void changeFeed(String title, String content) {
-        this.title = title;
+    public void changeFeed(String content) {
         this.content = content;
     }
 

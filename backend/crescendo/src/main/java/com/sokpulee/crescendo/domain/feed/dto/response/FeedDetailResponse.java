@@ -1,5 +1,6 @@
 package com.sokpulee.crescendo.domain.feed.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -20,6 +21,7 @@ public class FeedDetailResponse {
 
     private int likeCnt;
 
+    @JsonProperty("isLike")
     private boolean isLike;
 
     private List<String> feedImagePathList;

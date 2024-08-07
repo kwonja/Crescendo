@@ -8,6 +8,7 @@
     color: #fff;
     margin-top: auto;
     margin-left: auto;
+    margin-right: 5px;
   }
   .message {
     border-radius: 10px 10px 0px 10px;
@@ -16,7 +17,7 @@
     font-size: 18px;
     color: #000;
     max-width: 200px;
-    margin-left: 10px;
+    margin-right: 10px;
     box-sizing: border-box;
     word-wrap: break-word;
   }
@@ -31,10 +32,11 @@
     color: #fff;
     margin-top: auto;
     margin-right: auto;
+    margin-left: 5px;
   }
   .message {
     border-radius: 10px 10px 10px 0px;
-    background: #d7d7d7;
+    background: #fff;
     padding: 10px;
     font-size: 18px;
     color: #000;

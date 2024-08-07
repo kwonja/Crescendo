@@ -1,5 +1,6 @@
 package com.sokpulee.crescendo.domain.feed.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,7 @@ public class MyFeedResponse {
 
     private int likeCnt;
 
+    @JsonProperty("isLike")
     private boolean isLike;
 
     private List<String> feedImagePathList;
