@@ -31,7 +31,9 @@ public class FavoriteGoodsResponse {
 
     private int commentCnt;
 
-    public FavoriteGoodsResponse(Long goodsId, Long userId, String profileImagePath, String nickname, LocalDateTime createdAt, LocalDateTime lastModified, int likeCnt, boolean isLike, List<String> goodsImagePathList, String content, int commentCnt) {
+    private String title;
+
+    public FavoriteGoodsResponse(Long goodsId, Long userId, String profileImagePath, String nickname, LocalDateTime createdAt, LocalDateTime lastModified, int likeCnt, boolean isLike, List<String> goodsImagePathList, String content, int commentCnt, String title) {
         this.goodsId = goodsId;
         this.userId = userId;
         this.profileImagePath = profileImagePath;
@@ -43,5 +45,6 @@ public class FavoriteGoodsResponse {
         this.goodsImagePathList = goodsImagePathList;
         this.content = content;
         this.commentCnt = commentCnt;
+        this.title = title;
     }
 }

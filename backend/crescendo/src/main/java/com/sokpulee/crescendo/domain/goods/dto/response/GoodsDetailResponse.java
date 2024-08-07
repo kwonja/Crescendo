@@ -31,8 +31,10 @@ public class GoodsDetailResponse {
 
     private int commentCnt;
 
+    private String title;
+
     @Builder
-    public GoodsDetailResponse(Long userId, String profileImagePath, String nickname, LocalDateTime createdAt, LocalDateTime lastModified, int likeCnt, boolean isLike, List<String> goodsImagePathList, String content, int commentCnt) {
+    public GoodsDetailResponse(Long userId, String profileImagePath, String nickname, LocalDateTime createdAt, LocalDateTime lastModified, int likeCnt, boolean isLike, List<String> goodsImagePathList, String content, int commentCnt, String title) {
         this.userId = userId;
         this.profileImagePath = profileImagePath;
         this.nickname = nickname;
@@ -43,5 +45,6 @@ public class GoodsDetailResponse {
         this.goodsImagePathList = goodsImagePathList;
         this.content = content;
         this.commentCnt = commentCnt;
+        this.title = title;
     }
 }

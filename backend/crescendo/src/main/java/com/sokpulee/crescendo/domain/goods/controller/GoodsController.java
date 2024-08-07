@@ -1,6 +1,5 @@
 package com.sokpulee.crescendo.domain.goods.controller;
 
-import com.sokpulee.crescendo.domain.fanart.dto.response.*;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentAddRequest;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentUpdateRequest;
@@ -252,6 +251,22 @@ public class GoodsController {
         goodsService.likeGoodsComment(loggedInUserId,goodsCommentId);
 
         return ResponseEntity.status(OK).build();
+    }
+
+    @GetMapping("/{goods-id}/comment/{goods-comment-id}/reply")
+    @Operation(summary = "굿즈 답글조회", description = "굿즈 답글조회 API")
+    public ResponseEntity<Page<GoodsReplyResponse>> getGoodsReply(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("goods-id") Long goodsId,
+            @PathVariable("goods-comment-id") Long goodsCommentId,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<GoodsReplyResponse> goodsReplyResponses = goodsService.getGoodsReply(loggedInUserId,goodsId,goodsCommentId,pageable);
+
+        return ResponseEntity.ok(goodsReplyResponses);
     }
 
 

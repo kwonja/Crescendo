@@ -31,7 +31,9 @@ public class GoodsResponse {
 
     private LocalDateTime lastModified;
 
-    public GoodsResponse(Long goodsId, Long userId, String profileImagePath, String nickname, int likeCnt, boolean isLike, List<String> goodsImagePathList, String content, int commentCnt, LocalDateTime createdAt, LocalDateTime lastModified) {
+    private String title;
+
+    public GoodsResponse(Long goodsId, Long userId, String profileImagePath, String nickname, int likeCnt, boolean isLike, List<String> goodsImagePathList, String content, int commentCnt, LocalDateTime createdAt, LocalDateTime lastModified, String title) {
         this.goodsId = goodsId;
         this.userId = userId;
         this.profileImagePath = profileImagePath;
@@ -43,5 +45,6 @@ public class GoodsResponse {
         this.commentCnt = commentCnt;
         this.createdAt = createdAt;
         this.lastModified = lastModified;
+        this.title = title;
     }
 }

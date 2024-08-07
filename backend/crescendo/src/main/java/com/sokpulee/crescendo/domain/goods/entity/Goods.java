@@ -66,8 +66,7 @@ public class Goods extends TimeStampedEntity {
         return list;
     }
 
-    public void changeGoods(IdolGroup idolGroup, String title, String content) {
-        this.idolGroup = idolGroup;
+    public void changeGoods(String title, String content) {
         this.title = title;
         this.content = content;
     }

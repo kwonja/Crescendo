@@ -110,14 +110,11 @@ public class GoodsServiceImpl implements GoodsService {
         User user = userRepository.findById(loggedInUserId)
                 .orElseThrow(UserNotFoundException::new);
 
-        IdolGroup idolGroup = idolGroupRepository.findById(goodsUpdateRequest.getIdolGroupId())
-                .orElseThrow(IdolGroupNotFoundException::new);
-
         if (!goods.getUser().getId().equals(loggedInUserId)) {
             throw new UnAuthorizedAccessException();
         }
 
-        goods.changeGoods(idolGroup, goodsUpdateRequest.getTitle(), goodsUpdateRequest.getContent());
+        goods.changeGoods(goodsUpdateRequest.getTitle(), goodsUpdateRequest.getContent());
 
         goods.getImageList().clear();
 
@@ -245,6 +242,11 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public Page<GoodsCommentResponse> getGoodsComment(Long loggedInUserId, Long goodsId, Pageable pageable) {
         return goodsCommentRepository.findGoodsComment(loggedInUserId,goodsId,pageable);
+    }
+
+    @Override
+    public Page<GoodsReplyResponse> getGoodsReply(Long loggedInUserId, Long goodsId, Long goodsCommentId, Pageable pageable) {
+        return goodsCommentRepository.findGoodsReply(loggedInUserId,goodsId,goodsCommentId,pageable);
     }
 
     @Override
