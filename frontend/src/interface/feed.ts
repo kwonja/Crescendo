@@ -23,7 +23,7 @@ export interface FeedInfo {
   likeCnt: number;
   imagePaths: string[];
   content: string;
-  commentCnt: 0;
+  commentCnt: number;
   tags: string[];
   isLike: boolean;
 }
@@ -52,7 +52,7 @@ export interface FeedListResponse {
   empty: boolean           // 현재 페이지가 비어 있는지 여부
 }
 
-export interface getCommunityFeedListParams {
+export interface getFeedListParams {
   idolGroupId:number;
   page:number;
   size:number;

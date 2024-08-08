@@ -149,7 +149,7 @@ export default function CommunityDetail() {
               <Dropdown
                 className="text"
                 selected={sortOption}
-                options={["가나다순", "최신순", "좋아요순"]}
+                options={["최신순", "좋아요순"]}
                 onSelect={(selected)=>setSortOption(selected)}
                 iconPosition="left"
               />
@@ -158,7 +158,7 @@ export default function CommunityDetail() {
               <Dropdown
                 className="text"
                 selected={searchOption}
-                options={["제목", "작성자"]}
+                options={["내용", "작성자"]}
                 onSelect={(selected)=>setSearchOption(selected)}
                 iconPosition="left"
               />

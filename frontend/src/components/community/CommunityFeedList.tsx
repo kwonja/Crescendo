@@ -1,14 +1,16 @@
 import React from 'react';
-import Feed from '../common/Feed';
-import { useAppSelector } from '../../store/hooks/hook';
+// import { useAppSelector } from '../../store/hooks/hook';
+import CommunityFeed from './CommunityFeed';
+import { FeedInfo } from '../../interface/feed';
 
 export default function CommunityFeedList() {
-  const feedlist = useAppSelector(state => state.feed.myFeedList);
+  // const feedlist = useAppSelector(state => state.communityFeed.feedList);
+  const feedList:FeedInfo[] = []
 
   return (
     <div className="feedlist">
-      {feedlist.map((feed, index) => (
-        <Feed key={index} feed={feed} />
+      {feedList.map((feed, index) => (
+        <CommunityFeed key={index} feed={feed} />
       ))}
     </div>
   );

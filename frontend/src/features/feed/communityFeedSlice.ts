@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { FeedInfo, FeedListResponse, getCommunityFeedListParams } from '../../interface/feed';
+import { FeedInfo, FeedListResponse, getFeedListParams } from '../../interface/feed';
 import { getCommunityFeedListAPI } from '../../apis/feed';
 import { PromiseStatus } from './feedSlice';
 import { RootState } from '../../store/store';
@@ -29,7 +29,7 @@ export const getFeedList = createAsyncThunk<FeedListResponse,number,{state:RootS
     'communityFeedSlice/getFeedList',
     async (idolGroupId, thunkAPI) => {
         const { page, filterCondition, sortCondition, searchCondition, keyword } = thunkAPI.getState().communityFeed;
-        const params:getCommunityFeedListParams = {
+        const params:getFeedListParams = {
           idolGroupId,
           page,
           size:3,
