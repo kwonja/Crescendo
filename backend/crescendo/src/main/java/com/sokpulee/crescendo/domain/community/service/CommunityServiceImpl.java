@@ -26,7 +26,7 @@ public class CommunityServiceImpl implements CommunityService {
 
     private final CommunityFavoritesRepository communityFavoritesRepository;
     private final UserRepository userRepository;
-    private  final IdolGroupRepository idolGroupRepository;
+    private final IdolGroupRepository idolGroupRepository;
 
     @Override
     public void toggleFavorite(Long idolGroupId, Long loggedInUserId) {
@@ -38,9 +38,11 @@ public class CommunityServiceImpl implements CommunityService {
         Optional<CommunityFavorites> favorite = communityFavoritesRepository.findByUserAndIdolGroup(user, idolGroup);
 
         if (favorite.isPresent()) {
+            favorite.get().getIdolGroup().minusFavoriteCnt();
             communityFavoritesRepository.delete(favorite.get());
         } else {
             CommunityFavorites newFavorite = new CommunityFavorites(user, idolGroup);
+            newFavorite.getIdolGroup().plusFavoriteCnt();
             communityFavoritesRepository.save(newFavorite);
         }
 
@@ -54,9 +56,9 @@ public class CommunityServiceImpl implements CommunityService {
         Page<CommunityFavorites> favoritesPage = communityFavoritesRepository.findByUser(user, pageable);
 
         return favoritesPage.map(favorite -> new FavoritesGetResponse(
-                        favorite.getIdolGroup().getId(),
-                        favorite.getIdolGroup().getName(),
-                        favorite.getIdolGroup().getProfile()
+                favorite.getIdolGroup().getId(),
+                favorite.getIdolGroup().getName(),
+                favorite.getIdolGroup().getProfile()
         ));
     }
 
@@ -81,13 +83,15 @@ public class CommunityServiceImpl implements CommunityService {
                 .peopleNum(idolGroup.getPeopleNum())
                 .introduction(idolGroup.getIntroduction())
                 .profile(idolGroup.getProfile())
-                .banner(idolGroup.getBanner());
+                .banner(idolGroup.getBanner())
+                .favoriteCnt(idolGroup.getFavoriteCnt());
+
 
         if (loggedInUserId != null) {
             User user = userRepository.findById(loggedInUserId)
                     .orElseThrow(UserNotFoundException::new);
 
-            boolean isFavorite  = communityFavoritesRepository.existsByUserAndIdolGroup(user, idolGroup);
+            boolean isFavorite = communityFavoritesRepository.existsByUserAndIdolGroup(user, idolGroup);
             builder.isFavorite(isFavorite);
         }
 
