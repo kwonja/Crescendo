@@ -35,10 +35,9 @@ const alarmSlice = createSlice({
     decrementUnRead: state => {
       state.unReadAlarmCount--;
     },
-    deleteAlarm : (state, action : PayloadAction<number>) =>{
-      console.log(action.payload)
-      state.alramList = state.alramList.filter(alarm => alarm.alarmId!== action.payload);
-    }
+    deleteAlarm: (state, action: PayloadAction<number>) => {
+      state.alramList = state.alramList.filter(alarm => alarm.alarmId !== action.payload);
+    },
   },
   extraReducers(builder) {
     builder
@@ -59,5 +58,5 @@ const alarmSlice = createSlice({
   },
 });
 
-export const { incrementUnRead, decrementUnRead,deleteAlarm } = alarmSlice.actions;
+export const { incrementUnRead, decrementUnRead, deleteAlarm } = alarmSlice.actions;
 export default alarmSlice.reducer;

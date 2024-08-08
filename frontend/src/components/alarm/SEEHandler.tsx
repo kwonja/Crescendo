@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { BASE_URL, getUserId } from '../../apis/core';
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
-import { incrementUnRead } from '../../features/alarm/alarmSlice';
+import { getAlarmList, incrementUnRead } from '../../features/alarm/alarmSlice';
 
 export default function SEEHandler() {
   const dispatch = useAppDispatch();
@@ -12,18 +12,14 @@ export default function SEEHandler() {
       sse.current = new EventSource(`${BASE_URL}/sse/connect/${getUserId()}`);
 
       sse.current.addEventListener('connect', (e: Event) => {
-        const { data } = e as MessageEvent;
-        console.log(data);
       });
 
       sse.current.addEventListener('alarm', (e: Event) => {
-        const { data } = e as MessageEvent;
-        console.log(data);
+        dispatch(getAlarmList());
         dispatch(incrementUnRead());
       });
 
       sse.current.onerror = () => {
-        console.log('에러요~');
         sse.current?.close();
         setTimeout(() => {
           if (isLoggedIn) connectSSE();
@@ -32,7 +28,6 @@ export default function SEEHandler() {
     };
 
     if (isLoggedIn) {
-      console.log('실행');
       connectSSE();
     }
 

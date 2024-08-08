@@ -29,9 +29,8 @@ export default function AlarmListItem({ alarm }: AlarmItemProps) {
 
   const handleDeleteAlarm = async (alarmId: number) => {
     dispatch(deleteAlarm(alarmId));
-    const response = await deleteAlamrAPI(alarmId);
-    console.log(response);
-  }
+    await deleteAlamrAPI(alarmId);
+  };
   useEffect(() => {
     const getUserInfo = async () => {
       const response = await getUserInfoAPI(relatedId, getUserId());
@@ -60,11 +59,11 @@ export default function AlarmListItem({ alarm }: AlarmItemProps) {
           <div className="nickname">{info?.nickname}</div>
           <div>{Channel(alarmChannelId)}</div>
         </div>
-        <div className="content w-full">
-          {content}
-        </div>
+        <div className="content w-full">{content}</div>
       </div>
-      <div className="cursor-pointer"onClick={ ()=> handleDeleteAlarm(alarmId)}>삭제</div>
+      <div className="cursor-pointer" onClick={() => handleDeleteAlarm(alarmId)}>
+        삭제
+      </div>
       <div className="lastchattime">{timeAgo(createdAt)}</div>
     </div>
   );

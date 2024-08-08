@@ -15,8 +15,7 @@ export const readAlarm = async (alarmId: number) => {
   return response;
 };
 
-
-export const deleteAlamrAPI = async (alarmId : number)=>{
-    const response = await Authapi.delete(`/api/v1/alarm/${alarmId}`);
-    return response;
-}
+export const deleteAlamrAPI = async (alarmId: number) => {
+  const response = await Authapi.delete(`/api/v1/alarm/${alarmId}`);
+  return response;
+};

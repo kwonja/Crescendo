@@ -38,7 +38,6 @@ export default function ChatLayout() {
           client.current?.subscribe(`/topic/messages/${room.dmGroupId}`, content => {
             const newMessage: Message = JSON.parse(content.body);
             if (newMessage.writerId !== getUserId()) {
-              console.log(newMessage);
               dispatch(
                 setLastChatting({
                   dmGroupId: room.dmGroupId,

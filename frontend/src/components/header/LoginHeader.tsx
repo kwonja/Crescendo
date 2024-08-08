@@ -78,7 +78,9 @@ export default function LoginHeader() {
           className={` header_icon_div count ${userMode === 'alarm' ? 'alarm' : ''}`}
           onClick={() => handleModeClick('alarm')}
         >
-           {unReadAlarmCount>0 ? <div className="flex absolute top-0 right-0 text-xs w-4 h-4 bg-white text-mainColor rounded-full justify-center items-center"></div> : null}
+          {unReadAlarmCount > 0 ? (
+            <div className="flex absolute top-0 right-0 text-xs w-4 h-4 bg-white text-mainColor rounded-full justify-center items-center"></div>
+          ) : null}
           <Alarm />
         </div>
         <div

@@ -62,6 +62,9 @@
     color: #fff;
   }
 }
+.alarmlist{
+  overflow-y: scroll;
+}
 
 .alarmlist::-webkit-scrollbar {
   width: 12px; /* 스크롤바의 너비 */

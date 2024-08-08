@@ -7,7 +7,7 @@ export default function AlarmList() {
   return (
     <>
       {alramList.map((item, index) => (
-        <div key={item.alarmId} className="w-full alarmlist">
+        <div key={item.alarmId} className="w-full">
           <AlarmListItem alarm={item} />
         </div>
       ))}
