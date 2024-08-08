@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { communityInfo, communityListResponse } from '../../interface/communityList';
+import { CommunityInfo, CommunityListResponse } from '../../interface/communityList';
 import { getCommunityListAPI } from '../../apis/community';
 
 // 슬라이스의 상태 타입 정의
 type PromiseStatus = 'loading' | 'success' | 'failed' | '';
 
 interface CommunityListState {
-  communityList: communityInfo[];
+  communityList: CommunityInfo[];
   status: PromiseStatus;
   error: string | null;
   page: number;
@@ -56,7 +56,7 @@ const communityListSlice = createSlice({
       })
       .addCase(
         getCommunityList.fulfilled,
-        (state, action: PayloadAction<communityListResponse>) => {
+        (state, action: PayloadAction<CommunityListResponse>) => {
           state.status = 'success';
           state.hasMore = !action.payload.last;
           state.communityList = [...state.communityList, ...action.payload.content];

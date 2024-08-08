@@ -2,7 +2,7 @@ import BestPhotoSlide from "../components/favorite/BestPhotoSlide";
 import Dropdown from "../components/common/Dropdown";
 import { useEffect, useState } from "react";
 import FavoriteRankList from "../components/favorite/FavoriteRankList";
-import {idolGroupInfo, idolInfo} from '../interface/favorite'
+import {IdolGroupInfo, IdolInfo} from '../interface/favorite'
 import { getidolGroupListAPI, getIdolListAPI } from "../apis/favorite";
 import { useAppDispatch } from "../store/hooks/hook";
 import { getFavoriteRankList, resetPage, setIdolId, setSortByVotes } from "../features/favorite/favoriteSlice";
@@ -10,9 +10,9 @@ import { getFavoriteRankList, resetPage, setIdolId, setSortByVotes } from "../fe
 export default function Favorite() {
 
   const [idolGroupOption, setIdolGroupOption] = useState<string>('그룹');
-  const [idolGroupList, setIdolGroupList] = useState<idolGroupInfo[]>([]);
+  const [idolGroupList, setIdolGroupList] = useState<IdolGroupInfo[]>([]);
   const [idolOption, setIdolOption] = useState<string>('멤버');
-  const [idolList, setIdolList] = useState<idolInfo[]>([]);
+  const [idolList, setIdolList] = useState<IdolInfo[]>([]);
   const [sortOption, setSortOption] = useState<string>('정렬');
   const dispatch = useAppDispatch();
 

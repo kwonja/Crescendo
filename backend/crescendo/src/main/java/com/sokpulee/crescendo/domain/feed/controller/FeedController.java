@@ -59,13 +59,17 @@ public class FeedController {
             @RequestParam int page,
             @RequestParam int size,
             @RequestParam(required = false) String nickname,
-            @RequestParam(required = false) String content
+            @RequestParam(required = false) String content,
+            @RequestParam(required = false) boolean sortByFollowed,
+            @RequestParam(required = false) boolean sortByLiked
     ){
         Pageable pageable = PageRequest.of(page,size);
 
         FeedSearchCondition condition = FeedSearchCondition.builder()
                 .nickname(nickname)
                 .content(content)
+                .sortByFollowed(sortByFollowed)
+                .sortByLiked(sortByLiked)
                 .build();
 
         Page<FeedResponse> feedResponses = feedService.getFeed(loggedInUserId,idolGroupId,pageable,condition);

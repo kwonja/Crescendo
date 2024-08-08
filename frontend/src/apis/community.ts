@@ -1,5 +1,5 @@
 import { api, Authapi } from './core';
-import { communityListResponse, communityInfo, communityDetailInfo } from '../interface/communityList';
+import { CommunityListResponse, CommunityInfo, CommunityDetailInfo } from '../interface/communityList';
 
 export const getCommunityListAPI = async (page: number, size: number) => {
   const params = {
@@ -7,7 +7,7 @@ export const getCommunityListAPI = async (page: number, size: number) => {
     size,
   };
   const response = await api.get(`/api/v1/community`, { params });
-  return response.data as communityListResponse;
+  return response.data as CommunityListResponse;
 };
 
 export const getFavoriteListAPI = async () => {
@@ -18,7 +18,7 @@ export const getFavoriteListAPI = async () => {
 
   const response = await Authapi.get('/api/v1/community/favorites', { params });
 
-  return response.data.content as communityInfo[];
+  return response.data.content as CommunityInfo[];
 };
 
 export const toggleFavoriteAPI = async(idolGroupId:number) => {
@@ -31,5 +31,5 @@ export const toggleFavoriteAPI = async(idolGroupId:number) => {
 
 export const getCommunityDetailAPI  = async (idolGroupId:number) => {
   const response = await Authapi.get(`/api/v1/community/idol-group/${idolGroupId}`);
-  return response.data as communityDetailInfo;
+  return response.data as CommunityDetailInfo;
 }
