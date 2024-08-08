@@ -72,7 +72,7 @@ export default function LoginHeader() {
           className={` header_icon_div ${userMode === 'chat' ? 'chat' : ''}`}
           onClick={() => handleModeClick('chat')}
         >
-          <Chat className="w-8 h-8" />
+          <Chat className='header_svg'/>
         </div>
         <div
           className={` header_icon_div count ${userMode === 'alarm' ? 'alarm' : ''}`}
@@ -81,19 +81,19 @@ export default function LoginHeader() {
           {unReadAlarmCount > 0 ? (
             <div className="flex absolute top-1.5 right-1.5 text-xs w-4 h-4 bg-white text-mainColor rounded-full justify-center items-center"></div>
           ) : null}
-          <Alarm className="w-8 h-8" />
+          <Alarm className='header_svg'/>
         </div>
         <div
           className={` header_icon_div ${userMode === 'userlist' ? 'userlist' : ''}`}
           onClick={() => handleModeClick('userlist')}
         >
-          <UserList className="w-8 h-8" />
+          <UserList className='header_svg'/>
         </div>
         <div
           className={` header_icon_div ${userMode === 'user' ? 'user' : ''}`}
           onClick={() => handleModeClick('user')}
         >
-          <User className="w-8 h-8" />
+          <User className='header_svg'/>
         </div>
         {userMode === 'chat' && isSelected === false && <ChatLayout />}
         {userMode === 'chat' && isSelected === true && <Chatroom />}

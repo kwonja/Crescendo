@@ -66,6 +66,31 @@
       justify-content: center;
       align-items: center;
       cursor: pointer;
+
+      .header_svg{
+        width: 32px;
+        height: 32px;
+      }
+    }
+    @media screen and (min-width: 1670px) { 
+      &_div {
+        width: 60px;
+        height: 60px;
+      }
+      .header_svg{
+        width: 40px;
+        height: 40px;
+      }
+    }
+    @media screen and (min-width: 1800px) {   
+      &_div {
+        width: 60px;
+        height: 60px;
+      }
+      .header_svg{
+        width: 40px;
+        height: 40px;
+      }
     }
 
     .chat {
@@ -93,3 +118,6 @@
     }
   }
 }
+
+
+

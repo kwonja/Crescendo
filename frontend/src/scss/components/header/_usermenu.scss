@@ -14,6 +14,10 @@
   top: 64px;
   left: 0px;
   z-index: 1000;
+  @media screen and (min-width: 1670px) { 
+    width: 300px;
+    top : 68px;
+  }
 
   li {
     width: 100%;

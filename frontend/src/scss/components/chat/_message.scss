@@ -9,6 +9,9 @@
     margin-top: auto;
     margin-left: auto;
     margin-right: 5px;
+    @media screen and (min-width: 1670px) { 
+      font-size: 11px;
+    }
   }
   .message {
     border-radius: 10px 10px 0px 10px;
@@ -20,6 +23,9 @@
     margin-right: 10px;
     box-sizing: border-box;
     word-wrap: break-word;
+    @media screen and (min-width: 1670px) { 
+      font-size: 15px;
+    }
   }
 }
 
@@ -33,6 +39,9 @@
     margin-top: auto;
     margin-right: auto;
     margin-left: 5px;
+    @media screen and (min-width: 1670px) { 
+      font-size: 11px;
+    }
   }
   .message {
     border-radius: 10px 10px 10px 0px;
@@ -40,11 +49,15 @@
     padding: 10px;
     font-size: 14px;
     color: #000;
-    max-width: 100px;
+    max-width: 50%;
     margin-left: 10px;
     box-sizing: border-box;
     word-wrap: break-word;
+    @media screen and (min-width: 1670px) { 
+      font-size: 15px;
+    }
   }
+  
 }
 
 .send-container {
@@ -62,6 +75,9 @@
     padding-right: 80px;
     outline: none;
     color: #000;
+    @media screen and (min-width: 1670px) { 
+      font-size: 15px;
+    }
     font-size: 13px;
   }
   span {
