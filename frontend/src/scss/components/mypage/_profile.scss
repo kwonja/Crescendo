@@ -1,5 +1,5 @@
 .profile {
-  width: 270px;
+  width: 90%;
   height: 430px;
   border-radius: 20px;
   background: #f66;
@@ -10,11 +10,10 @@
   gap: 15px;
 
   .img {
-    width: 240px;
-    height: 240px;
+    width: 90%;
     border-radius: 10px;
     margin: 0 auto;
-    margin-top: 15px;
+    margin-top: auto;
     position: relative;
 
     img {
@@ -42,7 +41,7 @@
   }
   .nickname {
     margin: 0 auto;
-    width: 240px;
+    width: 90%;
     height: 50px;
     color: #f66;
     text-align: center;
@@ -52,8 +51,7 @@
     font-size: 36px;
   }
   .content {
-    width: 240px;
-    height: 80px;
+    width: 90%;
     border-radius: 10px;
     margin: 0 auto;
     background: #fff;
@@ -63,5 +61,6 @@
     word-wrap: break-word; /* 긴 단어가 부모 요소의 경계를 넘어갈 때 줄 바꿈 */
     word-break: break-all; /* 단어가 부모 요소의 경계를 넘어갈 때 줄 바꿈 */
     white-space: normal; /* 기본 값으로, 텍스트가 공백에서 줄 바꿈 */
+    margin-bottom: auto;
   }
 }

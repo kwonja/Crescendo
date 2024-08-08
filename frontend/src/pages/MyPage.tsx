@@ -3,23 +3,21 @@ import Profile from '../components/mypage/Profile';
 import FriendList from '../components/mypage/FriendList';
 import { ReactComponent as Crown } from '../assets/images/crown.svg';
 import Feed from '../components/common/Feed';
-import { useAppSelector } from '../store/hooks/hook';
+import { useAppDispatch, useAppSelector } from '../store/hooks/hook';
 import Gallery from '../components/common/Gallery';
-import { getMyFeedAPI } from '../apis/user';
+import { getMyFeedList } from '../features/feed/feedSlice';
+import { getUserId } from '../apis/core';
 export default function MyPage() {
   const [isSelected, setIsSelected] = useState<'feed' | 'gallery'>('feed');
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
   const menuRef = useRef<HTMLDivElement>(null);
   const feedlist = useAppSelector(state => state.feed.myFeedList);
+  const dispatch = useAppDispatch();
 
-  const getMyFeed = async () => {
-    const response = await getMyFeedAPI(0, 10);
-    console.log(response);
-  };
 
   useEffect(() => {
-    getMyFeed();
-  }, []);
+    dispatch(getMyFeedList(getUserId()))
+  }, [dispatch]);
 
   useEffect(() => {
     const menuElement = menuRef.current;
@@ -52,7 +50,8 @@ export default function MyPage() {
           <div className="text">NewJeans</div>
         </div>
 
-        <div className="category" ref={menuRef}>
+        <div className="category">
+          <div className="w-3/4 mx-auto space-between flex flex-row"ref={menuRef}>
           <div
             className={`item ${isSelected === 'feed' ? 'active' : ''}`}
             onClick={() => setIsSelected('feed')}
@@ -64,6 +63,7 @@ export default function MyPage() {
             onClick={() => setIsSelected('gallery')}
           >
             내 갤러리
+          </div>
           </div>
           <div className="indicator" style={indicatorStyle}></div>
         </div>
