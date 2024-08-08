@@ -56,7 +56,7 @@ export default function Favorite() {
     return () => {
       dispatch(resetPage());
     }
-  }, [idolOption])
+  }, [idolOption, dispatch, idolList])
 
 
   return <div className="favorite">

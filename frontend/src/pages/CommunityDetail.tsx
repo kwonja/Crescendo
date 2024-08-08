@@ -57,7 +57,7 @@ export default function CommunityDetail() {
     }
     getCommunityDetail();
 
-  }, [])
+  }, [idolGroupId])
 
   useEffect(() => {
     const menuElement = menuRef.current;
