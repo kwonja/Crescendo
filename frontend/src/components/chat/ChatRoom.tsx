@@ -158,7 +158,7 @@ export default function Chatroom() {
               {isNewDate && (
                 <div className="date">
                   <Line style={{ width: 20 }} />
-                  <div className='text-xs'>{ChatDateTransfer(messageDate)}</div>
+                  <div className="text-xs">{ChatDateTransfer(messageDate)}</div>
                   <Line />
                 </div>
               )}
@@ -181,8 +181,8 @@ export default function Chatroom() {
             onKeyDown={handleKeyDown}
           />
           <div className="send-icon">
-            <Clip className='w-5 h-5' />
-            <Submit className='w-5 h-5' onClick={HandleMessageSend} />
+            <Clip className="w-5 h-5" />
+            <Submit className="w-5 h-5" onClick={HandleMessageSend} />
           </div>
         </span>
       </div>

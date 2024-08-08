@@ -52,16 +52,16 @@ export default function NotLoginHeader() {
       </ul>
 
       <div className="header_icon">
-        <Link to="/login" onClick = {()=>handleModeClick('')}>
-          <Login className='w-8 h-8'/>
+        <Link to="/login" onClick={() => handleModeClick('')}>
+          <Login className="w-8 h-8" />
         </Link>
         <div
           className={` header_icon_div ${userMode === 'userlist' ? 'userlist' : ''}`}
           onClick={() => handleModeClick('userlist')}
         >
-          <UserList className='w-8 h-8'/>
+          <UserList className="w-8 h-8" />
         </div>
-      {userMode === 'userlist' && <NotSearchUser handleMode={setUserMode} />}
+        {userMode === 'userlist' && <NotSearchUser handleMode={setUserMode} />}
       </div>
     </div>
   );
