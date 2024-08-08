@@ -40,5 +40,6 @@ export interface communityDetailInfo {
   introduction: string;
   profile: string;
   banner: string;
+  favoriteCnt: number;
   isFavorite: boolean;
 };

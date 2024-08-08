@@ -29,11 +29,9 @@ export default function CommunityDetail() {
     introduction: '',
     profile: '',
     banner: '',
+    favoriteCnt: 0,
     isFavorite: false,
   };
-
-  // 임시데이터 나중에 api 수정되면 수정함
-  const favoriteNum = 0;
 
   const [ communityDetail, setCommunityDetail ] = useState<communityDetailInfo>(initialDetail)
   const { isLoggedIn } = useAppSelector(state => state.auth);
@@ -92,7 +90,8 @@ export default function CommunityDetail() {
       await toggleFavoriteAPI(idolGroupId);
       setCommunityDetail(prev => ({
         ...prev,
-        isFavorite: !prev.isFavorite
+        isFavorite: !prev.isFavorite,
+        favoriteCnt: prev.isFavorite?prev.favoriteCnt-1:prev.favoriteCnt+1
       }));
     } 
     catch {
@@ -109,7 +108,7 @@ export default function CommunityDetail() {
           alt={communityDetail.name}
         ></img>
         <div className="banner_name">{communityDetail.name}</div>
-        <div className="banner_favoritenum">{`${favoriteNum} Favorites`}</div>
+        <div className="banner_favoritenum">{`${communityDetail.favoriteCnt} Favorites`}</div>
         {isLoggedIn && (
           <div className="banner_starbox">
             {communityDetail.isFavorite ? (
