@@ -10,6 +10,7 @@ import { ModeState } from '../header/LoginHeader';
 import { createChatroom, getOpponent } from '../../apis/chat';
 import { AxiosError } from 'axios';
 import { followAPI } from '../../apis/follow';
+import { getUserId } from '../../apis/core';
 
 interface SearchProps {
   handleMode: (mode: ModeState) => void;
@@ -24,13 +25,13 @@ export default function SearchUser({ handleMode }: SearchProps) {
   const getUserList = async (nickname: string) => {
     try {
       const response = await UserSearchApi(0, 10, nickname);
-      console.log(response);
-      if (response.content.length > 0) {
+      const templist = response.content.filter( (list : user) => list.userId !== getUserId())
+      if (templist > 0) {
         setSearch(true);
       } else {
         setSearch(false);
       }
-      setList(() => [...response.content]);
+      setList(() => [...templist]);
     } catch (error) {
       console.error('Error fetching user list:', error);
     }

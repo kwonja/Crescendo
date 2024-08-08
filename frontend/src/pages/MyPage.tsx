@@ -6,18 +6,57 @@ import Feed from '../components/common/Feed';
 import { useAppDispatch, useAppSelector } from '../store/hooks/hook';
 import Gallery from '../components/common/Gallery';
 import { getMyFeedList } from '../features/feed/feedSlice';
+import newjeans from '../assets/images/newjeans.png';
+import { useParams } from 'react-router-dom';
+import { getUserInfoAPI } from '../apis/user';
+import { UserInfo } from '../interface/user';
 import { getUserId } from '../apis/core';
 export default function MyPage() {
   const [isSelected, setIsSelected] = useState<'feed' | 'gallery'>('feed');
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
+  const [userInfo, setUserInfo] = useState<UserInfo>({
+    profilePath: '',
+    nickname: '',
+    introduction: '',
+    followingNum: 0,
+    followerNum: 0,
+    isFollowing: false,
+    favoriteImagePath: '',
+  });
   const menuRef = useRef<HTMLDivElement>(null);
   const feedlist = useAppSelector(state => state.feed.myFeedList);
   const dispatch = useAppDispatch();
 
+  const { id } = useParams<{ id: string }>();
+  const numericId = id ? parseInt(id, 10) : NaN;
 
+
+  const setIntroduction = (introduction: string) => {
+    setUserInfo(prevUserInfo => ({
+      ...prevUserInfo,
+      introduction,
+    }));
+  };
+  const setProfileImage = (profileImage: string) => {
+    setUserInfo(prevUserInfo => ({
+      ...prevUserInfo,
+      profilePath: profileImage,
+    }));
+  };
+  const setNickname = (nickname: string) => {
+    setUserInfo(prevUserInfo => ({
+      ...prevUserInfo,
+      nickname,
+    }));
+  };
   useEffect(() => {
-    dispatch(getMyFeedList(getUserId()))
-  }, [dispatch]);
+    dispatch(getMyFeedList(numericId));
+    const getUserInfo = async()=>{
+      const response = await getUserInfoAPI(numericId,getUserId());
+      setUserInfo(response.data);
+    } 
+    getUserInfo();
+  }, [dispatch,numericId]);
 
   useEffect(() => {
     const menuElement = menuRef.current;
@@ -35,19 +74,30 @@ export default function MyPage() {
   return (
     <div className="mypage">
       <div className="mypage_left">
-        <Profile />
-        <FriendList />
+        <Profile userInfo={userInfo}
+        userId={numericId}
+        setIntroduction={setIntroduction}
+        setNickname={setNickname}
+        setProfileImage={setProfileImage}
+        />
+        <FriendList 
+        userId={numericId}
+        userInfo={userInfo}/>
       </div>
       <div className="mypage_center">
         <div className="myfavorite">
           <img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT7Gh48vV6C_LMRFTzwuoR8lD4y_K20Uf09nQ&s"
+            src={newjeans}
             alt="최애"
           />
           <div className="crown">
             <Crown />
           </div>
           <div className="text">NewJeans</div>
+          <div className='flex flex-row gap-2 mt-1'>
+          <button className='ml-auto w-32 bg-mainColor h-8 text-white flex justify-center items-center rounded-full'>이미지 업로드</button>
+          <button className='w-32 bg-subColor h-8 text-white flex justify-center items-center rounded-full'>이미지 삭제</button>
+          </div>
         </div>
 
         <div className="category">
