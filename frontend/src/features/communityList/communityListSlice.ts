@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { communityInfo, communityListResponse } from '../../interface/communityList';
-import { getCommunityListAPI } from '../../apis/communityList';
+import { getCommunityListAPI } from '../../apis/community';
 
 // 슬라이스의 상태 타입 정의
 type PromiseStatus = 'loading' | 'success' | 'failed' | '';

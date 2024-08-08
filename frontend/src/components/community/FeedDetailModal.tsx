@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { ReactComponent as HeartIcon } from '../../assets/images/Feed/heart.svg';
-import { ReactComponent as MenuIcon } from '../../assets/images/Feed/dots.svg';
+import React, { useState, useEffect } from 'react';
+import { api } from '../../apis/core';
+import { ReactComponent as HeartIcon } from '../../assets/images/Feed/white_heart.svg';
+import { ReactComponent as MenuIcon } from '../../assets/images/Feed/white_dots.svg';
 import { ReactComponent as NextButton } from '../../assets/images/Feed/next_button.svg';
 import { ReactComponent as PrevButton } from '../../assets/images/Feed/prev_button.svg';
 import '../../scss/components/community/_feeddetailmodal.scss';
@@ -26,41 +27,42 @@ type FeedDetailModalProps = {
 };
 
 const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId }) => {
-  // 임시 데이터로 기본 틀 확인
-  const feedDetail: FeedDetailResponse = {
-    userId: 1,
-    profileImagePath: 'https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg',
-    nickname: 'Nickname',
-    createdAt: '2024-08-08T12:34:56Z',
-    likeCnt: 99,
-    feedImagePathList: [
-      'https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg',
-      'https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg',
-      'https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg',
-      'https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg',
-      'https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg',
-    ],
-    content:
-      '모든 것이 주마등처럼 스쳐 지나간다. 만들면서도 2년이 이렇게 빠르게 지나갔다는게 진짜 긴가민가하네',
-    commentCnt: 21,
-    tagList: ['#뉴진스', '#2주년'],
-  };
-
+  const [feedDetail, setFeedDetail] = useState<FeedDetailResponse | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+
+  useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.log('피드 상세 요청 보냅니다!!');
+    if (show) {
+      api
+        // .get(`/api/v1/community/feed/${feedId}`)
+        .get(`/api/v1/community/feed/36`)
+        .then(response => {
+          // eslint-disable-next-line no-console
+          console.log('API response:', response.data);
+          setFeedDetail(response.data);
+        })
+        .catch(error => console.error('Error fetching feed details:', error));
+    }
+  }, [show, feedId]);
 
   const handlePrevImage = () => {
     setActiveImageIndex(prevIndex =>
-      prevIndex > 0 ? prevIndex - 1 : feedDetail.feedImagePathList.length - 1,
+      prevIndex > 0 ? prevIndex - 1 : feedDetail!.feedImagePathList.length - 1,
     );
   };
 
   const handleNextImage = () => {
     setActiveImageIndex(prevIndex =>
-      prevIndex < feedDetail.feedImagePathList.length - 1 ? prevIndex + 1 : 0,
+      prevIndex < feedDetail!.feedImagePathList.length - 1 ? prevIndex + 1 : 0,
     );
   };
 
-  if (!show) return null;
+  const getAbsolutePath = (path: string) => {
+    return `https://i11b108.p.ssafy.io/server/files/${path}`;
+  };
+
+  if (!show || !feedDetail) return null;
 
   return (
     <div className="feed-detail-modal modal-overlay">
@@ -71,7 +73,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
         <div className="feed-detail-left">
           <div className="feed-header">
             <img
-              src={feedDetail.profileImagePath}
+              src={getAbsolutePath(feedDetail.profileImagePath)}
               alt={feedDetail.nickname}
               className="profile-image"
             />
@@ -79,28 +81,35 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
               <div className="nickname">{feedDetail.nickname}</div>
               <div className="date">{new Date(feedDetail.createdAt).toLocaleString()}</div>
             </div>
-          </div>
-          <div className="feed-body">
-            {feedDetail.feedImagePathList.length > 0 && (
-              <div className="image-slider">
-                <PrevButton className="prev-button" onClick={handlePrevImage} />
-                <img src={feedDetail.feedImagePathList[activeImageIndex]} alt="Feed" />
-                <NextButton className="next-button" onClick={handleNextImage} />
-                <div className="image-counter">{`${activeImageIndex + 1} / ${feedDetail.feedImagePathList.length}`}</div>
-              </div>
-            )}
-            <div className="feed-content">{feedDetail.content}</div>
-            <div className="feed-tags">
-              {feedDetail.tagList.map((tag, index) => (
-                <span key={index} className="tag">
-                  {tag}
-                </span>
-              ))}
+            <div className="feed-icons">
+              <HeartIcon className="heart-button" />
+              <MenuIcon className="dots-button" />
             </div>
           </div>
-          <div className="feed-icons">
-            <HeartIcon />
-            <MenuIcon />
+          <div className="feed-body">
+            <div className="slider-container">
+              {feedDetail.feedImagePathList.length > 0 && (
+                <div className="image-slider">
+                  <PrevButton className="prev-button" onClick={handlePrevImage} />
+                  <img
+                    src={getAbsolutePath(feedDetail.feedImagePathList[activeImageIndex])}
+                    alt="Feed"
+                  />
+                  <NextButton className="next-button" onClick={handleNextImage} />
+                  <div className="image-counter">{`${activeImageIndex + 1} / ${feedDetail.feedImagePathList.length}`}</div>
+                </div>
+              )}
+            </div>
+            <div className="feed-content-container">
+              <div className="feed-content">{feedDetail.content}</div>
+              <div className="feed-tags">
+                {feedDetail.tagList.map((tag, index) => (
+                  <span key={index} className="tag">
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
         <div className="feed-detail-right">
