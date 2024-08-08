@@ -1,9 +1,6 @@
 package com.sokpulee.crescendo.domain.fanart.controller;
 
-import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtAddRequest;
-import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtCommentAddRequest;
-import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtCommentUpdateRequest;
-import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtUpdateRequest;
+import com.sokpulee.crescendo.domain.fanart.dto.request.*;
 import com.sokpulee.crescendo.domain.fanart.dto.response.*;
 import com.sokpulee.crescendo.domain.fanart.service.FanArtService;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedAddRequest;
@@ -63,11 +60,21 @@ public class FanArtController {
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
             @RequestParam("idol-group-id") Long idolGroupId,
             @RequestParam int page,
-            @RequestParam int size
+            @RequestParam int size,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String nickname,
+            @RequestParam(required = false) String content
     ){
+
+        FanArtSearchCondition condition = FanArtSearchCondition.builder()
+                .title(title)
+                .nickname(nickname)
+                .content(content)
+                .build();
+
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<FanArtResponse> fanArtResponsePage = fanArtService.getFanArt(loggedInUserId,idolGroupId,pageable);
+        Page<FanArtResponse> fanArtResponsePage = fanArtService.getFanArt(loggedInUserId,idolGroupId,pageable,condition);
 
         return ResponseEntity.ok(fanArtResponsePage);
     }

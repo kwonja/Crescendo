@@ -25,27 +25,22 @@ public class SignUpRequest {
     @Size(min = 3, max = 20, message = "닉네임은 3 ~ 20 자리 이어야 합니다.")
     private String nickname;
 
-    @NotNull(message = "Idol ID는 필수값 입니다.")
-    private Long idolId;
-
     @NotNull(message = "이메일 인증 아이디는 필수값 입니다.")
     private Long emailAuthId;
 
     @NotBlank(message = "랜덤 키 값은 필수값 입니다.")
     private String randomKey;
 
-    public SignUpRequest(final String email, final String password, final String nickname, final Long idolId, final Long emailAuthId, final String randomKey) {
+    public SignUpRequest(final String email, final String password, final String nickname, final Long emailAuthId, final String randomKey) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
-        this.idolId = idolId;
         this.emailAuthId = emailAuthId;
         this.randomKey = randomKey;
     }
 
-    public User toEntity(Idol idol) {
+    public User toEntity() {
         return User.builder()
-                .idol(idol)
                 .email(email)
                 .password(password)
                 .nickname(nickname)

@@ -1,11 +1,9 @@
 package com.sokpulee.crescendo.domain.feed.controller;
 
-import com.sokpulee.crescendo.domain.feed.dto.request.FeedAddRequest;
-import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentAddRequest;
-import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentUpdateRequest;
-import com.sokpulee.crescendo.domain.feed.dto.request.FeedUpdateRequest;
+import com.sokpulee.crescendo.domain.feed.dto.request.*;
 import com.sokpulee.crescendo.domain.feed.dto.response.*;
 import com.sokpulee.crescendo.domain.feed.service.FeedService;
+import com.sokpulee.crescendo.domain.goods.dto.request.GoodsSearchCondition;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -59,11 +57,18 @@ public class FeedController {
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
             @RequestParam("idol-group-id") Long idolGroupId,
             @RequestParam int page,
-            @RequestParam int size
+            @RequestParam int size,
+            @RequestParam(required = false) String nickname,
+            @RequestParam(required = false) String content
     ){
         Pageable pageable = PageRequest.of(page,size);
 
-        Page<FeedResponse> feedResponses = feedService.getFeed(loggedInUserId,idolGroupId,pageable);
+        FeedSearchCondition condition = FeedSearchCondition.builder()
+                .nickname(nickname)
+                .content(content)
+                .build();
+
+        Page<FeedResponse> feedResponses = feedService.getFeed(loggedInUserId,idolGroupId,pageable,condition);
 
         return ResponseEntity.ok(feedResponses);
     }

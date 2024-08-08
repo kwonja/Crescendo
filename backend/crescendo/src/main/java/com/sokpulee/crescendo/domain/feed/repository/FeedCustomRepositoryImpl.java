@@ -1,6 +1,8 @@
 package com.sokpulee.crescendo.domain.feed.repository;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.sokpulee.crescendo.domain.feed.dto.request.FeedSearchCondition;
 import com.sokpulee.crescendo.domain.feed.dto.response.FavoriteFeedResponse;
 import com.sokpulee.crescendo.domain.feed.dto.response.FeedResponse;
 import com.sokpulee.crescendo.domain.feed.dto.response.MyFeedResponse;
@@ -26,7 +28,7 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
     }
 
     @Override
-    public Page<FeedResponse> findFeeds(Long userId,Long idolGroupId, Pageable pageable) {
+    public Page<FeedResponse> findFeeds(Long userId, Long idolGroupId, Pageable pageable, FeedSearchCondition condition) {
         QFeed feed = QFeed.feed;
         QUser user = QUser.user;
         QFeedImage feedImage = QFeedImage.feedImage;
@@ -34,11 +36,24 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
         QFeedHashtag feedHashtag = QFeedHashtag.feedHashtag;
         QIdolGroup idolGroup = QIdolGroup.idolGroup;
 
+        // 검색 조건 추가
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        booleanBuilder.and(feed.idolGroup.id.eq(idolGroupId));
+
+        if (condition != null) {
+            if (condition.getNickname() != null && !condition.getNickname().isEmpty()) {
+                booleanBuilder.and(user.nickname.containsIgnoreCase(condition.getNickname()));
+            }
+            if (condition.getContent() != null && !condition.getContent().isEmpty()) {
+                booleanBuilder.and(feed.content.containsIgnoreCase(condition.getContent()));
+            }
+        }
+
         // 페이징 및 기본 정보 조회
         List<Feed> feedList = queryFactory
                 .selectFrom(feed)
                 .leftJoin(feed.user, user).fetchJoin()
-                .where(feed.idolGroup.id.eq(idolGroupId))
+                .where(booleanBuilder)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .distinct()
@@ -85,7 +100,7 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
         Long total = Optional.ofNullable(queryFactory
                 .select(feed.count())
                 .from(feed)
-                .where(feed.idolGroup.id.eq(idolGroupId))
+                .where(booleanBuilder)
                 .fetchOne()).orElse(0L);
 
         return new PageImpl<>(feeds, pageable, total);
