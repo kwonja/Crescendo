@@ -14,7 +14,7 @@ export default function MyPage() {
 
   const getMyFeed = async () => {
     const response = await getMyFeedAPI(0, 10);
-    console.log(response);
+    // console.log(response);
   };
 
   useEffect(() => {
