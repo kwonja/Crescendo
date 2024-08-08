@@ -8,7 +8,6 @@ import chatroomReducer from '../features/chat/chatroomSlice';
 import messagesReducer from '../features/chat/messageSlice';
 import alarmReducer from '../features/alarm/alarmSlice';
 
-
 export const store = configureStore({
   reducer: {
     auth: authReducer,

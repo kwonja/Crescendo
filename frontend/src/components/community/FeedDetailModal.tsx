@@ -23,11 +23,7 @@ type FeedDetailModalProps = {
   feedId: number;
 };
 
-const FeedDetailModal: React.FC<FeedDetailModalProps> = ({
-  show,
-  onClose,
-  feedId,
-}) => {
+const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId }) => {
   // 임시 데이터로 기본 틀 확인
   const feedDetail: FeedDetailResponse = {
     userId: 1,
@@ -42,7 +38,8 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({
       'https://i.ibb.co/3s0NMP0/126.jpg',
       'https://i.ibb.co/3s0NMP0/126.jpg',
     ],
-    content: '모든 것이 주마등처럼 스쳐 지나간다. 만들면서도 2년이 이렇게 빠르게 지나갔다는게 진짜 긴가민가하네',
+    content:
+      '모든 것이 주마등처럼 스쳐 지나간다. 만들면서도 2년이 이렇게 빠르게 지나갔다는게 진짜 긴가민가하네',
     commentCnt: 21,
     tagList: ['#뉴진스', '#2주년'],
   };
@@ -50,16 +47,14 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   const handlePrevImage = () => {
-    setActiveImageIndex((prevIndex) =>
-      prevIndex > 0 ? prevIndex - 1 : feedDetail.feedImagePathList.length - 1
+    setActiveImageIndex(prevIndex =>
+      prevIndex > 0 ? prevIndex - 1 : feedDetail.feedImagePathList.length - 1,
     );
   };
 
   const handleNextImage = () => {
-    setActiveImageIndex((prevIndex) =>
-      prevIndex < feedDetail.feedImagePathList.length - 1
-        ? prevIndex + 1
-        : 0
+    setActiveImageIndex(prevIndex =>
+      prevIndex < feedDetail.feedImagePathList.length - 1 ? prevIndex + 1 : 0,
     );
   };
 
@@ -87,10 +82,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({
                 <button className="prev-button" onClick={handlePrevImage}>
                   &lt;
                 </button>
-                <img
-                  src={feedDetail.feedImagePathList[activeImageIndex]}
-                  alt="Feed"
-                />
+                <img src={feedDetail.feedImagePathList[activeImageIndex]} alt="Feed" />
                 <button className="next-button" onClick={handleNextImage}>
                   &gt;
                 </button>
@@ -100,7 +92,9 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({
             <div className="feed-content">{feedDetail.content}</div>
             <div className="feed-tags">
               {feedDetail.tagList.map((tag, index) => (
-                <span key={index} className="tag">{tag}</span>
+                <span key={index} className="tag">
+                  {tag}
+                </span>
               ))}
             </div>
           </div>

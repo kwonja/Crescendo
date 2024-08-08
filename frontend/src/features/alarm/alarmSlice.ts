@@ -1,17 +1,17 @@
-import {  createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getAlarmAPI, getUnReadAlarmCountAPI } from "../../apis/alarm";
-import { Alarm } from "../../interface/alarm";
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { getAlarmAPI, getUnReadAlarmCountAPI } from '../../apis/alarm';
+import { Alarm } from '../../interface/alarm';
 
 export type PromiseStatus = 'loading' | 'success' | 'failed' | '';
 interface AlarmProps {
-  alramList : Alarm[];
-  unReadAlarmCount : number;
+  alramList: Alarm[];
+  unReadAlarmCount: number;
   status: PromiseStatus;
   error: string | undefined;
 }
 const inistalState: AlarmProps = {
   alramList: [],
-  unReadAlarmCount : 0,
+  unReadAlarmCount: 0,
   status: '',
   error: '',
 };
@@ -19,7 +19,6 @@ export const getAlarmList = createAsyncThunk('alarmSlice/getAlarmList', async ()
   const response = await getAlarmAPI(0, 10);
   return response;
 });
-
 
 export const getUnReadAlarmCount = createAsyncThunk('alarmSlice/getUnReadAlarmCount', async () => {
   const response = await getUnReadAlarmCountAPI();
@@ -30,12 +29,16 @@ const alarmSlice = createSlice({
   name: 'feed',
   initialState: inistalState,
   reducers: {
-    incrementUnRead: (state) => {
+    incrementUnRead: state => {
       state.unReadAlarmCount++;
     },
-    decrementUnRead: (state) => {
+    decrementUnRead: state => {
       state.unReadAlarmCount--;
     },
+    deleteAlarm : (state, action : PayloadAction<number>) =>{
+      console.log(action.payload)
+      state.alramList = state.alramList.filter(alarm => alarm.alarmId!== action.payload);
+    }
   },
   extraReducers(builder) {
     builder
@@ -53,9 +56,8 @@ const alarmSlice = createSlice({
       .addCase(getUnReadAlarmCount.fulfilled, (state, action) => {
         state.unReadAlarmCount = action.payload;
       });
-     
   },
 });
 
-export const { incrementUnRead, decrementUnRead } = alarmSlice.actions;
+export const { incrementUnRead, decrementUnRead,deleteAlarm } = alarmSlice.actions;
 export default alarmSlice.reducer;

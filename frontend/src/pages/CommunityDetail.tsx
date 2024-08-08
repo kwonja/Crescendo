@@ -144,16 +144,25 @@ export default function CommunityDetail() {
       {isLoggedIn && <WriteButton className="write-button" onClick={handleShow} />}
 
       {/* 테스트용 피드 상세 모달 열기 버튼 */}
-      <button onClick={handleShowDetail} style={{ position: 'fixed', bottom: '20px', right: '20px', padding: '10px 20px', background: '#007BFF', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+      <button
+        onClick={handleShowDetail}
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '20px',
+          padding: '10px 20px',
+          background: '#007BFF',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+        }}
+      >
         테스트용 피드 상세 모달 열기
       </button>
 
       {selectedFeedId && (
-        <FeedDetailModal
-          show={showDetail}
-          onClose={handleCloseDetail}
-          feedId={selectedFeedId}
-        />
+        <FeedDetailModal show={showDetail} onClose={handleCloseDetail} feedId={selectedFeedId} />
       )}
 
       {show && (
