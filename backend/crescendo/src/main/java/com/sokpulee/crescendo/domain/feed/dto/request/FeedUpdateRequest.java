@@ -10,8 +10,6 @@ import java.util.List;
 
 @Getter
 public class FeedUpdateRequest {
-    @NotBlank
-    private String title;
 
     @NotBlank
     private String content;
@@ -20,15 +18,11 @@ public class FeedUpdateRequest {
 
     private List<String> tagList;
 
-    @NotNull
-    private Long idolGroupId;
 
-    public FeedUpdateRequest(String title, String content, List<MultipartFile> imageList, List<String> tagList, Long idolGroupId) {
-        this.title = title;
+    public FeedUpdateRequest(String content, List<MultipartFile> imageList, List<String> tagList) {
         this.content = content;
         this.imageList = imageList;
         this.tagList = tagList;
-        this.idolGroupId = idolGroupId;
     }
 
     public List<MultipartFile> getImageList() {

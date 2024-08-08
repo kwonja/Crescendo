@@ -7,8 +7,11 @@ import com.sokpulee.crescendo.domain.user.service.auth.AuthService;
 import com.sokpulee.crescendo.global.util.jwt.JWTUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -25,8 +28,27 @@ import static org.springframework.http.HttpStatus.*;
 @Tag(name = "Authentication", description = "사용자 인증 관련 API")
 public class AuthController {
 
+    @Value("${jwt.refresh-token.expiretime}")
+    private long refreshTokenExpireTime;
+
     private final AuthService authService;
     private final JWTUtil jwtUtil;
+
+    @GetMapping("/set-cookie")
+    @Operation(summary = "쿠키 테스트용", description = "쿠키 테스트 API")
+    public String setCookie(HttpServletResponse response) {
+        // 쿠키 생성
+        Cookie cookie = new Cookie("testCookie", "testValue");
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(7 * 24 * 60 * 60); // 7일 동안 유효
+
+        // 응답에 쿠키 추가
+        response.addCookie(cookie);
+
+        return "쿠키가 설정되었습니다.";
+    }
 
     @PostMapping("/sign-up")
     @Operation(summary = "회원가입", description = "회원가입 API")
@@ -70,7 +92,8 @@ public class AuthController {
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
-                .maxAge(7 * 24 * 60 * 60) // 쿠키 유효기간 설정 (예: 7일)
+                .maxAge(refreshTokenExpireTime)
+                .sameSite("None")
                 .build();
 
         return ResponseEntity.status(OK)
@@ -92,11 +115,11 @@ public class AuthController {
     @Operation(summary = "AccessToken 재발급", description = "AccessToken 재발급 API")
     public ResponseEntity<?> refreshAccessToken(@CookieValue(value = "refreshToken", required = false) String refreshToken) {
 
-        if (refreshToken == null || !jwtUtil.checkToken(refreshToken)) {
+        if (refreshToken == null || !jwtUtil.checkRefreshToken(refreshToken)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
         }
 
-        Long userId = jwtUtil.getUserId(refreshToken);
+        Long userId = jwtUtil.getUserIdByRefreshToken(refreshToken);
         if (userId == null || !authService.isRefreshTokenValid(userId, refreshToken)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
         }
@@ -111,11 +134,11 @@ public class AuthController {
     @PostMapping("/logout")
     @Operation(summary = "로그아웃", description = "로그아웃 API")
     public ResponseEntity<?> logout(@CookieValue(value = "refreshToken", required = false) String refreshToken) {
-        if (refreshToken == null || !jwtUtil.checkToken(refreshToken)) {
+        if (refreshToken == null || !jwtUtil.checkRefreshToken(refreshToken)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
         }
 
-        Long userId = jwtUtil.getUserId(refreshToken);
+        Long userId = jwtUtil.getUserIdByRefreshToken(refreshToken);
         if (userId != null) {
             authService.deleteRefreshToken(userId);
         }

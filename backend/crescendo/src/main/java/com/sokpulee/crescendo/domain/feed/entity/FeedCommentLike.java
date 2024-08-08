@@ -3,6 +3,7 @@ package com.sokpulee.crescendo.domain.feed.entity;
 import com.sokpulee.crescendo.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,4 +22,10 @@ public class FeedCommentLike {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Builder
+    public FeedCommentLike(FeedComment feedComment, User user) {
+        this.feedComment = feedComment;
+        this.user = user;
+    }
 }

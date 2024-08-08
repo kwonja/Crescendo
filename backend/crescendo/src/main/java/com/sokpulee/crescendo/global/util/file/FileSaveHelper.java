@@ -18,4 +18,6 @@ public interface FileSaveHelper {
     String saveQuizThumbnailImage(MultipartFile thumbnailImage);
 
     String saveQuizQuestionImage(MultipartFile quizImage);
+
+    String saveDanceChallengeVideo(MultipartFile danceChallengeVideo);
 }

@@ -2,10 +2,14 @@ import { useParams } from 'react-router-dom';
 import { ReactComponent as FullStar } from '../assets/images/fullstar.svg';
 import { ReactComponent as Star } from '../assets/images/star.svg';
 import React, { useEffect, useRef, useState } from 'react';
-import SearchInput from "../components/common/SearchInput";
-import FeedList from "../components/common/FeedList";
-import GalleryList from "../components/common/GalleryList";
+import SearchInput from '../components/common/SearchInput';
 import Dropdown from "../components/common/Dropdown";
+import FeedList from '../components/common/FeedList';
+import GalleryList from '../components/common/GalleryList';
+import FeedForm from '../components/community/PostFeed';
+import GalleryForm from '../components/community/PostGallery';
+import { ReactComponent as WriteButton } from '../assets/images/write.svg';
+import FeedDetailModal from '../components/community/FeedDetailModal'; // 피드 상세 모달 임포트
 import { toggleFavoriteAPI } from '../apis/communityList';
 import { useAppSelector } from '../store/hooks/hook';
 
@@ -48,6 +52,12 @@ export default function CommunityDetail() {
   const [sortOption, setSortOption] = useState<string>('정렬');
   const [searchOption, setSearchOption] = useState<string>('검색');
 
+  const [show, setShow] = useState(false);
+  const [activeTab, setActiveTab] = useState('feed');
+  const [showDetail, setShowDetail] = useState(false);
+  const [selectedFeedId, setSelectedFeedId] = useState<number | null>(null);
+
+
   useEffect(() => {
     const menuElement = menuRef.current;
     if (menuElement) {
@@ -62,7 +72,21 @@ export default function CommunityDetail() {
     setFilterOption('필터');
     setSortOption('정렬');
     setSearchOption('검색');
-  }, [isSelected]); 
+  }, [isSelected]);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const handleCloseDetail = () => {
+    console.log('Closing detail modal');
+    setShowDetail(false);
+  };
+
+  const handleShowDetail = () => {
+    console.log('Showing detail modal');
+    setSelectedFeedId(1); // 테스트용 피드 ID를 1로 설정
+    setShowDetail(true);
+  } 
 
   const clickStar = async () => {
     setIsFavorite(prev => !prev);
@@ -106,6 +130,35 @@ export default function CommunityDetail() {
           <div className="indicator" style={indicatorStyle}></div>
         </div>
         <div className="conditionbar">
+            <div className="filter menu">
+              <Dropdown
+                className="text"
+                selected={filterOption}
+                options={["전체", "팔로우만"]}
+                onSelect={(selected)=>setFilterOption(selected)}
+              />
+            </div>
+            <div className="search">
+              <div className = "sort menu">
+                <Dropdown
+                  className="text"
+                  selected={sortOption}
+                  options={["가나다순", "최신순", "좋아요순"]}
+                  onSelect={(selected)=>setSortOption(selected)}
+                  iconPosition="left"
+                />
+              </div>
+              <div className = "search menu">
+                <Dropdown
+                  className="text"
+                  selected={searchOption}
+                  options={["제목", "작성자"]}
+                  onSelect={(selected)=>setSearchOption(selected)}
+                  iconPosition="left"
+                />
+              </div>
+              <SearchInput placeholder="여기에 입력하세요"></SearchInput>
+            </div>
           <div className="filter menu">
             <Dropdown
               className="text"
@@ -139,6 +192,53 @@ export default function CommunityDetail() {
         {isSelected === 'feed' && <FeedList />}
         {isSelected === 'gallery' && <GalleryList />}
       </div>
+
+      {isLoggedIn && <WriteButton className="write-button" onClick={handleShow} />}
+
+      {/* 테스트용 피드 상세 모달 열기 버튼 */}
+      <button onClick={handleShowDetail} style={{ position: 'fixed', bottom: '20px', right: '20px', padding: '10px 20px', background: '#007BFF', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+        테스트용 피드 상세 모달 열기
+      </button>
+
+      {selectedFeedId && (
+        <FeedDetailModal
+          show={showDetail}
+          onClose={handleCloseDetail}
+          feedId={selectedFeedId}
+        />
+      )}
+
+      {show && (
+        <div className="modal">
+          <div className="modal-content">
+            <div className="modal-header">
+              <div className="modal-header-title">
+                <h2>글작성</h2>
+              </div>
+              <div className="tabs">
+                <button
+                  className={`tab ${activeTab === 'feed' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('feed')}
+                >
+                  피드
+                </button>
+                <button
+                  className={`tab ${activeTab === 'gallery' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('gallery')}
+                >
+                  갤러리
+                </button>
+              </div>
+              <span className="close" onClick={handleClose}>
+                &times;
+              </span>
+            </div>
+            <div className="modal-body">
+              {activeTab === 'feed' ? <FeedForm /> : <GalleryForm />}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

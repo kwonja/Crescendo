@@ -1,7 +1,7 @@
 package com.sokpulee.crescendo.domain.user.service.auth;
 
 import com.sokpulee.crescendo.domain.idol.entity.Idol;
-import com.sokpulee.crescendo.domain.idol.repository.IdolRepository;
+import com.sokpulee.crescendo.domain.idol.repository.idol.IdolRepository;
 import com.sokpulee.crescendo.domain.user.dto.request.auth.*;
 import com.sokpulee.crescendo.domain.user.dto.response.auth.EmailRandomKeyResponse;
 import com.sokpulee.crescendo.domain.user.entity.EmailAuth;
@@ -33,10 +33,7 @@ public class AuthServiceImpl implements AuthService {
 
         authenticateEmail(signUpRequest.getEmailAuthId(), signUpRequest.getRandomKey());
 
-        Idol idol = idolRepository.findById(signUpRequest.getIdolId())
-                .orElseThrow(IdolNotFoundException::new);
-
-        User user = signUpRequest.toEntity(idol);
+        User user = signUpRequest.toEntity();
         user.encryptPassword(enctyptHelper);
 
         userRepository.save(user);

@@ -28,9 +28,6 @@ public class Feed extends TimeStampedEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(length = 50)
-    private String title;
-
     @Column(length = 500)
     private String content;
 
@@ -45,10 +42,9 @@ public class Feed extends TimeStampedEntity {
     private List<FeedImage> imageList = new ArrayList<>();
 
     @Builder
-    public Feed(IdolGroup idolGroup, User user, String title, String content,Integer likeCnt, Integer commentCnt) {
+    public Feed(IdolGroup idolGroup, User user, String content,Integer likeCnt, Integer commentCnt) {
         this.idolGroup = idolGroup;
         this.user = user;
-        this.title = title;
         this.content = content;
         this.likeCnt = likeCnt;
         this.commentCnt = commentCnt;
@@ -64,9 +60,25 @@ public class Feed extends TimeStampedEntity {
         image.changeFeed(this);
     }
 
-    public void changeFeed(IdolGroup idolGroup, String title, String content) {
-        this.idolGroup = idolGroup;
-        this.title = title;
+    public List<String> getImagePathList(List<FeedImage> imageList){
+        List<String> list = new ArrayList<>();
+
+        for (FeedImage feedImage : imageList) {
+            list.add(feedImage.getImagePath());
+        }
+        return list;
+    }
+
+    public List<String> getTagList(List<FeedHashtag> hashtagList){
+        List<String> list = new ArrayList<>();
+
+        for (FeedHashtag hashtag : hashtagList) {
+            list.add(hashtag.getTag());
+        }
+        return list;
+    }
+
+    public void changeFeed(String content) {
         this.content = content;
     }
 
@@ -80,7 +92,7 @@ public class Feed extends TimeStampedEntity {
 
     public void plusCommentCnt(){commentCnt++; }
 
-    public void minusCommentCnt(){commentCnt--; }
+    public void minusCommentCnt(int replyCnt){commentCnt-= replyCnt + 1; }
 
 
 }

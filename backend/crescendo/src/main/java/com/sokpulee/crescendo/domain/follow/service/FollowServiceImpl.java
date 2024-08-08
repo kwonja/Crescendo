@@ -1,5 +1,6 @@
 package com.sokpulee.crescendo.domain.follow.service;
 
+import com.sokpulee.crescendo.domain.alarm.service.AlarmService;
 import com.sokpulee.crescendo.domain.follow.dto.UserDto;
 import com.sokpulee.crescendo.domain.follow.dto.request.FollowRequest;
 import com.sokpulee.crescendo.domain.follow.dto.response.FollowerListResponse;
@@ -23,6 +24,7 @@ public class FollowServiceImpl implements FollowService {
 
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
+    private final AlarmService alarmService;
 
     @Override
     public void follow(Long loggedInUserId, FollowRequest followRequest) {
@@ -39,6 +41,8 @@ public class FollowServiceImpl implements FollowService {
                 .build();
 
         followRepository.save(follow);
+
+        alarmService.followAlarm(loggedInUser.getId(), followUser.getId(), loggedInUser.getId());
     }
 
     @Override

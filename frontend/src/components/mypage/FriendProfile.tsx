@@ -1,14 +1,17 @@
 import React from 'react';
-import { follow } from '../../interface/follow';
+import { user } from '../../interface/user';
+import { IMAGE_BASE_URL } from '../../apis/core';
 
-interface FriendProps {
-  follow: follow;
+interface UserProps {
+  user: user;
 }
-export default function FriendProfile({ follow }: FriendProps) {
-  const { nickname, profilePath } = follow;
+
+export default function FriendProfile({ user }: UserProps) {
+  const { nickname, userProfilePath } = user;
+
   return (
     <div className="friendprofile">
-      <img src={profilePath} alt="유저 프로필" />
+      <img src={`${IMAGE_BASE_URL}${userProfilePath}`} alt="유저 프로필" />
       <span>{nickname}</span>
     </div>
   );

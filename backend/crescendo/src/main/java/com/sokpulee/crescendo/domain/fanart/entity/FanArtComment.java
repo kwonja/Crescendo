@@ -31,15 +31,27 @@ public class FanArtComment extends TimeStampedEntity {
     @Column(length = 200)
     private String content;
 
+    private int likeCnt;
+
+    private int replyCnt;
+
     @Builder
-    public FanArtComment(FanArt fanArt, FanArtComment parentFanArtComment, User user, String content) {
+    public FanArtComment(FanArt fanArt, FanArtComment parentFanArtComment, User user, String content, int likeCnt, int replyCnt) {
         this.fanArt = fanArt;
         this.parentFanArtComment = parentFanArtComment;
         this.user = user;
         this.content = content;
+        this.likeCnt = likeCnt;
+        this.replyCnt = replyCnt;
     }
 
-    public void changeComment(String content){
-        this.content = content;
-    }
+    public void changeComment(String content){ this.content = content; }
+
+    public void minusLikeCnt(){ likeCnt--; }
+
+    public void plusLikeCnt(){ likeCnt++; }
+
+    public void plusReplyCnt(){ replyCnt++; }
+
+    public void minusReplyCnt(){ replyCnt--; }
 }

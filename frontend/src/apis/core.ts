@@ -1,13 +1,14 @@
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-
-export const BASE_URL = 'http://i11b108.p.ssafy.io:8000';
+// export const BASE_URL = 'http://i11b108.p.ssafy.io:8000';
+export const BASE_URL = 'https://i11b108.p.ssafy.io/server';
+export const IMAGE_BASE_URL = 'https://i11b108.p.ssafy.io/server/files/';
 
 const config = {
   baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
 };
 
 // axios 인스턴스 생성
@@ -31,36 +32,43 @@ export const setUserId = (Id: number) => {
 // 엑세스 토큰 설정 함수
 export const setAccessToken = (token: string | null) => {
   accessToken = token;
-  if (token) {
-    Authapi.defaults.headers.common.Authorization = `Bearer ${token}`;
-  } else {
-    delete Authapi.defaults.headers.common.Authorization;
+};
+
+// 리프레쉬 토큰을 사용한 엑세스 토큰 재발급
+export const refreshAccessToken = async (): Promise<string | null> => {
+  try {
+    const response = await api.post(
+      `${BASE_URL}/api/v1/auth/refresh-token`,
+      {},
+      { withCredentials: true },
+    );
+    const newAccessToken = response.headers.authorization.split(' ')[1];
+    setAccessToken(newAccessToken);
+    return newAccessToken;
+  } catch (error) {
+    return null;
   }
 };
 
 // Authapi 인스턴스에 요청 인터셉터 추가
-Authapi.interceptors.request.use(
-  config => {
-    if (accessToken) {
-      config.headers.common.Authorization = `Bearer ${accessToken}`;
-    }
-    return config;
-  },
-  error => Promise.reject(error),
-);
+Authapi.interceptors.request.use(config => {
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
+  }
+  return config;
+});
 
 // 응답 인터셉터 설정 (엑세스 토큰 갱신)
 Authapi.interceptors.response.use(
   response => response,
   async error => {
     const originalRequest = error.config;
-    const navigate = useNavigate();
     // 401 Unauthorized 에러 발생 시 처리
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true; // 재시도를 방지하기 위한 플래그 설정
       try {
         // 리프레시 토큰을 사용하여 새로운 엑세스 토큰 발급 요청
-        const response = await axios.post(
+        const response = await api.post(
           `${BASE_URL}/api/v1/auth/refresh-token`,
           {},
           { withCredentials: true },
@@ -71,8 +79,8 @@ Authapi.interceptors.response.use(
         return Authapi(originalRequest); // 원래의 요청을 새로운 엑세스 토큰으로 재시도
       } catch (refreshError) {
         // 리프레시 토큰도 만료된 경우
-        alert('세션이 만료되었습니다. 다시 로그인해 주세요.');
-        navigate('/login'); // 로그인 페이지로 리디렉션
+        alert('로그인이 필요한 서비스입니다.');
+        window.location.href = '/login'; // 로그인 페이지로 리디렉션
         return Promise.reject(refreshError);
       }
     }

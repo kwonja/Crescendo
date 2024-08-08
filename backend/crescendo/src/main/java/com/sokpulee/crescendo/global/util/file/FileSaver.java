@@ -25,6 +25,7 @@ public class FileSaver implements FileSaveHelper {
     private final String FAVORITE_RANK_DIR = "favoriteRank";
     private final String QUIZ_THUMBNAIL_DIR = "quizThumbnail";
     private final String QUIZ_QUESTION_DIR = "quizQuestion";
+    private final String DANCE_CHALLENGE_DIR = "danceChallenge";
 
     @Override
     public void deleteFile(String filePath) {
@@ -63,6 +64,11 @@ public class FileSaver implements FileSaveHelper {
     @Override
     public String saveQuizQuestionImage(MultipartFile quizImage) {
         return saveFile(quizImage, QUIZ_QUESTION_DIR);
+    }
+
+    @Override
+    public String saveDanceChallengeVideo(MultipartFile danceChallengeVideo) {
+        return saveFile(danceChallengeVideo, DANCE_CHALLENGE_DIR);
     }
 
     public String saveFile(MultipartFile profileImage, String dir) {
