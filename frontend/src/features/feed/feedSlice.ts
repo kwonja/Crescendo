@@ -11,6 +11,7 @@ interface FeedProps {
   status: PromiseStatus;
   error: string | undefined;
 }
+
 const inistalState: FeedProps = {
   myFeedList: [],
   status: '',

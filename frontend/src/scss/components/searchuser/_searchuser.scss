@@ -1,6 +1,6 @@
 .searchuser {
-  width: 330px;
-  height: 500px;
+  width: 260px;
+  height: 400px;
   box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
   border-radius: 10px 10px 10px 10px;
   background: #fea3a3;
@@ -9,7 +9,7 @@
   flex-direction: column;
   padding-top: 15px;
   position: absolute;
-  top: 68px;
+  top: 64px;
   left: 0px;
   z-index: 1000;
   &_item {
@@ -18,7 +18,7 @@
 }
 
 .searchuser_item::-webkit-scrollbar {
-  width: 12px; /* 스크롤바의 너비 */
+  width: 11px; /* 스크롤바의 너비 */
 }
 
 .searchuser_item::-webkit-scrollbar-thumb {
@@ -30,4 +30,23 @@
 .searchuser_item::-webkit-scrollbar-track {
   background-color: #fea3a3; /* 스크롤바 배경 색상 */
   border-radius: 6px; /* 스크롤바 배경의 모서리 둥글게 */
+}
+
+.notloginsearchuser {
+  width: 260px;
+  height: 400px;
+  box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  border-radius: 10px 0px 10px 10px;
+  background: #fea3a3;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding-top: 15px;
+  position: absolute;
+  top: 64px;
+  right: 0px;
+  z-index: 1000;
+  &_item {
+    overflow-y: scroll;
+  }
 }

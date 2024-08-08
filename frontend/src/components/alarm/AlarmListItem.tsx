@@ -42,7 +42,7 @@ export default function AlarmListItem({ alarm }: AlarmItemProps) {
   return (
     <div className="alarmlistitem" onClick={() => handleReadAlarm(alarmId)}>
       {info?.profilePath ? (
-        <div className="m-1.5 h-12 w-12">
+        <div className="m-1.5 h-10 w-10">
           <img
             src={`${IMAGE_BASE_URL}${info.profilePath}`}
             alt="프로필"
@@ -50,7 +50,7 @@ export default function AlarmListItem({ alarm }: AlarmItemProps) {
           />
         </div>
       ) : (
-        <div className="m-1.5 w-12 h-12">
+        <div className="m-1.5 w-10 h-10">
           <User className="w-full h-full" />
         </div>
       )}
@@ -59,9 +59,9 @@ export default function AlarmListItem({ alarm }: AlarmItemProps) {
           <div className="nickname">{info?.nickname}</div>
           <div>{Channel(alarmChannelId)}</div>
         </div>
-        <div className="content w-full">{content}</div>
+        <div className="content w-11/12">{content}</div>
       </div>
-      <div className="cursor-pointer" onClick={() => handleDeleteAlarm(alarmId)}>
+      <div className="cursor-pointer text-sm" onClick={() => handleDeleteAlarm(alarmId)}>
         삭제
       </div>
       <div className="lastchattime">{timeAgo(createdAt)}</div>

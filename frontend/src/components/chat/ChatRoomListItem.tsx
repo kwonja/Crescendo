@@ -14,7 +14,7 @@ export default function ChatRoomListItem({ room, HandleClick }: ChatRoomItemProp
   return (
     <div className="chatroomlistitem" onClick={() => HandleClick(room)}>
       {opponentProfilePath ? (
-        <div className="m-1.5 h-12 w-12">
+        <div className="m-1.5 h-10 w-10">
           <img
             src={`${IMAGE_BASE_URL}${opponentProfilePath}`}
             alt="프로필"
@@ -22,7 +22,7 @@ export default function ChatRoomListItem({ room, HandleClick }: ChatRoomItemProp
           />
         </div>
       ) : (
-        <div className="m-1.5 w-12 h-12">
+        <div className="m-1.5 h-10 w-10">
           <User className="w-full h-full" />
         </div>
       )}

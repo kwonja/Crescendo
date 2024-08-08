@@ -11,8 +11,7 @@ export default function SEEHandler() {
     const connectSSE = () => {
       sse.current = new EventSource(`${BASE_URL}/sse/connect/${getUserId()}`);
 
-      sse.current.addEventListener('connect', (e: Event) => {
-      });
+      sse.current.addEventListener('connect', (e: Event) => {});
 
       sse.current.addEventListener('alarm', (e: Event) => {
         dispatch(getAlarmList());

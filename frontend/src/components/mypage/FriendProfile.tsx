@@ -12,7 +12,7 @@ export default function FriendProfile({ user }: UserProps) {
   return (
     <div className="friendprofile">
       <img src={`${IMAGE_BASE_URL}${userProfilePath}`} alt="유저 프로필" />
-      <span>{nickname}</span>
+      <div className='friendprofile_nickname'>{nickname}</div>
     </div>
   );
 }

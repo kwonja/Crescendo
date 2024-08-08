@@ -1,6 +1,6 @@
 .chatlayout {
-  width: 330px;
-  height: 500px;
+  width: 260px;
+  height: 400px;
   box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
   border-radius: 0px 10px 10px 10px;
   background: #fea3a3;
@@ -9,16 +9,16 @@
   flex-direction: column;
   padding-top: 15px;
   position: absolute;
-  top: 68px;
+  top: 64px;
   left: 0px;
   z-index: 1000;
 
   .title {
-    width: 300px;
+    width: 90%;
     height: 50px;
     margin: 0 auto;
     color: #fff;
-    font-size: 30px;
+    font-size: 20px;
     border-bottom: 1px solid #fff;
   }
   .chatroomlist {
@@ -31,7 +31,7 @@
 }
 
 .chatroomlist::-webkit-scrollbar {
-  width: 12px; /* 스크롤바의 너비 */
+  width: 11px; /* 스크롤바의 너비 */
 }
 
 .chatroomlist::-webkit-scrollbar-thumb {

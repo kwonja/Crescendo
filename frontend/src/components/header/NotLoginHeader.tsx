@@ -2,12 +2,17 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ReactComponent as Login } from '../../assets/images/login.svg';
 import { ReactComponent as UserList } from '../../assets/images/userlist.svg';
 import { Link, NavLink, useLocation } from 'react-router-dom';
+import { ModeState } from './LoginHeader';
+import NotSearchUser from '../userlist/NotSearchUser';
 
 export default function NotLoginHeader() {
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
+  const [userMode, setUserMode] = useState<ModeState>('');
   const menuRef = useRef<HTMLUListElement>(null);
   const location = useLocation();
-
+  const handleModeClick = (mode: ModeState) => {
+    setUserMode(prevMode => (prevMode === mode ? '' : mode));
+  };
   useEffect(() => {
     const menuElement = menuRef.current;
     if (menuElement) {
@@ -47,12 +52,16 @@ export default function NotLoginHeader() {
       </ul>
 
       <div className="header_icon">
-        <Link to="/login">
-          <Login />
+        <Link to="/login" onClick = {()=>handleModeClick('')}>
+          <Login className='w-8 h-8'/>
         </Link>
-        <Link to="/">
-          <UserList />
-        </Link>
+        <div
+          className={` header_icon_div ${userMode === 'userlist' ? 'userlist' : ''}`}
+          onClick={() => handleModeClick('userlist')}
+        >
+          <UserList className='w-8 h-8'/>
+        </div>
+      {userMode === 'userlist' && <NotSearchUser handleMode={setUserMode} />}
       </div>
     </div>
   );

@@ -16,14 +16,14 @@
     justify-content: center;
     color: #fff;
     text-align: center;
-    font-size: 42px;
+    font-size: 40px;
   }
 
   &_menu {
     display: flex;
     flex-direction: row;
     gap: 30px;
-    font-size: 28px;
+    font-size: 24px;
     color: #fff;
     a {
       text-decoration: none;
@@ -35,7 +35,7 @@
       position: relative;
     }
     .active {
-      font-size: 32px;
+      font-size: 26px;
     }
   }
   .indicator {
@@ -52,7 +52,7 @@
     height: 80px;
     display: flex;
     flex-direction: row;
-    gap: 30px;
+    gap: 20px;
     justify-content: center;
     align-items: center;
     margin-right: 30px;
@@ -60,8 +60,8 @@
     position: relative;
 
     &_div {
-      width: 60px;
-      height: 60px;
+      width: 50px;
+      height: 50px;
       display: flex;
       justify-content: center;
       align-items: center;

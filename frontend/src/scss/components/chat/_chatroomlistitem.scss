@@ -1,6 +1,6 @@
 .chatroomlistitem {
   width: 95%;
-  height: 90px;
+  height: 80px;
   margin: 0 auto;
   border-bottom: 1px solid #fff;
   position: relative;
@@ -16,11 +16,11 @@
   .content {
     display: flex;
     flex-direction: column;
-    font-size: 20px;
+    font-size: 16px;
     gap: 5px;
     margin-left: 5px;
     .lastchat {
-      font-size: 18px;
+      font-size: 16px;
       overflow: hidden;
       text-overflow: ellipsis;
       display: -webkit-box;
@@ -32,7 +32,7 @@
     position: absolute;
     top: 10px;
     right: 10px;
-    font-size: 15px;
+    font-size: 14px;
     color: #fff;
   }
 }

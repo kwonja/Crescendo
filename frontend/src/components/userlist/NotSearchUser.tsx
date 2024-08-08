@@ -15,7 +15,7 @@ interface SearchProps {
   handleMode: (mode: ModeState) => void;
 }
 
-export default function SearchUser({ handleMode }: SearchProps) {
+export default function NotSearchUser({ handleMode }: SearchProps) {
   const [lists, setList] = useState<user[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
   const [isSearch, setSearch] = useState<boolean>(true);
@@ -93,7 +93,7 @@ export default function SearchUser({ handleMode }: SearchProps) {
   };
 
   return (
-    <div className="searchuser">
+    <div className="notloginsearchuser">
       <SearchInput placeholder="유저를 검색하세요" onChange={OnchangeHandler} value={inputValue} />
       <div className="searchuser_item w-full">
         {lists.length === 0 && !isSearch ? <div>검색하신 유저가 없습니다.</div> : null}
