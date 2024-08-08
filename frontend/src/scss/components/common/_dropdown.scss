@@ -1,0 +1,43 @@
+.dropdown {
+    position: relative;
+    display: inline-block;
+
+    &_head {
+        color: #bbbbbb;
+        padding: 10px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        &:hover {
+            background-color:#f1f1f1;
+        }
+    }
+    
+    &_icon {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+    
+    &_list {
+        position: absolute;
+        max-height: 200px;
+        overflow-y: auto;
+        background-color: #fff;
+        z-index: 1;
+        min-width: 100%;
+
+        &_item {
+            padding: 10px;
+            cursor: pointer;
+
+            &:hover {
+                background-color: #f1f1f1;  
+            }
+        }
+    }
+}
+  
+  
+  
