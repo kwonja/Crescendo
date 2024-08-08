@@ -24,7 +24,7 @@ export default function SearchUser({ handleMode }: SearchProps) {
   const getUserList = async (nickname: string) => {
     try {
       const response = await UserSearchApi(0, 10, nickname);
-      console.log(response);
+      // console.log(response);
       if (response.content.length > 0) {
         setSearch(true);
       } else {
@@ -84,11 +84,11 @@ export default function SearchUser({ handleMode }: SearchProps) {
 
   const HandleFollowClick = async (userId: number) => {
     try {
-      const response = await followAPI(userId);
-      console.log(response);
+      await followAPI(userId);
+      // console.log(response);
       alert('팔로우가 되었습니다');
     } catch (err: unknown) {
-      console.log(err);
+      // console.log(err);
     }
   };
 

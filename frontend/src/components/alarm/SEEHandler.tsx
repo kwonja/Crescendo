@@ -16,18 +16,18 @@ export default function SEEHandler() {
           sse.current = new EventSource(`${BASE_URL}/sse/connect/${getUserId()}`);
     
           sse.current.addEventListener('connect', (e: Event) => {
-            const { data } = e as MessageEvent;
-            console.log(data);
+            // const { data } = e as MessageEvent;
+            // console.log(data);
           });
     
           sse.current.addEventListener('alarm', (e: Event) => {
-            const { data } = e as MessageEvent;
-            console.log(data);
+            // const { data } = e as MessageEvent;
+            // console.log(data);
             dispatch(incrementUnRead());
           });
     
           sse.current.onerror = () => {
-            console.log("에러요~")
+            // console.log("에러요~")
             sse.current?.close();
             setTimeout(() => {
               if (isLoggedIn) connectSSE();
@@ -36,7 +36,7 @@ export default function SEEHandler() {
         };
     
         if (isLoggedIn) {
-            console.log('실행');
+            // console.log('실행');
           connectSSE();
         }
     

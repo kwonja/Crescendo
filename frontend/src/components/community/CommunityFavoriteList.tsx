@@ -4,7 +4,7 @@ import { ReactComponent as RightBtn } from '../../assets/images/right.svg';
 import { ReactComponent as LeftBtn } from '../../assets/images/left.svg';
 import CommunityCard from './CommunityCard';
 import { communityInfo } from '../../interface/communityList';
-import { getFavoriteListAPI } from '../../apis/communityList';
+import { getFavoriteListAPI } from '../../apis/community';
 
 export default function CommunityFavoriteList() {
   // 상수 또는 변수(상태) 초기화

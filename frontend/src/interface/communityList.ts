@@ -32,3 +32,13 @@ export interface communityListResponse {
   numberOfElements: number;
   empty: boolean;
 }
+
+export interface communityDetailInfo {
+  idolGroupId: number;
+  name: string;
+  peopleNum: number;
+  introduction: string;
+  profile: string;
+  banner: string;
+  isFavorite: boolean;
+};
