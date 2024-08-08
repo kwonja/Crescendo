@@ -12,7 +12,7 @@ import { ReactComponent as WriteButton } from '../assets/images/write.svg';
 import FeedDetailModal from '../components/community/FeedDetailModal'; // 피드 상세 모달 임포트
 import { getCommunityDetailAPI, toggleFavoriteAPI } from '../apis/community';
 import { useAppSelector } from '../store/hooks/hook';
-import { communityDetailInfo } from '../interface/communityList';
+import { CommunityDetailInfo } from '../interface/communityList';
 
 
 export default function CommunityDetail() {
@@ -22,20 +22,18 @@ export default function CommunityDetail() {
   }
   const idolGroupId: number = Number(params.idolGroupId);
 
-  const initialDetail: communityDetailInfo = {
+  const initialDetail: CommunityDetailInfo = {
     idolGroupId: 0,
     name: '',
     peopleNum: 0,
     introduction: '',
     profile: '',
     banner: '',
+    favoriteCnt: 0,
     isFavorite: false,
   };
 
-  // 임시데이터 나중에 api 수정되면 수정함
-  const favoriteNum = 0;
-
-  const [ communityDetail, setCommunityDetail ] = useState<communityDetailInfo>(initialDetail)
+  const [ communityDetail, setCommunityDetail ] = useState<CommunityDetailInfo>(initialDetail)
   const { isLoggedIn } = useAppSelector(state => state.auth);
   const [isSelected, setIsSelected] = useState<'feed' | 'gallery'>('feed');
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
@@ -92,7 +90,8 @@ export default function CommunityDetail() {
       await toggleFavoriteAPI(idolGroupId);
       setCommunityDetail(prev => ({
         ...prev,
-        isFavorite: !prev.isFavorite
+        isFavorite: !prev.isFavorite,
+        favoriteCnt: prev.isFavorite?prev.favoriteCnt-1:prev.favoriteCnt+1
       }));
     } 
     catch {
@@ -109,7 +108,7 @@ export default function CommunityDetail() {
           alt={communityDetail.name}
         ></img>
         <div className="banner_name">{communityDetail.name}</div>
-        <div className="banner_favoritenum">{`${favoriteNum} Favorites`}</div>
+        <div className="banner_favoritenum">{`${communityDetail.favoriteCnt} Favorites`}</div>
         {isLoggedIn && (
           <div className="banner_starbox">
             {communityDetail.isFavorite ? (

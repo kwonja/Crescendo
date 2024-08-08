@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { PromiseStatus } from '../follow/followerSlice';
-import { favoriteRankInfo, favoriteRankListResponse } from '../../interface/favorite';
+import { FavoriteRankInfo, FavoriteRankListResponse } from '../../interface/favorite';
 import { getFavoriteRankListAPI, voteFavoriteRankAPI } from '../../apis/favorite';
 import { RootState } from '../../store/store';
 
-interface favoriteState {
-  favoriteRankList: favoriteRankInfo[];
+interface FavoriteState {
+  favoriteRankList: FavoriteRankInfo[];
   status: PromiseStatus;
   error: string | null;
   page: number;
@@ -14,7 +14,7 @@ interface favoriteState {
   sortByVotes: boolean;
 }
 
-const initialState: favoriteState = {
+const initialState: FavoriteState = {
   favoriteRankList: [],
   status: '',
   error: null,
@@ -25,7 +25,7 @@ const initialState: favoriteState = {
 };
 
 // 전체 커뮤니티 리스트 가져오는 함수
-export const getFavoriteRankList = createAsyncThunk<favoriteRankListResponse,void,{state:RootState}>(
+export const getFavoriteRankList = createAsyncThunk<FavoriteRankListResponse,void,{state:RootState}>(
   'favoriteRankList/getFavoriteRankList',
   async (_, thunkAPI) => {
     const state = thunkAPI.getState().favorite;
@@ -80,7 +80,7 @@ const favoriteSlice = createSlice({
       })
       .addCase(
         getFavoriteRankList.fulfilled,
-        (state, action: PayloadAction<favoriteRankListResponse>) => {
+        (state, action: PayloadAction<FavoriteRankListResponse>) => {
           state.status = 'success';
           state.hasMore = !action.payload.last;
           state.favoriteRankList = [...state.favoriteRankList, ...action.payload.content];

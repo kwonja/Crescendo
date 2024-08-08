@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react"
-import { bestPhotoInfo } from "../../interface/favorite";
+import { BestPhotoInfo } from "../../interface/favorite";
 import { getBestPhotoListAPI } from "../../apis/favorite";
 import { IMAGE_BASE_URL } from "../../apis/core";
 import { useAppSelector } from "../../store/hooks/hook";
 
 export default function BestPhotoSlide () {
-    const [bestPhotoList, setBestPhotoList] = useState<bestPhotoInfo[]>([]);
+    const [bestPhotoList, setBestPhotoList] = useState<BestPhotoInfo[]>([]);
     const [animationDuration, setAnimationDuration] = useState<number>(10);
     const [isAnimationActive, setIsAnimationActive] = useState<boolean>(false);
     const favoriteRankList = useAppSelector(state => state.favorite).favoriteRankList;
