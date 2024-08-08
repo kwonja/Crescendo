@@ -12,7 +12,7 @@ import { ReactComponent as WriteButton } from '../assets/images/write.svg';
 import FeedDetailModal from '../components/community/FeedDetailModal'; // 피드 상세 모달 임포트
 import { getCommunityDetailAPI, toggleFavoriteAPI } from '../apis/community';
 import { useAppSelector } from '../store/hooks/hook';
-import { communityDetailInfo } from '../interface/communityList';
+import { CommunityDetailInfo } from '../interface/communityList';
 
 
 export default function CommunityDetail() {
@@ -22,7 +22,7 @@ export default function CommunityDetail() {
   }
   const idolGroupId: number = Number(params.idolGroupId);
 
-  const initialDetail: communityDetailInfo = {
+  const initialDetail: CommunityDetailInfo = {
     idolGroupId: 0,
     name: '',
     peopleNum: 0,
@@ -33,7 +33,7 @@ export default function CommunityDetail() {
     isFavorite: false,
   };
 
-  const [ communityDetail, setCommunityDetail ] = useState<communityDetailInfo>(initialDetail)
+  const [ communityDetail, setCommunityDetail ] = useState<CommunityDetailInfo>(initialDetail)
   const { isLoggedIn } = useAppSelector(state => state.auth);
   const [isSelected, setIsSelected] = useState<'feed' | 'gallery'>('feed');
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});

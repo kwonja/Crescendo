@@ -1,4 +1,4 @@
-export interface favoriteRankInfo {
+export interface FavoriteRankInfo {
     writerId: number,
     writerNickname: string,
 	writerProfilePath: string | null,
@@ -9,8 +9,8 @@ export interface favoriteRankInfo {
     createdAt: string
 }
 
-export interface favoriteRankListResponse {
-    content: favoriteRankInfo[],
+export interface FavoriteRankListResponse {
+    content: FavoriteRankInfo[],
     pageable:
     {
 		sort: {
@@ -34,17 +34,17 @@ export interface favoriteRankListResponse {
 	empty: boolean
 }
 
-export interface idolGroupInfo {
+export interface IdolGroupInfo {
 	groupId: number;
 	groupName: string;
   };
   
-export interface idolInfo {
+export interface IdolInfo {
 idolId: number;
 idolName: string;
 };
 
-export interface bestPhotoInfo {
+export interface BestPhotoInfo {
 	idolId: number;
 	idolGroupName: string;
 	idolName: string;

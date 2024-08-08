@@ -1,8 +1,8 @@
 import React from 'react';
-import { communityInfo } from '../../interface/communityList';
+import { CommunityInfo } from '../../interface/communityList';
 import { Link } from 'react-router-dom';
 
-export default function CommunityCard({ idolGroupId, name, profile }: communityInfo) {
+export default function CommunityCard({ idolGroupId, name, profile }: CommunityInfo) {
   return (
     <Link to={`${idolGroupId}`}>
       <div className="communitycard">
