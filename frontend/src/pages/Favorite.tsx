@@ -23,6 +23,9 @@ export default function Favorite() {
       setIdolGroupList(response);
     }
     getIdolGroupList();
+    return () => {
+      setIdolGroupOption('그룹');
+    }
   }, [])
 
   //멤버 리스트 가져오기
@@ -31,7 +34,6 @@ export default function Favorite() {
       setIdolList([]);
       return;
     }
-    setIdolOption('멤버');
     const selectedGroupId = idolGroupList.find((group)=> group.groupName===idolGroupOption)?.groupId;
     if (!selectedGroupId) throw new Error('not found idol group');
     const getIdolList = async (groupId:number) => {
@@ -39,16 +41,20 @@ export default function Favorite() {
       setIdolList(response);
     }
     getIdolList(selectedGroupId);
-  
+    return () => {
+      setIdolOption('멤버');
+    }
   }, [idolGroupOption, idolGroupList])
 
   // 최애 자랑 리스트 가져오기
   useEffect(()=>{
-    dispatch(resetPage());
     const selectedIdolId = idolList.find((idol)=> idol.idolName===idolOption)?.idolId;
     if (selectedIdolId) {
       dispatch(setIdolId(selectedIdolId));
       dispatch(getFavoriteRankList());
+    }
+    return () => {
+      dispatch(resetPage());
     }
   }, [idolOption])
 
