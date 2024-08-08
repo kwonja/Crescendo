@@ -10,7 +10,7 @@ import FeedForm from '../components/community/PostFeed';
 import GalleryForm from '../components/community/PostGallery';
 import { ReactComponent as WriteButton } from '../assets/images/write.svg';
 import FeedDetailModal from '../components/community/FeedDetailModal'; // 피드 상세 모달 임포트
-import { toggleFavoriteAPI } from '../apis/communityList';
+import { toggleFavoriteAPI } from '../apis/community';
 import { useAppSelector } from '../store/hooks/hook';
 
 type communityDetailInfoType = {
