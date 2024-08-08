@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { FeedInfo, FeedListResponse, getFeedListParams } from '../../interface/feed';
-import { getCommunityFeedListAPI } from '../../apis/feed';
+import { getCommunityFeedListAPI, toggleFeedLikeAPI } from '../../apis/feed';
 import { PromiseStatus } from './feedSlice';
 import { RootState } from '../../store/store';
 
@@ -9,6 +9,7 @@ interface CommunityFeedState {
   status: PromiseStatus;
   error: string | undefined;
   page: number;
+  hasMore: boolean;
   filterCondition: string;
   sortCondition: string;
   searchCondition: string;
@@ -19,18 +20,20 @@ const initialState: CommunityFeedState = {
   status: '',
   error: '',
   page: 0,
+  hasMore: true,
   filterCondition: '필터',
   sortCondition: '정렬',
   searchCondition: '검색',
   keyword: ''
 };
 
+// 피드 가져오기
 export const getFeedList = createAsyncThunk<FeedListResponse,number,{state:RootState}>(
     'communityFeedSlice/getFeedList',
     async (idolGroupId, thunkAPI) => {
         const { page, filterCondition, sortCondition, searchCondition, keyword } = thunkAPI.getState().communityFeed;
         const params:getFeedListParams = {
-          idolGroupId,
+          'idol-group-id': idolGroupId,
           page,
           size:3,
           nickname: '',
@@ -43,6 +46,20 @@ export const getFeedList = createAsyncThunk<FeedListResponse,number,{state:RootS
         return response;
 });
 
+// 피드 하트 클릭
+export const toggleFeedLike = createAsyncThunk(
+  'favoriteRankList/toggleIsLike',
+  async (feedId:number, { rejectWithValue }) => {
+    try {
+      await toggleFeedLikeAPI(feedId);
+      return feedId;
+    } catch (error) {
+      return rejectWithValue('Failed to toggle feed-like');
+    }
+
+  }
+)
+
 const communityFeedSlice = createSlice({
   name: 'communityFeed',
   initialState: initialState,
@@ -51,35 +68,32 @@ const communityFeedSlice = createSlice({
       return initialState;
     },
 
-    setFilterCondition: (state, action) => {
+    setFilterCondition: (state, action: PayloadAction<string>) => {
+      state.feedList= [];
+      state.status= '';
+      state.error= '';
+      state.page= 0;
+      state.hasMore=true;
       state.filterCondition = action.payload;
     },
 
-    setSortCondition: (state, action) => {
+    setSortCondition: (state, action: PayloadAction<string>) => {
+      state.feedList= [];
+      state.status= '';
+      state.error= '';
+      state.page= 0;
+      state.hasMore=true;
       state.sortCondition = action.payload;
     },
 
-    setSearchCondition: (state, action) => {
-      state.searchCondition = action.payload;
-    },
-
-    setKeyword: (state, action) => {
-      state.keyword = action.payload;
-    },
-
-    incrementLike: (state, action: PayloadAction<number>) => {
-      const feed = state.feedList.find(feed => feed.feedId === action.payload);
-      if (feed) {
-        feed.likeCnt += 1;
-        feed.isLike = true;
-      }
-    },
-    decrementLike: (state, action: PayloadAction<number>) => {
-      const feed = state.feedList.find(feed => feed.feedId === action.payload);
-      if (feed) {
-        feed.likeCnt -= 1;
-        feed.isLike = false;
-      }
+    searchFeed: (state, action: PayloadAction<{searchOption:string, searchKeyword:string}>) => {
+      state.feedList= [];
+      state.status= '';
+      state.error= '';
+      state.page= 0;
+      state.hasMore=true;
+      state.searchCondition = action.payload.searchOption;
+      state.keyword = action.payload.searchKeyword;
     },
   },
   extraReducers(builder) {
@@ -91,14 +105,26 @@ const communityFeedSlice = createSlice({
         state.status = 'success';
         state.feedList = [...state.feedList, ...action.payload.content];
         state.page += 1;
+        state.hasMore = !action.payload.last;
       })
       .addCase(getFeedList.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
+      })
+      .addCase(toggleFeedLike.fulfilled, (state, action: PayloadAction<number>) => {
+        const feedId = action.payload;
+        const feed = state.feedList.find((feed) => feed.feedId === feedId);
+        if (feed) {
+          feed.isLike = !feed.isLike;
+          feed.isLike?feed.likeCnt++:feed.likeCnt--;
+        }
+      })
+      .addCase(toggleFeedLike.rejected, (state, action) => {
+        state.error = action.payload as string;
       });
   },
 });
 
-export const { resetState, setFilterCondition, setSearchCondition, 
-  setSortCondition,setKeyword, incrementLike, decrementLike } = communityFeedSlice.actions;
+export const { resetState, setFilterCondition,
+  setSortCondition, searchFeed } = communityFeedSlice.actions;
 export default communityFeedSlice.reducer;

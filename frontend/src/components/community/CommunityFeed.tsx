@@ -1,42 +1,26 @@
 import React from 'react';
-import { ReactComponent as User } from '../../assets/images/Feed/reduser.svg';
 import { ReactComponent as Heart } from '../../assets/images/Feed/heart.svg';
 import { ReactComponent as Dots } from '../../assets/images/Feed/dots.svg';
 import { ReactComponent as Comment } from '../../assets/images/Feed/comment.svg';
 import { ReactComponent as FullHeart } from '../../assets/images/Feed/fullheart.svg';
 import { FeedInfo } from '../../interface/feed';
 import { useAppDispatch } from '../../store/hooks/hook';
-import { decrementLike, incrementLike } from '../../features/feed/feedSlice';
+import { toggleFeedLike } from '../../features/feed/communityFeedSlice';
+import UserProfile from '../common/UserProfile';
+import { IMAGE_BASE_URL } from '../../apis/core';
 
 interface FeedProps {
   feed: FeedInfo;
 }
-// interface FeedInfo {
-//   feedId: number;
-//   userId: number;
-//   profilePath: string;
-//   nickname: string;
-//   createdAt: string; // "2024-08-08T07:09:32.325Z",
-//   lastModified: string; // "2024-08-08T07:09:32.325Z",
-//   likeCnt: number;
-//   imagePaths: string[];
-//   content: string;
-//   commentCnt: number;
-//   tags: string[];
-//   isLike: boolean;
-// }
 
 export default function CommunityFeed({ feed }: FeedProps) {
-  const {feedId, userId, profilePath, nickname, createdAt, lastModified, likeCnt, imagePaths, content, commentCnt, tags, isLike } = feed;
+  const {feedId, userId, profilePath, nickname, lastModified, likeCnt, imagePaths, content, commentCnt, tags, isLike } = feed;
   const dispatch = useAppDispatch();
+
   return (
     <div className="feed">
       <div className="upper">
-        <User />
-        <div className="userinfo">
-          <span>{nickname}</span>
-          <span>{createdAt}</span>
-        </div>
+        <UserProfile userId={userId} userNickname={nickname} date={lastModified} userProfilePath={profilePath?IMAGE_BASE_URL+profilePath:null} />
 
         <Dots className="dots hoverup" />
       </div>
@@ -52,14 +36,14 @@ export default function CommunityFeed({ feed }: FeedProps) {
           <Heart
             className="hoverup"
             onClick={() => {
-              dispatch(incrementLike(feedId));
+              dispatch(toggleFeedLike(feedId));
             }}
           />
         ) : (
           <FullHeart
             className="hoverup"
             onClick={() => {
-              dispatch(decrementLike(feedId));
+              dispatch(toggleFeedLike(feedId));
             }}
           />
         )}

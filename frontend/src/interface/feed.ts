@@ -53,7 +53,7 @@ export interface FeedListResponse {
 }
 
 export interface getFeedListParams {
-  idolGroupId:number;
+  'idol-group-id':number;
   page:number;
   size:number;
   nickname:string;
