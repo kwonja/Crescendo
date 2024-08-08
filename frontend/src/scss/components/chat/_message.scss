@@ -9,7 +9,7 @@
     margin-top: auto;
     margin-left: auto;
     margin-right: 5px;
-    @media screen and (min-width: 1670px) { 
+    @media screen and (min-width: 1670px) {
       font-size: 11px;
     }
   }
@@ -23,7 +23,7 @@
     margin-right: 10px;
     box-sizing: border-box;
     word-wrap: break-word;
-    @media screen and (min-width: 1670px) { 
+    @media screen and (min-width: 1670px) {
       font-size: 15px;
     }
   }
@@ -39,7 +39,7 @@
     margin-top: auto;
     margin-right: auto;
     margin-left: 5px;
-    @media screen and (min-width: 1670px) { 
+    @media screen and (min-width: 1670px) {
       font-size: 11px;
     }
   }
@@ -53,11 +53,10 @@
     margin-left: 10px;
     box-sizing: border-box;
     word-wrap: break-word;
-    @media screen and (min-width: 1670px) { 
+    @media screen and (min-width: 1670px) {
       font-size: 15px;
     }
   }
-  
 }
 
 .send-container {
@@ -76,10 +75,9 @@
     outline: none;
     color: #000;
     font-size: 13px;
-    @media screen and (min-width: 1670px) { 
+    @media screen and (min-width: 1670px) {
       font-size: 15px;
     }
-
   }
   span {
     position: relative;

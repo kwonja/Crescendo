@@ -14,9 +14,8 @@ export default function MyPage() {
   const feedlist = useAppSelector(state => state.feed.myFeedList);
   const dispatch = useAppDispatch();
 
-
   useEffect(() => {
-    dispatch(getMyFeedList(getUserId()))
+    dispatch(getMyFeedList(getUserId()));
   }, [dispatch]);
 
   useEffect(() => {
@@ -51,19 +50,19 @@ export default function MyPage() {
         </div>
 
         <div className="category">
-          <div className="w-3/4 mx-auto space-between flex flex-row"ref={menuRef}>
-          <div
-            className={`item ${isSelected === 'feed' ? 'active' : ''}`}
-            onClick={() => setIsSelected('feed')}
-          >
-            내 피드
-          </div>
-          <div
-            className={`item ${isSelected === 'gallery' ? 'active' : ''}`}
-            onClick={() => setIsSelected('gallery')}
-          >
-            내 갤러리
-          </div>
+          <div className="w-3/4 mx-auto space-between flex flex-row" ref={menuRef}>
+            <div
+              className={`item ${isSelected === 'feed' ? 'active' : ''}`}
+              onClick={() => setIsSelected('feed')}
+            >
+              내 피드
+            </div>
+            <div
+              className={`item ${isSelected === 'gallery' ? 'active' : ''}`}
+              onClick={() => setIsSelected('gallery')}
+            >
+              내 갤러리
+            </div>
           </div>
           <div className="indicator" style={indicatorStyle}></div>
         </div>
