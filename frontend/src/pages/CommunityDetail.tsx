@@ -11,7 +11,7 @@ import GalleryList from '../components/common/GalleryList';
 import FeedForm from '../components/community/PostFeed';
 import GalleryForm from '../components/community/PostGallery';
 import { ReactComponent as WriteButton } from '../assets/images/write.svg';
-import FeedDetailModal from '../components/community/FeedDetailModal'; // 피드 상세 모달 임포트
+import FeedDetailModal from '../components/community/FeedDetailModal';
 import '../scss/page/_communitydetail.scss';
 
 type communityDetailInfoType = {
@@ -144,16 +144,25 @@ export default function CommunityDetail() {
       {isLoggedIn && <WriteButton className="write-button" onClick={handleShow} />}
 
       {/* 테스트용 피드 상세 모달 열기 버튼 */}
-      <button onClick={handleShowDetail} style={{ position: 'fixed', bottom: '20px', right: '20px', padding: '10px 20px', background: '#007BFF', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+      <button
+        onClick={handleShowDetail}
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          left: '20px',
+          padding: '10px 20px',
+          background: '#007BFF',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+        }}
+      >
         테스트용 피드 상세 모달 열기
       </button>
 
       {selectedFeedId && (
-        <FeedDetailModal
-          show={showDetail}
-          onClose={handleCloseDetail}
-          feedId={selectedFeedId}
-        />
+        <FeedDetailModal show={showDetail} onClose={handleCloseDetail} feedId={selectedFeedId} />
       )}
 
       {show && (

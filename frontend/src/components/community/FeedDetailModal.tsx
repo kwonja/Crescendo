@@ -23,11 +23,7 @@ type FeedDetailModalProps = {
   feedId: number;
 };
 
-const FeedDetailModal: React.FC<FeedDetailModalProps> = ({
-  show,
-  onClose,
-  feedId,
-}) => {
+const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId }) => {
   // 임시 데이터로 기본 틀 확인
   const feedDetail: FeedDetailResponse = {
     userId: 1,
@@ -36,13 +32,14 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({
     createdAt: '2024-08-08T12:34:56Z',
     likeCnt: 99,
     feedImagePathList: [
-      'https://i.ibb.co/3s0NMP0/126.jpg',
-      'https://i.ibb.co/3s0NMP0/126.jpg',
-      'https://i.ibb.co/3s0NMP0/126.jpg',
-      'https://i.ibb.co/3s0NMP0/126.jpg',
-      'https://i.ibb.co/3s0NMP0/126.jpg',
+      'https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg',
+      'https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg',
+      'https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg',
+      'https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg',
+      'https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg',
     ],
-    content: '모든 것이 주마등처럼 스쳐 지나간다. 만들면서도 2년이 이렇게 빠르게 지나갔다는게 진짜 긴가민가하네',
+    content:
+      '모든 것이 주마등처럼 스쳐 지나간다. 만들면서도 2년이 이렇게 빠르게 지나갔다는게 진짜 긴가민가하네',
     commentCnt: 21,
     tagList: ['#뉴진스', '#2주년'],
   };
@@ -50,23 +47,21 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   const handlePrevImage = () => {
-    setActiveImageIndex((prevIndex) =>
-      prevIndex > 0 ? prevIndex - 1 : feedDetail.feedImagePathList.length - 1
+    setActiveImageIndex(prevIndex =>
+      prevIndex > 0 ? prevIndex - 1 : feedDetail.feedImagePathList.length - 1,
     );
   };
 
   const handleNextImage = () => {
-    setActiveImageIndex((prevIndex) =>
-      prevIndex < feedDetail.feedImagePathList.length - 1
-        ? prevIndex + 1
-        : 0
+    setActiveImageIndex(prevIndex =>
+      prevIndex < feedDetail.feedImagePathList.length - 1 ? prevIndex + 1 : 0,
     );
   };
 
   if (!show) return null;
 
   return (
-    <div className="modal-overlay">
+    <div className="feed-detail-modal modal-overlay">
       <div className="modal-content">
         <button className="close-button" onClick={onClose}>
           &times;
@@ -78,8 +73,10 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({
               alt={feedDetail.nickname}
               className="profile-image"
             />
-            <div className="nickname">{feedDetail.nickname}</div>
-            <div className="date">{new Date(feedDetail.createdAt).toLocaleString()}</div>
+            <div className="profile-info">
+              <div className="nickname">{feedDetail.nickname}</div>
+              <div className="date">{new Date(feedDetail.createdAt).toLocaleString()}</div>
+            </div>
           </div>
           <div className="feed-body">
             {feedDetail.feedImagePathList.length > 0 && (
@@ -87,10 +84,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({
                 <button className="prev-button" onClick={handlePrevImage}>
                   &lt;
                 </button>
-                <img
-                  src={feedDetail.feedImagePathList[activeImageIndex]}
-                  alt="Feed"
-                />
+                <img src={feedDetail.feedImagePathList[activeImageIndex]} alt="Feed" />
                 <button className="next-button" onClick={handleNextImage}>
                   &gt;
                 </button>
@@ -100,11 +94,13 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({
             <div className="feed-content">{feedDetail.content}</div>
             <div className="feed-tags">
               {feedDetail.tagList.map((tag, index) => (
-                <span key={index} className="tag">{tag}</span>
+                <span key={index} className="tag">
+                  {tag}
+                </span>
               ))}
             </div>
           </div>
-          <div className="feed-footer">
+          <div className="feed-icons">
             <HeartIcon />
             <MenuIcon />
           </div>
