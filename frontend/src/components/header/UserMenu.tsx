@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store/store';
 import { logoutUser } from '../../features/auth/authSlice';
+import { getUserId } from '../../apis/core';
 
 interface MenuProps {
   handleMode?: () => void;
@@ -18,7 +19,7 @@ export default function UserMenu({ handleMode }: MenuProps) {
   return (
     <ul className="usermenu">
       <li>
-        <Link to="mypage" onClick={handleMode}>
+        <Link to={`mypage/${getUserId()}`} onClick={handleMode}>
           마이페이지
         </Link>
       </li>

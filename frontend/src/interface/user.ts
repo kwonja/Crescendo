@@ -5,11 +5,11 @@ export interface user {
 }
 
 export interface UserInfo {
-  profilePath: string | null;
+  profilePath: string;
   nickname: string;
-  introduction: string | null;
+  introduction: string;
   followingNum: number;
   followerNum: number;
   isFollowing: boolean;
-  favoriteImagePath: string | null;
+  favoriteImagePath: string;
 }

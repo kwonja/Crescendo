@@ -4,7 +4,7 @@ import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import { ChatRoom } from '../../interface/chat';
 import { chatroomlistAPI } from '../../apis/chat';
-import { PromiseStatus } from '../follow/followerSlice';
+import { PromiseStatus } from '../mypage/followerSlice';
 
 interface chatProps {
   chatRoomList: ChatRoom[];

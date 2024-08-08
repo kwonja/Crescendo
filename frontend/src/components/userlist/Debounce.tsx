@@ -4,7 +4,6 @@ const DeBounce = (callback: (query: string) => Promise<void>, delay: number) => 
   return function (query: string) {
     clearTimeout(timer);
     timer = setTimeout(() => {
-      console.log(query);
       callback(query);
     }, delay);
   };
