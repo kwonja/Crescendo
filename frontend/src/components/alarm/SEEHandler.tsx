@@ -16,12 +16,12 @@ export default function SEEHandler() {
           sse.current = new EventSource(`${BASE_URL}/sse/connect/${getUserId()}`);
     
           sse.current.addEventListener('connect', (e: Event) => {
-            const { data } = e as MessageEvent;
+            // const { data } = e as MessageEvent;
             // console.log(data);
           });
     
           sse.current.addEventListener('alarm', (e: Event) => {
-            const { data } = e as MessageEvent;
+            // const { data } = e as MessageEvent;
             // console.log(data);
             dispatch(incrementUnRead());
           });

@@ -84,7 +84,7 @@ export default function SearchUser({ handleMode }: SearchProps) {
 
   const HandleFollowClick = async (userId: number) => {
     try {
-      const response = await followAPI(userId);
+      await followAPI(userId);
       // console.log(response);
       alert('팔로우가 되었습니다');
     } catch (err: unknown) {

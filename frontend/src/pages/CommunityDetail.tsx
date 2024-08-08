@@ -31,7 +31,8 @@ export default function CommunityDetail() {
     banner: '',
     isFavorite: false,
   };
-  // 임시 데이터
+
+  // 임시데이터 나중에 api 수정되면 수정함
   const favoriteNum = 0;
 
   const [ communityDetail, setCommunityDetail ] = useState<communityDetailInfo>(initialDetail)

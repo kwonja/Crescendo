@@ -13,7 +13,7 @@ export default function MyPage() {
   const feedlist = useAppSelector(state => state.feed.myFeedList);
 
   const getMyFeed = async () => {
-    const response = await getMyFeedAPI(0, 10);
+    await getMyFeedAPI(0, 10);
     // console.log(response);
   };
 
