@@ -56,9 +56,9 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
         // Sort by followed users
         if (condition != null && Boolean.TRUE.equals(condition.getSortByFollowed()) && userId != null) {
             booleanBuilder.and(feed.user.id.in(
-                    JPAExpressions.select(follow.following.id)
+                    JPAExpressions.select(follow.follower.id)
                             .from(follow)
-                            .where(follow.follower.id.eq(userId))
+                            .where(follow.following.id.eq(userId))
             ));
         }
 
