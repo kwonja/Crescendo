@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { ReactComponent as HeartIcon } from '../../assets/images/Feed/heart.svg';
 import { ReactComponent as MenuIcon } from '../../assets/images/Feed/dots.svg';
+import { ReactComponent as NextButton } from '../../assets/images/Feed/next_button.svg';
+import { ReactComponent as PrevButton } from '../../assets/images/Feed/prev_button.svg';
 import '../../scss/components/community/_feeddetailmodal.scss';
 
 type FeedDetailResponse = {
@@ -81,13 +83,9 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
           <div className="feed-body">
             {feedDetail.feedImagePathList.length > 0 && (
               <div className="image-slider">
-                <button className="prev-button" onClick={handlePrevImage}>
-                  &lt;
-                </button>
+                <PrevButton className="prev-button" onClick={handlePrevImage} />
                 <img src={feedDetail.feedImagePathList[activeImageIndex]} alt="Feed" />
-                <button className="next-button" onClick={handleNextImage}>
-                  &gt;
-                </button>
+                <NextButton className="next-button" onClick={handleNextImage} />
                 <div className="image-counter">{`${activeImageIndex + 1} / ${feedDetail.feedImagePathList.length}`}</div>
               </div>
             )}

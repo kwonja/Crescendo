@@ -28,8 +28,8 @@ const Login: React.FC = () => {
     //     dispatch(login({ email, password: storedPassword }));
     //   }
     // }
-  // }, [autoLogin, email, dispatch]);
-}, [ email, dispatch ]);
+    // }, [autoLogin, email, dispatch]);
+  }, [email, dispatch]);
 
   useEffect(() => {
     if (isLoggedIn) {

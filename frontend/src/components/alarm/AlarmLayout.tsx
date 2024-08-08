@@ -5,12 +5,15 @@ import { useAppDispatch } from '../../store/hooks/hook';
 
 export default function AlarmLayout() {
   const dispatch = useAppDispatch();
-  useEffect( ()=>{
+  useEffect(() => {
     dispatch(getAlarmList());
-  },[dispatch])
+  }, [dispatch]);
   return (
-  <div className="alarmlayout">
-    <div className="title">알림목록</div>
-    <AlarmList/>
-  </div>);
+    <div className="alarmlayout">
+      <div className="title">알림목록</div>
+      <div className='alarmlist'>
+      <AlarmList />
+      </div>
+    </div>
+  );
 }

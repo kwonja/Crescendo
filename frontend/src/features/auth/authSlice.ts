@@ -27,16 +27,13 @@ const initialState: AuthState = {
 // 리프레쉬 토큰은 httponly secure 쿠키로 오기 때문에 처리 x
 export const login = createAsyncThunk(
   'auth/login',
-  async (
-    { email, password }: { email: string; password: string },
-    { rejectWithValue },
-  ) => {
+  async ({ email, password }: { email: string; password: string }, { rejectWithValue }) => {
     try {
       const response = await api.post('/api/v1/auth/login', { email, password });
       setUserId(response.data.userId);
       const accessToken = response.headers.authorization.split(' ')[1];
       setAccessToken(accessToken);
-      return { email, accessToken};
+      return { email, accessToken };
     } catch (error) {
       console.log(error);
       return rejectWithValue('로그인 실패');
@@ -183,10 +180,7 @@ const authSlice = createSlice({
       })
       .addCase(
         login.fulfilled,
-        (
-          state,
-          action: PayloadAction<{ email: string; accessToken: string}>,
-        ) => {
+        (state, action: PayloadAction<{ email: string; accessToken: string }>) => {
           state.loading = false;
           state.isLoggedIn = true;
           state.email = action.payload.email;
