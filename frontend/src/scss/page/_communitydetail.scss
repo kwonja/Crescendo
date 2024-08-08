@@ -127,6 +127,11 @@
       color: white;
       text-align: right;
       font-size: 84px;
+      text-shadow:
+                1px 1px 3px #bbbbbb,  
+                -1px -1px 3px #bbbbbb,
+                1px -1px 3px #bbbbbb,
+                -1px 1px 3px #bbbbbb;
       // font-family: ;
     }
 
@@ -137,6 +142,11 @@
       color: white;
       text-align: right;
       font-size: 54px;
+      text-shadow:
+                1px 1px 3px #bbbbbb,  
+                -1px -1px 3px #bbbbbb,
+                1px -1px 3px #bbbbbb,
+                -1px 1px 3px #bbbbbb;
     }
 
     &_star {
@@ -145,7 +155,7 @@
       right: 320px;
       cursor: pointer;
 
-      .hoverup:hover {
+      &.hoverup:hover {
         transform: scale(1.1);
       }
     }

@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
-import { ReactComponent as FullStar } from '../assets/images/fullstar.svg';
-import { ReactComponent as Star } from '../assets/images/star.svg';
+import { ReactComponent as FullStar } from '../assets/images/CommunityDetail/fullstar.svg';
+import { ReactComponent as Star } from '../assets/images/CommunityDetail/star.svg';
 import React, { useEffect, useRef, useState } from 'react';
 import SearchInput from '../components/common/SearchInput';
 import Dropdown from "../components/common/Dropdown";
@@ -10,18 +10,10 @@ import FeedForm from '../components/community/PostFeed';
 import GalleryForm from '../components/community/PostGallery';
 import { ReactComponent as WriteButton } from '../assets/images/write.svg';
 import FeedDetailModal from '../components/community/FeedDetailModal'; // 피드 상세 모달 임포트
-import { toggleFavoriteAPI } from '../apis/community';
+import { getCommunityDetailAPI, toggleFavoriteAPI } from '../apis/community';
 import { useAppSelector } from '../store/hooks/hook';
+import { communityDetailInfo } from '../interface/communityList';
 
-type communityDetailInfoType = {
-  idolGroupId: number;
-  name: string;
-  peopleNum: number;
-  introduction: string;
-  profile: string;
-  banner: string;
-  isFavorite: boolean;
-};
 
 export default function CommunityDetail() {
   const params = useParams();
@@ -30,22 +22,21 @@ export default function CommunityDetail() {
   }
   const idolGroupId: number = Number(params.idolGroupId);
 
-  // 임시 데이터
-  const communityDetailInfo: communityDetailInfoType = {
-    idolGroupId: 1,
-    name: 'NewJeans',
-    peopleNum: 5,
-    introduction: '뉴진스입니다.',
-    profile: 'https://i.ibb.co/t3rdL7G/313885-438531-4716.jpg',
-    banner: 'https://i.ibb.co/3s0NMP0/126.jpg',
+  const initialDetail: communityDetailInfo = {
+    idolGroupId: 0,
+    name: '',
+    peopleNum: 0,
+    introduction: '',
+    profile: '',
+    banner: '',
     isFavorite: false,
   };
-  const favoriteNum = 0;
   // 임시 데이터
+  const favoriteNum = 0;
 
+  const [ communityDetail, setCommunityDetail ] = useState<communityDetailInfo>(initialDetail)
   const { isLoggedIn } = useAppSelector(state => state.auth);
   const [isSelected, setIsSelected] = useState<'feed' | 'gallery'>('feed');
-  const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
   const menuRef = useRef<HTMLDivElement>(null);
   const [filterOption, setFilterOption] = useState<string>('필터');
@@ -57,6 +48,15 @@ export default function CommunityDetail() {
   const [showDetail, setShowDetail] = useState(false);
   const [selectedFeedId, setSelectedFeedId] = useState<number | null>(null);
 
+  // 데이터 가져오기, 초기세팅
+  useEffect(()=> {
+    const getCommunityDetail = async () => {
+      const response = await getCommunityDetailAPI(idolGroupId);
+      setCommunityDetail(response);
+    }
+    getCommunityDetail();
+
+  }, [])
 
   useEffect(() => {
     const menuElement = menuRef.current;
@@ -78,19 +78,25 @@ export default function CommunityDetail() {
   const handleShow = () => setShow(true);
 
   const handleCloseDetail = () => {
-    console.log('Closing detail modal');
     setShowDetail(false);
   };
 
   const handleShowDetail = () => {
-    console.log('Showing detail modal');
     setSelectedFeedId(1); // 테스트용 피드 ID를 1로 설정
     setShowDetail(true);
   } 
 
   const clickStar = async () => {
-    setIsFavorite(prev => !prev);
-    await toggleFavoriteAPI(idolGroupId);
+    try {
+      await toggleFavoriteAPI(idolGroupId);
+      setCommunityDetail(prev => ({
+        ...prev,
+        isFavorite: !prev.isFavorite
+      }));
+    } 
+    catch {
+      console.error("즐겨찾기 토글 실패");
+    }
   }
 
   return (
@@ -98,17 +104,17 @@ export default function CommunityDetail() {
       <div className="banner">
         <img
           className="banner_img"
-          src={communityDetailInfo.banner}
-          alt={communityDetailInfo.name}
+          src={communityDetail.banner}
+          alt={communityDetail.name}
         ></img>
-        <div className="banner_name">{communityDetailInfo.name}</div>
+        <div className="banner_name">{communityDetail.name}</div>
         <div className="banner_favoritenum">{`${favoriteNum} Favorites`}</div>
         {isLoggedIn && (
-          <div className="banner_star">
-            {isFavorite ? (
-              <FullStar className="hoverup" onClick={()=>clickStar()} />
+          <div className="banner_starbox">
+            {communityDetail.isFavorite ? (
+              <FullStar className="hoverup banner_star" onClick={()=>clickStar()} />
             ) : (
-              <Star className="hoverup" onClick={()=>clickStar()} />
+              <Star className="hoverup banner_star" onClick={()=>clickStar()} />
             )}
           </div>
         )}
@@ -130,35 +136,6 @@ export default function CommunityDetail() {
           <div className="indicator" style={indicatorStyle}></div>
         </div>
         <div className="conditionbar">
-            <div className="filter menu">
-              <Dropdown
-                className="text"
-                selected={filterOption}
-                options={["전체", "팔로우만"]}
-                onSelect={(selected)=>setFilterOption(selected)}
-              />
-            </div>
-            <div className="search">
-              <div className = "sort menu">
-                <Dropdown
-                  className="text"
-                  selected={sortOption}
-                  options={["가나다순", "최신순", "좋아요순"]}
-                  onSelect={(selected)=>setSortOption(selected)}
-                  iconPosition="left"
-                />
-              </div>
-              <div className = "search menu">
-                <Dropdown
-                  className="text"
-                  selected={searchOption}
-                  options={["제목", "작성자"]}
-                  onSelect={(selected)=>setSearchOption(selected)}
-                  iconPosition="left"
-                />
-              </div>
-              <SearchInput placeholder="여기에 입력하세요"></SearchInput>
-            </div>
           <div className="filter menu">
             <Dropdown
               className="text"

@@ -1,6 +1,5 @@
 import { api, Authapi } from './core';
-import { communityListResponse } from '../interface/communityList';
-import { communityInfo } from '../interface/communityList';
+import { communityListResponse, communityInfo, communityDetailInfo } from '../interface/communityList';
 
 export const getCommunityListAPI = async (page: number, size: number) => {
   const params = {
@@ -31,4 +30,9 @@ export const toggleFavoriteAPI = async(idolGroupId:number) => {
     console.error('Failed to toggle favorite:', error);
     console.log("실패");
   }
+}
+
+export const getCommunityDetailAPI  = async (idolGroupId:number) => {
+  const response = await Authapi.get(`/api/v1/community/idol-group/${idolGroupId}`);
+  return response.data as communityDetailInfo;
 }
