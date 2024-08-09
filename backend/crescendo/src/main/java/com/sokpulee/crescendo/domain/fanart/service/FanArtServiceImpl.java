@@ -224,6 +224,8 @@ public class FanArtServiceImpl implements FanArtService {
                     .build();
             fanArtComment.plusLikeCnt();
             fanArtCommentLikeRepository.save(fanArtCommentLike);
+
+            alarmService.fanArtCommentLikeAlarm(fanArtComment.getContent(), fanArtComment.getUser().getId(), loggedInUserId, fanArtComment.getFanArt().getFanArtId());
         }
     }
 
