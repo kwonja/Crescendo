@@ -35,16 +35,9 @@ export default function Chatroom() {
           const newMessage: Message = JSON.parse(content.body);
           setScroll(true);
           dispatch(setMessage(newMessage));
-
-          // if(getUserId() !== newMessage.writerId){
-          //   const  {writerId : opponentId , writerNickname : opponentNickName ,createdAt : lastChattingTime, message : lastChatting, writerProfilePath : opponentProfilePath} = newMessage;
-          //   dispatch(setLastChatting({dmGroupId,opponentId,opponentProfilePath,opponentNickName,lastChatting,lastChattingTime}))
-          // }
         });
       },
-      (error: any) => {
-        // console.error('Connection error: ', error);
-      },
+      (error: any) => {},
     );
   }, [dmGroupId, dispatch]);
 
@@ -61,7 +54,7 @@ export default function Chatroom() {
     );
     inputRef.current!.value = '';
   };
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       event.preventDefault();
       HandleMessageSend();
@@ -158,7 +151,7 @@ export default function Chatroom() {
               {isNewDate && (
                 <div className="date">
                   <Line style={{ width: 20 }} />
-                  <div>{ChatDateTransfer(messageDate)}</div>
+                  <div className="text-xs">{ChatDateTransfer(messageDate)}</div>
                   <Line />
                 </div>
               )}
@@ -178,11 +171,11 @@ export default function Chatroom() {
             className="search-input"
             placeholder="여기에 입력하세요"
             ref={inputRef}
-            onKeyDown={handleKeyDown}
+            onKeyUp={handleKeyUp}
           />
           <div className="send-icon">
-            <Clip style={{ width: '24px', height: '24px' }} />
-            <Submit style={{ width: '24px', height: '24px' }} onClick={HandleMessageSend} />
+            <Clip className="w-5 h-5" />
+            <Submit className="w-5 h-5" onClick={HandleMessageSend} />
           </div>
         </span>
       </div>

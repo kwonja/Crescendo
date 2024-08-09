@@ -48,7 +48,7 @@ export const router = createBrowserRouter([
         element: <Main />,
       },
       {
-        path: '/mypage',
+        path: '/mypage/:id',
         element: <MyPage />,
       },
     ],

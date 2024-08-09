@@ -1,5 +1,9 @@
 import { api, Authapi } from './core';
-import { CommunityListResponse, CommunityInfo, CommunityDetailInfo } from '../interface/communityList';
+import {
+  CommunityListResponse,
+  CommunityInfo,
+  CommunityDetailInfo,
+} from '../interface/communityList';
 
 export const getCommunityListAPI = async (page: number, size: number, keyword:string) => {
   const params = {
@@ -22,15 +26,15 @@ export const getFavoriteListAPI = async () => {
   return response.data.content as CommunityInfo[];
 };
 
-export const toggleFavoriteAPI = async(idolGroupId:number) => {
+export const toggleFavoriteAPI = async (idolGroupId: number) => {
   try {
     await Authapi.post(`/api/v1/community/favorites/idol-group/${idolGroupId}`);
   } catch (error) {
     console.error('Failed to toggle favorite:', error);
   }
-}
+};
 
-export const getCommunityDetailAPI  = async (idolGroupId:number) => {
+export const getCommunityDetailAPI = async (idolGroupId: number) => {
   const response = await Authapi.get(`/api/v1/community/idol-group/${idolGroupId}`);
   return response.data as CommunityDetailInfo;
-}
+};

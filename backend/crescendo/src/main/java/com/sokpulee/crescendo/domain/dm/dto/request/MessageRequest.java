@@ -9,11 +9,13 @@ public class MessageRequest {
 
     private Long dmGroupId;
     private Long writerId;
+    private Long recipientId;
     private String message;
 
-    public MessageRequest(Long dmGroupId, Long writerId, String message) {
+    public MessageRequest(Long dmGroupId, Long writerId, Long recipientId, String message) {
         this.dmGroupId = dmGroupId;
         this.writerId = writerId;
+        this.recipientId = recipientId;
         this.message = message;
     }
 }

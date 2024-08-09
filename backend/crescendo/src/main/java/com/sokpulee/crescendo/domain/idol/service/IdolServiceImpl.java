@@ -1,9 +1,11 @@
 package com.sokpulee.crescendo.domain.idol.service;
 
+import com.sokpulee.crescendo.domain.idol.dto.IdolGroupNameDto;
 import com.sokpulee.crescendo.domain.idol.dto.IdolInfoDto;
 import com.sokpulee.crescendo.domain.idol.dto.IdolNameDto;
 import com.sokpulee.crescendo.domain.idol.dto.request.IdealWorldCupFinishRequest;
-import com.sokpulee.crescendo.domain.idol.dto.request.IdolNameListResponse;
+import com.sokpulee.crescendo.domain.idol.dto.response.IdolGroupNameListResponse;
+import com.sokpulee.crescendo.domain.idol.dto.response.IdolNameListResponse;
 import com.sokpulee.crescendo.domain.idol.dto.request.StartIdealWorldCupRequest;
 import com.sokpulee.crescendo.domain.idol.dto.response.IdealWorldCupRankResponse;
 import com.sokpulee.crescendo.domain.idol.dto.response.IdealWorldCupStartResponse;
@@ -108,5 +110,24 @@ public class IdolServiceImpl implements IdolService {
         List<IdealWorldCupRankResponse> pagedRankedIdols = rankedIdols.subList(start, end);
 
         return new PageImpl<>(pagedRankedIdols, pageRequest, rankedIdols.size());
+    }
+
+    @Override
+    public IdolGroupNameListResponse getIdolGroupNameList(String keyword) {
+
+        List<IdolGroup> idolGroupList;
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            // 키워드가 없을 때는 모든 IdolGroup을 이름 순으로 반환
+            idolGroupList = idolGroupRepository.findAllByOrderByNameAsc();
+        } else {
+            // 키워드가 있을 때는 해당 키워드를 포함하는 IdolGroup을 이름 순으로 반환
+            idolGroupList = idolGroupRepository.findByNameContainingOrderByNameAsc(keyword);
+        }
+        List<IdolGroupNameDto> idolGroupNameDtoList = idolGroupList.stream()
+                .map(idolGroup -> new IdolGroupNameDto(idolGroup.getId(), idolGroup.getName()))
+                .toList();
+
+        return new IdolGroupNameListResponse(idolGroupNameDtoList);
     }
 }

@@ -12,7 +12,7 @@ public interface CommunityService {
 
     Page<FavoritesGetResponse> getFavorites(Long loggedInUserId, Pageable pageable);
 
-    Page<IdolGroupGetResponse> getIdolGroups(Pageable pageable);
+    Page<IdolGroupGetResponse> getIdolGroups(String keyword, Pageable pageable);
 
     IdolGroupDetailResponse getIdolGroupDetail(Long loggedInUserId, Long idolGroupId);
 }

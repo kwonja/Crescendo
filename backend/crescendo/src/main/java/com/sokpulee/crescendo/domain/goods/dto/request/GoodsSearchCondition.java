@@ -12,10 +12,16 @@ public class GoodsSearchCondition {
 
     private String content;
 
+    private Boolean sortByFollowed;
+
+    private Boolean sortByLiked;
+
     @Builder
-    public GoodsSearchCondition(String title, String nickname, String content) {
+    public GoodsSearchCondition(String title, String nickname, String content, Boolean sortByFollowed, Boolean sortByLiked) {
         this.title = title;
         this.nickname = nickname;
         this.content = content;
+        this.sortByFollowed = sortByFollowed;
+        this.sortByLiked = sortByLiked;
     }
 }
