@@ -12,8 +12,7 @@ export const getMyFeedAPI = async (page: number, size: number) => {
   return response.data;
 };
 
-
-export const getUserInfoAPI = async (userId : number, loggedInUserId : number) =>{
+export const getUserInfoAPI = async (userId: number, loggedInUserId: number) => {
   const response = await Authapi.get(`/api/v1/user/${userId}?loggedInUserId=${loggedInUserId}`);
   return response;
-}
+};

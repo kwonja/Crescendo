@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store/store';
 import { logoutUser } from '../../features/auth/authSlice';
@@ -9,10 +9,12 @@ interface MenuProps {
 }
 
 export default function UserMenu({ handleMode }: MenuProps) {
+  const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
 
   const handleLogout = () => {
     dispatch(logoutUser());
+    navigate('/');
   };
 
   return (

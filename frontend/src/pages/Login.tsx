@@ -28,12 +28,12 @@ const Login: React.FC = () => {
     //     dispatch(login({ email, password: storedPassword }));
     //   }
     // }
-  // }, [autoLogin, email, dispatch]);
-}, [ email, dispatch ]);
+    // }, [autoLogin, email, dispatch]);
+  }, [email, dispatch]);
 
   useEffect(() => {
     if (isLoggedIn) {
-      navigate('/'); // 로그인 성공 시 메인 페이지로 이동
+      navigate(-1); // 로그인 성공 시 이전 페이지로 이동
     }
   }, [isLoggedIn, navigate]);
 
