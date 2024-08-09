@@ -12,9 +12,12 @@
 @import 'components/common/search';
 @import 'components/common/gallery';
 @import 'components/common/gallerylist';
+@import 'components/common/dropdown';
 @import 'components/community/communitycard';
 @import 'components/community/communityfavoritelist';
 @import 'components/community/communitylist';
+@import 'components/favorite/bestphotoslide';
+@import 'components/favorite/favoriteranklist';
 
 @import 'components/chat/chatlayout';
 @import 'components/chat/chatroomlistitem';
@@ -29,6 +32,7 @@
 @import 'page/login';
 @import 'page/communitymain';
 @import 'page/communitydetail';
+@import 'page/favorite';
 @import 'layout/frame';
 @import 'components/community/postfeed';
 @import 'components/community/feeddetailmodal';

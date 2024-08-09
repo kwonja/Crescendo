@@ -3,8 +3,8 @@ import Button from '../common/Button';
 import { ReactComponent as RightBtn } from '../../assets/images/right.svg';
 import { ReactComponent as LeftBtn } from '../../assets/images/left.svg';
 import CommunityCard from './CommunityCard';
-import { communityInfo } from '../../interface/communityList';
-import { getFavoriteListAPI } from '../../apis/communityList';
+import { CommunityInfo } from '../../interface/communityList';
+import { getFavoriteListAPI } from '../../apis/community';
 
 export default function CommunityFavoriteList() {
   // 상수 또는 변수(상태) 초기화
@@ -12,8 +12,8 @@ export default function CommunityFavoriteList() {
   const MOVE_STEP = 4;
 
   const [idx, setIdx] = useState<number>(-1);
-  const [communityList, setCommunityList] = useState<communityInfo[]>([]);
-  const [showList, setShowList] = useState<communityInfo[]>([]);
+  const [communityList, setCommunityList] = useState<CommunityInfo[]>([]);
+  const [showList, setShowList] = useState<CommunityInfo[]>([]);
 
   // 리스트 불러오기
   useEffect(() => {

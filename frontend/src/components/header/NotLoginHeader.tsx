@@ -30,6 +30,8 @@ export default function NotLoginHeader() {
   }, [location]);
 
   return (
+    <>
+    <div className=''></div>
     <div className="header">
       <Link to="/">
         <div className="header_title">CRESCENDO</div>
@@ -64,5 +66,6 @@ export default function NotLoginHeader() {
         {userMode === 'userlist' && <NotSearchUser handleMode={setUserMode} />}
       </div>
     </div>
+    </>
   );
 }

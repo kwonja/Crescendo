@@ -1,11 +1,11 @@
-export interface communityInfo {
+export interface CommunityInfo {
   idolGroupId: number;
   name: string;
   profile: string;
 }
 
-export interface communityListResponse {
-  content: communityInfo[];
+export interface CommunityListResponse {
+  content: CommunityInfo[];
   pageable: {
     pageNumber: number; //현재 페이지 번호
     pageSize: number;
@@ -32,3 +32,14 @@ export interface communityListResponse {
   numberOfElements: number;
   empty: boolean;
 }
+
+export interface CommunityDetailInfo {
+  idolGroupId: number;
+  name: string;
+  peopleNum: number;
+  introduction: string;
+  profile: string;
+  banner: string;
+  favoriteCnt: number;
+  isFavorite: boolean;
+};

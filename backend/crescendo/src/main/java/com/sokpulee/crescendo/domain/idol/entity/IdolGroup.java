@@ -29,4 +29,14 @@ public class IdolGroup extends TimeStampedEntity {
 
     @Column(length = 500)
     private String banner;
+
+    private Integer favoriteCnt;
+
+    public void plusFavoriteCnt(){
+        favoriteCnt++;
+    }
+
+    public void minusFavoriteCnt(){
+        favoriteCnt--;
+    }
 }

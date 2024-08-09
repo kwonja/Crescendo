@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Transactional
@@ -35,14 +36,19 @@ public class FollowServiceImpl implements FollowService {
         User followUser = userRepository.findById(followRequest.getUserIdToFollow())
                 .orElseThrow(UserNotFoundException::new);
 
-        Follow follow = Follow.builder()
-                .following(loggedInUser)
-                .follower(followUser)
-                .build();
+        Optional<Follow> existingFollow = followRepository.findByFollowingAndFollower(loggedInUser, followUser);
 
-        followRepository.save(follow);
+        if (existingFollow.isPresent()) {
+            followRepository.delete(existingFollow.get());
+        } else {
+            Follow follow = Follow.builder()
+                    .following(loggedInUser)
+                    .follower(followUser)
+                    .build();
 
-        alarmService.followAlarm(loggedInUser.getId(), followUser.getId(), loggedInUser.getId());
+            followRepository.save(follow);
+            alarmService.followAlarm(loggedInUser.getId(), followUser.getId(), loggedInUser.getId());
+        }
     }
 
     @Override

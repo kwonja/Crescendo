@@ -22,8 +22,8 @@ export default function AlarmListItem({ alarm }: AlarmItemProps) {
     try {
       await readAlarm(alarmId);
       dispatch(decrementUnRead());
-    } catch (err) {
-      console.log(err);
+    }catch(err){
+      // console.log(err);
     }
   };
 

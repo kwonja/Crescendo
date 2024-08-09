@@ -1,39 +1,44 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, } from 'react'
 import { BASE_URL, getUserId } from '../../apis/core';
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
-import { getAlarmList, incrementUnRead } from '../../features/alarm/alarmSlice';
+import { incrementUnRead } from '../../features/alarm/alarmSlice';
 
 export default function SEEHandler() {
-  const dispatch = useAppDispatch();
-  const { isLoggedIn } = useAppSelector(state => state.auth);
-  const sse = useRef<EventSource | null>(null);
-  useEffect(() => {
-    const connectSSE = () => {
-      sse.current = new EventSource(`${BASE_URL}/sse/connect/${getUserId()}`);
+   const dispatch = useAppDispatch();
+    const {isLoggedIn} =  useAppSelector( (state)=> state.auth)
+    const sse = useRef<EventSource | null>(null);
+    useEffect(() => {
 
-      sse.current.addEventListener('connect', (e: Event) => {});
+          const connectSSE = () => {
+          sse.current = new EventSource(`${BASE_URL}/sse/connect/${getUserId()}`);
 
-      sse.current.addEventListener('alarm', (e: Event) => {
-        dispatch(getAlarmList());
-        dispatch(incrementUnRead());
-      });
+          sse.current.addEventListener('connect', (e: Event) => {});
+    
+          sse.current.addEventListener('alarm', (e: Event) => {
+            dispatch(incrementUnRead());
+          });
+          sse.current.onerror = () => {
+     
+            sse.current?.close();
+            setTimeout(() => {
+              if (isLoggedIn) connectSSE();
+            }, 3000); // Try to reconnect after 3 seconds
+          };
+        };
+    
+        if (isLoggedIn) {
+          connectSSE();
+        }
+    
+        return () => {
+          sse.current?.close();
+        };
+      }, [isLoggedIn,dispatch]);
 
-      sse.current.onerror = () => {
-        sse.current?.close();
-        setTimeout(() => {
-          if (isLoggedIn) connectSSE();
-        }, 3000); // Try to reconnect after 3 seconds
-      };
-    };
-
-    if (isLoggedIn) {
-      connectSSE();
-    }
-
-    return () => {
-      sse.current?.close();
-    };
-  }, [isLoggedIn, dispatch]);
-
-  return <></>;
-}
+  
+    return (
+      <>
+      
+      </>
+    );
+  };

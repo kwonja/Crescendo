@@ -52,8 +52,8 @@ const chatroomSlice = createSlice({
       const index = state.chatRoomList.findIndex(
         chatRoom => chatRoom.dmGroupId === action.payload.dmGroupId,
       );
-      console.log(index);
-      console.log(action.payload);
+      // console.log(index);
+      // console.log(action.payload);
       if (index !== null) {
         state.chatRoomList[index] = action.payload;
         state.chatRoomList = [...state.chatRoomList];
