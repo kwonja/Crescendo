@@ -1,5 +1,6 @@
 package com.sokpulee.crescendo.domain.goods.service;
 
+import com.sokpulee.crescendo.domain.alarm.service.AlarmService;
 import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtDetailResponse;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArt;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArtComment;
@@ -45,6 +46,8 @@ public class GoodsServiceImpl implements GoodsService {
     private final GoodsLikeRepository goodsLikeRepository;
 
     private final GoodsCommentLikeRepository goodsCommentLikeRepository;
+
+    private final AlarmService alarmService;
 
 
     @Override
@@ -194,6 +197,8 @@ public class GoodsServiceImpl implements GoodsService {
                     .build();
             goods.plusLikeCnt();
             goodsLikeRepository.save(goodsLike);
+
+            alarmService.goodsLikeAlarm(goods.getTitle(), goods.getUser().getId(), loggedInUserId, goods.getGoodsId());
         }
     }
 
