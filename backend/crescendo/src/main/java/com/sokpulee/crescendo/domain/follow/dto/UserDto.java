@@ -7,12 +7,12 @@ import lombok.Getter;
 public class UserDto {
     private Long userId;
     private String nickname;
-    private String profilePath;
+    private String userProfilePath;
 
     @Builder
-    public UserDto(Long userId, String nickname, String profilePath) {
+    public UserDto(Long userId, String nickname, String userProfilePath) {
         this.userId = userId;
         this.nickname = nickname;
-        this.profilePath = profilePath;
+        this.userProfilePath = userProfilePath;
     }
 }
