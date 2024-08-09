@@ -3,7 +3,7 @@ import { ReactComponent as FullStar } from '../assets/images/CommunityDetail/ful
 import { ReactComponent as Star } from '../assets/images/CommunityDetail/star.svg';
 import React, { useEffect, useRef, useState } from 'react';
 import SearchInput from '../components/common/SearchInput';
-import Dropdown from "../components/common/Dropdown";
+import Dropdown from '../components/common/Dropdown';
 import CommunityFeedList from '../components/community/CommunityFeedList';
 import GalleryList from '../components/common/GalleryList';
 import FeedForm from '../components/community/PostFeed';
@@ -14,8 +14,11 @@ import '../scss/page/_communitydetail.scss';
 import { getCommunityDetailAPI, toggleFavoriteAPI } from '../apis/community';
 import { useAppDispatch, useAppSelector } from '../store/hooks/hook';
 import { CommunityDetailInfo } from '../interface/communityList';
-import { searchFeed, setFilterCondition, setSortCondition } from '../features/feed/communityFeedSlice';
-
+import {
+  searchFeed,
+  setFilterCondition,
+  setSortCondition,
+} from '../features/feed/communityFeedSlice';
 
 export default function CommunityDetail() {
   const params = useParams();
@@ -136,8 +139,8 @@ export default function CommunityDetail() {
             <Dropdown
               className="text"
               selected={filterCondition}
-              options={["전체", "팔로우만"]}
-              onSelect={(selected)=>dispatch(setFilterCondition(selected))}
+              options={['전체', '팔로우만']}
+              onSelect={selected => dispatch(setFilterCondition(selected))}
             />
           </div>
           <div className="search">
@@ -145,8 +148,8 @@ export default function CommunityDetail() {
               <Dropdown
                 className="text"
                 selected={sortCondition}
-                options={["최신순", "좋아요순"]}
-                onSelect={(selected)=>dispatch(setSortCondition(selected))}
+                options={['최신순', '좋아요순']}
+                onSelect={selected => dispatch(setSortCondition(selected))}
                 iconPosition="left"
               />
             </div>
@@ -154,19 +157,19 @@ export default function CommunityDetail() {
               <Dropdown
                 className="text"
                 selected={searchOption}
-                options={["내용", "작성자"]}
-                onSelect={(selected)=>setSearchOption(selected)}
+                options={['내용', '작성자']}
+                onSelect={selected => setSearchOption(selected)}
                 iconPosition="left"
               />
             </div>
-            <SearchInput 
-              placeholder="여기에 입력하세요" 
+            <SearchInput
+              placeholder="여기에 입력하세요"
               value={searchKeyword}
-              onChange={(event)=>{
+              onChange={event => {
                 setSearchKeyword(event.target.value);
               }}
-              onSearch={()=>dispatch(searchFeed({searchOption, searchKeyword}))}
-              ></SearchInput>
+              onSearch={() => dispatch(searchFeed({ searchOption, searchKeyword }))}
+            ></SearchInput>
           </div>
         </div>
         {isSelected === 'feed' && <CommunityFeedList idolGroupId={idolGroupId} />}

@@ -17,46 +17,85 @@ interface FeedProps {
 }
 
 export default function CommunityFeed({ feed }: FeedProps) {
-  const {feedId, userId, profilePath, nickname, lastModified, likeCnt, imagePaths, content, commentCnt, tags, isLike } = feed;
+  const {
+    feedId,
+    userId,
+    profilePath,
+    nickname,
+    lastModified,
+    likeCnt,
+    imagePaths,
+    content,
+    commentCnt,
+    tags,
+    isLike,
+  } = feed;
   const dispatch = useAppDispatch();
-  const [ imgIdx, setImgIdx ] = useState<number>(0);
+  const [imgIdx, setImgIdx] = useState<number>(0);
 
   return (
     <div className="feed">
       <div className="upper">
-        <UserProfile userId={userId} userNickname={nickname} date={lastModified} userProfilePath={profilePath?IMAGE_BASE_URL+profilePath:null} />
+        <UserProfile
+          userId={userId}
+          userNickname={nickname}
+          date={lastModified}
+          userProfilePath={profilePath ? IMAGE_BASE_URL + profilePath : null}
+        />
         <Dots className="dots hoverup" />
       </div>
-      {
-      imagePaths.length>0 &&
-      <div className='feed_image_box'>
-        <div className="slider">
-          <Button 
-            className={`square empty ${imgIdx <= 0 ? 'hidden ' : ''}`} 
-            onClick={()=>{setImgIdx(prev=>prev-1)}}
-          >
-            <LeftBtn />
-          </Button>
-          <div className='main_img_container'>
-            {imgIdx>0&&<img className="prev_img" src={IMAGE_BASE_URL+imagePaths[imgIdx-1]}alt="이미지 없음" />}
-            <img className="main_img" src={IMAGE_BASE_URL+imagePaths[imgIdx]} alt="이미지 없음" />
-            {imgIdx<imagePaths.length-1&&<img className="next_img" src={IMAGE_BASE_URL+imagePaths[imgIdx+1]}alt="이미지 없음" />}
-            <div className="image-counter">{imgIdx+1}/{imagePaths.length}</div>
+      {imagePaths.length > 0 && (
+        <div className="feed_image_box">
+          <div className="slider">
+            <Button
+              className={`square empty ${imgIdx <= 0 ? 'hidden ' : ''}`}
+              onClick={() => {
+                setImgIdx(prev => prev - 1);
+              }}
+            >
+              <LeftBtn />
+            </Button>
+            <div className="main_img_container">
+              {imgIdx > 0 && (
+                <img
+                  className="prev_img"
+                  src={IMAGE_BASE_URL + imagePaths[imgIdx - 1]}
+                  alt="이미지 없음"
+                />
+              )}
+              <img
+                className="main_img"
+                src={IMAGE_BASE_URL + imagePaths[imgIdx]}
+                alt="이미지 없음"
+              />
+              {imgIdx < imagePaths.length - 1 && (
+                <img
+                  className="next_img"
+                  src={IMAGE_BASE_URL + imagePaths[imgIdx + 1]}
+                  alt="이미지 없음"
+                />
+              )}
+              <div className="image-counter">
+                {imgIdx + 1}/{imagePaths.length}
+              </div>
+            </div>
+            <Button
+              className={`square empty ${imgIdx >= imagePaths.length - 1 ? 'hidden ' : ''}`}
+              onClick={() => setImgIdx(prev => prev + 1)}
+            >
+              <RightBtn />
+            </Button>
           </div>
-          <Button
-            className={`square empty ${imgIdx >= imagePaths.length-1 ? 'hidden ' : ''}`}
-            onClick={()=>setImgIdx(prev=>prev+1)}
-          >
-            <RightBtn />
-          </Button>
+          <div className="pagination-dots">
+            {imagePaths.map((_, idx) => (
+              <div
+                className={`pagination-dot ${idx === imgIdx ? 'active' : ''}`}
+                onClick={() => setImgIdx(idx)}
+              ></div>
+            ))}
+          </div>
         </div>
-        <div className="pagination-dots">
-          {imagePaths.map((_, idx) => (
-            <div className={`pagination-dot ${idx===imgIdx?'active':''}`} onClick={()=>setImgIdx(idx)}></div>
-          ))}
-        </div>
-      </div>
-      }
+      )}
       <div className="text">{content}</div>
       <div className="tag">
         {tags.map((tag, index) => (

@@ -24,41 +24,42 @@ const initialState: CommunityFeedState = {
   filterCondition: '필터',
   sortCondition: '정렬',
   searchCondition: '검색',
-  keyword: ''
+  keyword: '',
 };
 
 // 피드 가져오기
-export const getFeedList = createAsyncThunk<FeedListResponse,number,{state:RootState}>(
-    'communityFeedSlice/getFeedList',
-    async (idolGroupId, thunkAPI) => {
-        const { page, filterCondition, sortCondition, searchCondition, keyword } = thunkAPI.getState().communityFeed;
-        const params:getFeedListParams = {
-          'idol-group-id': idolGroupId,
-          page,
-          size:3,
-          nickname: '',
-          content: '',
-          sortByFollowed: filterCondition ==='팔로우만',
-          sortByLiked: sortCondition === '좋아요순',
-        }
-        searchCondition==='작성자'?params.nickname=keyword:params.content=keyword;
-        const response = await getCommunityFeedListAPI(params);
-        return response;
-});
+export const getFeedList = createAsyncThunk<FeedListResponse, number, { state: RootState }>(
+  'communityFeedSlice/getFeedList',
+  async (idolGroupId, thunkAPI) => {
+    const { page, filterCondition, sortCondition, searchCondition, keyword } =
+      thunkAPI.getState().communityFeed;
+    const params: getFeedListParams = {
+      'idol-group-id': idolGroupId,
+      page,
+      size: 3,
+      nickname: '',
+      content: '',
+      sortByFollowed: filterCondition === '팔로우만',
+      sortByLiked: sortCondition === '좋아요순',
+    };
+    searchCondition === '작성자' ? (params.nickname = keyword) : (params.content = keyword);
+    const response = await getCommunityFeedListAPI(params);
+    return response;
+  },
+);
 
 // 피드 하트 클릭
 export const toggleFeedLike = createAsyncThunk(
   'favoriteRankList/toggleIsLike',
-  async (feedId:number, { rejectWithValue }) => {
+  async (feedId: number, { rejectWithValue }) => {
     try {
       await toggleFeedLikeAPI(feedId);
       return feedId;
     } catch (error) {
       return rejectWithValue('Failed to toggle feed-like');
     }
-
-  }
-)
+  },
+);
 
 const communityFeedSlice = createSlice({
   name: 'communityFeed',
@@ -69,29 +70,29 @@ const communityFeedSlice = createSlice({
     },
 
     setFilterCondition: (state, action: PayloadAction<string>) => {
-      state.feedList= [];
-      state.status= '';
-      state.error= '';
-      state.page= 0;
-      state.hasMore=true;
+      state.feedList = [];
+      state.status = '';
+      state.error = '';
+      state.page = 0;
+      state.hasMore = true;
       state.filterCondition = action.payload;
     },
 
     setSortCondition: (state, action: PayloadAction<string>) => {
-      state.feedList= [];
-      state.status= '';
-      state.error= '';
-      state.page= 0;
-      state.hasMore=true;
+      state.feedList = [];
+      state.status = '';
+      state.error = '';
+      state.page = 0;
+      state.hasMore = true;
       state.sortCondition = action.payload;
     },
 
-    searchFeed: (state, action: PayloadAction<{searchOption:string, searchKeyword:string}>) => {
-      state.feedList= [];
-      state.status= '';
-      state.error= '';
-      state.page= 0;
-      state.hasMore=true;
+    searchFeed: (state, action: PayloadAction<{ searchOption: string; searchKeyword: string }>) => {
+      state.feedList = [];
+      state.status = '';
+      state.error = '';
+      state.page = 0;
+      state.hasMore = true;
       state.searchCondition = action.payload.searchOption;
       state.keyword = action.payload.searchKeyword;
     },
@@ -113,10 +114,10 @@ const communityFeedSlice = createSlice({
       })
       .addCase(toggleFeedLike.fulfilled, (state, action: PayloadAction<number>) => {
         const feedId = action.payload;
-        const feed = state.feedList.find((feed) => feed.feedId === feedId);
+        const feed = state.feedList.find(feed => feed.feedId === feedId);
         if (feed) {
           feed.isLike = !feed.isLike;
-          feed.isLike?feed.likeCnt++:feed.likeCnt--;
+          feed.isLike ? feed.likeCnt++ : feed.likeCnt--;
         }
       })
       .addCase(toggleFeedLike.rejected, (state, action) => {
@@ -125,6 +126,6 @@ const communityFeedSlice = createSlice({
   },
 });
 
-export const { resetState, setFilterCondition,
-  setSortCondition, searchFeed } = communityFeedSlice.actions;
+export const { resetState, setFilterCondition, setSortCondition, searchFeed } =
+  communityFeedSlice.actions;
 export default communityFeedSlice.reducer;
