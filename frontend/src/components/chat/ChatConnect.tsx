@@ -11,7 +11,7 @@ import {
 } from '../../features/chat/chatroomSlice';
 
 export default function ChatConnect() {
-  const {selectedGroup} = useAppSelector( (state)=> state.chatroom)
+  const { selectedGroup } = useAppSelector(state => state.chatroom);
 
   const dispatch = useAppDispatch();
   const client = useRef<CompatClient | null>(null);
@@ -27,24 +27,22 @@ export default function ChatConnect() {
     client.current.connect(
       {},
       (frame: string) => {
-          client.current?.subscribe(`/topic/messages/${getUserId()}`, content => {
-            const newMessage: Message = JSON.parse(content.body);
-            dispatch(
-                setLastChatting({
-                  dmGroupId: newMessage.dmGroupId,
-                  opponentId: newMessage.writerId,
-                  opponentProfilePath: newMessage.writerProfilePath,
-                  opponentNickName: newMessage.writerNickName,
-                  lastChatting: newMessage.message,
-                  lastChattingTime: newMessage.createdAt,
-                }),
-              );
-            if(newMessage.dmGroupId !== selectedGroup.dmGroupId){
-                dispatch(incrementUnReadChat(newMessage.dmGroupId));
-            }    
-            
-          });
-      
+        client.current?.subscribe(`/topic/messages/${getUserId()}`, content => {
+          const newMessage: Message = JSON.parse(content.body);
+          dispatch(
+            setLastChatting({
+              dmGroupId: newMessage.dmGroupId,
+              opponentId: newMessage.writerId,
+              opponentProfilePath: newMessage.writerProfilePath,
+              opponentNickName: newMessage.writerNickName,
+              lastChatting: newMessage.message,
+              lastChattingTime: newMessage.createdAt,
+            }),
+          );
+          if (newMessage.dmGroupId !== selectedGroup.dmGroupId) {
+            dispatch(incrementUnReadChat(newMessage.dmGroupId));
+          }
+        });
       },
       (error: any) => {},
     );
@@ -54,8 +52,8 @@ export default function ChatConnect() {
         client.current.disconnect();
       }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch,selectedGroup]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, selectedGroup]);
 
   return <></>;
 }

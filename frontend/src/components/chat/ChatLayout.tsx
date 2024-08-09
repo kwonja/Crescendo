@@ -23,7 +23,6 @@ export default function ChatLayout() {
     return () => promise.abort();
   }, [dispatch]);
 
-
   return (
     <div className="chatlayout">
       <div className="title">채팅목록</div>

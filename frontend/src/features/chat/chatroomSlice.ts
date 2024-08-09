@@ -17,8 +17,8 @@ interface chatProps {
   selectedGroup: ChatRoom;
   writerId: number;
   unReadChats: unReadChat[];
-  isScroll : boolean;
-  isChatRoom : boolean;
+  isScroll: boolean;
+  isChatRoom: boolean;
 }
 const inistalState: chatProps = {
   chatRoomList: [],
@@ -35,8 +35,8 @@ const inistalState: chatProps = {
   },
   writerId: 0,
   unReadChats: [],
-  isScroll : false,
-  isChatRoom : false,
+  isScroll: false,
+  isChatRoom: false,
 };
 
 export const getUserChatRoomList = createAsyncThunk(
@@ -60,7 +60,7 @@ const chatroomSlice = createSlice({
     setLastChatting: (state, action: PayloadAction<ChatRoom>) => {
       const index = state.chatRoomList.findIndex(
         chatRoom => chatRoom.dmGroupId === action.payload.dmGroupId,
-    );
+      );
 
       if (index !== -1) {
         state.chatRoomList[index] = action.payload;
@@ -85,13 +85,13 @@ const chatroomSlice = createSlice({
         unReadChat => unReadChat.dmGroupId !== action.payload,
       );
     },
-    setScroll : (state, action: PayloadAction<boolean>) => {
+    setScroll: (state, action: PayloadAction<boolean>) => {
       state.isScroll = action.payload;
     },
-    setChatRoom : (state, action: PayloadAction<boolean>) => {
+    setChatRoom: (state, action: PayloadAction<boolean>) => {
       state.isChatRoom = action.payload;
     },
-    },
+  },
   extraReducers: builder => {
     builder
       .addCase(getUserChatRoomList.pending, state => {

@@ -19,7 +19,9 @@ export default function Chatroom() {
   const client = useRef<CompatClient | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [isScroll, setScroll] = useState<boolean>(false);
-  const { dmGroupId, opponentNickName, opponentId } = useAppSelector(state => state.chatroom.selectedGroup);
+  const { dmGroupId, opponentNickName, opponentId } = useAppSelector(
+    state => state.chatroom.selectedGroup,
+  );
   const { messageList, currentPage } = useAppSelector(state => state.message);
   const messageListRef = useRef<HTMLDivElement>(null);
   const [prevScrollHeight, setPrevScrollHeight] = useState(0);
@@ -50,7 +52,7 @@ export default function Chatroom() {
         dmGroupId: dmGroupId,
         message: message,
         writerId: getUserId(),
-        recipientId : opponentId
+        recipientId: opponentId,
       }),
     );
     inputRef.current!.value = '';
