@@ -33,7 +33,11 @@ export default function CommunityDetail() {
     isFavorite: false,
   };
 
+<<<<<<< HEAD
   const [communityDetail, setCommunityDetail] = useState<CommunityDetailInfo>(initialDetail);
+=======
+  const [ communityDetail, setCommunityDetail ] = useState<CommunityDetailInfo>(initialDetail)
+>>>>>>> 63b02c15089b14c706485b4579f8dc058afc434c
   const { isLoggedIn } = useAppSelector(state => state.auth);
   const [isSelected, setIsSelected] = useState<'feed' | 'gallery'>('feed');
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
@@ -90,7 +94,11 @@ export default function CommunityDetail() {
       setCommunityDetail(prev => ({
         ...prev,
         isFavorite: !prev.isFavorite,
+<<<<<<< HEAD
         favoriteCnt: prev.isFavorite ? prev.favoriteCnt - 1 : prev.favoriteCnt + 1,
+=======
+        favoriteCnt: prev.isFavorite?prev.favoriteCnt-1:prev.favoriteCnt+1
+>>>>>>> 63b02c15089b14c706485b4579f8dc058afc434c
       }));
     } catch {
       console.error('즐겨찾기 토글 실패');
