@@ -230,6 +230,51 @@ public class AlarmServiceImpl implements AlarmService {
         sendToAlarm(new AlarmDto(feedCommenterId, AlarmType.FEED.getId(), relatedId, content));
     }
 
+    @Override
+    public void fanArtLikeAlarm(String fanArtTitle, Long fanArtWriterId, Long fanArtLikedUserId, Long relatedId) {
+
+        User likedUser = userRepository.findById(fanArtLikedUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        String content = likedUser.getNickname() + "님께서 " + fanArtTitle + "에 좋아요를 누르셨습니다.";
+
+        sendToAlarm(new AlarmDto(fanArtWriterId, AlarmType.FANART.getId(), relatedId, content));
+    }
+
+    @Override
+    public void fanArtCommentAlarm(String fanArtTitle, String comment, Long fanArtWriterId, Long fanArtCommenterId, Long relatedId) {
+
+        User commenter = userRepository.findById(fanArtCommenterId)
+                .orElseThrow(UserNotFoundException::new);
+
+        String content = commenter.getNickname() + "님께서 " + fanArtTitle + "에 댓글을 추가하셨습니다. " + "\"" +  comment + "\"";
+
+        sendToAlarm(new AlarmDto(fanArtWriterId, AlarmType.FANART.getId(), relatedId, content));
+    }
+
+    @Override
+    public void fanArtReplyAlarm(String comment, String reply, Long fanArtCommenterId, Long fanArtReplierId, Long relatedId) {
+
+        User replier = userRepository.findById(fanArtReplierId)
+                .orElseThrow(UserNotFoundException::new);
+
+        String content = replier.getNickname() + "님께서 " + "\"" + comment + "\"" + " 댓글에 대댓글을 추가하셨습니다. " + "\"" +  reply+ "\"";
+
+        sendToAlarm(new AlarmDto(fanArtCommenterId, AlarmType.FANART.getId(), relatedId, content));
+    }
+
+    @Override
+    public void fanArtCommentLikeAlarm(String comment, Long fanArtCommenterId, Long fanArtCommentLikeUserId, Long relatedId) {
+
+        User likedUser = userRepository.findById(fanArtCommentLikeUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        String content = likedUser.getNickname() + "님께서 " + "\"" + comment + "\"" + " 댓글에 좋아요를 누르셨습니다.";
+
+        sendToAlarm(new AlarmDto(fanArtCommenterId, AlarmType.FANART.getId(), relatedId, content));
+    }
+
+
     public void sendToAlarm(AlarmDto alarmDto) {
 
         User user = userRepository.findById(alarmDto.getUserId())
