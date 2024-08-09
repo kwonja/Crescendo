@@ -27,8 +27,8 @@ export const getFavoriteRankListAPI = async (page: number, size: number, idolId:
     return response.data as FavoriteRankListResponse;
 };
 
-export const voteFavoriteRankAPI = async (favorriteRankId:number) => {
-  const response = await Authapi.post(`/api/v1/favorite-rank/${favorriteRankId}/vote`);
+export const voteFavoriteRankAPI = async (favoriteRankId:number) => {
+  const response = await Authapi.post(`/api/v1/favorite-rank/${favoriteRankId}/vote`);
   return response;
 }
 
