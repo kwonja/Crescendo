@@ -29,4 +29,12 @@ public interface AlarmService {
     void goodsReplyAlarm(String comment, String reply, Long goodsCommenterId, Long goodsReplierId, Long relatedId);
 
     void goodsCommentLikeAlarm(String comment, Long goodsCommenterId, Long goodsCommentLikeUserId, Long relatedId);
+
+    void feedLikeAlarm(String feedTitle, Long feedWriterId, Long feedLikedUserId, Long relatedId);
+
+    void feedCommentAlarm(String idolGroupName, String comment, Long feedWriterId, Long feedCommenterId, Long relatedId);
+
+    void feedReplyAlarm(String comment, String reply, Long feedCommenterId, Long feedReplierId, Long relatedId);
+
+    void feedCommentLikeAlarm(String comment, Long feedCommenterId, Long feedCommentLikeUserId, Long relatedId);
 }
