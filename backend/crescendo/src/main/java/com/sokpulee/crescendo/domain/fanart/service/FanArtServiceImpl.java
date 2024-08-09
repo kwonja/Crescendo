@@ -318,6 +318,8 @@ public class FanArtServiceImpl implements FanArtService {
         fanArt.plusCommentCnt();
 
         fanArtCommentRepository.save(fanArtComment);
+
+        alarmService.fanArtCommentAlarm(fanArt.getTitle(), fanArtComment.getContent(), fanArt.getUser().getId(), loggedInUserId, fanArt.getFanArtId());
     }
 
     @Override

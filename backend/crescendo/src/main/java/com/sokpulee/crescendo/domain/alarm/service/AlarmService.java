@@ -39,4 +39,6 @@ public interface AlarmService {
     void feedCommentLikeAlarm(String comment, Long feedCommenterId, Long feedCommentLikeUserId, Long relatedId);
 
     void fanArtLikeAlarm(String fanArtTitle, Long fanArtWriterId, Long fanArtLikedUserId, Long relatedId);
+
+    void fanArtCommentAlarm(String fanArtTitle, String comment, Long fanArtWriterId, Long fanArtCommenterId, Long relatedId);
 }
