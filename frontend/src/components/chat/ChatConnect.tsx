@@ -52,7 +52,6 @@ export default function ChatConnect() {
         client.current.disconnect();
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, selectedGroup]);
 
   return <></>;
