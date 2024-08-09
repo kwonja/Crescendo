@@ -343,6 +343,8 @@ public class GoodsServiceImpl implements GoodsService {
                 goodsCommentRepository.save(goodsComment);
                 goods.plusCommentCnt();
                 parentGoodsComment.plusReplyCnt();
+
+                alarmService.goodsReplyAlarm(parentGoodsComment.getContent(), goodsComment.getContent(), parentGoodsComment.getUser().getId(), loggedInUserId, goods.getGoodsId());
             } else {
                 throw new FanArtCommentNotFoundException();
             }
