@@ -1,5 +1,6 @@
 package com.sokpulee.crescendo.domain.fanart.service;
 
+import com.sokpulee.crescendo.domain.alarm.service.AlarmService;
 import com.sokpulee.crescendo.domain.fanart.dto.request.*;
 import com.sokpulee.crescendo.domain.fanart.dto.response.*;
 import com.sokpulee.crescendo.domain.fanart.entity.*;
@@ -46,6 +47,8 @@ public class FanArtServiceImpl implements FanArtService {
     private final FanArtLikeRepository fanArtLikeRepository;
 
     private final FanArtCommentLikeRepository fanArtCommentLikeRepository;
+
+    private final AlarmService alarmService;
 
     @Override
     public void addFanArt(Long loggedInUserId, FanArtAddRequest fanArtAddRequest) {
@@ -195,6 +198,8 @@ public class FanArtServiceImpl implements FanArtService {
                     .build();
             fanArt.plusLikeCnt();
             fanArtLikeRepository.save(fanArtLike);
+
+            alarmService.fanArtLikeAlarm(fanArt.getTitle(), fanArt.getUser().getId(), loggedInUserId, fanArt.getFanArtId());
         }
     }
 

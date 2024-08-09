@@ -230,6 +230,17 @@ public class AlarmServiceImpl implements AlarmService {
         sendToAlarm(new AlarmDto(feedCommenterId, AlarmType.FEED.getId(), relatedId, content));
     }
 
+    @Override
+    public void fanArtLikeAlarm(String fanArtTitle, Long fanArtWriterId, Long fanArtLikedUserId, Long relatedId) {
+
+        User likedUser = userRepository.findById(fanArtLikedUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        String content = likedUser.getNickname() + "님께서 " + fanArtTitle + "에 좋아요를 누르셨습니다.";
+
+        sendToAlarm(new AlarmDto(fanArtWriterId, AlarmType.FEED.getId(), relatedId, content));
+    }
+
     public void sendToAlarm(AlarmDto alarmDto) {
 
         User user = userRepository.findById(alarmDto.getUserId())
