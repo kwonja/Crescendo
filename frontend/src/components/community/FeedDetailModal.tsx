@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { api } from '../../apis/core';
 import { ReactComponent as HeartIcon } from '../../assets/images/Feed/white_heart.svg';
 import { ReactComponent as MenuIcon } from '../../assets/images/Feed/white_dots.svg';
@@ -20,6 +20,15 @@ type FeedDetailResponse = {
   tagList: string[];
 };
 
+type Comment = {
+  commentId: number;
+  userId: number;
+  nickname: string;
+  profileImagePath: string;
+  content: string;
+  createdAt: string;
+};
+
 type FeedDetailModalProps = {
   show: boolean;
   onClose: () => void;
@@ -28,23 +37,44 @@ type FeedDetailModalProps = {
 
 const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId }) => {
   const [feedDetail, setFeedDetail] = useState<FeedDetailResponse | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [newComment, setNewComment] = useState(''); // 새로운 댓글 입력을 위한 상태
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [page, setPage] = useState(0); // 페이지 번호 관리
+  const [loading, setLoading] = useState(false); // 로딩 상태 관리
+  const loader = useRef<HTMLDivElement | null>(null); // 로딩 요소에 대한 ref
+
+  const loadComments = useCallback(
+    (currentPage: number) => {
+      setLoading(true);
+      api
+        .get(`/api/v1/community/feed/${feedId}/comment`, {
+          params: { page: currentPage, size: 10 },
+        })
+        .then(response => {
+          setComments(prevComments => [...prevComments, ...response.data.content]);
+          setLoading(false);
+        })
+        .catch(error => {
+          console.error('Error fetching comments:', error);
+          setLoading(false);
+        });
+    },
+    [feedId], // feedId가 변경될 때만 loadComments 함수가 재생성됩니다.
+  );
 
   useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.log('피드 상세 요청 보냅니다!!');
     if (show) {
+      // 피드 상세 정보 가져오기
       api
-        // .get(`/api/v1/community/feed/${feedId}`)
-        .get(`/api/v1/community/feed/36`)
-        .then(response => {
-          // eslint-disable-next-line no-console
-          console.log('API response:', response.data);
-          setFeedDetail(response.data);
-        })
+        .get(`/api/v1/community/feed/${feedId}`)
+        .then(response => setFeedDetail(response.data))
         .catch(error => console.error('Error fetching feed details:', error));
+
+      // 초기 댓글 데이터 가져오기
+      loadComments(0);
     }
-  }, [show, feedId]);
+  }, [show, feedId, loadComments]); // loadComments를 의존성 배열에 포함
 
   const handlePrevImage = () => {
     setActiveImageIndex(prevIndex =>
@@ -57,6 +87,50 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
       prevIndex < feedDetail!.feedImagePathList.length - 1 ? prevIndex + 1 : 0,
     );
   };
+
+  const handleAddComment = () => {
+    if (newComment.trim() === '') return; // 빈 댓글 방지
+
+    const addedComment: Comment = {
+      commentId: Date.now(), // 임시로 고유 ID 생성
+      userId: 1, // 임시 유저 ID
+      nickname: 'Current User', // 현재 사용자 이름
+      profileImagePath: '/path/to/current/user/profile', // 현재 사용자 프로필 이미지 경로
+      content: newComment,
+      createdAt: new Date().toISOString(),
+    };
+
+    setComments([...comments, addedComment]);
+    setNewComment('');
+  };
+
+  const handleObserver = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const target = entries[0];
+      if (target.isIntersecting && !loading) {
+        setPage(prevPage => prevPage + 1); // 페이지 증가
+      }
+    },
+    [loading], // loading 상태에 따라 handleObserver 함수가 변경
+  );
+
+  useEffect(() => {
+    if (page > 0) {
+      loadComments(page); // 새로운 페이지의 댓글 로드
+    }
+  }, [page, loadComments]); // loadComments를 의존성 배열에 포함
+
+  useEffect(() => {
+    const option = {
+      threshold: 0.1,
+    };
+    const observer = new IntersectionObserver(handleObserver, option);
+    const currentLoader = loader.current; // ref 값을 로컬 변수에 저장
+    if (currentLoader) observer.observe(currentLoader);
+    return () => {
+      if (currentLoader) observer.unobserve(currentLoader); // cleanup에서 로컬 변수를 사용
+    };
+  }, [handleObserver]);
 
   const getAbsolutePath = (path: string) => {
     return `https://i11b108.p.ssafy.io/server/files/${path}`;
@@ -94,6 +168,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
                   <img
                     src={getAbsolutePath(feedDetail.feedImagePathList[activeImageIndex])}
                     alt="Feed"
+                    draggable="false"
                   />
                   <NextButton className="next-button" onClick={handleNextImage} />
                   <div className="image-counter">{`${activeImageIndex + 1} / ${feedDetail.feedImagePathList.length}`}</div>
@@ -114,17 +189,36 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
         </div>
         <div className="feed-detail-right">
           <div className="comments">
-            {/* 댓글 리스트 표시 (실제 데이터로 대체 필요) */}
-            <div className="comment">
-              <div className="comment-header">
-                <div className="comment-nickname">Nickname</div>
-                <div className="comment-date">24.07.22, 16:43</div>
-              </div>
-              <div className="comment-content">댓글입니다.</div>
-            </div>
+            {comments.length === 0 ? (
+              <div>댓글이 없습니다.</div>
+            ) : (
+              comments.map(comment => (
+                <div key={comment.commentId} className="comment">
+                  <div className="comment-header">
+                    <img
+                      src={getAbsolutePath(comment.profileImagePath)}
+                      alt={comment.nickname}
+                      className="comment-profile-image"
+                    />
+                    <div className="comment-nickname">{comment.nickname}</div>
+                    <div className="comment-date">
+                      {new Date(comment.createdAt).toLocaleString()}
+                    </div>
+                  </div>
+                  <div className="comment-content">{comment.content}</div>
+                </div>
+              ))
+            )}
+            <div ref={loader}>Loading...</div> {/* IntersectionObserver가 감지할 요소 */}
           </div>
           <div className="comment-input">
-            <input type="text" placeholder="여기에 입력하세요." />
+            <input
+              type="text"
+              placeholder="여기에 입력하세요."
+              value={newComment}
+              onChange={e => setNewComment(e.target.value)}
+            />
+            <button onClick={handleAddComment}>추가</button>
           </div>
         </div>
       </div>

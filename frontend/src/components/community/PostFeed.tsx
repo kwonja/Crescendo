@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Authapi } from '../../apis/core';
 import { ReactComponent as AddImage } from '../../assets/images/img_add.svg';
 import { ReactComponent as AddTag } from '../../assets/images/tag_add.svg';
@@ -20,6 +21,7 @@ const FeedForm = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { idolGroupId } = useParams<{ idolGroupId: string }>();
   const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
+  const navigate = useNavigate();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -104,6 +106,8 @@ const FeedForm = () => {
       });
       if (response.status === 201) {
         alert('피드가 성공적으로 등록되었습니다.');
+        window.scrollTo(0, 0);
+        navigate(0);
       }
     } catch (error) {
       alert('피드 작성에 실패했습니다.');
