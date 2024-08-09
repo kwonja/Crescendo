@@ -1,10 +1,11 @@
 import { api, Authapi } from './core';
 import { CommunityListResponse, CommunityInfo, CommunityDetailInfo } from '../interface/communityList';
 
-export const getCommunityListAPI = async (page: number, size: number) => {
+export const getCommunityListAPI = async (page: number, size: number, keyword:string) => {
   const params = {
     page,
     size,
+    keyword
   };
   const response = await api.get(`/api/v1/community`, { params });
   return response.data as CommunityListResponse;
