@@ -17,18 +17,17 @@ export const getUserInfoAPI = async (userId: number, loggedInUserId: number) => 
   return response;
 };
 
-
-export const modifyNicknameAPI = async (userId : number)=>{
+export const modifyNicknameAPI = async (userId: number) => {
   const response = await Authapi.patch(`/api/v1/user/mypage/nickname?loggedInUserId=${userId}`);
   return response;
-}
+};
 
-export const modifyIntroductionAPI = async (userId : number)=>{
+export const modifyIntroductionAPI = async (userId: number) => {
   const response = await Authapi.patch(`/api/v1/user/mypage/introduction?loggedInUserId=${userId}`);
   return response;
-}
+};
 
-export const modifyProfileAPI = async (userId : number)=>{
+export const modifyProfileAPI = async (userId: number) => {
   const response = await Authapi.patch(`/api/v1/user/mypage/profile?loggedInUserId=${userId}`);
   return response;
-}
+};

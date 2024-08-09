@@ -25,7 +25,7 @@ export default function SearchUser({ handleMode }: SearchProps) {
   const getUserList = async (nickname: string) => {
     try {
       const response = await UserSearchApi(0, 10, nickname);
-      const templist = response.content.filter( (list : user) => list.userId !== getUserId())
+      const templist = response.content.filter((list: user) => list.userId !== getUserId());
       if (templist > 0) {
         setSearch(true);
       } else {

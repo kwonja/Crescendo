@@ -30,7 +30,6 @@ export default function MyPage() {
   const { id } = useParams<{ id: string }>();
   const numericId = id ? parseInt(id, 10) : NaN;
 
-
   const setIntroduction = (introduction: string) => {
     setUserInfo(prevUserInfo => ({
       ...prevUserInfo,
@@ -51,12 +50,12 @@ export default function MyPage() {
   };
   useEffect(() => {
     dispatch(getMyFeedList(numericId));
-    const getUserInfo = async()=>{
-      const response = await getUserInfoAPI(numericId,getUserId());
+    const getUserInfo = async () => {
+      const response = await getUserInfoAPI(numericId, getUserId());
       setUserInfo(response.data);
-    } 
+    };
     getUserInfo();
-  }, [dispatch,numericId]);
+  }, [dispatch, numericId]);
 
   useEffect(() => {
     const menuElement = menuRef.current;
@@ -74,29 +73,29 @@ export default function MyPage() {
   return (
     <div className="mypage">
       <div className="mypage_left">
-        <Profile userInfo={userInfo}
-        userId={numericId}
-        setIntroduction={setIntroduction}
-        setNickname={setNickname}
-        setProfileImage={setProfileImage}
+        <Profile
+          userInfo={userInfo}
+          userId={numericId}
+          setIntroduction={setIntroduction}
+          setNickname={setNickname}
+          setProfileImage={setProfileImage}
         />
-        <FriendList 
-        userId={numericId}
-        userInfo={userInfo}/>
+        <FriendList userId={numericId} userInfo={userInfo} />
       </div>
       <div className="mypage_center">
         <div className="myfavorite">
-          <img
-            src={newjeans}
-            alt="최애"
-          />
+          <img src={newjeans} alt="최애" />
           <div className="crown">
             <Crown />
           </div>
           <div className="text">NewJeans</div>
-          <div className='flex flex-row gap-2 mt-1'>
-          <button className='ml-auto w-32 bg-mainColor h-8 text-white flex justify-center items-center rounded-full'>이미지 업로드</button>
-          <button className='w-32 bg-subColor h-8 text-white flex justify-center items-center rounded-full'>이미지 삭제</button>
+          <div className="flex flex-row gap-2 mt-1">
+            <button className="ml-auto w-32 bg-mainColor h-8 text-white flex justify-center items-center rounded-full">
+              이미지 업로드
+            </button>
+            <button className="w-32 bg-subColor h-8 text-white flex justify-center items-center rounded-full">
+              이미지 삭제
+            </button>
           </div>
         </div>
 

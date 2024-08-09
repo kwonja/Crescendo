@@ -8,18 +8,17 @@ import FollowingList from './FollowingList';
 import Followerlist from './FollowerList';
 import { UserInfo } from '../../interface/user';
 
-
 interface FrinedsProps {
-  userInfo : UserInfo;
-  userId : number;
+  userInfo: UserInfo;
+  userId: number;
 }
 type ModeState = 'follower' | 'following' | '';
-export default function FriendList( {userInfo,userId} : FrinedsProps) {
+export default function FriendList({ userInfo, userId }: FrinedsProps) {
   const dispatch = useAppDispatch();
   const [isSelected, setIsSelected] = useState<ModeState>('');
 
   const handleModeClick = (mode: ModeState) => {
-    setIsSelected( prevMode => ( prevMode === mode ? '' : mode));
+    setIsSelected(prevMode => (prevMode === mode ? '' : mode));
   };
 
   useEffect(() => {
@@ -31,10 +30,8 @@ export default function FriendList( {userInfo,userId} : FrinedsProps) {
 
       return () => promise.abort();
     }
-  }, [dispatch, isSelected,userId]);
+  }, [dispatch, isSelected, userId]);
 
-
-  
   return (
     <>
       <div className="friend">
@@ -45,7 +42,6 @@ export default function FriendList( {userInfo,userId} : FrinedsProps) {
           >
             <span>{userInfo.followerNum}</span>
             <div>팔로우</div>
-            
           </div>
           <div
             className={`follow right ${isSelected === 'following' ? 'active' : ''}`}
@@ -53,17 +49,15 @@ export default function FriendList( {userInfo,userId} : FrinedsProps) {
           >
             <span>{userInfo.followingNum}</span>
             <div>팔로잉</div>
-            
           </div>
         </div>
       </div>
-      {
-        (isSelected !== '')  && <div className="list">
-        <SearchInput placeholder="친구를 검색하세요" />
-        {isSelected === 'follower' ? <Followerlist /> : <FollowingList />}
-      </div>
-      }
-      
+      {isSelected !== '' && (
+        <div className="list">
+          <SearchInput placeholder="친구를 검색하세요" />
+          {isSelected === 'follower' ? <Followerlist /> : <FollowingList />}
+        </div>
+      )}
     </>
   );
 }
