@@ -13,12 +13,13 @@ public class IdolGroupDetailResponse {
     private String introduction;
     private String profile;
     private String banner;
+    private Integer favoriteCnt;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Boolean isFavorite;
 
     @Builder
-    public IdolGroupDetailResponse(Long idolGroupId, String name, int peopleNum, String introduction, String profile, String banner, Boolean isFavorite) {
+    public IdolGroupDetailResponse(Long idolGroupId, String name, int peopleNum, String introduction, String profile, String banner, Boolean isFavorite, Integer favoriteCnt) {
         this.idolGroupId = idolGroupId;
         this.name = name;
         this.peopleNum = peopleNum;
@@ -26,5 +27,6 @@ public class IdolGroupDetailResponse {
         this.profile = profile;
         this.banner = banner;
         this.isFavorite = isFavorite;
+        this.favoriteCnt = favoriteCnt;
     }
 }

@@ -10,9 +10,15 @@ public class FeedSearchCondition {
 
     private String content;
 
+    private Boolean sortByFollowed;
+
+    private Boolean sortByLiked;
+
     @Builder
-    public FeedSearchCondition(String nickname, String content) {
+    public FeedSearchCondition(String nickname, String content, Boolean sortByFollowed, Boolean sortByLiked) {
         this.nickname = nickname;
         this.content = content;
+        this.sortByFollowed = sortByFollowed;
+        this.sortByLiked = sortByLiked;
     }
 }

@@ -116,7 +116,118 @@ public class AlarmServiceImpl implements AlarmService {
 
         String content = user.getNickname() + "님께서 회원님을 팔로우 하셨습니다.";
 
-        sendToAlarm(new AlarmDto(followerUserId, AlarmType.FOLLOW.getId(), relatedId, content, AlarmType.FOLLOW));
+        sendToAlarm(new AlarmDto(followerUserId, AlarmType.FOLLOW.getId(), relatedId, content));
+    }
+
+    @Override
+    public void challengeJoinAlarm(String challengeName, Long challengeOrganizerId, Long challengeJoinerId, Long relatedId) {
+
+        User joiner = userRepository.findById(challengeJoinerId)
+                .orElseThrow(UserNotFoundException::new);
+
+        String content = joiner.getNickname() + "님께서 " + challengeName + " 챌린지에 참여하셨습니다.";
+
+        sendToAlarm(new AlarmDto(challengeOrganizerId, AlarmType.CHALLENGE.getId(), relatedId, content));
+
+    }
+
+    @Override
+    public void challengeJoinLikeAlarm(String challengeName, Long challengeJoinerId, Long challengeJoinLikedUserId, Long relatedId) {
+
+        User likedUser = userRepository.findById(challengeJoinLikedUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        String content = likedUser.getNickname() + "님께서 " + challengeName + " 챌린지에 좋아요를 누르셨습니다.";
+
+        sendToAlarm(new AlarmDto(challengeJoinerId, AlarmType.CHALLENGE.getId(), relatedId, content));
+    }
+
+    @Override
+    public void goodsLikeAlarm(String goodsTitle, Long goodsWriterId, Long goodsLikedUserId, Long relatedId) {
+
+        User likedUser = userRepository.findById(goodsLikedUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        String content = likedUser.getNickname() + "님께서 " + goodsTitle + " 에 좋아요를 누르셨습니다.";
+
+        sendToAlarm(new AlarmDto(goodsWriterId, AlarmType.GOODS.getId(), relatedId, content));
+    }
+
+    @Override
+    public void goodsCommentAlarm(String goodsTitle, String comment, Long goodsWriterId, Long goodsCommenterId, Long relatedId) {
+
+        User commenter = userRepository.findById(goodsCommenterId)
+                .orElseThrow(UserNotFoundException::new);
+
+        String content = commenter.getNickname() + "님께서 " + goodsTitle + "에 댓글을 추가하셨습니다. " + "\"" +  comment + "\"";
+
+        sendToAlarm(new AlarmDto(goodsWriterId, AlarmType.GOODS.getId(), relatedId, content));
+    }
+
+    @Override
+    public void goodsReplyAlarm(String comment, String reply, Long goodsCommenterId, Long goodsReplierId, Long relatedId) {
+
+        User replier = userRepository.findById(goodsReplierId)
+                .orElseThrow(UserNotFoundException::new);
+
+        String content = replier.getNickname() + "님께서 " + "\"" + comment + "\"" + " 댓글에 대댓글을 추가하셨습니다. " + "\"" +  reply+ "\"";
+
+        sendToAlarm(new AlarmDto(goodsCommenterId, AlarmType.GOODS.getId(), relatedId, content));
+    }
+
+    @Override
+    public void goodsCommentLikeAlarm(String comment, Long goodsCommenterId, Long goodsCommentLikeUserId, Long relatedId) {
+
+        User likedUser = userRepository.findById(goodsCommentLikeUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        String content = likedUser.getNickname() + "님께서 " + "\"" + comment + "\"" + " 댓글에 좋아요를 누르셨습니다.";
+
+        sendToAlarm(new AlarmDto(goodsCommenterId, AlarmType.GOODS.getId(), relatedId, content));
+    }
+
+    @Override
+    public void feedLikeAlarm(String idolGroupName, Long feedWriterId, Long feedLikedUserId, Long relatedId) {
+
+        User likedUser = userRepository.findById(feedLikedUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        String content = likedUser.getNickname() + "님께서 " + idolGroupName + " 커뮤니티에 올리신 피드에 좋아요를 누르셨습니다.";
+
+        sendToAlarm(new AlarmDto(feedWriterId, AlarmType.FEED.getId(), relatedId, content));
+    }
+
+    @Override
+    public void feedCommentAlarm(String idolGroupName, String comment, Long feedWriterId, Long feedCommenterId, Long relatedId) {
+
+        User commenter = userRepository.findById(feedCommenterId)
+                .orElseThrow(UserNotFoundException::new);
+
+        String content = commenter.getNickname() + "님께서 " + idolGroupName + " 커뮤니티에 올리신 피드에 댓글을 추가하셨습니다. " + "\"" +  comment + "\"";
+
+        sendToAlarm(new AlarmDto(feedWriterId, AlarmType.FEED.getId(), relatedId, content));
+    }
+
+    @Override
+    public void feedReplyAlarm(String comment, String reply, Long feedCommenterId, Long feedReplierId, Long relatedId) {
+
+        User replier = userRepository.findById(feedReplierId)
+                .orElseThrow(UserNotFoundException::new);
+
+        String content = replier.getNickname() + "님께서 " + "\"" + comment + "\"" + " 댓글에 대댓글을 추가하셨습니다. " + "\"" +  reply+ "\"";
+
+        sendToAlarm(new AlarmDto(feedCommenterId, AlarmType.FEED.getId(), relatedId, content));
+    }
+
+    @Override
+    public void feedCommentLikeAlarm(String comment, Long feedCommenterId, Long feedCommentLikeUserId, Long relatedId) {
+
+        User likedUser = userRepository.findById(feedCommentLikeUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        String content = likedUser.getNickname() + "님께서 " + "\"" + comment + "\"" + " 댓글에 좋아요를 누르셨습니다.";
+
+        sendToAlarm(new AlarmDto(feedCommenterId, AlarmType.FEED.getId(), relatedId, content));
     }
 
     public void sendToAlarm(AlarmDto alarmDto) {
