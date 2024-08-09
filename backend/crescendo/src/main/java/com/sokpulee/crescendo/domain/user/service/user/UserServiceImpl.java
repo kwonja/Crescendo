@@ -1,15 +1,14 @@
 package com.sokpulee.crescendo.domain.user.service.user;
 
 import com.sokpulee.crescendo.domain.follow.repository.FollowRepository;
+import com.sokpulee.crescendo.domain.idol.entity.Idol;
+import com.sokpulee.crescendo.domain.idol.repository.idol.IdolRepository;
 import com.sokpulee.crescendo.domain.user.dto.request.user.*;
 import com.sokpulee.crescendo.domain.user.dto.response.user.NickNameSearchingResponse;
 import com.sokpulee.crescendo.domain.user.dto.response.user.UserInfoResponse;
 import com.sokpulee.crescendo.domain.user.entity.User;
 import com.sokpulee.crescendo.domain.user.repository.UserRepository;
-import com.sokpulee.crescendo.global.exception.custom.EmailConflictException;
-import com.sokpulee.crescendo.global.exception.custom.IncorrectCurrentPasswordException;
-import com.sokpulee.crescendo.global.exception.custom.NicknameConflictException;
-import com.sokpulee.crescendo.global.exception.custom.UserNotFoundException;
+import com.sokpulee.crescendo.global.exception.custom.*;
 import com.sokpulee.crescendo.global.util.encrypt.EnctyptHelper;
 import com.sokpulee.crescendo.global.util.file.FileSaveHelper;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private final FileSaveHelper fileSaveHelper;
     private final FollowRepository followRepository;
     private final EnctyptHelper enctyptHelper;
+    private final IdolRepository idolRepository;
 
     @Override
     public void updateProfile(Long userId, ProfileUpdateRequest request) {
@@ -130,5 +130,17 @@ public class UserServiceImpl implements UserService {
                 .toList();
 
         return new PageImpl<>(results, pageable, users.getTotalElements());
+    }
+
+    @Override
+    public void updateFavoriteIdol(Long loggedInUserId, UpdateFavoriteIdolRequest updateFavoriteIdolRequest) {
+
+        User user = userRepository.findById(loggedInUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        Idol idol = idolRepository.findById(updateFavoriteIdolRequest.getIdolId())
+                .orElseThrow(IdolNotFoundException::new);
+
+        user.updateIdol(idol);
     }
 }
