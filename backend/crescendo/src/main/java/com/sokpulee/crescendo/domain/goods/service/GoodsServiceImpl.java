@@ -223,6 +223,8 @@ public class GoodsServiceImpl implements GoodsService {
                     .build();
             goodsComment.plusLikeCnt();
             goodsCommentLikeRepository.save(goodsCommentLike);
+
+            alarmService.goodsCommentLikeAlarm(goodsComment.getContent(), goodsComment.getUser().getId(), loggedInUserId, goodsComment.getGoods().getGoodsId());
         }
     }
 

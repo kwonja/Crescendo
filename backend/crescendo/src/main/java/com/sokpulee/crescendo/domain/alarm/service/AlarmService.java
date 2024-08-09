@@ -27,4 +27,6 @@ public interface AlarmService {
     void goodsCommentAlarm(String goodsTitle, String comment, Long goodsWriterId, Long goodsCommenterId, Long relatedId);
 
     void goodsReplyAlarm(String comment, String reply, Long goodsCommenterId, Long goodsReplierId, Long relatedId);
+
+    void goodsCommentLikeAlarm(String comment, Long goodsCommenterId, Long goodsCommentLikeUserId, Long relatedId);
 }
