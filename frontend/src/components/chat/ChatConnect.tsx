@@ -11,7 +11,8 @@ import {
 } from '../../features/chat/chatroomSlice';
 
 export default function ChatConnect() {
-  const { chatRoomList } = useAppSelector(state => state.chatroom);
+  const {selectedGroup} = useAppSelector( (state)=> state.chatroom)
+
   const dispatch = useAppDispatch();
   const client = useRef<CompatClient | null>(null);
 
@@ -26,14 +27,11 @@ export default function ChatConnect() {
     client.current.connect(
       {},
       (frame: string) => {
-        // 모든 채팅방에 대한 구독 설정
-        chatRoomList.forEach(room => {
-          client.current?.subscribe(`/topic/messages/${room.dmGroupId}`, content => {
+          client.current?.subscribe(`/topic/messages/${getUserId()}`, content => {
             const newMessage: Message = JSON.parse(content.body);
-            if (newMessage.writerId !== getUserId()) {
-              dispatch(
+            dispatch(
                 setLastChatting({
-                  dmGroupId: room.dmGroupId,
+                  dmGroupId: newMessage.dmGroupId,
                   opponentId: newMessage.writerId,
                   opponentProfilePath: newMessage.writerProfilePath,
                   opponentNickName: newMessage.writerNickName,
@@ -41,10 +39,12 @@ export default function ChatConnect() {
                   lastChattingTime: newMessage.createdAt,
                 }),
               );
-              dispatch(incrementUnReadChat(room.dmGroupId));
-            }
+            if(newMessage.dmGroupId !== selectedGroup.dmGroupId){
+                dispatch(incrementUnReadChat(newMessage.dmGroupId));
+            }    
+            
           });
-        });
+      
       },
       (error: any) => {},
     );
@@ -54,7 +54,8 @@ export default function ChatConnect() {
         client.current.disconnect();
       }
     };
-  }, [chatRoomList, dispatch]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch,selectedGroup]);
 
   return <></>;
 }
