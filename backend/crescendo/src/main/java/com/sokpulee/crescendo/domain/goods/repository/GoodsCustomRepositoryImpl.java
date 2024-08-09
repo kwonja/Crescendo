@@ -1,7 +1,11 @@
 package com.sokpulee.crescendo.domain.goods.repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.sokpulee.crescendo.domain.feed.entity.Feed;
+import com.sokpulee.crescendo.domain.follow.entity.QFollow;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsSearchCondition;
 import com.sokpulee.crescendo.domain.goods.dto.response.FavoriteGoodsResponse;
 import com.sokpulee.crescendo.domain.goods.dto.response.GoodsResponse;
@@ -10,6 +14,7 @@ import com.sokpulee.crescendo.domain.goods.entity.Goods;
 import com.sokpulee.crescendo.domain.goods.entity.QGoods;
 import com.sokpulee.crescendo.domain.goods.entity.QGoodsImage;
 import com.sokpulee.crescendo.domain.goods.entity.QGoodsLike;
+import com.sokpulee.crescendo.domain.idol.entity.QIdolGroup;
 import com.sokpulee.crescendo.domain.user.entity.QUser;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
@@ -36,8 +41,12 @@ public class GoodsCustomRepositoryImpl implements GoodsCustomRepository{
         QGoodsLike goodsLike = QGoodsLike.goodsLike;
 
         List<Goods> query = queryFactory
-                .selectFrom(goods)
-                .leftJoin(goods.user, user).fetchJoin()
+                .select(goods)
+                .from(goodsLike)
+                .join(goodsLike.goods, goods)  // 일반 조인 사용
+                .join(goodsLike.user, user)
+                .where(goodsLike.user.id.eq(loggedInUserId))
+                .orderBy(goods.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .distinct()
@@ -96,6 +105,13 @@ public class GoodsCustomRepositoryImpl implements GoodsCustomRepository{
         QUser user = QUser.user;
         QGoodsImage goodsImage = QGoodsImage.goodsImage;
         QGoodsLike goodsLike = QGoodsLike.goodsLike;
+        QIdolGroup idolGroup = QIdolGroup.idolGroup;
+        QFollow follow = QFollow.follow; // Assuming there's a follow entity
+
+        // 검색 조건 추가
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        booleanBuilder.and(goods.idolGroup.id.eq(idolGroup.id));
+
 
 
         // 페이징 및 기본 정보 조회
@@ -103,10 +119,13 @@ public class GoodsCustomRepositoryImpl implements GoodsCustomRepository{
                 .selectFrom(goods)
                 .leftJoin(goods.user, user).fetchJoin()
                 .where(user.id.eq(loggedInUserId))
+                .orderBy(goods.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .distinct()
                 .fetch();
+
+
 
         // 피드 응답 변환
         List<MyGoodsResponse> myGoodsResponses = goodsList.stream()
@@ -157,6 +176,7 @@ public class GoodsCustomRepositoryImpl implements GoodsCustomRepository{
         QUser user = QUser.user;
         QGoodsImage goodsImage = QGoodsImage.goodsImage;
         QGoodsLike goodsLike = QGoodsLike.goodsLike;
+        QFollow follow = QFollow.follow; // Assuming there's a follow entity
 
         // 검색 조건 추가
         BooleanBuilder booleanBuilder = new BooleanBuilder();
@@ -174,16 +194,39 @@ public class GoodsCustomRepositoryImpl implements GoodsCustomRepository{
             }
         }
 
+        // Sort by followed users
+        if (condition != null && Boolean.TRUE.equals(condition.getSortByFollowed()) && loggedInUserId != null) {
+            booleanBuilder.and(goods.user.id.in(
+                    JPAExpressions.select(follow.follower.id)
+                            .from(follow)
+                            .where(follow.following.id.eq(loggedInUserId))
+            ));
+        }
 
-        // 페이징 및 기본 정보 조회
-        List<Goods> goodsList = queryFactory
+
+        // 기본 정보 조회
+        JPAQuery<Goods> query = queryFactory
                 .selectFrom(goods)
-                .leftJoin(goods.user,user).fetchJoin()
+                .leftJoin(goods.user, user).fetchJoin()
+                .leftJoin(goods.idolGroup).fetchJoin()
                 .where(booleanBuilder)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .distinct()
-                .fetch();
+                .distinct();
+        // 기본 정렬: createdAt 최신순
+        query.orderBy(goods.createdAt.desc());
+
+        // Sort by liked feeds
+        if (condition != null && Boolean.TRUE.equals(condition.getSortByLiked())) {
+            query.orderBy(goods.likeCnt.desc(),goods.createdAt.desc());
+        }else{
+            query.orderBy(goods.createdAt.desc());
+        }
+
+        // 페이징 추가
+        query.offset(pageable.getOffset())
+                .limit(pageable.getPageSize());
+
+        List<Goods> goodsList = query.fetch();
+
 
         //팬아트 응답 변환
         List<GoodsResponse> goodsResponses = goodsList.stream()
