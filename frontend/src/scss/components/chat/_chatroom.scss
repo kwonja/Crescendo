@@ -1,6 +1,6 @@
 .chatroom {
-  width: 330px;
-  height: 500px;
+  width: 260px;
+  height: 400px;
   box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
   border-radius: 0px 10px 10px 10px;
   background: #fea3a3;
@@ -9,18 +9,22 @@
   flex-direction: column;
   padding-top: 15px;
   position: absolute;
-  top: 68px;
+  top: 64px;
   left: 0px;
   z-index: 1000;
   gap: 5px;
+  @media screen and (min-width: 1670px) {
+    width: 300px;
+    top: 68px;
+  }
 
   .upper {
-    width: 300px;
+    width: 90%;
     height: 50px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    font-size: 25px;
+    font-size: 20px;
     margin: 0 auto;
     border-bottom: 1px solid #fff;
     .back {
@@ -28,7 +32,7 @@
     }
   }
   .date {
-    width: 300px;
+    width: 90%;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -40,24 +44,28 @@
   }
   .messagelist {
     display: flex;
+    width: 100%;
     flex-direction: column;
     gap: 5px;
-    height: 337px;
+    height: 90%;
     overflow-y: scroll;
   }
   .message_send {
-    width: 300px;
+    width: 90%;
     border-radius: 10px;
     background: #fff;
     color: #000;
     font-size: 15px;
     margin: 0 auto;
     padding: 10px;
+    @media screen and (min-width: 1670px) {
+      width: 300px;
+    }
   }
 }
 
 .messagelist::-webkit-scrollbar {
-  width: 12px; /* 스크롤바의 너비 */
+  width: 11px; /* 스크롤바의 너비 */
 }
 
 .messagelist::-webkit-scrollbar-thumb {

@@ -21,6 +21,7 @@ export default function LoginHeader() {
   const location = useLocation();
 
   const { unReadAlarmCount } = useAppSelector(state => state.alarm);
+  const { unReadChats } = useAppSelector(state => state.chatroom);
   const dispatch = useAppDispatch();
   const { isSelected } = useAppSelector(state => state.chatroom);
   const handleModeClick = (mode: ModeState) => {
@@ -29,7 +30,8 @@ export default function LoginHeader() {
   useEffect(() => {
     dispatch(getUnReadAlarmCount());
   }, [dispatch]);
-  useEffect(() => {
+
+  const updateIndicator = () => {
     const menuElement = menuRef.current;
     if (menuElement) {
       const activeLink = menuElement.querySelector('.active') as HTMLElement;
@@ -43,64 +45,83 @@ export default function LoginHeader() {
         setIndicatorStyle({ display: 'none' });
       }
     }
+  };
+
+  useEffect(() => {
+    updateIndicator();
   }, [location]);
 
+  useEffect(() => {
+    window.addEventListener('resize', updateIndicator);
+    return () => {
+      window.removeEventListener('resize', updateIndicator);
+    };
+  }, []);
+
   return (
-    <div className="header">
-      <Link to="/">
-        <div className="header_title">CRESCENDO</div>
-      </Link>
+    <>
+      <div className="header"></div>
+      <div className="fixed top-0 left-0 w-full z-50">
+        <div className="header">
+          <Link to="/">
+            <div className="header_title">CRESCENDO</div>
+          </Link>
 
-      <ul className="header_menu" ref={menuRef}>
-        <li>
-          <NavLink to="/community">커뮤니티</NavLink>
-        </li>
-        <li>
-          <NavLink to="/dance">댄스챌린지</NavLink>
-        </li>
-        <li>
-          <NavLink to="/favorite">전국최애자랑</NavLink>
-        </li>
-        <li>
-          <NavLink to="/game">오락실</NavLink>
-        </li>
-        <div className="indicator" style={indicatorStyle}></div>
-      </ul>
+          <ul className="header_menu" ref={menuRef}>
+            <li>
+              <NavLink to="/community">커뮤니티</NavLink>
+            </li>
+            <li>
+              <NavLink to="/dance">댄스챌린지</NavLink>
+            </li>
+            <li>
+              <NavLink to="/favorite">전국최애자랑</NavLink>
+            </li>
+            <li>
+              <NavLink to="/game">오락실</NavLink>
+            </li>
+            <div className="indicator" style={indicatorStyle}></div>
+          </ul>
 
-      <div className="header_icon">
-        <div
-          className={` header_icon_div ${userMode === 'chat' ? 'chat' : ''}`}
-          onClick={() => handleModeClick('chat')}
-        >
-          <Chat />
+          <div className="header_icon">
+            <div
+              className={` header_icon_div count ${userMode === 'chat' ? 'chat' : ''}`}
+              onClick={() => handleModeClick('chat')}
+            >
+              {unReadChats.length > 0 ? (
+                <div className="flex absolute top-1 right-1 text-xs w-3 h-3 bg-white text-mainColor rounded-full justify-center items-center"></div>
+              ) : null}
+              <Chat className="header_svg" />
+            </div>
+            <div
+              className={` header_icon_div count ${userMode === 'alarm' ? 'alarm' : ''}`}
+              onClick={() => handleModeClick('alarm')}
+            >
+              {unReadAlarmCount > 0 ? (
+                <div className="flex absolute top-1 right-1 text-xs w-3 h-3 bg-white text-mainColor rounded-full justify-center items-center"></div>
+              ) : null}
+              <Alarm className="header_svg" />
+            </div>
+            <div
+              className={` header_icon_div ${userMode === 'userlist' ? 'userlist' : ''}`}
+              onClick={() => handleModeClick('userlist')}
+            >
+              <UserList className="header_svg" />
+            </div>
+            <div
+              className={` header_icon_div ${userMode === 'user' ? 'user' : ''}`}
+              onClick={() => handleModeClick('user')}
+            >
+              <User className="header_svg" />
+            </div>
+            {userMode === 'chat' && isSelected === false && <ChatLayout />}
+            {userMode === 'chat' && isSelected === true && <Chatroom />}
+            {userMode === 'alarm' && <AlarmLayout />}
+            {userMode === 'userlist' && <SearchUser handleMode={setUserMode} />}
+            {userMode === 'user' && <UserMenu handleMode={() => setUserMode('')} />}
+          </div>
         </div>
-        <div
-          className={` header_icon_div count ${userMode === 'alarm' ? 'alarm' : ''}`}
-          onClick={() => handleModeClick('alarm')}
-        >
-          {unReadAlarmCount > 0 ? (
-            <div className="flex absolute top-0 right-0 text-xs w-4 h-4 bg-white text-mainColor rounded-full justify-center items-center"></div>
-          ) : null}
-          <Alarm />
-        </div>
-        <div
-          className={` header_icon_div ${userMode === 'userlist' ? 'userlist' : ''}`}
-          onClick={() => handleModeClick('userlist')}
-        >
-          <UserList />
-        </div>
-        <div
-          className={` header_icon_div ${userMode === 'user' ? 'user' : ''}`}
-          onClick={() => handleModeClick('user')}
-        >
-          <User />
-        </div>
-        {userMode === 'chat' && isSelected === false && <ChatLayout />}
-        {userMode === 'chat' && isSelected === true && <Chatroom />}
-        {userMode === 'alarm' && <AlarmLayout />}
-        {userMode === 'userlist' && <SearchUser handleMode={setUserMode} />}
-        {userMode === 'user' && <UserMenu handleMode={() => setUserMode('')} />}
       </div>
-    </div>
+    </>
   );
 }

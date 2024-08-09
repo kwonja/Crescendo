@@ -48,7 +48,7 @@ const feedSlice = createSlice({
       })
       .addCase(getMyFeedList.fulfilled, (state, action) => {
         state.status = 'success';
-        state.myFeedList = action.payload.content;
+        state.myFeedList = [...action.payload.content];
       })
       .addCase(getMyFeedList.rejected, (state, action) => {
         state.status = 'failed';

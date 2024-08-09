@@ -42,4 +42,4 @@ export interface CommunityDetailInfo {
   banner: string;
   favoriteCnt: number;
   isFavorite: boolean;
-};
+}

@@ -12,24 +12,16 @@ export default function SEEHandler() {
   useEffect(() => {
     const connectSSE = () => {
       sse.current = new EventSource(`${BASE_URL}/sse/connect/${getUserId()}`);
-
-      sse.current.addEventListener('connect', (e: Event) => {
-        // const { data } = e as MessageEvent;
-        // console.log(data);
-      });
-
+      sse.current.addEventListener('connect', (e: Event) => {});
       sse.current.addEventListener('alarm', (e: Event) => {
-        // const { data } = e as MessageEvent;
-        // console.log(data);
         dispatch(incrementUnRead());
       });
-
       sse.current.onerror = () => {
         // console.log("에러요~")
         sse.current?.close();
         setTimeout(() => {
           if (isLoggedIn) connectSSE();
-        }, 3000); // Try to reconnect after 3 seconds
+        }, 3000);
       };
     };
 
