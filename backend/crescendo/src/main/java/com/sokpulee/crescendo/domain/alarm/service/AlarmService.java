@@ -19,4 +19,8 @@ public interface AlarmService {
     void followAlarm(Long followingUserId, Long followerUserId, Long relatedId);
 
     void challengeJoinAlarm(String challengeName, Long challengeOrganizerId, Long challengeJoinerId, Long relatedId);
+
+    void challengeJoinLikeAlarm(String challengeName, Long challengeJoinerId, Long challengeJoinLikedUserId, Long relatedId);
+
+    void goodsLikeAlarm(String goodsTitle, Long goodsWriterId, Long goodsLikedUserId, Long relatedId);
 }
