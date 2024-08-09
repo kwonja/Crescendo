@@ -186,6 +186,17 @@ public class AlarmServiceImpl implements AlarmService {
         sendToAlarm(new AlarmDto(goodsCommenterId, AlarmType.GOODS.getId(), relatedId, content));
     }
 
+    @Override
+    public void feedLikeAlarm(String idolGroupName, Long feedWriterId, Long feedLikedUserId, Long relatedId) {
+
+        User likedUser = userRepository.findById(feedLikedUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        String content = likedUser.getNickname() + "님께서 " + idolGroupName + " 커뮤니티에 올리신 피드에 좋아요를 누르셨습니다.";
+
+        sendToAlarm(new AlarmDto(feedWriterId, AlarmType.FEED.getId(), relatedId, content));
+    }
+
     public void sendToAlarm(AlarmDto alarmDto) {
 
         User user = userRepository.findById(alarmDto.getUserId())

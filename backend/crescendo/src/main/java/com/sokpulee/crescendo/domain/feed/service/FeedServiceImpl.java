@@ -1,5 +1,6 @@
 package com.sokpulee.crescendo.domain.feed.service;
 
+import com.sokpulee.crescendo.domain.alarm.service.AlarmService;
 import com.sokpulee.crescendo.domain.feed.dto.request.*;
 import com.sokpulee.crescendo.domain.feed.dto.response.*;
 import com.sokpulee.crescendo.domain.feed.entity.*;
@@ -32,6 +33,7 @@ public class FeedServiceImpl implements FeedService {
     private final FileSaveHelper fileSaveHelper;
     private final FeedLikeRepository feedLikeRepository;
     private final FeedCommentLikeRepository feedCommentLikeRepository;
+    private final AlarmService alarmService;
 
 
     @Override
@@ -206,6 +208,8 @@ public class FeedServiceImpl implements FeedService {
                     .build();
             feed.plusLikeCnt();
             feedLikeRepository.save(feedLike);
+
+            alarmService.feedLikeAlarm(feed.getIdolGroup().getName(), feed.getUser().getId(), loggedInUserId, feed.getFeedId());
         }
     }
 

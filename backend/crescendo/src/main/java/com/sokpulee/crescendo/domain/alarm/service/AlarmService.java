@@ -29,4 +29,6 @@ public interface AlarmService {
     void goodsReplyAlarm(String comment, String reply, Long goodsCommenterId, Long goodsReplierId, Long relatedId);
 
     void goodsCommentLikeAlarm(String comment, Long goodsCommenterId, Long goodsCommentLikeUserId, Long relatedId);
+
+    void feedLikeAlarm(String feedTitle, Long feedWriterId, Long feedLikedUserId, Long relatedId);
 }
