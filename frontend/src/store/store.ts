@@ -9,7 +9,6 @@ import messagesReducer from '../features/chat/messageSlice';
 import favoriteReducer from '../features/favorite/favoriteSlice';
 import alarmReducer from '../features/alarm/alarmSlice';
 
-
 export const store = configureStore({
   reducer: {
     auth: authReducer,

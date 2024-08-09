@@ -1,5 +1,6 @@
 package com.sokpulee.crescendo.domain.goods.service;
 
+import com.sokpulee.crescendo.domain.alarm.service.AlarmService;
 import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtDetailResponse;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArt;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArtComment;
@@ -45,6 +46,8 @@ public class GoodsServiceImpl implements GoodsService {
     private final GoodsLikeRepository goodsLikeRepository;
 
     private final GoodsCommentLikeRepository goodsCommentLikeRepository;
+
+    private final AlarmService alarmService;
 
 
     @Override
@@ -194,6 +197,8 @@ public class GoodsServiceImpl implements GoodsService {
                     .build();
             goods.plusLikeCnt();
             goodsLikeRepository.save(goodsLike);
+
+            alarmService.goodsLikeAlarm(goods.getTitle(), goods.getUser().getId(), loggedInUserId, goods.getGoodsId());
         }
     }
 
@@ -218,6 +223,8 @@ public class GoodsServiceImpl implements GoodsService {
                     .build();
             goodsComment.plusLikeCnt();
             goodsCommentLikeRepository.save(goodsCommentLike);
+
+            alarmService.goodsCommentLikeAlarm(goodsComment.getContent(), goodsComment.getUser().getId(), loggedInUserId, goodsComment.getGoods().getGoodsId());
         }
     }
 
@@ -311,6 +318,8 @@ public class GoodsServiceImpl implements GoodsService {
         goods.plusCommentCnt();
 
         goodsCommentRepository.save(goodsComment);
+
+        alarmService.goodsCommentAlarm(goods.getTitle(), goodsComment.getContent(), goods.getUser().getId(), loggedInUserId, goods.getGoodsId());
     }
 
     @Override
@@ -336,6 +345,8 @@ public class GoodsServiceImpl implements GoodsService {
                 goodsCommentRepository.save(goodsComment);
                 goods.plusCommentCnt();
                 parentGoodsComment.plusReplyCnt();
+
+                alarmService.goodsReplyAlarm(parentGoodsComment.getContent(), goodsComment.getContent(), parentGoodsComment.getUser().getId(), loggedInUserId, goods.getGoodsId());
             } else {
                 throw new FanArtCommentNotFoundException();
             }

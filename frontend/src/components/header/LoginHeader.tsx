@@ -20,15 +20,15 @@ export default function LoginHeader() {
   const menuRef = useRef<HTMLUListElement>(null);
   const location = useLocation();
 
-  const {unReadAlarmCount} = useAppSelector( state => state.alarm);
+  const { unReadAlarmCount } = useAppSelector(state => state.alarm);
   const dispatch = useAppDispatch();
   const { isSelected } = useAppSelector(state => state.chatroom);
   const handleModeClick = (mode: ModeState) => {
     setUserMode(prevMode => (prevMode === mode ? '' : mode));
   };
-  useEffect(()=>{
+  useEffect(() => {
     dispatch(getUnReadAlarmCount());
-  },[dispatch])
+  }, [dispatch]);
   useEffect(() => {
     const menuElement = menuRef.current;
     if (menuElement) {
@@ -78,7 +78,9 @@ export default function LoginHeader() {
           className={` header_icon_div count ${userMode === 'alarm' ? 'alarm' : ''}`}
           onClick={() => handleModeClick('alarm')}
         >
-          <div className='absolute top-1 right-1 text-xs'>{unReadAlarmCount}</div>
+          {unReadAlarmCount > 0 ? (
+            <div className="flex absolute top-0 right-0 text-xs w-4 h-4 bg-white text-mainColor rounded-full justify-center items-center"></div>
+          ) : null}
           <Alarm />
         </div>
         <div
