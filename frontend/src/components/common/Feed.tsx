@@ -7,6 +7,7 @@ import { ReactComponent as FullHeart } from '../../assets/images/Feed/fullheart.
 import { FeedData } from '../../interface/feed';
 import { useAppDispatch } from '../../store/hooks/hook';
 import { decrementLike, incrementLike } from '../../features/feed/feedSlice';
+import { ChatDateTranfer } from '../../utils/ChatDateTranfer';
 
 interface FeedProps {
   feed: FeedData;
@@ -20,7 +21,7 @@ export default function Feed({ feed }: FeedProps) {
         <User />
         <div className="userinfo">
           <span>{nickname}</span>
-          <span>{createdAt}</span>
+          <span>{ChatDateTranfer(createdAt)}</span>
         </div>
 
         <Dots className="dots hoverup" />
@@ -35,14 +36,14 @@ export default function Feed({ feed }: FeedProps) {
         {likeCnt}
         {!isLike ? (
           <Heart
-            className="hoverup"
+            className="hoverup w-8 h-8"
             onClick={() => {
               dispatch(incrementLike(feedId));
             }}
           />
         ) : (
           <FullHeart
-            className="hoverup"
+            className="hoverup w-8 h-8"
             onClick={() => {
               dispatch(decrementLike(feedId));
             }}
@@ -52,7 +53,7 @@ export default function Feed({ feed }: FeedProps) {
       <div className="feed_comment_box">
         {' '}
         {commentCnt}
-        <Comment className="hoverup" />
+        <Comment className="hoverup w-8 h-8" />
       </div>
     </div>
   );

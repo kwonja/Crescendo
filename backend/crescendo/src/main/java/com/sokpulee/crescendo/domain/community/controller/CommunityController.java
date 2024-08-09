@@ -59,11 +59,15 @@ public class CommunityController {
 
     @GetMapping
     @Operation(summary = "커뮤니티 아이돌 그룹 조회", description = "커뮤니티 아이돌 그룹 조회 API")
-    public Page<IdolGroupGetResponse> getIdolGroups(@RequestParam int page, @RequestParam int size) {
+    public Page<IdolGroupGetResponse> getIdolGroups(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String keyword
+    ) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
 
-        return communityService.getIdolGroups(pageable);
+        return communityService.getIdolGroups(keyword, pageable);
     }
 
     @GetMapping("/idol-group/{idol-group-id}")

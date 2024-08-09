@@ -112,19 +112,21 @@ public class DMServiceImpl implements DMService {
         DmGroup dmGroup = dmGroupRepository.findById(message.getDmGroupId())
                 .orElseThrow(DMGroupNotFoundException::new);
 
-        User user = userRepository.findById(message.getWriterId())
+        User recipient = userRepository.findById(message.getRecipientId())
+                .orElseThrow(UserNotFoundException::new);
+
+        User writer = userRepository.findById(message.getWriterId())
                 .orElseThrow(UserNotFoundException::new);
 
         DmMessage dmMessage = DmMessage.builder()
                 .dmGroup(dmGroup)
-                .user(user)
+                .user(writer)
                 .content(message.getMessage())
                 .build();
 
         DmMessage saveDMMessage = dmMessageRepository.save(dmMessage);
 
-
-        return new MessageResponse(saveDMMessage, user);
+        return new MessageResponse(saveDMMessage, recipient, writer);
     }
 
     @Override

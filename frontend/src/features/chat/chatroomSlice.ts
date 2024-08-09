@@ -1,10 +1,13 @@
 //Ducks 패턴 공부예정
 
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-
 import { ChatRoom } from '../../interface/chat';
 import { chatroomlistAPI } from '../../apis/chat';
-import { PromiseStatus } from '../follow/followerSlice';
+import { PromiseStatus } from '../mypage/followerSlice';
+
+export interface unReadChat {
+  dmGroupId: number;
+}
 
 interface chatProps {
   chatRoomList: ChatRoom[];
@@ -13,6 +16,7 @@ interface chatProps {
   isSelected: boolean;
   selectedGroup: ChatRoom;
   writerId: number;
+  unReadChats: unReadChat[];
 }
 const inistalState: chatProps = {
   chatRoomList: [],
@@ -28,6 +32,7 @@ const inistalState: chatProps = {
     lastChattingTime: '',
   },
   writerId: 0,
+  unReadChats: [],
 };
 
 export const getUserChatRoomList = createAsyncThunk(
@@ -52,12 +57,29 @@ const chatroomSlice = createSlice({
       const index = state.chatRoomList.findIndex(
         chatRoom => chatRoom.dmGroupId === action.payload.dmGroupId,
       );
-      // console.log(index);
-      // console.log(action.payload);
-      if (index !== null) {
+
+      if (index !== -1) {
         state.chatRoomList[index] = action.payload;
         state.chatRoomList = [...state.chatRoomList];
+        state.chatRoomList = state.chatRoomList.sort(
+          (a, b) => new Date(b.lastChattingTime).getTime() - new Date(a.lastChattingTime).getTime(),
+        );
       }
+    },
+    incrementUnReadChat: (state, action: PayloadAction<number>) => {
+      const index = state.unReadChats.findIndex(
+        unReadChat => unReadChat.dmGroupId === action.payload,
+      );
+      //새로운 그룹에 대한 채팅
+      if (index === -1) {
+        state.unReadChats = [...state.unReadChats, { dmGroupId: action.payload }];
+      }
+    },
+
+    decrementUnReadChat: (state, action: PayloadAction<number>) => {
+      state.unReadChats = state.unReadChats.filter(
+        unReadChat => unReadChat.dmGroupId !== action.payload,
+      );
     },
   },
   extraReducers: builder => {
@@ -76,5 +98,11 @@ const chatroomSlice = createSlice({
   },
 });
 
-export const { setIsSelected, setSelectedGroup, setLastChatting } = chatroomSlice.actions;
+export const {
+  setIsSelected,
+  setSelectedGroup,
+  setLastChatting,
+  incrementUnReadChat,
+  decrementUnReadChat,
+} = chatroomSlice.actions;
 export default chatroomSlice.reducer;

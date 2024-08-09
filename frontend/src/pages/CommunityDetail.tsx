@@ -4,7 +4,7 @@ import { ReactComponent as Star } from '../assets/images/CommunityDetail/star.sv
 import React, { useEffect, useRef, useState } from 'react';
 import SearchInput from '../components/common/SearchInput';
 import Dropdown from '../components/common/Dropdown';
-import FeedList from '../components/common/FeedList';
+import CommunityFeedList from '../components/community/CommunityFeedList';
 import GalleryList from '../components/common/GalleryList';
 import FeedForm from '../components/community/PostFeed';
 import GalleryForm from '../components/community/PostGallery';
@@ -12,8 +12,13 @@ import { ReactComponent as WriteButton } from '../assets/images/write.svg';
 import FeedDetailModal from '../components/community/FeedDetailModal';
 import '../scss/page/_communitydetail.scss';
 import { getCommunityDetailAPI, toggleFavoriteAPI } from '../apis/community';
-import { useAppSelector } from '../store/hooks/hook';
+import { useAppDispatch, useAppSelector } from '../store/hooks/hook';
 import { CommunityDetailInfo } from '../interface/communityList';
+import {
+  searchFeed,
+  setFilterCondition,
+  setSortCondition,
+} from '../features/feed/communityFeedSlice';
 
 export default function CommunityDetail() {
   const params = useParams();
@@ -38,9 +43,10 @@ export default function CommunityDetail() {
   const [isSelected, setIsSelected] = useState<'feed' | 'gallery'>('feed');
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
   const menuRef = useRef<HTMLDivElement>(null);
-  const [filterOption, setFilterOption] = useState<string>('필터');
-  const [sortOption, setSortOption] = useState<string>('정렬');
+  const { filterCondition, sortCondition } = useAppSelector(state => state.communityFeed);
   const [searchOption, setSearchOption] = useState<string>('검색');
+  const [searchKeyword, setSearchKeyword] = useState<string>('');
+  const dispatch = useAppDispatch();
 
   const [show, setShow] = useState(false);
   const [activeTab, setActiveTab] = useState('feed');
@@ -67,9 +73,8 @@ export default function CommunityDetail() {
         });
       }
     }
-    setFilterOption('필터');
-    setSortOption('정렬');
     setSearchOption('검색');
+    setSearchKeyword('');
   }, [isSelected]);
 
   const handleClose = () => setShow(false);
@@ -133,18 +138,18 @@ export default function CommunityDetail() {
           <div className="filter menu">
             <Dropdown
               className="text"
-              selected={filterOption}
+              selected={filterCondition}
               options={['전체', '팔로우만']}
-              onSelect={selected => setFilterOption(selected)}
+              onSelect={selected => dispatch(setFilterCondition(selected))}
             />
           </div>
           <div className="search">
             <div className="sort menu">
               <Dropdown
                 className="text"
-                selected={sortOption}
-                options={['가나다순', '최신순', '좋아요순']}
-                onSelect={selected => setSortOption(selected)}
+                selected={sortCondition}
+                options={['최신순', '좋아요순']}
+                onSelect={selected => dispatch(setSortCondition(selected))}
                 iconPosition="left"
               />
             </div>
@@ -152,15 +157,22 @@ export default function CommunityDetail() {
               <Dropdown
                 className="text"
                 selected={searchOption}
-                options={['제목', '작성자']}
+                options={['내용', '작성자']}
                 onSelect={selected => setSearchOption(selected)}
                 iconPosition="left"
               />
             </div>
-            <SearchInput placeholder="여기에 입력하세요"></SearchInput>
+            <SearchInput
+              placeholder="여기에 입력하세요"
+              value={searchKeyword}
+              onChange={event => {
+                setSearchKeyword(event.target.value);
+              }}
+              onSearch={() => dispatch(searchFeed({ searchOption, searchKeyword }))}
+            ></SearchInput>
           </div>
         </div>
-        {isSelected === 'feed' && <FeedList />}
+        {isSelected === 'feed' && <CommunityFeedList idolGroupId={idolGroupId} />}
         {isSelected === 'gallery' && <GalleryList />}
       </div>
 

@@ -205,7 +205,9 @@ public class GoodsController {
             @RequestParam int size,
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String nickname,
-            @RequestParam(required = false) String content
+            @RequestParam(required = false) String content,
+            @RequestParam(required = false) boolean sortByFollowed,
+            @RequestParam(required = false) boolean sortByLiked
     ){
         Pageable pageable = PageRequest.of(page, size);
 
@@ -213,6 +215,8 @@ public class GoodsController {
                 .title(title)
                 .nickname(nickname)
                 .content(content)
+                .sortByFollowed(sortByFollowed)
+                .sortByLiked(sortByLiked)
                 .build();
 
         Page<GoodsResponse> goodsResponses = goodsService.getGoods(loggedInUserId,idolGroupId,pageable,condition);

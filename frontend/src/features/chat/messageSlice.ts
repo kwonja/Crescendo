@@ -1,7 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Message } from '../../interface/chat';
 import { messagesAPI } from '../../apis/chat';
-import { PromiseStatus } from '../follow/followerSlice';
+import { PromiseStatus } from '../mypage/followerSlice';
 
 interface messageProps {
   messageList: Message[];

@@ -63,13 +63,20 @@ public class CommunityServiceImpl implements CommunityService {
     }
 
     @Override
-    public Page<IdolGroupGetResponse> getIdolGroups(Pageable pageable) {
-        return idolGroupRepository.findAll(pageable)
-                .map(idolGroup -> new IdolGroupGetResponse(
-                        idolGroup.getId(),
-                        idolGroup.getName(),
-                        idolGroup.getProfile()
-                ));
+    public Page<IdolGroupGetResponse> getIdolGroups(String keyword, Pageable pageable) {
+        Page<IdolGroup> idolGroupPage;
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            // 검색어가 없으면 전체 목록을 페이징하여 반환
+            idolGroupPage = idolGroupRepository.findAll(pageable);
+        } else {
+            // 검색어가 있으면 해당 검색어를 포함하는 목록을 페이징하여 반환
+            idolGroupPage = idolGroupRepository.findByNameContaining(keyword, pageable);
+        }
+
+        return idolGroupPage.map(idolGroup ->
+                new IdolGroupGetResponse(idolGroup.getId(), idolGroup.getName(), idolGroup.getProfile())
+        );
     }
 
     @Override

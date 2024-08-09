@@ -8,13 +8,22 @@ import LoginHeader from './components/header/LoginHeader';
 import { ToastContainer, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import SEEHandler from './components/alarm/SEEHandler';
+import ChatConnect from './components/chat/ChatConnect';
 
 export default function App() {
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
   return (
     <>
-      {isLoggedIn ? <LoginHeader /> : <NotLoginHeader />}
-      <SEEHandler />
+      {isLoggedIn ? (
+        <>
+          <LoginHeader />
+          <SEEHandler />
+          <ChatConnect />
+        </>
+      ) : (
+        <NotLoginHeader />
+      )}
+
       <Outlet />
       <ToastContainer
         position="top-center"

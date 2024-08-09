@@ -135,6 +135,21 @@ public class FeedController {
         return ResponseEntity.ok(myFeedResponses);
     }
 
+    @GetMapping("/user/{user-id}")
+    @Operation(summary = "특정 회원이 쓴 피드 조회", description = "특정 회원이 쓴 피드 조회 API")
+    public ResponseEntity<Page<GetFeedByUserIdResponse>> getFeedByUserId(
+            @PathVariable("user-id") Long userId,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<GetFeedByUserIdResponse> myFeedResponses = feedService.getFeedByUserId(userId, pageable);
+
+        return ResponseEntity.ok(myFeedResponses);
+    }
+
     @PostMapping("/{feed-id}/comment")
     @Operation(summary = "피드 댓글쓰기", description = "피드 댓글쓰기 API")
     public ResponseEntity<?> addFeedComment(
