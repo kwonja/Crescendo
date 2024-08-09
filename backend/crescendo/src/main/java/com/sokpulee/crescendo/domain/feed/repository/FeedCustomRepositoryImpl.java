@@ -142,12 +142,17 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
         QFeedHashtag feedHashtag = QFeedHashtag.feedHashtag;
 
         List<Feed> query = queryFactory
-                .selectFrom(feed)
-                .leftJoin(feed.user, user).fetchJoin()
+                .select(feed)
+                .from(feedLike)
+                .join(feedLike.feed, feed)  // 일반 조인 사용
+                .join(feedLike.user, user)
+                .where(feedLike.user.id.eq(loggedInUserId))
+                .orderBy(feed.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .distinct()
                 .fetch();
+
 
         List<FavoriteFeedResponse> favoriteFeedResponses = query.stream()
                 .map(f -> {
@@ -215,6 +220,7 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
                 .selectFrom(feed)
                 .leftJoin(feed.user, user).fetchJoin()
                 .where(user.id.eq(loggedInUserId))
+                .orderBy(feed.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .distinct()
