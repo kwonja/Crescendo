@@ -1,7 +1,6 @@
 //Ducks 패턴 공부예정
 
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-
 import { ChatRoom } from '../../interface/chat';
 import { chatroomlistAPI } from '../../apis/chat';
 import { PromiseStatus } from '../mypage/followerSlice';
@@ -13,6 +12,7 @@ interface chatProps {
   isSelected: boolean;
   selectedGroup: ChatRoom;
   writerId: number;
+  unReadChat : number;
 }
 const inistalState: chatProps = {
   chatRoomList: [],
@@ -28,6 +28,7 @@ const inistalState: chatProps = {
     lastChattingTime: '',
   },
   writerId: 0,
+  unReadChat : 0,
 };
 
 export const getUserChatRoomList = createAsyncThunk(
@@ -52,13 +53,21 @@ const chatroomSlice = createSlice({
       const index = state.chatRoomList.findIndex(
         chatRoom => chatRoom.dmGroupId === action.payload.dmGroupId,
       );
-      // console.log(index);
-      // console.log(action.payload);
+
       if (index !== null) {
         state.chatRoomList[index] = action.payload;
         state.chatRoomList = [...state.chatRoomList];
       }
     },
+    incrementUnReadChat: (state) =>{
+      state.unReadChat += 1;
+    },
+
+    decrementUnReadChat : (state) =>{
+      state.unReadChat -= 1;
+    }
+
+    
   },
   extraReducers: builder => {
     builder
@@ -76,5 +85,5 @@ const chatroomSlice = createSlice({
   },
 });
 
-export const { setIsSelected, setSelectedGroup, setLastChatting } = chatroomSlice.actions;
+export const { setIsSelected, setSelectedGroup, setLastChatting,incrementUnReadChat,decrementUnReadChat } = chatroomSlice.actions;
 export default chatroomSlice.reducer;

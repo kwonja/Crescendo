@@ -51,8 +51,12 @@ export default function MyPage() {
   useEffect(() => {
     dispatch(getMyFeedList(numericId));
     const getUserInfo = async () => {
-      const response = await getUserInfoAPI(numericId, getUserId());
-      setUserInfo(response.data);
+      try{
+        const response = await getUserInfoAPI(numericId, getUserId());
+        setUserInfo(response.data);
+      }catch(err:unknown){
+        // console.log(err);
+      }
     };
     getUserInfo();
   }, [dispatch, numericId]);

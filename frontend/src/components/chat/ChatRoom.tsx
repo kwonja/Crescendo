@@ -35,15 +35,9 @@ export default function Chatroom() {
           const newMessage: Message = JSON.parse(content.body);
           setScroll(true);
           dispatch(setMessage(newMessage));
-
-          // if(getUserId() !== newMessage.writerId){
-          //   const  {writerId : opponentId , writerNickname : opponentNickName ,createdAt : lastChattingTime, message : lastChatting, writerProfilePath : opponentProfilePath} = newMessage;
-          //   dispatch(setLastChatting({dmGroupId,opponentId,opponentProfilePath,opponentNickName,lastChatting,lastChattingTime}))
-          // }
         });
       },
       (error: any) => {
-        // console.error('Connection error: ', error);
       },
     );
   }, [dmGroupId, dispatch]);
