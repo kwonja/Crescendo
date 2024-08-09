@@ -69,10 +69,14 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
                 .leftJoin(feed.idolGroup, idolGroup).fetchJoin()
                 .where(booleanBuilder)
                 .distinct();
+        // 기본 정렬: createdAt 최신순
+        query.orderBy(feed.createdAt.desc());
 
         // Sort by liked feeds
         if (condition != null && Boolean.TRUE.equals(condition.getSortByLiked())) {
-            query.orderBy(feed.likeCnt.desc());
+            query.orderBy(feed.likeCnt.desc(),feed.createdAt.desc());
+        }else{
+            query.orderBy(feed.createdAt.desc());
         }
 
         // 페이징 추가
