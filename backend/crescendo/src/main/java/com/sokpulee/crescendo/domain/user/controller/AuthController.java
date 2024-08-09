@@ -128,7 +128,7 @@ public class AuthController {
 
         return ResponseEntity.status(OK)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + newAccessToken)
-                .build();
+                .body(new LoginResponse(userId));
     }
 
     @PostMapping("/logout")
