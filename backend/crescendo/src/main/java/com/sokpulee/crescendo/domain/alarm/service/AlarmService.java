@@ -17,4 +17,6 @@ public interface AlarmService {
     void deleteAlarm(Long loggedInUserId, Long alarmId);
 
     void followAlarm(Long followingUserId, Long followerUserId, Long relatedId);
+
+    void challengeJoinAlarm(String challengeName, Long challengeOrganizerId, Long challengeJoinerId, Long relatedId);
 }

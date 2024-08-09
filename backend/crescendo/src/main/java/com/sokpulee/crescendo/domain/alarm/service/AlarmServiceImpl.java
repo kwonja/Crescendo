@@ -116,7 +116,19 @@ public class AlarmServiceImpl implements AlarmService {
 
         String content = user.getNickname() + "님께서 회원님을 팔로우 하셨습니다.";
 
-        sendToAlarm(new AlarmDto(followerUserId, AlarmType.FOLLOW.getId(), relatedId, content, AlarmType.FOLLOW));
+        sendToAlarm(new AlarmDto(followerUserId, AlarmType.FOLLOW.getId(), relatedId, content));
+    }
+
+    @Override
+    public void challengeJoinAlarm(String challengeName, Long challengeOrganizerId, Long challengeJoinerId, Long relatedId) {
+
+        User joiner = userRepository.findById(challengeJoinerId)
+                .orElseThrow(UserNotFoundException::new);
+
+        String content = joiner.getNickname() + "님께서 " + challengeName + " 챌린지에 참여하셨습니다.";
+
+        sendToAlarm(new AlarmDto(challengeOrganizerId, AlarmType.CHALLENGE.getId(), relatedId, content));
+
     }
 
     public void sendToAlarm(AlarmDto alarmDto) {
