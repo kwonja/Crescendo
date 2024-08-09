@@ -1,4 +1,4 @@
-package com.sokpulee.crescendo.domain.idol.dto.request;
+package com.sokpulee.crescendo.domain.idol.dto.response;
 
 import com.sokpulee.crescendo.domain.idol.dto.IdolNameDto;
 import lombok.Getter;

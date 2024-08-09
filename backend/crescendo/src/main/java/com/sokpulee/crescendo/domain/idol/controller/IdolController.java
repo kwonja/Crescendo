@@ -3,6 +3,7 @@ package com.sokpulee.crescendo.domain.idol.controller;
 import com.sokpulee.crescendo.domain.idol.dto.request.IdealWorldCupFinishRequest;
 import com.sokpulee.crescendo.domain.idol.dto.request.StartIdealWorldCupRequest;
 import com.sokpulee.crescendo.domain.idol.dto.response.IdealWorldCupStartResponse;
+import com.sokpulee.crescendo.domain.idol.dto.response.IdolGroupNameListResponse;
 import com.sokpulee.crescendo.domain.idol.enums.Gender;
 import com.sokpulee.crescendo.domain.idol.service.IdolService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,6 +28,17 @@ public class IdolController {
     public ResponseEntity<?> getIdolNameList(@PathVariable("idol-group-id") Long idolGroupId) {
 
         return ResponseEntity.status(OK).body(idolService.getIdolNameListByGroupId(idolGroupId));
+    }
+
+    @GetMapping("/idol-group/name")
+    @Operation(summary = "아이돌 그룹 조회(이름)", description = "아이돌 그룹 조회(이름) API")
+    public ResponseEntity<?> getIdolGroupNameList(
+            @RequestParam(required = false) String keyword
+    ) {
+
+        IdolGroupNameListResponse response = idolService.getIdolGroupNameList(keyword);
+
+        return ResponseEntity.status(OK).body(response);
     }
 
     @GetMapping("/ideal-world-cup")
