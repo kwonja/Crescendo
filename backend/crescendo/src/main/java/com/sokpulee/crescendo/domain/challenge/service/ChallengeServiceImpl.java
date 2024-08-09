@@ -94,6 +94,8 @@ public class ChallengeServiceImpl implements ChallengeService {
                             .user(user)
                             .danceChallengeJoin(danceChallengeJoin)
                             .build());
+
+            alarmService.challengeJoinLikeAlarm(danceChallengeJoin.getDanceChallenge().getTitle(), danceChallengeJoin.getUser().getId(), loggedInUserId, danceChallengeJoin.getDanceChallenge().getId());
         }
 
     }

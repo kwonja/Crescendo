@@ -131,6 +131,17 @@ public class AlarmServiceImpl implements AlarmService {
 
     }
 
+    @Override
+    public void challengeJoinLikeAlarm(String challengeName, Long challengeJoinerId, Long challengeJoinLikedUserId, Long relatedId) {
+
+        User likedUser = userRepository.findById(challengeJoinLikedUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        String content = likedUser.getNickname() + "님께서 " + challengeName + " 챌린지에 좋아요 하셨습니다.";
+
+        sendToAlarm(new AlarmDto(challengeJoinerId, AlarmType.CHALLENGE.getId(), relatedId, content));
+    }
+
     public void sendToAlarm(AlarmDto alarmDto) {
 
         User user = userRepository.findById(alarmDto.getUserId())
