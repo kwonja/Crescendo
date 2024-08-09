@@ -153,6 +153,39 @@ public class AlarmServiceImpl implements AlarmService {
         sendToAlarm(new AlarmDto(goodsWriterId, AlarmType.GOODS.getId(), relatedId, content));
     }
 
+    @Override
+    public void goodsCommentAlarm(String goodsTitle, String comment, Long goodsWriterId, Long goodsCommenterId, Long relatedId) {
+
+        User commenter = userRepository.findById(goodsCommenterId)
+                .orElseThrow(UserNotFoundException::new);
+
+        String content = commenter.getNickname() + "님께서 " + goodsTitle + "에 댓글을 추가하셨습니다. " + "\"" +  comment + "\"";
+
+        sendToAlarm(new AlarmDto(goodsWriterId, AlarmType.GOODS.getId(), relatedId, content));
+    }
+
+    @Override
+    public void goodsReplyAlarm(String comment, String reply, Long goodsCommenterId, Long goodsReplierId, Long relatedId) {
+
+        User replier = userRepository.findById(goodsReplierId)
+                .orElseThrow(UserNotFoundException::new);
+
+        String content = replier.getNickname() + "님께서 " + "\"" + comment + "\"" + " 댓글에 대댓글을 추가하셨습니다. " + "\"" +  reply+ "\"";
+
+        sendToAlarm(new AlarmDto(goodsCommenterId, AlarmType.GOODS.getId(), relatedId, content));
+    }
+
+    @Override
+    public void goodsCommentLikeAlarm(String comment, Long goodsCommenterId, Long goodsCommentLikeUserId, Long relatedId) {
+
+        User likedUser = userRepository.findById(goodsCommentLikeUserId)
+                .orElseThrow(UserNotFoundException::new);
+
+        String content = likedUser.getNickname() + "님께서 " + "\"" + comment + "\"" + " 댓글에 좋아요를 누르셨습니다.";
+
+        sendToAlarm(new AlarmDto(goodsCommenterId, AlarmType.GOODS.getId(), relatedId, content));
+    }
+
     public void sendToAlarm(AlarmDto alarmDto) {
 
         User user = userRepository.findById(alarmDto.getUserId())
