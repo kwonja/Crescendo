@@ -311,6 +311,8 @@ public class FeedServiceImpl implements FeedService {
                     .build();
             feedComment.plusLikeCnt();
             feedCommentLikeRepository.save(feedCommentLike);
+
+            alarmService.feedCommentLikeAlarm(feedComment.getContent(), feedComment.getUser().getId(), loggedInUserId, feedComment.getFeed().getFeedId());
         }
     }
 
