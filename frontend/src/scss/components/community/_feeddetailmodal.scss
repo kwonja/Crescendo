@@ -1,4 +1,6 @@
 .feed-detail-modal {
+  z-index: 1000;
+
   .modal-overlay {
     position: fixed;
     top: 0;
@@ -9,7 +11,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
   }
 
   .modal-content {
@@ -19,9 +20,10 @@
     border-radius: 20px;
     background: #f66;
     display: flex;
-    position: relative;
+    position: absolute;
     flex-direction: row;
     padding: 0;
+    top: 120px;
 
     .close-button {
       position: absolute;

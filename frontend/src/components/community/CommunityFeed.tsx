@@ -14,9 +14,10 @@ import Button from '../common/Button';
 
 interface FeedProps {
   feed: FeedInfo;
+  onClick: () => void;
 }
 
-export default function CommunityFeed({ feed }: FeedProps) {
+export default function CommunityFeed({ feed, onClick }: FeedProps) {
   const {
     feedId,
     userId,
@@ -33,8 +34,12 @@ export default function CommunityFeed({ feed }: FeedProps) {
   const dispatch = useAppDispatch();
   const [imgIdx, setImgIdx] = useState<number>(0);
 
+  const handleClick = () => {
+    onClick();
+  };
+
   return (
-    <div className="feed">
+    <div className="feed" onClick={handleClick}>
       <div className="upper">
         <UserProfile
           userId={userId}

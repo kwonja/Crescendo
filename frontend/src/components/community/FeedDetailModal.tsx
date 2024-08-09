@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { api } from '../../apis/core';
+import { api, Authapi } from '../../apis/core';
 import { ReactComponent as HeartIcon } from '../../assets/images/Feed/white_heart.svg';
 import { ReactComponent as MenuIcon } from '../../assets/images/Feed/white_dots.svg';
 import { ReactComponent as NextButton } from '../../assets/images/Feed/next_button.svg';
@@ -42,17 +42,25 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [page, setPage] = useState(0); // 페이지 번호 관리
   const [loading, setLoading] = useState(false); // 로딩 상태 관리
+  const [hasMoreComments, setHasMoreComments] = useState(true); // 더 이상 댓글이 없을 때 false로 설정
   const loader = useRef<HTMLDivElement | null>(null); // 로딩 요소에 대한 ref
 
   const loadComments = useCallback(
     (currentPage: number) => {
+      if (!hasMoreComments) return; // 더 이상 댓글이 없을 경우 요청 중단
+
       setLoading(true);
       api
         .get(`/api/v1/community/feed/${feedId}/comment`, {
           params: { page: currentPage, size: 10 },
         })
         .then(response => {
-          setComments(prevComments => [...prevComments, ...response.data.content]);
+          const newComments = response.data.content;
+          if (newComments.length === 0) {
+            setHasMoreComments(false); // 댓글이 더 이상 없음을 표시
+          } else {
+            setComments(prevComments => [...prevComments, ...newComments]);
+          }
           setLoading(false);
         })
         .catch(error => {
@@ -60,7 +68,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
           setLoading(false);
         });
     },
-    [feedId], // feedId가 변경될 때만 loadComments 함수가 재생성됩니다.
+    [feedId, hasMoreComments], // feedId 또는 hasMoreComments가 변경될 때만 loadComments 함수가 재생성됩니다.
   );
 
   useEffect(() => {
@@ -89,29 +97,35 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
   };
 
   const handleAddComment = () => {
-    if (newComment.trim() === '') return; // 빈 댓글 방지
+    if (newComment.trim() === '') return;
 
-    const addedComment: Comment = {
-      commentId: Date.now(), // 임시로 고유 ID 생성
-      userId: 1, // 임시 유저 ID
-      nickname: 'Current User', // 현재 사용자 이름
-      profileImagePath: '/path/to/current/user/profile', // 현재 사용자 프로필 이미지 경로
+    // eslint-disable-next-line no-console
+    console.log(feedId);
+    // eslint-disable-next-line no-console
+    console.log(newComment);
+
+    Authapi.post(`/api/v1/community/feed/${feedId}/comment`, {
       content: newComment,
-      createdAt: new Date().toISOString(),
-    };
+    })
+      .then(response => {
+        const addedComment = response.data;
 
-    setComments([...comments, addedComment]);
-    setNewComment('');
+        setComments([...comments, addedComment]);
+        setNewComment('');
+      })
+      .catch(error => {
+        console.error('댓글 작성 오류:', error);
+      });
   };
 
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
       const target = entries[0];
-      if (target.isIntersecting && !loading) {
+      if (target.isIntersecting && !loading && hasMoreComments) {
         setPage(prevPage => prevPage + 1); // 페이지 증가
       }
     },
-    [loading], // loading 상태에 따라 handleObserver 함수가 변경
+    [loading, hasMoreComments], // loading 상태와 hasMoreComments에 따라 handleObserver 함수가 변경
   );
 
   useEffect(() => {
@@ -131,6 +145,22 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
       if (currentLoader) observer.unobserve(currentLoader); // cleanup에서 로컬 변수를 사용
     };
   }, [handleObserver]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose(); // ESC 키를 누르면 모달 닫기
+      }
+    };
+
+    // 이벤트 리스너 추가
+    window.addEventListener('keydown', handleKeyDown);
+
+    // 컴포넌트가 언마운트되거나 모달이 닫힐 때 이벤트 리스너 제거
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [onClose]);
 
   const getAbsolutePath = (path: string) => {
     return `https://i11b108.p.ssafy.io/server/files/${path}`;
@@ -189,7 +219,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
         </div>
         <div className="feed-detail-right">
           <div className="comments">
-            {comments.length === 0 ? (
+            {comments.length === 0 && !loading ? (
               <div>댓글이 없습니다.</div>
             ) : (
               comments.map(comment => (
@@ -209,7 +239,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
                 </div>
               ))
             )}
-            <div ref={loader}>Loading...</div> {/* IntersectionObserver가 감지할 요소 */}
+            {loading && <div ref={loader}>Loading...</div>}
           </div>
           <div className="comment-input">
             <input

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { Authapi } from '../../apis/core';
@@ -13,7 +13,11 @@ type ImageWithId = {
   file: File;
 };
 
-const FeedForm = () => {
+type FeedFormProps = {
+  onClose: () => void;
+};
+
+const FeedForm: React.FC<FeedFormProps> = ({ onClose }) => {
   const [images, setImages] = useState<ImageWithId[]>([]);
   const [content, setContent] = useState('');
   const [tags, setTags] = useState<string[]>([]);
@@ -108,6 +112,7 @@ const FeedForm = () => {
         alert('피드가 성공적으로 등록되었습니다.');
         window.scrollTo(0, 0);
         navigate(0);
+        onClose();
       }
     } catch (error) {
       alert('피드 작성에 실패했습니다.');
@@ -132,6 +137,22 @@ const FeedForm = () => {
       handleTagAdd();
     }
   };
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose(); // ESC 키를 누르면 모달 닫기
+      }
+    };
+
+    // 이벤트 리스너 추가
+    window.addEventListener('keydown', handleKeyDown);
+
+    // 컴포넌트가 언마운트되거나 모달이 닫힐 때 이벤트 리스너 제거
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [onClose]);
 
   return (
     <form onSubmit={handleSubmit} className="feed-form">
