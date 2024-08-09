@@ -46,16 +46,20 @@ public class FavoriteRankController {
 
     @GetMapping
     @Operation(summary = "전국 최애 자랑 조회", description = "전국 최애 자랑 조회 API")
-    public ResponseEntity<Page<FavoriteRankResponse>> getFavoriteRanks(@RequestParam int page,
-                                                                       @RequestParam int size,
-                                                                       @RequestParam(required = false) Long idolId,
-                                                                       @RequestParam(required = false) boolean sortByVotes,
-                                                                       @Parameter(hidden = true) @AuthPrincipal Long userId) {
+    public ResponseEntity<Page<FavoriteRankResponse>> getFavoriteRanks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) Long idolGroupId,
+            @RequestParam(required = false) Long idolId,
+            @RequestParam(required = false) boolean sortByVotes,
+            @Parameter(hidden = true) @AuthPrincipal Long userId
+    ) {
         Pageable pageable = PageRequest.of(page, size);
 
         FavoriteRanksSearchCondition condition = FavoriteRanksSearchCondition
                 .builder()
                 .idolId(idolId)
+                .idolGroupId(idolGroupId)
                 .sortByVotes(sortByVotes)
                 .build();
         Page<FavoriteRankResponse> favoriteRanks = favoriteRankService.getFavoriteRanks(userId, condition, pageable);
