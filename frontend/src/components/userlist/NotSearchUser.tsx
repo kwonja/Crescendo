@@ -10,6 +10,7 @@ import { ModeState } from '../header/LoginHeader';
 import { createChatroom, getOpponent } from '../../apis/chat';
 import { AxiosError } from 'axios';
 import { followAPI } from '../../apis/follow';
+import { getUserId } from '../../apis/core';
 
 interface SearchProps {
   handleMode: (mode: ModeState) => void;
@@ -24,8 +25,8 @@ export default function NotSearchUser({ handleMode }: SearchProps) {
   const getUserList = async (nickname: string) => {
     try {
       const response = await UserSearchApi(0, 10, nickname);
-      console.log(response);
-      if (response.content.length > 0) {
+      const templist = response.content.filter( (list : user) => list.userId !== getUserId())
+      if (templist > 0) {
         setSearch(true);
       } else {
         setSearch(false);
@@ -84,7 +85,7 @@ export default function NotSearchUser({ handleMode }: SearchProps) {
 
   const HandleFollowClick = async (userId: number) => {
     try {
-     await followAPI(userId);
+      await followAPI(userId);
       alert('팔로우가 되었습니다');
     } catch (err: unknown) {
       // console.log(err);

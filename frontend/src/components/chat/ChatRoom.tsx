@@ -54,7 +54,7 @@ export default function Chatroom() {
     );
     inputRef.current!.value = '';
   };
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       event.preventDefault();
       HandleMessageSend();
@@ -171,7 +171,7 @@ export default function Chatroom() {
             className="search-input"
             placeholder="여기에 입력하세요"
             ref={inputRef}
-            onKeyDown={handleKeyDown}
+            onKeyUp={handleKeyUp}
           />
           <div className="send-icon">
             <Clip className="w-5 h-5" />

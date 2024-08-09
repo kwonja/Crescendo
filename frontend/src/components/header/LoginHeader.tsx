@@ -21,7 +21,7 @@ export default function LoginHeader() {
   const location = useLocation();
 
   const { unReadAlarmCount } = useAppSelector(state => state.alarm);
-  const { unReadChat } = useAppSelector(state => state.chatroom);
+  const { unReadChats } = useAppSelector(state => state.chatroom);
   const dispatch = useAppDispatch();
   const { isSelected } = useAppSelector(state => state.chatroom);
   const handleModeClick = (mode: ModeState) => {
@@ -88,7 +88,7 @@ export default function LoginHeader() {
               className={` header_icon_div count ${userMode === 'chat' ? 'chat' : ''}`}
               onClick={() => handleModeClick('chat')}
             >
-              {unReadChat > 0 ? (
+              {unReadChats.length > 0 ? (
                 <div className="flex absolute top-1 right-1 text-xs w-3 h-3 bg-white text-mainColor rounded-full justify-center items-center"></div>
               ) : null}
               <Chat className="header_svg" />

@@ -41,7 +41,7 @@ export default function ChatConnect() {
                   lastChattingTime: newMessage.createdAt,
                 }),
               );
-              dispatch(incrementUnReadChat());
+              dispatch(incrementUnReadChat(room.dmGroupId));
             }
           });
         });

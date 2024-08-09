@@ -15,7 +15,7 @@ export default function ChatLayout() {
   const HandleClick = (Group: ChatRoom) => {
     dispatch(setIsSelected(true));
     dispatch(setSelectedGroup(Group));
-    dispatch(decrementUnReadChat());
+    dispatch(decrementUnReadChat(Group.dmGroupId));
   };
 
   return (
