@@ -12,7 +12,7 @@ interface chatProps {
   isSelected: boolean;
   selectedGroup: ChatRoom;
   writerId: number;
-  unReadChat : number;
+  unReadChat: number;
 }
 const inistalState: chatProps = {
   chatRoomList: [],
@@ -28,7 +28,7 @@ const inistalState: chatProps = {
     lastChattingTime: '',
   },
   writerId: 0,
-  unReadChat : 0,
+  unReadChat: 0,
 };
 
 export const getUserChatRoomList = createAsyncThunk(
@@ -59,15 +59,13 @@ const chatroomSlice = createSlice({
         state.chatRoomList = [...state.chatRoomList];
       }
     },
-    incrementUnReadChat: (state) =>{
+    incrementUnReadChat: state => {
       state.unReadChat += 1;
     },
 
-    decrementUnReadChat : (state) =>{
+    decrementUnReadChat: state => {
       state.unReadChat -= 1;
-    }
-
-    
+    },
   },
   extraReducers: builder => {
     builder
@@ -85,5 +83,11 @@ const chatroomSlice = createSlice({
   },
 });
 
-export const { setIsSelected, setSelectedGroup, setLastChatting,incrementUnReadChat,decrementUnReadChat } = chatroomSlice.actions;
+export const {
+  setIsSelected,
+  setSelectedGroup,
+  setLastChatting,
+  incrementUnReadChat,
+  decrementUnReadChat,
+} = chatroomSlice.actions;
 export default chatroomSlice.reducer;

@@ -1,4 +1,4 @@
-import React  from 'react';
+import React from 'react';
 import ChatRoomListItem from './ChatRoomListItem';
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
 import {
@@ -6,7 +6,7 @@ import {
   setIsSelected,
   setSelectedGroup,
 } from '../../features/chat/chatroomSlice';
-import { ChatRoom} from '../../interface/chat';
+import { ChatRoom } from '../../interface/chat';
 
 export default function ChatLayout() {
   const { chatRoomList } = useAppSelector(state => state.chatroom);
@@ -17,7 +17,6 @@ export default function ChatLayout() {
     dispatch(setSelectedGroup(Group));
     dispatch(decrementUnReadChat());
   };
-
 
   return (
     <div className="chatlayout">

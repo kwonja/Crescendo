@@ -37,8 +37,7 @@ export default function Chatroom() {
           dispatch(setMessage(newMessage));
         });
       },
-      (error: any) => {
-      },
+      (error: any) => {},
     );
   }, [dmGroupId, dispatch]);
 

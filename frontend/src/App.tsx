@@ -14,12 +14,16 @@ export default function App() {
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
   return (
     <>
-      {isLoggedIn ? (<><LoginHeader />
-    <SEEHandler />
-    <ChatConnect/>
-    </>
-    ) : <NotLoginHeader />}
-      
+      {isLoggedIn ? (
+        <>
+          <LoginHeader />
+          <SEEHandler />
+          <ChatConnect />
+        </>
+      ) : (
+        <NotLoginHeader />
+      )}
+
       <Outlet />
       <ToastContainer
         position="top-center"

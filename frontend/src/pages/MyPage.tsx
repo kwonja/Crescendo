@@ -51,10 +51,10 @@ export default function MyPage() {
   useEffect(() => {
     dispatch(getMyFeedList(numericId));
     const getUserInfo = async () => {
-      try{
+      try {
         const response = await getUserInfoAPI(numericId, getUserId());
         setUserInfo(response.data);
-      }catch(err:unknown){
+      } catch (err: unknown) {
         // console.log(err);
       }
     };
