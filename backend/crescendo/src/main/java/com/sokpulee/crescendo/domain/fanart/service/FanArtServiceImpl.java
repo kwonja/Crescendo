@@ -346,6 +346,8 @@ public class FanArtServiceImpl implements FanArtService {
                 fanArtCommentRepository.save(fanArtComment);
                 fanArt.plusCommentCnt();
                 parentFanArtComment.plusReplyCnt();
+
+                alarmService.fanArtReplyAlarm(parentFanArtComment.getContent(), fanArtComment.getContent(), parentFanArtComment.getUser().getId(), loggedInUserId, parentFanArtComment.getFanArt().getFanArtId());
             } else {
                 throw new FanArtCommentNotFoundException();
             }
