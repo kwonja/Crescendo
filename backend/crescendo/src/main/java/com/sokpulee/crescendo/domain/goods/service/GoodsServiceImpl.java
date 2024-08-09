@@ -316,6 +316,8 @@ public class GoodsServiceImpl implements GoodsService {
         goods.plusCommentCnt();
 
         goodsCommentRepository.save(goodsComment);
+
+        alarmService.goodsCommentAlarm(goods.getTitle(), goodsComment.getContent(), goods.getUser().getId(), loggedInUserId, goods.getGoodsId());
     }
 
     @Override
