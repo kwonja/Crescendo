@@ -57,7 +57,7 @@ export default function MyPage() {
     getUserInfo();
   }, [dispatch, numericId]);
 
-  useEffect(() => {
+  const updateIndicator = () => {
     const menuElement = menuRef.current;
     if (menuElement) {
       const activeLink = menuElement.querySelector('.active') as HTMLElement;
@@ -65,10 +65,24 @@ export default function MyPage() {
         const { offsetLeft, offsetWidth } = activeLink;
         setIndicatorStyle({
           left: offsetLeft + (offsetWidth - 160) / 2 + 'px', // Center the indicator
+          display: 'block',
         });
+      } else {
+        setIndicatorStyle({ display: 'none' });
       }
     }
+  };
+
+  useEffect(() => {
+    updateIndicator();
   }, [isSelected]);
+
+  useEffect(() => {
+    window.addEventListener('resize', updateIndicator);
+    return () => {
+      window.removeEventListener('resize', updateIndicator);
+    };
+  }, []);
 
   return (
     <div className="mypage">

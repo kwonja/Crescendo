@@ -1,44 +1,35 @@
-import React, { useEffect, useRef, } from 'react'
+import React, { useEffect, useRef } from 'react';
 import { BASE_URL, getUserId } from '../../apis/core';
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
 import { incrementUnRead } from '../../features/alarm/alarmSlice';
 
 export default function SEEHandler() {
-   const dispatch = useAppDispatch();
-    const {isLoggedIn} =  useAppSelector( (state)=> state.auth)
-    const sse = useRef<EventSource | null>(null);
-    useEffect(() => {
+  const dispatch = useAppDispatch();
+  const { isLoggedIn } = useAppSelector(state => state.auth);
+  const sse = useRef<EventSource | null>(null);
+  useEffect(() => {
+    const connectSSE = () => {
+      sse.current = new EventSource(`${BASE_URL}/sse/connect/${getUserId()}`);
+      sse.current.addEventListener('connect', (e: Event) => {});
+      sse.current.addEventListener('alarm', (e: Event) => {
+        dispatch(incrementUnRead());
+      });
+      sse.current.onerror = () => {
+        sse.current?.close();
+        setTimeout(() => {
+          if (isLoggedIn) connectSSE();
+        }, 3000);
+      };
+    };
 
-          const connectSSE = () => {
-          sse.current = new EventSource(`${BASE_URL}/sse/connect/${getUserId()}`);
+    if (isLoggedIn) {
+      connectSSE();
+    }
 
-          sse.current.addEventListener('connect', (e: Event) => {});
-    
-          sse.current.addEventListener('alarm', (e: Event) => {
-            dispatch(incrementUnRead());
-          });
-          sse.current.onerror = () => {
-     
-            sse.current?.close();
-            setTimeout(() => {
-              if (isLoggedIn) connectSSE();
-            }, 3000); // Try to reconnect after 3 seconds
-          };
-        };
-    
-        if (isLoggedIn) {
-          connectSSE();
-        }
-    
-        return () => {
-          sse.current?.close();
-        };
-      }, [isLoggedIn,dispatch]);
+    return () => {
+      sse.current?.close();
+    };
+  }, [isLoggedIn, dispatch]);
 
-  
-    return (
-      <>
-      
-      </>
-    );
-  };
+  return <></>;
+}

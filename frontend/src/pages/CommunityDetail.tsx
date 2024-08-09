@@ -3,7 +3,7 @@ import { ReactComponent as FullStar } from '../assets/images/CommunityDetail/ful
 import { ReactComponent as Star } from '../assets/images/CommunityDetail/star.svg';
 import React, { useEffect, useRef, useState } from 'react';
 import SearchInput from '../components/common/SearchInput';
-import Dropdown from "../components/common/Dropdown";
+import Dropdown from '../components/common/Dropdown';
 import FeedList from '../components/common/FeedList';
 import GalleryList from '../components/common/GalleryList';
 import FeedForm from '../components/community/PostFeed';
@@ -13,7 +13,6 @@ import FeedDetailModal from '../components/community/FeedDetailModal'; // 피드
 import { getCommunityDetailAPI, toggleFavoriteAPI } from '../apis/community';
 import { useAppSelector } from '../store/hooks/hook';
 import { CommunityDetailInfo } from '../interface/communityList';
-
 
 export default function CommunityDetail() {
   const params = useParams();
@@ -33,7 +32,7 @@ export default function CommunityDetail() {
     isFavorite: false,
   };
 
-  const [ communityDetail, setCommunityDetail ] = useState<CommunityDetailInfo>(initialDetail)
+  const [communityDetail, setCommunityDetail] = useState<CommunityDetailInfo>(initialDetail);
   const { isLoggedIn } = useAppSelector(state => state.auth);
   const [isSelected, setIsSelected] = useState<'feed' | 'gallery'>('feed');
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
@@ -48,14 +47,13 @@ export default function CommunityDetail() {
   const [selectedFeedId, setSelectedFeedId] = useState<number | null>(null);
 
   // 데이터 가져오기, 초기세팅
-  useEffect(()=> {
+  useEffect(() => {
     const getCommunityDetail = async () => {
       const response = await getCommunityDetailAPI(idolGroupId);
       setCommunityDetail(response);
-    }
+    };
     getCommunityDetail();
-
-  }, [idolGroupId])
+  }, [idolGroupId]);
 
   useEffect(() => {
     const menuElement = menuRef.current;
@@ -83,7 +81,7 @@ export default function CommunityDetail() {
   const handleShowDetail = () => {
     setSelectedFeedId(1); // 테스트용 피드 ID를 1로 설정
     setShowDetail(true);
-  } 
+  };
 
   const clickStar = async () => {
     try {
@@ -91,30 +89,25 @@ export default function CommunityDetail() {
       setCommunityDetail(prev => ({
         ...prev,
         isFavorite: !prev.isFavorite,
-        favoriteCnt: prev.isFavorite?prev.favoriteCnt-1:prev.favoriteCnt+1
+        favoriteCnt: prev.isFavorite ? prev.favoriteCnt - 1 : prev.favoriteCnt + 1,
       }));
-    } 
-    catch {
-      console.error("즐겨찾기 토글 실패");
+    } catch {
+      console.error('즐겨찾기 토글 실패');
     }
-  }
+  };
 
   return (
     <div className="communitydetail">
       <div className="banner">
-        <img
-          className="banner_img"
-          src={communityDetail.banner}
-          alt={communityDetail.name}
-        ></img>
+        <img className="banner_img" src={communityDetail.banner} alt={communityDetail.name}></img>
         <div className="banner_name">{communityDetail.name}</div>
         <div className="banner_favoritenum">{`${communityDetail.favoriteCnt} Favorites`}</div>
         {isLoggedIn && (
           <div className="banner_starbox">
             {communityDetail.isFavorite ? (
-              <FullStar className="hoverup banner_star" onClick={()=>clickStar()} />
+              <FullStar className="hoverup banner_star" onClick={() => clickStar()} />
             ) : (
-              <Star className="hoverup banner_star" onClick={()=>clickStar()} />
+              <Star className="hoverup banner_star" onClick={() => clickStar()} />
             )}
           </div>
         )}
@@ -140,26 +133,26 @@ export default function CommunityDetail() {
             <Dropdown
               className="text"
               selected={filterOption}
-              options={["전체", "팔로우만"]}
-              onSelect={(selected)=>setFilterOption(selected)}
+              options={['전체', '팔로우만']}
+              onSelect={selected => setFilterOption(selected)}
             />
           </div>
           <div className="search">
-            <div className = "sort menu">
+            <div className="sort menu">
               <Dropdown
                 className="text"
                 selected={sortOption}
-                options={["가나다순", "최신순", "좋아요순"]}
-                onSelect={(selected)=>setSortOption(selected)}
+                options={['가나다순', '최신순', '좋아요순']}
+                onSelect={selected => setSortOption(selected)}
                 iconPosition="left"
               />
             </div>
-            <div className = "search menu">
+            <div className="search menu">
               <Dropdown
                 className="text"
                 selected={searchOption}
-                options={["제목", "작성자"]}
-                onSelect={(selected)=>setSearchOption(selected)}
+                options={['제목', '작성자']}
+                onSelect={selected => setSearchOption(selected)}
                 iconPosition="left"
               />
             </div>

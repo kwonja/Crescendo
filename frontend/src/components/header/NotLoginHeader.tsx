@@ -13,7 +13,7 @@ export default function NotLoginHeader() {
   const handleModeClick = (mode: ModeState) => {
     setUserMode(prevMode => (prevMode === mode ? '' : mode));
   };
-  useEffect(() => {
+  const updateIndicator = () => {
     const menuElement = menuRef.current;
     if (menuElement) {
       const activeLink = menuElement.querySelector('.active') as HTMLElement;
@@ -27,11 +27,23 @@ export default function NotLoginHeader() {
         setIndicatorStyle({ display: 'none' });
       }
     }
+  };
+
+  useEffect(() => {
+    updateIndicator();
   }, [location]);
+
+  useEffect(() => {
+    window.addEventListener('resize', updateIndicator);
+    return () => {
+      window.removeEventListener('resize', updateIndicator);
+    };
+  }, []);
 
   return (
     <>
-    <div className=''></div>
+    <div className='header'></div>
+    <div className='fixed top-0 left-0 w-full z-50'>
     <div className="header">
       <Link to="/">
         <div className="header_title">CRESCENDO</div>
@@ -64,6 +76,7 @@ export default function NotLoginHeader() {
           <UserList className="w-8 h-8" />
         </div>
         {userMode === 'userlist' && <NotSearchUser handleMode={setUserMode} />}
+      </div>
       </div>
     </div>
     </>
