@@ -29,19 +29,18 @@ export default function AlarmListItem({ alarm }: AlarmItemProps) {
 
   const handleDeleteAlarm = async (alarmId: number) => {
     dispatch(deleteAlarm(alarmId));
-    try{
+    try {
       await deleteAlamrAPI(alarmId);
-    }catch(err :unknown){
+    } catch (err: unknown) {
       // console.log(err)
     }
   };
   useEffect(() => {
     const getUserInfo = async () => {
-      try{
+      try {
         const response = await getUserInfoAPI(relatedId, getUserId());
         setInfo(response.data);
-
-      }catch(err :unknown){
+      } catch (err: unknown) {
         // console.log(err)
       }
     };

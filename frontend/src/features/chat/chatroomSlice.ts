@@ -5,8 +5,8 @@ import { ChatRoom } from '../../interface/chat';
 import { chatroomlistAPI } from '../../apis/chat';
 import { PromiseStatus } from '../mypage/followerSlice';
 
-export interface unReadChat{
-  dmGroupId : number;
+export interface unReadChat {
+  dmGroupId: number;
 }
 
 interface chatProps {
@@ -32,7 +32,7 @@ const inistalState: chatProps = {
     lastChattingTime: '',
   },
   writerId: 0,
-  unReadChats : [],
+  unReadChats: [],
 };
 
 export const getUserChatRoomList = createAsyncThunk(
@@ -61,22 +61,25 @@ const chatroomSlice = createSlice({
       if (index !== -1) {
         state.chatRoomList[index] = action.payload;
         state.chatRoomList = [...state.chatRoomList];
-        state.chatRoomList = state.chatRoomList.sort((a, b) => 
-          new Date(b.lastChattingTime).getTime() - new Date(a.lastChattingTime).getTime()
+        state.chatRoomList = state.chatRoomList.sort(
+          (a, b) => new Date(b.lastChattingTime).getTime() - new Date(a.lastChattingTime).getTime(),
         );
       }
     },
-    incrementUnReadChat: (state,action : PayloadAction<number>) => {
-      const index = state.unReadChats.findIndex( unReadChat => unReadChat.dmGroupId === action.payload);
+    incrementUnReadChat: (state, action: PayloadAction<number>) => {
+      const index = state.unReadChats.findIndex(
+        unReadChat => unReadChat.dmGroupId === action.payload,
+      );
       //새로운 그룹에 대한 채팅
-      if(index === -1)
-      {
-        state.unReadChats = [...state.unReadChats, {dmGroupId : action.payload}];
+      if (index === -1) {
+        state.unReadChats = [...state.unReadChats, { dmGroupId: action.payload }];
       }
     },
 
-    decrementUnReadChat: (state,action : PayloadAction<number>) => {
-      state.unReadChats = state.unReadChats.filter(unReadChat => unReadChat.dmGroupId !== action.payload);
+    decrementUnReadChat: (state, action: PayloadAction<number>) => {
+      state.unReadChats = state.unReadChats.filter(
+        unReadChat => unReadChat.dmGroupId !== action.payload,
+      );
     },
   },
   extraReducers: builder => {

@@ -12,18 +12,16 @@ interface ChatRoomItemProps {
 }
 
 export default function ChatRoomListItem({ room, HandleClick }: ChatRoomItemProps) {
-  const {unReadChats} = useAppSelector(state => state.chatroom)
-  const { opponentProfilePath, opponentNickName, lastChattingTime, lastChatting,dmGroupId} = room;
-
+  const { unReadChats } = useAppSelector(state => state.chatroom);
+  const { opponentProfilePath, opponentNickName, lastChattingTime, lastChatting, dmGroupId } = room;
 
   return (
     <div className="chatroomlistitem" onClick={() => HandleClick(room)}>
       {opponentProfilePath ? (
         <div className="relative m-1.5 h-10 w-10">
-
-        {(UnReadChatCheck(unReadChats,dmGroupId)===true) ? (
+          {UnReadChatCheck(unReadChats, dmGroupId) === true ? (
             <div className="chatcount flex absolute  text-xs w-2 h-2 bg-white text-mainColor rounded-full justify-center items-center"></div>
-            ) : null}
+          ) : null}
           <img
             src={`${IMAGE_BASE_URL}${opponentProfilePath}`}
             alt="프로필"
@@ -32,9 +30,9 @@ export default function ChatRoomListItem({ room, HandleClick }: ChatRoomItemProp
         </div>
       ) : (
         <div className="m-1.5 h-10 w-10 relative">
-          {(UnReadChatCheck(unReadChats,dmGroupId)===true) ? (
+          {UnReadChatCheck(unReadChats, dmGroupId) === true ? (
             <div className="chatcount flex absolute  text-xs w-2 h-2 bg-white text-mainColor rounded-full justify-center items-center"></div>
-            ) : null}
+          ) : null}
           <User className="w-full h-full" />
         </div>
       )}
