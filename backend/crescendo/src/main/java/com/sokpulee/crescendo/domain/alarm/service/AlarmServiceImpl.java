@@ -208,6 +208,17 @@ public class AlarmServiceImpl implements AlarmService {
         sendToAlarm(new AlarmDto(feedWriterId, AlarmType.FEED.getId(), relatedId, content));
     }
 
+    @Override
+    public void feedReplyAlarm(String comment, String reply, Long feedCommenterId, Long feedReplierId, Long relatedId) {
+
+        User replier = userRepository.findById(feedReplierId)
+                .orElseThrow(UserNotFoundException::new);
+
+        String content = replier.getNickname() + "님께서 " + "\"" + comment + "\"" + " 댓글에 대댓글을 추가하셨습니다. " + "\"" +  reply+ "\"";
+
+        sendToAlarm(new AlarmDto(feedCommenterId, AlarmType.FEED.getId(), relatedId, content));
+    }
+
     public void sendToAlarm(AlarmDto alarmDto) {
 
         User user = userRepository.findById(alarmDto.getUserId())

@@ -33,4 +33,6 @@ public interface AlarmService {
     void feedLikeAlarm(String feedTitle, Long feedWriterId, Long feedLikedUserId, Long relatedId);
 
     void feedCommentAlarm(String idolGroupName, String comment, Long feedWriterId, Long feedCommenterId, Long relatedId);
+
+    void feedReplyAlarm(String comment, String reply, Long feedCommenterId, Long feedReplierId, Long relatedId);
 }

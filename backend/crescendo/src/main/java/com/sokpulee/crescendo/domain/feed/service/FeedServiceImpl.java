@@ -332,7 +332,7 @@ public class FeedServiceImpl implements FeedService {
         feed.plusCommentCnt();
 
         feedCommentRepository.save(feedComment);
-        
+
         alarmService.feedCommentAlarm(feed.getIdolGroup().getName(), feedComment.getContent(), feed.getUser().getId(), loggedInUserId, feed.getFeedId());
     }
 
@@ -360,6 +360,8 @@ public class FeedServiceImpl implements FeedService {
                 feedCommentRepository.save(feedComment);
                 feed.plusCommentCnt();
                 parentFeedComment.plusReplyCnt();
+
+                alarmService.feedReplyAlarm(parentFeedComment.getContent(), feedComment.getContent(), parentFeedComment.getUser().getId(), loggedInUserId, feed.getFeedId());
             } else {
                 throw new FeedCommentNotFoundException();
             }
