@@ -14,7 +14,7 @@ export default function App() {
   return (
     <>
       {isLoggedIn ? <LoginHeader /> : <NotLoginHeader />}
-      <SEEHandler/>
+      <SEEHandler />
       <Outlet />
       <ToastContainer
         position="top-center"

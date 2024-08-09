@@ -1,12 +1,15 @@
 package com.sokpulee.crescendo.domain.feed.repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedSearchCondition;
 import com.sokpulee.crescendo.domain.feed.dto.response.FavoriteFeedResponse;
 import com.sokpulee.crescendo.domain.feed.dto.response.FeedResponse;
 import com.sokpulee.crescendo.domain.feed.dto.response.MyFeedResponse;
 import com.sokpulee.crescendo.domain.feed.entity.*;
+import com.sokpulee.crescendo.domain.follow.entity.QFollow;
 import com.sokpulee.crescendo.domain.idol.entity.QIdolGroup;
 import com.sokpulee.crescendo.domain.user.entity.QUser;
 import jakarta.persistence.EntityManager;
@@ -35,6 +38,7 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
         QFeedLike feedLike = QFeedLike.feedLike;
         QFeedHashtag feedHashtag = QFeedHashtag.feedHashtag;
         QIdolGroup idolGroup = QIdolGroup.idolGroup;
+        QFollow follow = QFollow.follow; // Assuming there's a follow entity
 
         // 검색 조건 추가
         BooleanBuilder booleanBuilder = new BooleanBuilder();
@@ -49,15 +53,37 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
             }
         }
 
-        // 페이징 및 기본 정보 조회
-        List<Feed> feedList = queryFactory
+        // Sort by followed users
+        if (condition != null && Boolean.TRUE.equals(condition.getSortByFollowed()) && userId != null) {
+            booleanBuilder.and(feed.user.id.in(
+                    JPAExpressions.select(follow.follower.id)
+                            .from(follow)
+                            .where(follow.following.id.eq(userId))
+            ));
+        }
+
+        // 기본 정보 조회
+        JPAQuery<Feed> query = queryFactory
                 .selectFrom(feed)
                 .leftJoin(feed.user, user).fetchJoin()
+                .leftJoin(feed.idolGroup, idolGroup).fetchJoin()
                 .where(booleanBuilder)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .distinct()
-                .fetch();
+                .distinct();
+        // 기본 정렬: createdAt 최신순
+        query.orderBy(feed.createdAt.desc());
+
+        // Sort by liked feeds
+        if (condition != null && Boolean.TRUE.equals(condition.getSortByLiked())) {
+            query.orderBy(feed.likeCnt.desc(),feed.createdAt.desc());
+        }else{
+            query.orderBy(feed.createdAt.desc());
+        }
+
+        // 페이징 추가
+        query.offset(pageable.getOffset())
+                .limit(pageable.getPageSize());
+
+        List<Feed> feedList = query.fetch();
 
         // 피드 응답 변환
         List<FeedResponse> feeds = feedList.stream()
@@ -104,8 +130,8 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
                 .fetchOne()).orElse(0L);
 
         return new PageImpl<>(feeds, pageable, total);
-
     }
+
 
     @Override
     public Page<FavoriteFeedResponse> findFavoriteFeeds(Long loggedInUserId, Pageable pageable) {
@@ -116,12 +142,17 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
         QFeedHashtag feedHashtag = QFeedHashtag.feedHashtag;
 
         List<Feed> query = queryFactory
-                .selectFrom(feed)
-                .leftJoin(feed.user, user).fetchJoin()
+                .select(feed)
+                .from(feedLike)
+                .join(feedLike.feed, feed)  // 일반 조인 사용
+                .join(feedLike.user, user)
+                .where(feedLike.user.id.eq(loggedInUserId))
+                .orderBy(feed.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .distinct()
                 .fetch();
+
 
         List<FavoriteFeedResponse> favoriteFeedResponses = query.stream()
                 .map(f -> {
@@ -189,6 +220,7 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
                 .selectFrom(feed)
                 .leftJoin(feed.user, user).fetchJoin()
                 .where(user.id.eq(loggedInUserId))
+                .orderBy(feed.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .distinct()

@@ -1,5 +1,6 @@
 package com.sokpulee.crescendo.domain.challenge.service;
 
+import com.sokpulee.crescendo.domain.alarm.service.AlarmService;
 import com.sokpulee.crescendo.domain.challenge.dto.request.CreateDanceChallengeRequest;
 import com.sokpulee.crescendo.domain.challenge.dto.request.JoinDanceChallengeRequest;
 import com.sokpulee.crescendo.domain.challenge.dto.response.GetDanceChallengeJoinResponse;
@@ -32,6 +33,7 @@ public class ChallengeServiceImpl implements ChallengeService {
     private final DanceChallengeJoinLikeRepository danceChallengeJoinLikeRepository;
     private final UserRepository userRepository;
     private final FileSaveHelper fileSaveHelper;
+    private final AlarmService alarmService;
 
     @Override
     public void createChallenge(Long loggedInUserId, CreateDanceChallengeRequest createDanceChallengeRequest) {
@@ -68,6 +70,8 @@ public class ChallengeServiceImpl implements ChallengeService {
                     .danceChallenge(danceChallenge)
                     .videoPath(saveDanceChallengeVideo)
                     .build());
+
+            alarmService.challengeJoinAlarm(danceChallenge.getTitle(), danceChallenge.getUser().getId(), loggedInUserId, challengeId);
         }
     }
 
@@ -90,6 +94,8 @@ public class ChallengeServiceImpl implements ChallengeService {
                             .user(user)
                             .danceChallengeJoin(danceChallengeJoin)
                             .build());
+
+            alarmService.challengeJoinLikeAlarm(danceChallengeJoin.getDanceChallenge().getTitle(), danceChallengeJoin.getUser().getId(), loggedInUserId, danceChallengeJoin.getDanceChallenge().getId());
         }
 
     }

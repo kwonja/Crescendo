@@ -9,12 +9,12 @@ import GalleryList from '../components/common/GalleryList';
 import FeedForm from '../components/community/PostFeed';
 import GalleryForm from '../components/community/PostGallery';
 import { ReactComponent as WriteButton } from '../assets/images/write.svg';
-import FeedDetailModal from '../components/community/FeedDetailModal'; // 피드 상세 모달 임포트
+import FeedDetailModal from '../components/community/FeedDetailModal';
+import '../scss/page/_communitydetail.scss';
 import { getCommunityDetailAPI, toggleFavoriteAPI } from '../apis/community';
 import { useAppDispatch, useAppSelector } from '../store/hooks/hook';
 import { CommunityDetailInfo } from '../interface/communityList';
 import { searchFeed, setFilterCondition, setSortCondition } from '../features/feed/communityFeedSlice';
-
 
 
 export default function CommunityDetail() {
@@ -35,7 +35,7 @@ export default function CommunityDetail() {
     isFavorite: false,
   };
 
-  const [ communityDetail, setCommunityDetail ] = useState<CommunityDetailInfo>(initialDetail)
+  const [communityDetail, setCommunityDetail] = useState<CommunityDetailInfo>(initialDetail);
   const { isLoggedIn } = useAppSelector(state => state.auth);
   const [isSelected, setIsSelected] = useState<'feed' | 'gallery'>('feed');
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
@@ -51,14 +51,13 @@ export default function CommunityDetail() {
   const [selectedFeedId, setSelectedFeedId] = useState<number | null>(null);
 
   // 데이터 가져오기, 초기세팅
-  useEffect(()=> {
+  useEffect(() => {
     const getCommunityDetail = async () => {
       const response = await getCommunityDetailAPI(idolGroupId);
       setCommunityDetail(response);
-    }
+    };
     getCommunityDetail();
-
-  }, [idolGroupId])
+  }, [idolGroupId]);
 
   useEffect(() => {
     const menuElement = menuRef.current;
@@ -85,7 +84,7 @@ export default function CommunityDetail() {
   const handleShowDetail = () => {
     setSelectedFeedId(1); // 테스트용 피드 ID를 1로 설정
     setShowDetail(true);
-  } 
+  };
 
   const clickStar = async () => {
     try {
@@ -93,30 +92,25 @@ export default function CommunityDetail() {
       setCommunityDetail(prev => ({
         ...prev,
         isFavorite: !prev.isFavorite,
-        favoriteCnt: prev.isFavorite?prev.favoriteCnt-1:prev.favoriteCnt+1
+        favoriteCnt: prev.isFavorite ? prev.favoriteCnt - 1 : prev.favoriteCnt + 1,
       }));
-    } 
-    catch {
-      console.error("즐겨찾기 토글 실패");
+    } catch {
+      console.error('즐겨찾기 토글 실패');
     }
-  }
+  };
 
   return (
     <div className="communitydetail">
       <div className="banner">
-        <img
-          className="banner_img"
-          src={communityDetail.banner}
-          alt={communityDetail.name}
-        ></img>
+        <img className="banner_img" src={communityDetail.banner} alt={communityDetail.name}></img>
         <div className="banner_name">{communityDetail.name}</div>
         <div className="banner_favoritenum">{`${communityDetail.favoriteCnt} Favorites`}</div>
         {isLoggedIn && (
           <div className="banner_starbox">
             {communityDetail.isFavorite ? (
-              <FullStar className="hoverup banner_star" onClick={()=>clickStar()} />
+              <FullStar className="hoverup banner_star" onClick={() => clickStar()} />
             ) : (
-              <Star className="hoverup banner_star" onClick={()=>clickStar()} />
+              <Star className="hoverup banner_star" onClick={() => clickStar()} />
             )}
           </div>
         )}
@@ -147,7 +141,7 @@ export default function CommunityDetail() {
             />
           </div>
           <div className="search">
-            <div className = "sort menu">
+            <div className="sort menu">
               <Dropdown
                 className="text"
                 selected={sortCondition}
@@ -156,7 +150,7 @@ export default function CommunityDetail() {
                 iconPosition="left"
               />
             </div>
-            <div className = "search menu">
+            <div className="search menu">
               <Dropdown
                 className="text"
                 selected={searchOption}
@@ -182,16 +176,25 @@ export default function CommunityDetail() {
       {isLoggedIn && <WriteButton className="write-button" onClick={handleShow} />}
 
       {/* 테스트용 피드 상세 모달 열기 버튼 */}
-      <button onClick={handleShowDetail} style={{ position: 'fixed', bottom: '20px', right: '20px', padding: '10px 20px', background: '#007BFF', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+      <button
+        onClick={handleShowDetail}
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          left: '20px',
+          padding: '10px 20px',
+          background: '#007BFF',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+        }}
+      >
         테스트용 피드 상세 모달 열기
       </button>
 
       {selectedFeedId && (
-        <FeedDetailModal
-          show={showDetail}
-          onClose={handleCloseDetail}
-          feedId={selectedFeedId}
-        />
+        <FeedDetailModal show={showDetail} onClose={handleCloseDetail} feedId={selectedFeedId} />
       )}
 
       {show && (

@@ -10,7 +10,6 @@ import favoriteReducer from '../features/favorite/favoriteSlice';
 import alarmReducer from '../features/alarm/alarmSlice';
 import communityFeedReducer from '../features/feed/communityFeedSlice';
 
-
 export const store = configureStore({
   reducer: {
     auth: authReducer,

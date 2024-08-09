@@ -13,14 +13,12 @@ public class AlarmDto {
     private Long alarmChannelId;
     private Long relatedId;
     private String content;
-    private AlarmType alarmType;
 
-    public AlarmDto(Long userId, Long alarmChannelId, Long relatedId, String content, AlarmType alarmType) {
+    public AlarmDto(Long userId, Long alarmChannelId, Long relatedId, String content) {
         this.userId = userId;
         this.alarmChannelId = alarmChannelId;
         this.relatedId = relatedId;
         this.content = content;
-        this.alarmType = alarmType;
     }
 
     public Alarm toEntity(User user, AlarmChannel alarmChannel) {
