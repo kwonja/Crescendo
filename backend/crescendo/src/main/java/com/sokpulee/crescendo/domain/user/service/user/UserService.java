@@ -25,4 +25,6 @@ public interface UserService {
     void updatePassword(Long loggedInUserId, PasswordUpdateMyPageRequest passwordUpdateMyPageRequest);
 
     Page<NickNameSearchingResponse> searchUsersByNickname(String nickname, Pageable pageable);
+
+    void updateFavoriteIdol(Long loggedInUserId, UpdateFavoriteIdolRequest updateFavoriteIdolRequest);
 }

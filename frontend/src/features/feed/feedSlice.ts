@@ -11,8 +11,7 @@ interface FeedProps {
   status: PromiseStatus;
   error: string | undefined;
 }
-
-const inistalState: FeedProps = {
+const initialState: FeedProps = {
   myFeedList: [],
   status: '',
   error: '',
@@ -25,7 +24,7 @@ export const getMyFeedList = createAsyncThunk('feedSlice/getMyFeedList', async (
 
 const feedSlice = createSlice({
   name: 'feed',
-  initialState: inistalState,
+  initialState: initialState,
   reducers: {
     incrementLike: (state, action: PayloadAction<number>) => {
       const feed = state.myFeedList.find(feed => feed.feedId === action.payload);

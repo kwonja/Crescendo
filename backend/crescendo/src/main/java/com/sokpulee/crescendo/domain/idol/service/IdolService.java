@@ -1,7 +1,8 @@
 package com.sokpulee.crescendo.domain.idol.service;
 
 import com.sokpulee.crescendo.domain.idol.dto.request.IdealWorldCupFinishRequest;
-import com.sokpulee.crescendo.domain.idol.dto.request.IdolNameListResponse;
+import com.sokpulee.crescendo.domain.idol.dto.response.IdolGroupNameListResponse;
+import com.sokpulee.crescendo.domain.idol.dto.response.IdolNameListResponse;
 import com.sokpulee.crescendo.domain.idol.dto.request.StartIdealWorldCupRequest;
 import com.sokpulee.crescendo.domain.idol.dto.response.IdealWorldCupRankResponse;
 import com.sokpulee.crescendo.domain.idol.dto.response.IdealWorldCupStartResponse;
@@ -17,4 +18,6 @@ public interface IdolService {
     void plusIdealWorldCupWinNum(IdealWorldCupFinishRequest idealWorldCupFinishRequest);
 
     Page<IdealWorldCupRankResponse> getIdealWorldCupRank(int page, int size, String idolName, Gender gender);
+
+    IdolGroupNameListResponse getIdolGroupNameList(String keyword);
 }

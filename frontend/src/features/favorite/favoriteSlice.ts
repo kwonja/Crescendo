@@ -38,10 +38,10 @@ export const getFavoriteRankList = createAsyncThunk<
 // 투표
 export const toggleIsLike = createAsyncThunk(
   'favoriteRankList/toggleIsLike',
-  async (favorriteRankId: number, { rejectWithValue }) => {
+  async (favoriteRankId:number, { rejectWithValue }) => {
     try {
-      await voteFavoriteRankAPI(favorriteRankId);
-      return favorriteRankId;
+      await voteFavoriteRankAPI(favoriteRankId);
+      return favoriteRankId;
     } catch (error) {
       return rejectWithValue('Failed to vote');
     }

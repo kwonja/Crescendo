@@ -145,4 +145,19 @@ public class UserController {
         return userService.searchUsersByNickname(nickname, pageable);
     }
 
+    @PatchMapping("/favorite-idol")
+    @Operation(summary = "최애 아이돌 변경", description = "최애 아이돌 변경 API")
+    public ResponseEntity<?> updateFavoriteIdol(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @Valid @RequestBody UpdateFavoriteIdolRequest updateFavoriteIdolRequest
+    ) {
+
+        if(loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+
+        userService.updateFavoriteIdol(loggedInUserId, updateFavoriteIdolRequest);
+
+        return ResponseEntity.status(NO_CONTENT).build();
+    }
 }
