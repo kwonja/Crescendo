@@ -332,6 +332,8 @@ public class FeedServiceImpl implements FeedService {
         feed.plusCommentCnt();
 
         feedCommentRepository.save(feedComment);
+        
+        alarmService.feedCommentAlarm(feed.getIdolGroup().getName(), feedComment.getContent(), feed.getUser().getId(), loggedInUserId, feed.getFeedId());
     }
 
     @Override
