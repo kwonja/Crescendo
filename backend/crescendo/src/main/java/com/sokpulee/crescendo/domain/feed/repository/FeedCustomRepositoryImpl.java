@@ -56,9 +56,9 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
         // Sort by followed users
         if (condition != null && Boolean.TRUE.equals(condition.getSortByFollowed()) && userId != null) {
             booleanBuilder.and(feed.user.id.in(
-                    JPAExpressions.select(follow.following.id)
+                    JPAExpressions.select(follow.follower.id)
                             .from(follow)
-                            .where(follow.follower.id.eq(userId))
+                            .where(follow.following.id.eq(userId))
             ));
         }
 
@@ -69,10 +69,14 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
                 .leftJoin(feed.idolGroup, idolGroup).fetchJoin()
                 .where(booleanBuilder)
                 .distinct();
+        // 기본 정렬: createdAt 최신순
+        query.orderBy(feed.createdAt.desc());
 
         // Sort by liked feeds
         if (condition != null && Boolean.TRUE.equals(condition.getSortByLiked())) {
-            query.orderBy(feed.likeCnt.desc());
+            query.orderBy(feed.likeCnt.desc(),feed.createdAt.desc());
+        }else{
+            query.orderBy(feed.createdAt.desc());
         }
 
         // 페이징 추가
@@ -138,12 +142,17 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
         QFeedHashtag feedHashtag = QFeedHashtag.feedHashtag;
 
         List<Feed> query = queryFactory
-                .selectFrom(feed)
-                .leftJoin(feed.user, user).fetchJoin()
+                .select(feed)
+                .from(feedLike)
+                .join(feedLike.feed, feed)  // 일반 조인 사용
+                .join(feedLike.user, user)
+                .where(feedLike.user.id.eq(loggedInUserId))
+                .orderBy(feed.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .distinct()
                 .fetch();
+
 
         List<FavoriteFeedResponse> favoriteFeedResponses = query.stream()
                 .map(f -> {
@@ -211,6 +220,7 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
                 .selectFrom(feed)
                 .leftJoin(feed.user, user).fetchJoin()
                 .where(user.id.eq(loggedInUserId))
+                .orderBy(feed.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .distinct()

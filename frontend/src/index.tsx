@@ -27,7 +27,6 @@ const initApp = async () => {
   }
 };
 
-// 기존 초기화 로직을 감싸서 엑세스 토큰 초기화 후에 실행되도록 수정
 initApp().then(() => {
   root.render(
     <Provider store={store}>

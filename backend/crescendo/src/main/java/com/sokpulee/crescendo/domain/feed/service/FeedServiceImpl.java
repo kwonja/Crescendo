@@ -1,5 +1,6 @@
 package com.sokpulee.crescendo.domain.feed.service;
 
+import com.sokpulee.crescendo.domain.alarm.service.AlarmService;
 import com.sokpulee.crescendo.domain.feed.dto.request.*;
 import com.sokpulee.crescendo.domain.feed.dto.response.*;
 import com.sokpulee.crescendo.domain.feed.entity.*;
@@ -32,6 +33,7 @@ public class FeedServiceImpl implements FeedService {
     private final FileSaveHelper fileSaveHelper;
     private final FeedLikeRepository feedLikeRepository;
     private final FeedCommentLikeRepository feedCommentLikeRepository;
+    private final AlarmService alarmService;
 
 
     @Override
@@ -206,6 +208,8 @@ public class FeedServiceImpl implements FeedService {
                     .build();
             feed.plusLikeCnt();
             feedLikeRepository.save(feedLike);
+
+            alarmService.feedLikeAlarm(feed.getIdolGroup().getName(), feed.getUser().getId(), loggedInUserId, feed.getFeedId());
         }
     }
 
@@ -307,6 +311,8 @@ public class FeedServiceImpl implements FeedService {
                     .build();
             feedComment.plusLikeCnt();
             feedCommentLikeRepository.save(feedCommentLike);
+
+            alarmService.feedCommentLikeAlarm(feedComment.getContent(), feedComment.getUser().getId(), loggedInUserId, feedComment.getFeed().getFeedId());
         }
     }
 
@@ -328,6 +334,8 @@ public class FeedServiceImpl implements FeedService {
         feed.plusCommentCnt();
 
         feedCommentRepository.save(feedComment);
+
+        alarmService.feedCommentAlarm(feed.getIdolGroup().getName(), feedComment.getContent(), feed.getUser().getId(), loggedInUserId, feed.getFeedId());
     }
 
     @Override
@@ -354,6 +362,8 @@ public class FeedServiceImpl implements FeedService {
                 feedCommentRepository.save(feedComment);
                 feed.plusCommentCnt();
                 parentFeedComment.plusReplyCnt();
+
+                alarmService.feedReplyAlarm(parentFeedComment.getContent(), feedComment.getContent(), parentFeedComment.getUser().getId(), loggedInUserId, feed.getFeedId());
             } else {
                 throw new FeedCommentNotFoundException();
             }

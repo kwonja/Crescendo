@@ -35,20 +35,20 @@ export const setAccessToken = (token: string | null) => {
 };
 
 // 리프레쉬 토큰을 사용한 엑세스 토큰 재발급
-export const refreshAccessToken = async (): Promise<string | null> => {
-  try {
-    const response = await api.post(
-      `${BASE_URL}/api/v1/auth/refresh-token`,
-      {},
-      { withCredentials: true },
-    );
-    const newAccessToken = response.headers.authorization.split(' ')[1];
-    setAccessToken(newAccessToken);
-    return newAccessToken;
-  } catch (error) {
-    return null;
-  }
-};
+// export const refreshAccessToken = async (): Promise<string | null> => {
+//   try {
+//     const response = await api.post(
+//       `${BASE_URL}/api/v1/auth/refresh-token`,
+//       {},
+//       { withCredentials: true },
+//     );
+//     const newAccessToken = response.headers.authorization.split(' ')[1];
+//     setAccessToken(newAccessToken);
+//     return newAccessToken;
+//   } catch (error) {
+//     return null;
+//   }
+// };
 
 // Authapi 인스턴스에 요청 인터셉터 추가
 Authapi.interceptors.request.use(config => {

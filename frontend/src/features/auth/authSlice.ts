@@ -128,17 +128,19 @@ export const logoutUser = createAsyncThunk('auth/logoutUser', async (_, { reject
   }
 });
 
+// 자동 로그인, 로그인 연장
 // 리프레쉬 토큰으로 엑세스 토큰 재발급 요청
 export const refreshToken = createAsyncThunk(
   'auth/refreshToken',
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.post('/api/v1/auth/refresh-token', {}, { withCredentials: true });
+      setUserId(response.data.userId);
       const newAccessToken = response.headers.authorization.split(' ')[1];
       setAccessToken(newAccessToken);
       return newAccessToken;
     } catch (error) {
-      return rejectWithValue(''); // 토큰 갱신 실패
+      return rejectWithValue('');
     }
   },
 );
