@@ -18,7 +18,7 @@ const initialState: FeedProps = {
 };
 
 export const getMyFeedList = createAsyncThunk('feedSlice/getMyFeedList', async (userId: number) => {
-  const response = await getMyFeedAPI(userId,0, 10);
+  const response = await getMyFeedAPI(userId, 0, 10);
   return response;
 });
 
