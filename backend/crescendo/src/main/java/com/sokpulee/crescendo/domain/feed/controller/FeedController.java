@@ -155,7 +155,7 @@ public class FeedController {
     public ResponseEntity<?> addFeedComment(
             @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
             @PathVariable("feed-id") Long feedId,
-            @ModelAttribute String content
+            @RequestParam String content
     ){
         if(loggedInUserId == null){
             throw new AuthenticationRequiredException();
