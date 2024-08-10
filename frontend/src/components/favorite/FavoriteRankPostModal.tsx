@@ -15,8 +15,8 @@ interface FavoritePostModalProps {
 export default function FavoriteRankPostModal({onClose, idolGroupList}:FavoritePostModalProps) {
   const [favoriteIdolImage, setFavoriteIdolImage] = useState<File | null>(null);
   const [idolList, setIdolList] = useState<IdolInfo[]>([]);
-  const [selectedGroup, setSelectedGroup] = useState<string>('그룹 선택');
-  const [selectedIdol, setSelectedIdol] = useState<string>('멤버 선택');
+  const [selectedGroup, setSelectedGroup] = useState<string>('');
+  const [selectedIdol, setSelectedIdol] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
 
@@ -129,7 +129,7 @@ export default function FavoriteRankPostModal({onClose, idolGroupList}:FavoriteP
             <GroupIcon className='icon'/>
             <Dropdown 
               className='modal-dropdown'
-              selected={selectedGroup}
+              defaultValue="그룹 선택"
               options={idolGroupList.map((group)=>group.groupName)} 
               onSelect={(selected)=>setSelectedGroup(selected)} />
           </div>
@@ -138,7 +138,7 @@ export default function FavoriteRankPostModal({onClose, idolGroupList}:FavoriteP
             <IdolIcon className='icon' />
             <Dropdown 
               className='modal-dropdown'
-              selected={selectedIdol}
+              defaultValue="멤버 선택"
               options={idolList.map((idol)=>idol.idolName)} 
               onSelect={(selected)=>setSelectedIdol(selected)}/>
           </div>

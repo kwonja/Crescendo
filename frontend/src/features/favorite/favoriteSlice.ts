@@ -65,7 +65,7 @@ const favoriteSlice = createSlice({
     },
 
     setSortByVotes(state, action) {
-      if (action.payload === '최신순' || action.payload === '정렬') {
+      if (action.payload === '최신순') {
         state.sortByVotes = false;
       } else if (action.payload === '좋아요순') {
         state.sortByVotes = true;

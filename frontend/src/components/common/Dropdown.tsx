@@ -5,7 +5,7 @@ import { ReactComponent as MenuUp } from '../../assets/images/up.svg';
 interface DropdownProps {
   className?: string;
   options: string[];
-  selected?: string;
+  defaultValue?: string;
   onSelect: (value: string) => void;
   iconPosition?: 'right' | 'left';
 }
@@ -13,16 +13,18 @@ interface DropdownProps {
 export default function Dropdown({
   className,
   options,
-  selected = options[0],
+  defaultValue = options[0],
   onSelect,
   iconPosition = 'right',
 }: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [selected, setSelected] = useState(defaultValue);
   const handleToggle = () => {
     setIsOpen(!isOpen);
   };
 
   const handleSelect = (value: string) => {
+    setSelected(value);
     onSelect(value);
     setIsOpen(false);
   };
@@ -36,7 +38,7 @@ export default function Dropdown({
         {iconPosition === 'left' && (
           <div className="dropdown_icon">{isOpen ? <MenuUp /> : <MenuDown />}</div>
         )}
-        <div>{selected}</div>
+        <div className={selected===defaultValue?"is_default":""}>{selected}</div>
         {iconPosition !== 'left' && (
           <div className="dropdown_icon">{isOpen ? <MenuUp /> : <MenuDown />}</div>
         )}

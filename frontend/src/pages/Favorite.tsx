@@ -16,11 +16,10 @@ import { ReactComponent as WriteButton } from '../assets/images/write.svg';
 import FavoriteRankPostModal from '../components/favorite/FavoriteRankPostModal';
 
 export default function Favorite() {
-  const [idolGroupOption, setIdolGroupOption] = useState<string>('그룹');
+  const [idolGroupOption, setIdolGroupOption] = useState<string>('');
   const [idolGroupList, setIdolGroupList] = useState<IdolGroupInfo[]>([]);
-  const [idolOption, setIdolOption] = useState<string>('멤버');
+  const [idolOption, setIdolOption] = useState<string>('');
   const [idolList, setIdolList] = useState<IdolInfo[]>([]);
-  const [sortOption, setSortOption] = useState<string>('정렬');
   const [showWriteModal, setShowWriteModal] = useState<boolean>(false);
   const { isLoggedIn } = useAppSelector(state=>state.auth);
   const dispatch = useAppDispatch();
@@ -33,13 +32,13 @@ export default function Favorite() {
     };
     getIdolGroupList();
     return () => {
-      setIdolGroupOption('그룹');
+      setIdolGroupOption('');
     };
   }, []);
 
   //멤버 리스트 가져오기
   useEffect(() => {
-    if (idolGroupOption === '그룹') {
+    if (!idolGroupOption) {
       setIdolList([]);
       return;
     }
@@ -53,7 +52,7 @@ export default function Favorite() {
     };
     getIdolList(selectedGroupId);
     return () => {
-      setIdolOption('멤버');
+      setIdolOption('');
     };
   }, [idolGroupOption, idolGroupList]);
 
@@ -84,7 +83,7 @@ export default function Favorite() {
             <div className="menu">
               <Dropdown
                 className="group text"
-                selected={idolGroupOption}
+                defaultValue='그룹'
                 options={idolGroupList.map(group => group.groupName)}
                 onSelect={selected => setIdolGroupOption(selected)}
               />
@@ -92,7 +91,7 @@ export default function Favorite() {
             <div className="menu">
               <Dropdown
                 className="member text"
-                selected={idolOption}
+                defaultValue='멤버'
                 options={idolList.map(idol => idol.idolName)}
                 onSelect={selected => setIdolOption(selected)}
               />
@@ -101,10 +100,9 @@ export default function Favorite() {
           <div className="sort menu">
             <Dropdown
               className="sort text"
-              selected={sortOption}
+              defaultValue='정렬'
               options={['최신순', '좋아요순']}
               onSelect={selected => {
-                setSortOption(selected);
                 dispatch(setSortByVotes(selected));
               }}
               iconPosition="left"
