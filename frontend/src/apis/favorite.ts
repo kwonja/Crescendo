@@ -49,3 +49,12 @@ export const getBestPhotoListAPI = async () => {
   const bestRankList: BestPhotoInfo[] = response.data.bestRankList;
   return bestRankList;
 };
+
+export const postFavoriteRankAPI = async (data:FormData) => {
+  const response = await Authapi.post('/api/v1/favorite-rank', data, 
+    {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    }})
+  return response;
+}

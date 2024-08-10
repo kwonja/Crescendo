@@ -1,16 +1,19 @@
+import React from 'react';
 import BestPhotoSlide from '../components/favorite/BestPhotoSlide';
 import Dropdown from '../components/common/Dropdown';
 import { useEffect, useState } from 'react';
 import FavoriteRankList from '../components/favorite/FavoriteRankList';
 import { IdolGroupInfo, IdolInfo } from '../interface/favorite';
 import { getidolGroupListAPI, getIdolListAPI } from '../apis/favorite';
-import { useAppDispatch } from '../store/hooks/hook';
+import { useAppDispatch, useAppSelector } from '../store/hooks/hook';
 import {
   getFavoriteRankList,
   resetPage,
   setIdolId,
   setSortByVotes,
 } from '../features/favorite/favoriteSlice';
+import { ReactComponent as WriteButton } from '../assets/images/write.svg';
+import FavoriteRankPostModal from '../components/favorite/FavoriteRankPostModal';
 
 export default function Favorite() {
   const [idolGroupOption, setIdolGroupOption] = useState<string>('그룹');
@@ -18,6 +21,8 @@ export default function Favorite() {
   const [idolOption, setIdolOption] = useState<string>('멤버');
   const [idolList, setIdolList] = useState<IdolInfo[]>([]);
   const [sortOption, setSortOption] = useState<string>('정렬');
+  const [showWriteModal, setShowWriteModal] = useState<boolean>(false);
+  const { isLoggedIn } = useAppSelector(state=>state.auth);
   const dispatch = useAppDispatch();
 
   //그룹 리스트 가져오기
@@ -64,6 +69,9 @@ export default function Favorite() {
     };
   }, [idolOption, dispatch, idolList]);
 
+  // 작성 모달 관련 함수
+  
+
   return (
     <div className="favorite">
       <div className="bestphotos_container">
@@ -105,6 +113,8 @@ export default function Favorite() {
         </div>
         <FavoriteRankList />
       </div>
+      {isLoggedIn && <WriteButton className="write-button" onClick={()=>setShowWriteModal(true)} />}
+      {showWriteModal && <FavoriteRankPostModal onClose={()=>setShowWriteModal(false)} idolGroupList={idolGroupList} />}
     </div>
   );
 }

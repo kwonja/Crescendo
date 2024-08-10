@@ -3,7 +3,6 @@
   display: inline-block;
 
   &_head {
-    color: #bbbbbb;
     padding: 10px;
     cursor: pointer;
     display: flex;
@@ -35,6 +34,32 @@
       &:hover {
         background-color: #f1f1f1;
       }
+    }
+  }
+
+  &.modal-dropdown {
+    width: 100%;
+    font-size: 24px;
+    color: #f66;
+
+    .dropdown_head:hover {
+      background-color: transparent;
+    }
+    
+    .dropdown_list {
+      border: 3px solid #f66;
+      border-radius: 0 0 15px 15px;
+
+      &::-webkit-scrollbar {
+        width: 12px;
+
+        &-thumb {
+          background-color: #f66;
+          border-radius: 10px;
+        }
+
+      }
+
     }
   }
 }
