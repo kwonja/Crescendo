@@ -23,7 +23,7 @@ export default function Dropdown({
   useEffect(()=> {
     setIsOpen(false);
     setSelected(defaultValue);
-  }, [options]) 
+  }, [options, defaultValue]) 
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
