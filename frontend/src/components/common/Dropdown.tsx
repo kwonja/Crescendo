@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ReactComponent as MenuDown } from '../../assets/images/down.svg';
 import { ReactComponent as MenuUp } from '../../assets/images/up.svg';
 
@@ -19,6 +19,12 @@ export default function Dropdown({
 }: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(defaultValue);
+
+  useEffect(()=> {
+    setIsOpen(false);
+    setSelected(defaultValue);
+  }, [options]) 
+
   const handleToggle = () => {
     setIsOpen(!isOpen);
   };
@@ -38,12 +44,12 @@ export default function Dropdown({
         {iconPosition === 'left' && (
           <div className="dropdown_icon">{isOpen ? <MenuUp /> : <MenuDown />}</div>
         )}
-        <div className={selected===defaultValue?"is_default":""}>{selected}</div>
+        <div className={`dropdown_head_value ${selected===defaultValue?"is_default":""}`}>{selected}</div>
         {iconPosition !== 'left' && (
           <div className="dropdown_icon">{isOpen ? <MenuUp /> : <MenuDown />}</div>
         )}
       </div>
-      {isOpen && (
+      {isOpen && options.length > 0 && (
         <ul className="dropdown_list">
           {options
             .filter(option => option !== selected)

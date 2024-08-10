@@ -57,9 +57,11 @@
           background-color: #f66;
           border-radius: 10px;
         }
-
       }
+    }
 
+    .dropdown_head_value.is_default {
+      color: #bbbbbb;
     }
   }
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import BestPhotoSlide from '../components/favorite/BestPhotoSlide';
 import Dropdown from '../components/common/Dropdown';
 import { useEffect, useState } from 'react';
@@ -23,6 +23,12 @@ export default function Favorite() {
   const [showWriteModal, setShowWriteModal] = useState<boolean>(false);
   const { isLoggedIn } = useAppSelector(state=>state.auth);
   const dispatch = useAppDispatch();
+  const idolGroupOptions = useMemo(() => {
+    return idolGroupList.map(group => group.groupName);
+  }, [idolGroupList]);
+  const idolOptions = useMemo(() => {
+    return idolList.map(idol => idol.idolName);
+  }, [idolList]);
 
   //그룹 리스트 가져오기
   useEffect(() => {
@@ -84,7 +90,7 @@ export default function Favorite() {
               <Dropdown
                 className="group text"
                 defaultValue='그룹'
-                options={idolGroupList.map(group => group.groupName)}
+                options={idolGroupOptions}
                 onSelect={selected => setIdolGroupOption(selected)}
               />
             </div>
@@ -92,7 +98,7 @@ export default function Favorite() {
               <Dropdown
                 className="member text"
                 defaultValue='멤버'
-                options={idolList.map(idol => idol.idolName)}
+                options={idolOptions}
                 onSelect={selected => setIdolOption(selected)}
               />
             </div>

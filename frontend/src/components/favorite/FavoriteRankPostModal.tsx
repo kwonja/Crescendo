@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ReactComponent as AddIcon } from '../../assets/images/img_add.svg';
 import { ReactComponent as RemoveIcon } from '../../assets/images/remove_icon.svg';
 import { ReactComponent as GroupIcon } from '../../assets/images/Favorite/group.svg';
@@ -17,6 +17,12 @@ export default function FavoriteRankPostModal({onClose, idolGroupList}:FavoriteP
   const [idolList, setIdolList] = useState<IdolInfo[]>([]);
   const [selectedGroup, setSelectedGroup] = useState<string>('');
   const [selectedIdol, setSelectedIdol] = useState<string>('');
+  const idolGroupOptions = useMemo(() => {
+    return idolGroupList.map(group => group.groupName);
+  }, [idolGroupList]);
+  const idolOptions = useMemo(() => {
+    return idolList.map(idol => idol.idolName);
+  }, [idolList]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
 
@@ -31,6 +37,7 @@ export default function FavoriteRankPostModal({onClose, idolGroupList}:FavoriteP
         }
       } 
       getIdolList()
+      setSelectedIdol("");
     }
   }, [selectedGroup]);
 
@@ -77,6 +84,7 @@ export default function FavoriteRankPostModal({onClose, idolGroupList}:FavoriteP
     try {
       await postFavoriteRankAPI(formData);
       alert('성공적으로 등록되었습니다.');
+      onClose();
     } catch (error:any) {
       if (error.response && error.response.data) {
         alert(error.response.data);
@@ -130,7 +138,7 @@ export default function FavoriteRankPostModal({onClose, idolGroupList}:FavoriteP
             <Dropdown 
               className='modal-dropdown'
               defaultValue="그룹 선택"
-              options={idolGroupList.map((group)=>group.groupName)} 
+              options={idolGroupOptions} 
               onSelect={(selected)=>setSelectedGroup(selected)} />
           </div>
           
@@ -139,7 +147,7 @@ export default function FavoriteRankPostModal({onClose, idolGroupList}:FavoriteP
             <Dropdown 
               className='modal-dropdown'
               defaultValue="멤버 선택"
-              options={idolList.map((idol)=>idol.idolName)} 
+              options={idolOptions} 
               onSelect={(selected)=>setSelectedIdol(selected)}/>
           </div>
           
