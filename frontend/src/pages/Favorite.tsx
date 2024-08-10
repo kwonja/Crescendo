@@ -7,8 +7,7 @@ import { IdolGroupInfo, IdolInfo } from '../interface/favorite';
 import { getidolGroupListAPI, getIdolListAPI } from '../apis/favorite';
 import { useAppDispatch, useAppSelector } from '../store/hooks/hook';
 import {
-  getFavoriteRankList,
-  resetPage,
+  setIdolGroupId,
   setIdolId,
   setSortByVotes,
 } from '../features/favorite/favoriteSlice';
@@ -24,10 +23,10 @@ export default function Favorite() {
   const { isLoggedIn } = useAppSelector(state=>state.auth);
   const dispatch = useAppDispatch();
   const idolGroupOptions = useMemo(() => {
-    return idolGroupList.map(group => group.groupName);
+    return ['전체', ...idolGroupList.map(group => group.groupName)];
   }, [idolGroupList]);
   const idolOptions = useMemo(() => {
-    return idolList.map(idol => idol.idolName);
+    return ['전체', ...idolList.map(idol => idol.idolName)];
   }, [idolList]);
 
   //그룹 리스트 가져오기
@@ -37,9 +36,7 @@ export default function Favorite() {
       setIdolGroupList(response);
     };
     getIdolGroupList();
-    return () => {
-      setIdolGroupOption('');
-    };
+
   }, []);
 
   //멤버 리스트 가져오기
@@ -50,32 +47,22 @@ export default function Favorite() {
     }
     const selectedGroupId = idolGroupList.find(
       group => group.groupName === idolGroupOption,
-    )?.groupId;
-    if (!selectedGroupId) throw new Error('not found idol group');
+    )?.groupId||null;
+    dispatch(setIdolGroupId(selectedGroupId));
     const getIdolList = async (groupId: number) => {
       const response = await getIdolListAPI(groupId);
       setIdolList(response);
     };
-    getIdolList(selectedGroupId);
-    return () => {
-      setIdolOption('');
-    };
-  }, [idolGroupOption, idolGroupList]);
+    if (selectedGroupId) getIdolList(selectedGroupId);
 
-  // 최애 자랑 리스트 가져오기
+  }, [idolGroupOption, idolGroupList, dispatch]);
+
+  // 아이돌Id 등록
   useEffect(() => {
-    const selectedIdolId = idolList.find(idol => idol.idolName === idolOption)?.idolId;
-    if (selectedIdolId) {
-      dispatch(setIdolId(selectedIdolId));
-      dispatch(getFavoriteRankList());
-    }
-    return () => {
-      dispatch(resetPage());
-    };
-  }, [idolOption, dispatch, idolList]);
+    const selectedIdolId = idolList.find(idol => idol.idolName === idolOption)?.idolId||null;
+    dispatch(setIdolId(selectedIdolId));
 
-  // 작성 모달 관련 함수
-  
+  }, [idolOption, idolList, dispatch]);
 
   return (
     <div className="favorite">

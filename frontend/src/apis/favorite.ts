@@ -26,12 +26,14 @@ export const getIdolListAPI = async (idolGroupId: number) => {
 export const getFavoriteRankListAPI = async (
   page: number,
   size: number,
-  idolId: number,
+  idolGroupId: number | null,
+  idolId: number | null,
   sortByVotes: boolean,
 ) => {
   const params = {
     page,
     size,
+    idolGroupId,
     idolId,
     sortByVotes,
   };
