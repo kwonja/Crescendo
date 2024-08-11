@@ -1,6 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
-import Profile from '../components/mypage/Profile';
-import FriendList from '../components/mypage/FriendList';
+import React, {useEffect, useRef, useState } from 'react';
 import { ReactComponent as Crown } from '../assets/images/crown.svg';
 import Feed from '../components/common/Feed';
 import { useAppDispatch, useAppSelector } from '../store/hooks/hook';
@@ -8,21 +6,11 @@ import Gallery from '../components/common/Gallery';
 import { getMyFeedList } from '../features/feed/feedSlice';
 import newjeans from '../assets/images/newjeans.png';
 import { useParams } from 'react-router-dom';
-import { getUserInfoAPI } from '../apis/user';
-import { UserInfo } from '../interface/user';
-import { getUserId } from '../apis/core';
+
+import LeftInfo from '../components/mypage/LeftInfo';
 export default function MyPage() {
   const [isSelected, setIsSelected] = useState<'feed' | 'gallery'>('feed');
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
-  const [userInfo, setUserInfo] = useState<UserInfo>({
-    profilePath: '',
-    nickname: '',
-    introduction: '',
-    followingNum: 0,
-    followerNum: 0,
-    isFollowing: false,
-    favoriteImagePath: '',
-  });
   const menuRef = useRef<HTMLDivElement>(null);
   const feedlist = useAppSelector(state => state.feed.myFeedList);
   const dispatch = useAppDispatch();
@@ -30,35 +18,9 @@ export default function MyPage() {
   const { id } = useParams<{ id: string }>();
   const numericId = id ? parseInt(id, 10) : NaN;
 
-  const setIntroduction = (introduction: string) => {
-    setUserInfo(prevUserInfo => ({
-      ...prevUserInfo,
-      introduction,
-    }));
-  };
-  const setProfileImage = (profileImage: string) => {
-    setUserInfo(prevUserInfo => ({
-      ...prevUserInfo,
-      profilePath: profileImage,
-    }));
-  };
-  const setNickname = (nickname: string) => {
-    setUserInfo(prevUserInfo => ({
-      ...prevUserInfo,
-      nickname,
-    }));
-  };
+  
   useEffect(() => {
     dispatch(getMyFeedList(numericId));
-    const getUserInfo = async () => {
-      try {
-        const response = await getUserInfoAPI(numericId, getUserId());
-        setUserInfo(response.data);
-      } catch (err: unknown) {
-        // console.log(err);
-      }
-    };
-    getUserInfo();
   }, [dispatch, numericId]);
 
   const updateIndicator = () => {
@@ -80,25 +42,16 @@ export default function MyPage() {
   useEffect(() => {
     updateIndicator();
   }, [isSelected]);
-
   useEffect(() => {
     window.addEventListener('resize', updateIndicator);
     return () => {
       window.removeEventListener('resize', updateIndicator);
     };
   }, []);
-
   return (
     <div className="mypage">
       <div className="mypage_left">
-        <Profile
-          userInfo={userInfo}
-          userId={numericId}
-          setIntroduction={setIntroduction}
-          setNickname={setNickname}
-          setProfileImage={setProfileImage}
-        />
-        <FriendList userId={numericId} userInfo={userInfo} />
+        <LeftInfo/>
       </div>
       <div className="mypage_center">
         <div className="myfavorite">
@@ -145,10 +98,6 @@ export default function MyPage() {
 
         {isSelected === 'gallery' && (
           <div className="mypage_gallery">
-            <Gallery />
-            <Gallery />
-            <Gallery />
-            <Gallery />
             <Gallery />
             <Gallery />
             <Gallery />

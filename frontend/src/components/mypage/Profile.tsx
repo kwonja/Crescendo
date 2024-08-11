@@ -1,68 +1,60 @@
-import React, { ChangeEvent, useState } from 'react';
-import { DEFAULT_IMAGE, getUserId } from '../../apis/core';
+import React, { ChangeEvent, useRef, useState } from 'react';
+import { getUserId, IMAGE_BASE_URL } from '../../apis/core';
 import { UserInfo } from '../../interface/user';
-import { modifyIntroductionAPI, modifyNicknameAPI, modifyProfileAPI } from '../../apis/user';
+import { modifyProfileAPI } from '../../apis/user';
 
 interface ProfileProps {
   userInfo: UserInfo;
-  setProfileImage: (value: string) => void;
-  setNickname: (value: string) => void;
-  setIntroduction: (value: string) => void;
-  userId: number;
+  handleUpdate: (nickname : string, introduction : string)=>void;
+  handleFollow : ()=>void;
+  userId : number
 }
+
 export default function Profile({
   userInfo,
-  setProfileImage,
-  setNickname,
-  setIntroduction,
-  userId,
+  handleUpdate,
+  handleFollow,
+  userId
 }: ProfileProps) {
-  const { profilePath, nickname, introduction, isFollowing } = userInfo;
-
-  const [newisFollowing, setNewisFolowing] = useState<boolean>(isFollowing);
-  const [newprofileImage, setNewprofileImage] = useState(profilePath);
-  const [newnickname, setNewnickname] = useState(nickname);
-  const [newintroduction, setNewintroduction] = useState(introduction);
-
-  const [isEditing, setIsEditing] = useState(false);
-
-  const onErrorImg = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    (e.target as HTMLImageElement).src = DEFAULT_IMAGE;
+  const {nickname,introduction,isFollowing,profilePath} = userInfo;
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const nickeRef = useRef<HTMLInputElement>(null);
+  const introRef = useRef<HTMLTextAreaElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
+  const handleSaveClick = async() => {
+    if(selectedFile){
+      const formData = new FormData();
+      formData.append('profileImage', selectedFile);
+      await modifyProfileAPI(formData);
+    }
+    const newNickname = nickeRef.current?.value || nickname;
+    const newIntroduction = introRef.current?.value || introduction;
+    handleUpdate(newNickname, newIntroduction);
+    setIsEditing((prev)=>!prev)
   };
-
-  const handleSaveClick = () => {
-    setIsEditing(false);
-    Promise.all([
-      modifyIntroductionAPI(userId),
-      modifyNicknameAPI(userId),
-      modifyProfileAPI(userId),
-    ]);
-  };
-  const handleCancelClick = () => {
-    setIsEditing(false);
-    setNewintroduction(introduction);
-    setNewnickname(nickname);
-    setNewprofileImage(profilePath);
-  };
-
-  const handleImageUpload = (e: ChangeEvent<HTMLInputElement>): void => {
+  const handleImageUpload = async(e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setSelectedFile(file);
       const reader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onloadend = event => {
-        setNewprofileImage(event.target?.result as string);
+      reader.onloadend = () => {
+        if (reader.result) {
+          if (imageRef.current) {
+            imageRef.current.src = reader.result as string; // Update image preview
+          }
+        }
       };
     }
   };
-
   return (
     <>
       <div className="profile">
         <div className="img">
-          <img src={`${newprofileImage}`} alt="유저 프로필" onError={onErrorImg} />
           {isEditing ? (
             <>
+             <img alt="유저 프로필" src={`${IMAGE_BASE_URL}${profilePath}`} ref={imageRef}/>
               <label htmlFor="profile" className="editimg">
                 업로드
               </label>
@@ -70,11 +62,10 @@ export default function Profile({
                 id="profile"
                 className="hidden"
                 type="file"
-                accept="image/*"
                 onChange={handleImageUpload}
               />
             </>
-          ) : null}
+          ) : <img src={`${IMAGE_BASE_URL}${profilePath}`} alt="유저 프로필" ref={imageRef}/>}
         </div>
 
         {isEditing ? (
@@ -83,8 +74,8 @@ export default function Profile({
             <input
               type="text"
               className="nickname_edit"
-              value={newnickname}
-              onChange={e => setNewnickname(e.target.value)}
+              defaultValue={nickname}
+              ref={nickeRef}
             />
           </>
         ) : (
@@ -96,8 +87,8 @@ export default function Profile({
             <div>소개</div>
             <textarea
               className="content content_edit"
-              value={newintroduction === null ? '' : introduction}
-              onChange={e => setNewintroduction(e.target.value)}
+              defaultValue={introduction}
+              ref={introRef}
             />
           </>
         ) : (
@@ -111,25 +102,25 @@ export default function Profile({
               <button className="w-1/4 bg-mainColor" onClick={handleSaveClick}>
                 저장
               </button>
-              <button className="w-1/4 bg-subColor" onClick={handleCancelClick}>
+              <button className="w-1/4 bg-subColor" onClick={ () => setIsEditing(prev => !prev)}>
                 취소
               </button>
             </div>
           ) : (
             <div className="profile_edit">
-              <button onClick={() => setIsEditing(true)}>프로필 수정</button>
+              <button onClick={() => setIsEditing(prev => !prev)}>프로필 수정</button>
             </div>
           )}
         </>
       ) : (
         <>
-          {newisFollowing ? (
+          {isFollowing ? (
             <div className="profile_edit">
-              <button onClick={() => setNewisFolowing(false)}>Unfollow</button>
+              <button onClick={handleFollow}>Unfollow</button>
             </div>
           ) : (
             <div className="profile_edit">
-              <button onClick={() => setNewisFolowing(true)}>follow</button>
+              <button onClick={handleFollow}>Follow</button>
             </div>
           )}
         </>
