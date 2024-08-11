@@ -10,7 +10,7 @@ import { ReactComponent as NextButton } from '../../assets/images/Feed/next_butt
 import { ReactComponent as PrevButton } from '../../assets/images/Feed/prev_button.svg';
 import { ReactComponent as UserProfileImageDefault } from '../../assets/images/UserProfile/reduser.svg';
 import FeedDetailMenu from './DropdownMenu';
-// import EditFeed from './EditFeed'
+import EditFeed from './EditFeed'
 import '../../scss/components/community/_feeddetailmodal.scss';
 
 type FeedDetailResponse = {
@@ -55,6 +55,15 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
 
   const currentUserId = getUserId();
 
+  const loadFeedDetail = async () => {
+    try {
+      const response = await Authapi.get(`/api/v1/community/feed/${feedId}`);
+      setFeedDetail(response.data);
+    } catch (error) {
+      console.error('Error fetching feed details:', error);
+    }
+  };
+
   const loadComments = async () => {
     try {
       const response = await api.get(`/api/v1/community/feed/${feedId}/comment`, {
@@ -69,15 +78,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
   useEffect(() => {
     if (show) {
       setComments([]);
-
-      Authapi
-        .get(`/api/v1/community/feed/${feedId}`)
-        .then(response => {
-          // eslint-disable-next-line no-console
-          console.log("피드 상세 응답 내용: ", response.data); 
-          setFeedDetail(response.data)})
-        .catch(error => console.error('Error fetching feed details:', error));
-
+      loadFeedDetail();
       loadComments();
     }
   }, [show, feedId]);
@@ -124,15 +125,18 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
   };
 
 const handleEdit = () => {
+  setMenuVisible(false);
   setEditModalVisible(true);
 };
 
-const handleEditModalClose = () => {
-  setEditModalVisible(false);
+const handleEditModalClose = async () => {
+  await loadFeedDetail(); 
+  setEditModalVisible(false); 
 };
 
   // 피드 삭제
   const handleDelete = async () => {
+    setMenuVisible(false);
     const confirmDelete = window.confirm('삭제 후에는 복구가 불가능합니다. 정말 삭제하시겠습니까?');
     if (confirmDelete) {
       try {
@@ -155,7 +159,7 @@ const handleEditModalClose = () => {
 
   return (
     <div className="feed-detail-modal modal-overlay">
-      <div className="modal-content">
+      <div className={`modal-content ${editModalVisible ? 'blurred' : ''}`}>
         <button className="close-button" onClick={onClose}>
           &times;
         </button>
@@ -195,7 +199,6 @@ const handleEditModalClose = () => {
                 <FeedDetailMenu
                   onEdit={handleEdit}
                   onDelete={handleDelete}
-                  onClose={handleMenuToggle}
                 />
               )}
             </div>
@@ -268,7 +271,7 @@ const handleEditModalClose = () => {
         </div>
       </div>
       {editModalVisible && feedDetail && (
-        <div className="modal">
+        <div className="feed-edit-modal">
           <div className="modal-content">
             <div className="modal-header">
               <div className="modal-header-title">
@@ -279,13 +282,13 @@ const handleEditModalClose = () => {
               </span>
             </div>
             <div className="modal-body">
-              {/* <EditFeed
+              <EditFeed
                 onClose={handleEditModalClose}
                 feedId={feedId}
                 initialContent={feedDetail.content}
                 initialTags={feedDetail.tagList}
                 initialImages={feedDetail.feedImagePathList}
-              /> */}
+              />
             </div>
           </div>
         </div>

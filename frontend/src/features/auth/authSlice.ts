@@ -116,6 +116,22 @@ export const verifyEmailCode = createAsyncThunk(
   },
 );
 
+// 비밀번호 재설정 비동기 함수
+export const resetPassword = createAsyncThunk(
+  'auth/resetPassword',
+  async (
+    { email, newPassword, emailAuthId, randomKey }: 
+    { email: string; newPassword: string; emailAuthId: number; randomKey: string },
+    { rejectWithValue },
+  ) => {
+    try {
+      await api.patch('/api/v1/auth/password', { email, newPassword, emailAuthId, randomKey });
+    } catch (error) {
+      return rejectWithValue('비밀번호 변경 실패');
+    }
+  },
+);
+
 // 로그아웃 비동기 함수
 export const logoutUser = createAsyncThunk('auth/logoutUser', async (_, { rejectWithValue }) => {
   try {
@@ -280,6 +296,17 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
         state.isLoggedIn = false;
+      })
+      .addCase(resetPassword.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(resetPassword.fulfilled, state => {
+        state.loading = false;
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });
