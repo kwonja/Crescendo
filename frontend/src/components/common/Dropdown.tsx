@@ -4,9 +4,9 @@ import { ReactComponent as MenuUp } from '../../assets/images/up.svg';
 
 interface DropdownProps {
   className?: string;
-  options: string[];
+  options: string[]; // options로는 렌더링마다 바뀌지않는 상태변수 또는 useMemo된 값을 넣어야함.
   defaultValue?: string;
-  onSelect: (value: string) => void;
+  onSelect?: (value: string) => void;
   iconPosition?: 'right' | 'left';
 }
 
@@ -31,7 +31,7 @@ export default function Dropdown({
 
   const handleSelect = (value: string) => {
     setSelected(value);
-    onSelect(value);
+    if (onSelect) onSelect(value);
     setIsOpen(false);
   };
 

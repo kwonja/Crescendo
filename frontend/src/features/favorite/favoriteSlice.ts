@@ -81,9 +81,19 @@ const favoriteSlice = createSlice({
     },
 
     setSortByVotes(state, action) {
-      if (action.payload === '최신순') {
+      if (action.payload === '최신순' && state.sortByVotes === true) {
+        state.page = 0;
+        state.favoriteRankList = [];
+        state.hasMore = true;
+        state.status = '';
+        state.error = null;
         state.sortByVotes = false;
-      } else if (action.payload === '좋아요순') {
+      } else if (action.payload === '좋아요순' && state.sortByVotes === false) {
+        state.page = 0;
+        state.favoriteRankList = [];
+        state.hasMore = true;
+        state.status = '';
+        state.error = null;
         state.sortByVotes = true;
       }
     },
