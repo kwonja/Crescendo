@@ -52,6 +52,7 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
       {imagePaths.length > 0 && (
         <div className="feed_image_box">
           <div className="slider">
+            <div onClick={(e) => e.stopPropagation()}>
             <Button
               className={`square empty ${imgIdx <= 0 ? 'hidden ' : ''}`}
               onClick={() => {
@@ -60,6 +61,7 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
             >
               <LeftBtn />
             </Button>
+            </div>
             <div className="main_img_container">
               {imgIdx > 0 && (
                 <img
@@ -84,16 +86,19 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
                 {imgIdx + 1}/{imagePaths.length}
               </div>
             </div>
+            <div onClick={(e) => e.stopPropagation()}>
             <Button
               className={`square empty ${imgIdx >= imagePaths.length - 1 ? 'hidden ' : ''}`}
               onClick={() => setImgIdx(prev => prev + 1)}
             >
               <RightBtn />
             </Button>
+            </div>
           </div>
           <div className="pagination-dots">
             {imagePaths.map((_, idx) => (
               <div
+                key={idx}
                 className={`pagination-dot ${idx === imgIdx ? 'active' : ''}`}
                 onClick={() => setImgIdx(idx)}
               ></div>
