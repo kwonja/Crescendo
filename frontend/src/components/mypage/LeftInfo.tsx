@@ -24,6 +24,7 @@ export default function LeftInfo() {
         await followAPI(numericId);
         setUserInfo( prev => {return {...prev, isFollowing : !prev.isFollowing}})
       },[numericId]);
+
       const handleUpdate = async(nickname : string, introduction : string)=>{
     
         if (userInfo.introduction !== introduction) {
@@ -55,6 +56,7 @@ export default function LeftInfo() {
       
   return (
     <>
+    <button onClick={()=>console.log("하이")}>버튼버튼</button>
     <Profile
           userInfo={userInfo}
           handleUpdate={handleUpdate}
