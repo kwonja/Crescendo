@@ -42,7 +42,7 @@ export default function CommunityFeedList({ idolGroupId, onFeedClick }: Communit
     <div className="feedlist">
       {status === 'loading' || feedList.length > 0 ? (
         feedList.map((feed, index) => (
-          <CommunityFeed key={index} feed={feed} onClick={() => onFeedClick(feed.feedId)} />
+          <CommunityFeed key={feed.feedId} feed={feed} onClick={() => onFeedClick(feed.feedId)} />
         ))
       ) : keyword ? (
         <div className="text-center text-xl">'{keyword}'에 해당하는 피드를 찾을 수 없습니다.</div>

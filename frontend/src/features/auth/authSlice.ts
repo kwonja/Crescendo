@@ -121,6 +121,7 @@ export const logoutUser = createAsyncThunk('auth/logoutUser', async (_, { reject
   try {
     await Authapi.post('/api/v1/auth/logout', {}); // refresh token 만료 요청
     setAccessToken(null); // 엑세스 토큰 삭제
+    setUserId(-1);
     localStorage.removeItem('autoLogin');
     localStorage.removeItem('password');
   } catch (error) {

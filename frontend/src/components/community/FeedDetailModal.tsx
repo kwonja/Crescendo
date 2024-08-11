@@ -1,9 +1,16 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { api, Authapi } from '../../apis/core';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { api, Authapi, getUserId } from '../../apis/core';
+import { useAppDispatch } from '../../store/hooks/hook';
+import { toggleFeedLike } from '../../features/feed/communityFeedSlice';
 import { ReactComponent as HeartIcon } from '../../assets/images/Feed/white_heart.svg';
+import { ReactComponent as FullHeartIcon } from '../../assets/images/Feed/white_fullheart.svg';
 import { ReactComponent as MenuIcon } from '../../assets/images/Feed/white_dots.svg';
 import { ReactComponent as NextButton } from '../../assets/images/Feed/next_button.svg';
 import { ReactComponent as PrevButton } from '../../assets/images/Feed/prev_button.svg';
+import { ReactComponent as UserProfileImageDefault } from '../../assets/images/UserProfile/reduser.svg';
+import FeedDetailMenu from './DropdownMenu';
+// import EditFeed from './EditFeed'
 import '../../scss/components/community/_feeddetailmodal.scss';
 
 type FeedDetailResponse = {
@@ -21,10 +28,10 @@ type FeedDetailResponse = {
 };
 
 type Comment = {
-  commentId: number;
+  feedCommentId: number;
   userId: number;
   nickname: string;
-  profileImagePath: string;
+  profileImagePath: string | null;
   content: string;
   createdAt: string;
 };
@@ -38,51 +45,42 @@ type FeedDetailModalProps = {
 const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId }) => {
   const [feedDetail, setFeedDetail] = useState<FeedDetailResponse | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
-  const [newComment, setNewComment] = useState(''); // 새로운 댓글 입력을 위한 상태
+  const [newComment, setNewComment] = useState('');
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [page, setPage] = useState(0); // 페이지 번호 관리
-  const [loading, setLoading] = useState(false); // 로딩 상태 관리
-  const [hasMoreComments, setHasMoreComments] = useState(true); // 더 이상 댓글이 없을 때 false로 설정
-  const loader = useRef<HTMLDivElement | null>(null); // 로딩 요소에 대한 ref
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const commentsRef = useRef<HTMLDivElement | null>(null);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
-  const loadComments = useCallback(
-    (currentPage: number) => {
-      if (!hasMoreComments) return; // 더 이상 댓글이 없을 경우 요청 중단
+  const currentUserId = getUserId();
 
-      setLoading(true);
-      api
-        .get(`/api/v1/community/feed/${feedId}/comment`, {
-          params: { page: currentPage, size: 10 },
-        })
-        .then(response => {
-          const newComments = response.data.content;
-          if (newComments.length === 0) {
-            setHasMoreComments(false); // 댓글이 더 이상 없음을 표시
-          } else {
-            setComments(prevComments => [...prevComments, ...newComments]);
-          }
-          setLoading(false);
-        })
-        .catch(error => {
-          console.error('Error fetching comments:', error);
-          setLoading(false);
-        });
-    },
-    [feedId, hasMoreComments], // feedId 또는 hasMoreComments가 변경될 때만 loadComments 함수가 재생성됩니다.
-  );
+  const loadComments = async () => {
+    try {
+      const response = await api.get(`/api/v1/community/feed/${feedId}/comment`, {
+        params: { page: 0, size: 5 },
+      });
+      setComments(response.data.content);
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+    }
+  };
 
   useEffect(() => {
     if (show) {
-      // 피드 상세 정보 가져오기
-      api
+      setComments([]);
+
+      Authapi
         .get(`/api/v1/community/feed/${feedId}`)
-        .then(response => setFeedDetail(response.data))
+        .then(response => {
+          // eslint-disable-next-line no-console
+          console.log("피드 상세 응답 내용: ", response.data); 
+          setFeedDetail(response.data)})
         .catch(error => console.error('Error fetching feed details:', error));
 
-      // 초기 댓글 데이터 가져오기
-      loadComments(0);
+      loadComments();
     }
-  }, [show, feedId, loadComments]); // loadComments를 의존성 배열에 포함
+  }, [show, feedId]);
 
   const handlePrevImage = () => {
     setActiveImageIndex(prevIndex =>
@@ -99,71 +97,58 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
   const handleAddComment = () => {
     if (newComment.trim() === '') return;
 
-    // eslint-disable-next-line no-console
-    console.log(feedId);
-    // eslint-disable-next-line no-console
-    console.log(newComment);
+    const formData = new FormData();
+    formData.append('content', newComment);
 
-    Authapi.post(`/api/v1/community/feed/${feedId}/comment`, {
-      content: newComment,
-    })
-      .then(response => {
-        const addedComment = response.data;
-
-        setComments([...comments, addedComment]);
+    Authapi.post(`/api/v1/community/feed/${feedId}/comment`, formData)
+      .then(() => {
         setNewComment('');
+        loadComments();
       })
       .catch(error => {
         console.error('댓글 작성 오류:', error);
       });
   };
 
-  const handleObserver = useCallback(
-    (entries: IntersectionObserverEntry[]) => {
-      const target = entries[0];
-      if (target.isIntersecting && !loading && hasMoreComments) {
-        setPage(prevPage => prevPage + 1); // 페이지 증가
-      }
-    },
-    [loading, hasMoreComments], // loading 상태와 hasMoreComments에 따라 handleObserver 함수가 변경
-  );
-
-  useEffect(() => {
-    if (page > 0) {
-      loadComments(page); // 새로운 페이지의 댓글 로드
+  const handleLikeToggle = () => {
+    if (feedDetail) {
+      dispatch(toggleFeedLike(feedId));
+      setFeedDetail(prevDetail =>
+        prevDetail ? { ...prevDetail, isLike: !prevDetail.isLike, likeCnt: prevDetail.isLike ? prevDetail.likeCnt - 1 : prevDetail.likeCnt + 1 } : prevDetail,
+      );
     }
-  }, [page, loadComments]); // loadComments를 의존성 배열에 포함
+  };
 
-  useEffect(() => {
-    const option = {
-      threshold: 0.1,
-    };
-    const observer = new IntersectionObserver(handleObserver, option);
-    const currentLoader = loader.current; // ref 값을 로컬 변수에 저장
-    if (currentLoader) observer.observe(currentLoader);
-    return () => {
-      if (currentLoader) observer.unobserve(currentLoader); // cleanup에서 로컬 변수를 사용
-    };
-  }, [handleObserver]);
+  const handleMenuToggle = () => {
+    setMenuVisible(prevVisible => !prevVisible);
+  };
 
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose(); // ESC 키를 누르면 모달 닫기
+const handleEdit = () => {
+  setEditModalVisible(true);
+};
+
+const handleEditModalClose = () => {
+  setEditModalVisible(false);
+};
+
+  // 피드 삭제
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm('삭제 후에는 복구가 불가능합니다. 정말 삭제하시겠습니까?');
+    if (confirmDelete) {
+      try {
+        await Authapi.delete(`/api/v1/community/feed/${feedId}`);
+        alert('삭제되었습니다.');
+        navigate(0);
+        onClose();
+      } catch (error) {
+        console.error('피드 삭제 오류:', error);
+        alert('삭제에 실패했습니다.');
       }
-    };
+    }
+  };
 
-    // 이벤트 리스너 추가
-    window.addEventListener('keydown', handleKeyDown);
-
-    // 컴포넌트가 언마운트되거나 모달이 닫힐 때 이벤트 리스너 제거
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [onClose]);
-
-  const getAbsolutePath = (path: string) => {
-    return `https://i11b108.p.ssafy.io/server/files/${path}`;
+  const getAbsolutePath = (path: string | null) => {
+    return path ? `https://i11b108.p.ssafy.io/server/files/${path}` : '';
   };
 
   if (!show || !feedDetail) return null;
@@ -176,18 +161,43 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
         </button>
         <div className="feed-detail-left">
           <div className="feed-header">
-            <img
-              src={getAbsolutePath(feedDetail.profileImagePath)}
-              alt={feedDetail.nickname}
-              className="profile-image"
-            />
+            <div className="profile-image-container">
+              {feedDetail.profileImagePath ? (
+                <img
+                  src={getAbsolutePath(feedDetail.profileImagePath)}
+                  alt={feedDetail.nickname}
+                  className="profile-image"
+                />
+              ) : (
+                <UserProfileImageDefault className="profile-image-default" />
+              )}
+            </div>
             <div className="profile-info">
               <div className="nickname">{feedDetail.nickname}</div>
-              <div className="date">{new Date(feedDetail.createdAt).toLocaleString()}</div>
+              <div className="feed-date">{new Date(feedDetail.createdAt).toLocaleString()}</div>
             </div>
             <div className="feed-icons">
-              <HeartIcon className="heart-button" />
-              <MenuIcon className="dots-button" />
+              <div className="like-count">
+                {feedDetail.likeCnt > 99 ? '99+' : feedDetail.likeCnt}
+              </div>
+              {feedDetail.isLike ? (
+                <FullHeartIcon className="heart-button" onClick={handleLikeToggle} />
+              ) : (
+                <HeartIcon className="heart-button" onClick={handleLikeToggle} />
+              )}
+              <MenuIcon
+                className={`dots-button ${
+                  currentUserId === feedDetail.userId ? 'visible' : ''
+                }`}
+                onClick={handleMenuToggle}
+              />
+              {menuVisible && (
+                <FeedDetailMenu
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                  onClose={handleMenuToggle}
+                />
+              )}
             </div>
           </div>
           <div className="feed-body">
@@ -218,18 +228,24 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
           </div>
         </div>
         <div className="feed-detail-right">
-          <div className="comments">
-            {comments.length === 0 && !loading ? (
+          <div className="comments" ref={commentsRef}>
+            {comments.length === 0 ? (
               <div>댓글이 없습니다.</div>
             ) : (
               comments.map(comment => (
-                <div key={comment.commentId} className="comment">
+                <div key={comment.feedCommentId} className="comment">
                   <div className="comment-header">
-                    <img
-                      src={getAbsolutePath(comment.profileImagePath)}
-                      alt={comment.nickname}
-                      className="comment-profile-image"
-                    />
+                    <div className="comment-profile-image-container">
+                      {comment.profileImagePath ? (
+                        <img
+                          src={getAbsolutePath(comment.profileImagePath)}
+                          alt={comment.nickname}
+                          className="comment-profile-image"
+                        />
+                      ) : (
+                        <UserProfileImageDefault className="comment-profile-image-default" />
+                      )}
+                    </div>
                     <div className="comment-nickname">{comment.nickname}</div>
                     <div className="comment-date">
                       {new Date(comment.createdAt).toLocaleString()}
@@ -239,7 +255,6 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
                 </div>
               ))
             )}
-            {loading && <div ref={loader}>Loading...</div>}
           </div>
           <div className="comment-input">
             <input
@@ -252,6 +267,29 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
           </div>
         </div>
       </div>
+      {editModalVisible && feedDetail && (
+        <div className="modal">
+          <div className="modal-content">
+            <div className="modal-header">
+              <div className="modal-header-title">
+                <h2>글 수정</h2>
+              </div>
+              <span className="close" onClick={handleEditModalClose}>
+                &times;
+              </span>
+            </div>
+            <div className="modal-body">
+              {/* <EditFeed
+                onClose={handleEditModalClose}
+                feedId={feedId}
+                initialContent={feedDetail.content}
+                initialTags={feedDetail.tagList}
+                initialImages={feedDetail.feedImagePathList}
+              /> */}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
