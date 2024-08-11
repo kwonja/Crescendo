@@ -6,6 +6,7 @@ import { ReactComponent as IdolIcon } from '../../assets/images/Favorite/idol.sv
 import { IdolGroupInfo, IdolInfo } from '../../interface/favorite';
 import { getIdolListAPI, postFavoriteRankAPI } from '../../apis/favorite';
 import Dropdown from '../common/Dropdown';
+import { useNavigate } from 'react-router-dom';
 
 interface FavoritePostModalProps {
     onClose: ()=> void;
@@ -13,6 +14,7 @@ interface FavoritePostModalProps {
 }
 
 export default function FavoriteRankPostModal({onClose, idolGroupList}:FavoritePostModalProps) {
+  const navigate = useNavigate();
   const [favoriteIdolImage, setFavoriteIdolImage] = useState<File | null>(null);
   const [idolList, setIdolList] = useState<IdolInfo[]>([]);
   const [selectedGroup, setSelectedGroup] = useState<string>('');
@@ -84,7 +86,7 @@ export default function FavoriteRankPostModal({onClose, idolGroupList}:FavoriteP
     try {
       await postFavoriteRankAPI(formData);
       alert('성공적으로 등록되었습니다.');
-      onClose();
+      navigate(0);
     } catch (error:any) {
       if (error.response && error.response.data) {
         alert(error.response.data);

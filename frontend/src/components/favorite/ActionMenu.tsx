@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { deleteFavoriteRankAPI } from '../../apis/favorite';
 import CommonModal from '../common/CommonModal';
 import ReactDOM from 'react-dom';
+import { useNavigate } from 'react-router-dom';
 
 interface ActionMenuProps {
     favoriteRankId:number
@@ -13,6 +14,7 @@ interface ActionMenuProps {
 }
 
 export default function ActionMenu({favoriteRankId, position, onClose }: ActionMenuProps) {
+    const navigate = useNavigate();
     const menuRef = useRef<HTMLDivElement>(null);
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
 
@@ -35,6 +37,7 @@ export default function ActionMenu({favoriteRankId, position, onClose }: ActionM
         try {
             await deleteFavoriteRankAPI(favoriteRankId);
             alert("성공적으로 삭제했습니다.");
+            navigate(0);
         }
         catch (error:any) {
             if (error.response && error.response.data) {
