@@ -45,17 +45,21 @@ export default function Chatroom() {
 
   const HandleMessageSend = () => {
     const message = inputRef.current!.value;
-    client.current!.send(
-      '/app/message',
-      {},
-      JSON.stringify({
-        dmGroupId: dmGroupId,
-        message: message,
-        writerId: getUserId(),
-        recipientId: opponentId,
-      }),
-    );
-    inputRef.current!.value = '';
+
+    if(message !== '')
+    {
+      client.current!.send(
+        '/app/message',
+        {},
+        JSON.stringify({
+          dmGroupId: dmGroupId,
+          message: message,
+          writerId: getUserId(),
+          recipientId: opponentId,
+        }),
+      );
+      inputRef.current!.value = '';
+    }
   };
   const handleKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
