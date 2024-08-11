@@ -18,6 +18,11 @@ export default function SearchInput({ placeholder, value, onChange, onSearch }: 
           onChange={onChange}
           placeholder={placeholder}
           className="search-input"
+          onKeyUp={(event)=>{
+            if (event.key==='Enter' && onSearch) {
+              onSearch()
+            }
+          }}
         />
         <div className="search-icon" onClick={onSearch}>
           <Search />

@@ -41,4 +41,19 @@
       align-items: center;
     }
   }
+
+  //작성 모달 관련
+  .write-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+
+    width: 60px;
+    height: 60px;
+
+    cursor: pointer;
+  }
+
+  
+
 }

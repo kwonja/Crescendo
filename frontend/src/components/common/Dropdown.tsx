@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ReactComponent as MenuDown } from '../../assets/images/down.svg';
 import { ReactComponent as MenuUp } from '../../assets/images/up.svg';
 
 interface DropdownProps {
   className?: string;
   options: string[];
-  selected?: string;
+  defaultValue?: string;
   onSelect: (value: string) => void;
   iconPosition?: 'right' | 'left';
 }
@@ -13,16 +13,24 @@ interface DropdownProps {
 export default function Dropdown({
   className,
   options,
-  selected = options[0],
+  defaultValue = options[0],
   onSelect,
   iconPosition = 'right',
 }: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [selected, setSelected] = useState(defaultValue);
+
+  useEffect(()=> {
+    setIsOpen(false);
+    setSelected(defaultValue);
+  }, [options, defaultValue]) 
+
   const handleToggle = () => {
     setIsOpen(!isOpen);
   };
 
   const handleSelect = (value: string) => {
+    setSelected(value);
     onSelect(value);
     setIsOpen(false);
   };
@@ -36,12 +44,12 @@ export default function Dropdown({
         {iconPosition === 'left' && (
           <div className="dropdown_icon">{isOpen ? <MenuUp /> : <MenuDown />}</div>
         )}
-        <div>{selected}</div>
+        <div className={`dropdown_head_value ${selected===defaultValue?"is_default":""}`}>{selected}</div>
         {iconPosition !== 'left' && (
           <div className="dropdown_icon">{isOpen ? <MenuUp /> : <MenuDown />}</div>
         )}
       </div>
-      {isOpen && (
+      {isOpen && options.length > 0 && (
         <ul className="dropdown_list">
           {options
             .filter(option => option !== selected)
