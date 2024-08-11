@@ -56,7 +56,6 @@ export default function LeftInfo() {
       
   return (
     <>
-    <button onClick={()=>console.log("하이")}>버튼버튼</button>
     <Profile
           userInfo={userInfo}
           handleUpdate={handleUpdate}

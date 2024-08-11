@@ -8,7 +8,7 @@ import Signup from '../pages/Signup.tsx';
 import ErrorPage from '../components/error/ErrorPage';
 import MyPage from '../pages/MyPage';
 import Favorite from '../pages/Favorite';
-import DanceChallenge from '../pages/DanceChallenge';
+import Challenge from '../pages/Challenge';
 
 export const router = createBrowserRouter([
   {
@@ -42,7 +42,7 @@ export const router = createBrowserRouter([
       },
       {
         path: '/dance',
-        element: <DanceChallenge />,
+        element: <Challenge />,
       },
       {
         path: '/game',

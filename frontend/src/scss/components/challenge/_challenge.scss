@@ -1,0 +1,77 @@
+
+.challenge {
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+    border-left: 1px solid #f66;
+    border-right: 1px solid #f66;
+    position: relative;
+
+  .left{
+    position: absolute;
+    width: 405px;
+    height: 705px;
+    top: 50px;
+    left: 0px;
+  }
+  
+  .video-container {
+    position: relative;
+    width: 100%;
+  }
+  
+  .video-player {
+    width: 100%;
+    display: block;
+  }
+  
+  .controls {
+    position: absolute;
+    bottom: 3px;
+    left: 0px;
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+  }
+  
+  .play-pause-button {
+    color: #fff;
+    border: none;
+    padding: 10px;
+    margin-right: 10px;
+    cursor: pointer;
+  }
+  
+  .progress-bar {
+    width: 300px;
+    accent-color: #f66;
+    &:active {
+        cursor: grabbing;
+      }
+      &:focus {
+        outline: none;
+      }
+  }
+}
+.big-play-pause-button{
+ position: absolute;
+ top: 50%; /* 부모 요소의 상단에서 50% 위치 */
+  left: 50%; /* 부모 요소의 왼쪽에서 50% 위치 */
+  transform: translate(-50%, -50%);
+  opacity: 1;
+  transition: opacity 3s ease; /* 애니메이션을 적용 */
+  z-index: 2;
+}
+
+.fade-out{
+    opacity: 1px;
+    animation: test;
+    animation-duration: 3s;
+    animation-iteration-count: forwards;
+    visibility: hidden;
+}
+
+@keyframes test {
+  0% {opacity: 1; visibility: visible;}
+  100% {opacity: 0; visibility: hidden;}
+}
