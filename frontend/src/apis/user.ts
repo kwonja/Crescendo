@@ -27,9 +27,6 @@ export const modifyIntroductionAPI = async (userId: number, introduction : strin
 };
 
 export const modifyProfileAPI = async (profileImage : FormData) => {
-  for (const x of profileImage.entries()) {
-    console.log(x);
-   };
   const response = await Authapi.patchForm(`/api/v1/user/mypage/profile`,profileImage);
   return response;
 };
