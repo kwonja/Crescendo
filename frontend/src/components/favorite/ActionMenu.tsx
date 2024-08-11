@@ -22,9 +22,11 @@ export default function ActionMenu({favoriteRankId, position, onClose }: ActionM
                 onClose();
             }
         };
-    
+
+        window.addEventListener('resize', onClose);
         document.addEventListener('mousedown', handleClickOutside);
         return () => {
+            window.removeEventListener('resize', onClose);
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [menuRef, onClose]);
