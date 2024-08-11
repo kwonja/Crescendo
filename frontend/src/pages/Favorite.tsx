@@ -28,6 +28,7 @@ export default function Favorite() {
   const idolOptions = useMemo(() => {
     return ['전체', ...idolList.map(idol => idol.idolName)];
   }, [idolList]);
+  const [sortOptions] = useState<string[]>(['최신순', '좋아요순']);
 
   //그룹 리스트 가져오기
   useEffect(() => {
@@ -94,7 +95,7 @@ export default function Favorite() {
             <Dropdown
               className="sort text"
               defaultValue='정렬'
-              options={['최신순', '좋아요순']}
+              options={sortOptions}
               onSelect={selected => {
                 dispatch(setSortByVotes(selected));
               }}
