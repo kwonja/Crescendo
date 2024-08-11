@@ -10,7 +10,10 @@ import { store } from './store/store';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { refreshToken } from './features/auth/authSlice';
 
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
+AOS.init();
 
 // 앱 초기화 함수
 const initApp = async () => {
