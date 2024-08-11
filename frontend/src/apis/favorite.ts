@@ -60,3 +60,8 @@ export const postFavoriteRankAPI = async (data:FormData) => {
     }})
   return response;
 }
+
+export const deleteFavoriteRankAPI = async (favoriteRankId:number) => {
+  const response = await Authapi.delete(`/api/v1/favorite-rank/${favoriteRankId}`);
+  return response;
+}
