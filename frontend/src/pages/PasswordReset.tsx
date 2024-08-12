@@ -30,7 +30,7 @@ const PasswordReset: React.FC = () => {
   const [isFirstVerification, setIsFirstVerification] = useState(true);
   const [isEmailLocked, setIsEmailLocked] = useState(false);
   const [isVerificationCodeLocked, setIsVerificationCodeLocked] = useState(false);
-  const [verificationCodeValidity, setVerificationCodeValidity] = useState(0); 
+  const [verificationCodeValidity, setVerificationCodeValidity] = useState(0);
 
   // 타이머 관리 (인증번호 전송 후 카운트다운)
   useEffect(() => {
@@ -61,7 +61,7 @@ const PasswordReset: React.FC = () => {
     };
   }, [verificationCodeValidity, codeVerified]);
 
-  // 이메일 
+  // 이메일
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!isEmailLocked) {
       setEmail(e.target.value);
@@ -99,7 +99,7 @@ const PasswordReset: React.FC = () => {
     setVerificationCountdown(60); // 60초
     setVerificationCodeValidity(300); // 5분
     setIsFirstVerification(false);
-    setIsEmailLocked(true); 
+    setIsEmailLocked(true);
   };
 
   // 인증번호 확인
@@ -114,8 +114,8 @@ const PasswordReset: React.FC = () => {
       setCodeVerified(true);
       setFieldErrors(prev => ({ ...prev, verificationCode: '인증이 완료되었습니다.' }));
       setIsVerificationCodeLocked(true);
-      setVerificationCountdown(0); 
-      setVerificationCodeValidity(0); 
+      setVerificationCountdown(0);
+      setVerificationCodeValidity(0);
     } else {
       setFieldErrors(prev => ({ ...prev, verificationCode: '인증번호가 틀립니다.' }));
     }
@@ -131,7 +131,14 @@ const PasswordReset: React.FC = () => {
       setFieldErrors(prev => ({ ...prev, confirmPassword: '비밀번호가 일치하지 않습니다.' }));
       return;
     }
-    dispatch(resetPassword({ email, newPassword: password, emailAuthId: emailAuthId!, randomKey: verificationCode }));
+    dispatch(
+      resetPassword({
+        email,
+        newPassword: password,
+        emailAuthId: emailAuthId!,
+        randomKey: verificationCode,
+      }),
+    );
   };
 
   return (
@@ -147,7 +154,7 @@ const PasswordReset: React.FC = () => {
                 value={email}
                 onChange={handleEmailChange}
                 required
-                disabled={isEmailLocked} 
+                disabled={isEmailLocked}
               />
               {isVerificationButtonDisabled ? (
                 <span className="verification-timer">{verificationCountdown}초</span>
@@ -165,8 +172,8 @@ const PasswordReset: React.FC = () => {
             <p className={`error-message ${fieldErrors.email ? 'visible' : ''}`}>
               {fieldErrors.email}
             </p>
-        </div>
-        <div className="form-group">
+          </div>
+          <div className="form-group">
             <div className="input-group">
               <input
                 type="text"
@@ -175,7 +182,7 @@ const PasswordReset: React.FC = () => {
                 onChange={handleVerificationCodeChange}
                 required
                 maxLength={6}
-                disabled={isVerificationCodeLocked} 
+                disabled={isVerificationCodeLocked}
               />
               <button
                 type="button"
@@ -191,15 +198,17 @@ const PasswordReset: React.FC = () => {
             </p>
             <p
               className={`verification-message ${
-                !isVerificationButtonDisabled && verificationCodeValidity === 0 || codeVerified ? 'hidden' : ''
+                (!isVerificationButtonDisabled && verificationCodeValidity === 0) || codeVerified
+                  ? 'hidden'
+                  : ''
               }`}
             >
               {verificationCodeValidity > 0
                 ? `인증 번호는 ${verificationCodeValidity}초간 유효합니다.`
                 : '인증번호를 다시 전송해 주세요.'}
             </p>
-        </div>
-        <div className="form-group">
+          </div>
+          <div className="form-group">
             <div className="input-group">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -220,7 +229,7 @@ const PasswordReset: React.FC = () => {
             <p className={`error-message ${fieldErrors.password ? 'visible' : ''}`}>
               {fieldErrors.password}
             </p>
-        </div>
+          </div>
           <div className="form-group">
             <div className="input-group">
               <input
@@ -244,11 +253,7 @@ const PasswordReset: React.FC = () => {
             </p>
           </div>
           <div className="button-group">
-            <button
-              type="submit"
-              className="submit-button"
-              disabled={loading || !codeVerified}
-            >
+            <button type="submit" className="submit-button" disabled={loading || !codeVerified}>
               변경하기
             </button>
           </div>

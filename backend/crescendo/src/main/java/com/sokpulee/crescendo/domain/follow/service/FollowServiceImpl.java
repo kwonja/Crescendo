@@ -56,9 +56,9 @@ public class FollowServiceImpl implements FollowService {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
-        List<Follow> followList = followRepository.findByFollowing(user);
+        List<Follow> followList = followRepository.findByFollower(user);
         List<UserDto> followingDtoList = followList.stream()
-                .map(follow -> new UserDto(follow.getFollower().getId(), follow.getFollower().getNickname(), follow.getFollower().getProfilePath()))
+                .map(follow -> new UserDto(follow.getFollowing().getId(), follow.getFollowing().getNickname(), follow.getFollowing().getProfilePath()))
                 .collect(Collectors.toList());
 
         return new FollowingListResponse(followingDtoList);
@@ -69,9 +69,11 @@ public class FollowServiceImpl implements FollowService {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
-        List<Follow> followList = followRepository.findByFollower(user);
+
+
+        List<Follow> followList = followRepository.findByFollowing(user);
         List<UserDto> followerDtoList = followList.stream()
-                .map(follow -> new UserDto(follow.getFollowing().getId(), follow.getFollowing().getNickname(), follow.getFollowing().getProfilePath()))
+                .map(follow -> new UserDto(follow.getFollower().getId(), follow.getFollower().getNickname(), follow.getFollower().getProfilePath()))
                 .collect(Collectors.toList());
 
         return new FollowerListResponse(followerDtoList);

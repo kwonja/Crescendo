@@ -26,12 +26,14 @@ export const getIdolListAPI = async (idolGroupId: number) => {
 export const getFavoriteRankListAPI = async (
   page: number,
   size: number,
-  idolId: number,
+  idolGroupId: number | null,
+  idolId: number | null,
   sortByVotes: boolean,
 ) => {
   const params = {
     page,
     size,
+    idolGroupId,
     idolId,
     sortByVotes,
   };
@@ -49,3 +51,17 @@ export const getBestPhotoListAPI = async () => {
   const bestRankList: BestPhotoInfo[] = response.data.bestRankList;
   return bestRankList;
 };
+
+export const postFavoriteRankAPI = async (data:FormData) => {
+  const response = await Authapi.post('/api/v1/favorite-rank', data, 
+    {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    }})
+  return response;
+}
+
+export const deleteFavoriteRankAPI = async (favoriteRankId:number) => {
+  const response = await Authapi.delete(`/api/v1/favorite-rank/${favoriteRankId}`);
+  return response;
+}

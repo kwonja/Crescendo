@@ -6,9 +6,8 @@ export const UserSearchApi = async (page: number, size: number, nickname: string
   );
   return response.data;
 };
-
-export const getMyFeedAPI = async (page: number, size: number) => {
-  const response = await Authapi.get(`/api/v1/community/feed/my-feed?page=${page}&size=${size}`);
+export const getMyFeedAPI = async (userId: number, page: number, size: number) => {
+  const response = await api.get(`/api/v1/community/feed/user/${userId}?page=${page}&size=${size}`);
   return response.data;
 };
 
@@ -17,17 +16,17 @@ export const getUserInfoAPI = async (userId: number, loggedInUserId: number) => 
   return response;
 };
 
-export const modifyNicknameAPI = async (userId: number) => {
-  const response = await Authapi.patch(`/api/v1/user/mypage/nickname?loggedInUserId=${userId}`);
+export const modifyNicknameAPI = async (userId: number, nickname : string) => {
+  const response = await Authapi.patch(`/api/v1/user/mypage/nickname?loggedInUserId=${userId}`,{nickname});
   return response;
 };
 
-export const modifyIntroductionAPI = async (userId: number) => {
-  const response = await Authapi.patch(`/api/v1/user/mypage/introduction?loggedInUserId=${userId}`);
+export const modifyIntroductionAPI = async (userId: number, introduction : string) => {
+  const response = await Authapi.patch(`/api/v1/user/mypage/introduction?loggedInUserId=${userId}`,{introduction});
   return response;
 };
 
-export const modifyProfileAPI = async (userId: number) => {
-  const response = await Authapi.patch(`/api/v1/user/mypage/profile?loggedInUserId=${userId}`);
+export const modifyProfileAPI = async (profileImage : FormData) => {
+  const response = await Authapi.patchForm(`/api/v1/user/mypage/profile`,profileImage);
   return response;
 };

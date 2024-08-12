@@ -2,13 +2,11 @@ import { useEffect, useState } from 'react';
 import { BestPhotoInfo } from '../../interface/favorite';
 import { getBestPhotoListAPI } from '../../apis/favorite';
 import { IMAGE_BASE_URL } from '../../apis/core';
-import { useAppSelector } from '../../store/hooks/hook';
 
 export default function BestPhotoSlide() {
   const [bestPhotoList, setBestPhotoList] = useState<BestPhotoInfo[]>([]);
   const [animationDuration, setAnimationDuration] = useState<number>(10);
   const [isAnimationActive, setIsAnimationActive] = useState<boolean>(false);
-  const favoriteRankList = useAppSelector(state => state.favorite).favoriteRankList;
   const ANIMATION_SPEED = 150;
 
   useEffect(() => {
@@ -21,7 +19,7 @@ export default function BestPhotoSlide() {
       setBestPhotoList(tmpPhotoList);
     };
     getBestPhotoList();
-  }, [favoriteRankList]);
+  }, []);
 
   useEffect(() => {
     if (bestPhotoList.length === 0) return;

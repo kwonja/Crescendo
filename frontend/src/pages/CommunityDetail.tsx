@@ -43,8 +43,7 @@ export default function CommunityDetail() {
   const [isSelected, setIsSelected] = useState<'feed' | 'gallery'>('feed');
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
   const menuRef = useRef<HTMLDivElement>(null);
-  const { filterCondition, sortCondition } = useAppSelector(state => state.communityFeed);
-  const [searchOption, setSearchOption] = useState<string>('검색');
+  const [searchOption, setSearchOption] = useState<string>('');
   const [searchKeyword, setSearchKeyword] = useState<string>('');
   const dispatch = useAppDispatch();
 
@@ -73,7 +72,7 @@ export default function CommunityDetail() {
         });
       }
     }
-    setSearchOption('검색');
+    setSearchOption('');
     setSearchKeyword('');
   }, [isSelected]);
 
@@ -138,7 +137,7 @@ export default function CommunityDetail() {
           <div className="filter menu">
             <Dropdown
               className="text"
-              selected={filterCondition}
+              defaultValue='필터'
               options={['전체', '팔로우만']}
               onSelect={selected => dispatch(setFilterCondition(selected))}
             />
@@ -147,7 +146,7 @@ export default function CommunityDetail() {
             <div className="sort menu">
               <Dropdown
                 className="text"
-                selected={sortCondition}
+                defaultValue='정렬'
                 options={['최신순', '좋아요순']}
                 onSelect={selected => dispatch(setSortCondition(selected))}
                 iconPosition="left"
@@ -156,7 +155,7 @@ export default function CommunityDetail() {
             <div className="search menu">
               <Dropdown
                 className="text"
-                selected={searchOption}
+                defaultValue='검색'
                 options={['내용', '작성자']}
                 onSelect={selected => setSearchOption(selected)}
                 iconPosition="left"

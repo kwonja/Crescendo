@@ -7,11 +7,13 @@ import lombok.Getter;
 public class FavoriteRanksSearchCondition {
 
     Long idolId;
+    Long idolGroupId;
     boolean sortByVotes;
 
     @Builder
-    public FavoriteRanksSearchCondition(Long idolId, boolean sortByVotes) {
+    public FavoriteRanksSearchCondition(Long idolId, Long idolGroupId, boolean sortByVotes) {
         this.idolId = idolId;
+        this.idolGroupId = idolGroupId;
         this.sortByVotes = sortByVotes;
     }
 }

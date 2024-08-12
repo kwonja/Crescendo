@@ -10,7 +10,7 @@ import { ReactComponent as NextButton } from '../../assets/images/Feed/next_butt
 import { ReactComponent as PrevButton } from '../../assets/images/Feed/prev_button.svg';
 import { ReactComponent as UserProfileImageDefault } from '../../assets/images/UserProfile/reduser.svg';
 import FeedDetailMenu from './DropdownMenu';
-import EditFeed from './EditFeed'
+import EditFeed from './EditFeed';
 import '../../scss/components/community/_feeddetailmodal.scss';
 
 type FeedDetailResponse = {
@@ -115,7 +115,13 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
     if (feedDetail) {
       dispatch(toggleFeedLike(feedId));
       setFeedDetail(prevDetail =>
-        prevDetail ? { ...prevDetail, isLike: !prevDetail.isLike, likeCnt: prevDetail.isLike ? prevDetail.likeCnt - 1 : prevDetail.likeCnt + 1 } : prevDetail,
+        prevDetail
+          ? {
+              ...prevDetail,
+              isLike: !prevDetail.isLike,
+              likeCnt: prevDetail.isLike ? prevDetail.likeCnt - 1 : prevDetail.likeCnt + 1,
+            }
+          : prevDetail,
       );
     }
   };
@@ -124,15 +130,15 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
     setMenuVisible(prevVisible => !prevVisible);
   };
 
-const handleEdit = () => {
-  setMenuVisible(false);
-  setEditModalVisible(true);
-};
+  const handleEdit = () => {
+    setMenuVisible(false);
+    setEditModalVisible(true);
+  };
 
-const handleEditModalClose = async () => {
-  await loadFeedDetail(); 
-  setEditModalVisible(false); 
-};
+  const handleEditModalClose = async () => {
+    await loadFeedDetail();
+    setEditModalVisible(false);
+  };
 
   // 피드 삭제
   const handleDelete = async () => {
@@ -190,17 +196,10 @@ const handleEditModalClose = async () => {
                 <HeartIcon className="heart-button" onClick={handleLikeToggle} />
               )}
               <MenuIcon
-                className={`dots-button ${
-                  currentUserId === feedDetail.userId ? 'visible' : ''
-                }`}
+                className={`dots-button ${currentUserId === feedDetail.userId ? 'visible' : ''}`}
                 onClick={handleMenuToggle}
               />
-              {menuVisible && (
-                <FeedDetailMenu
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                />
-              )}
+              {menuVisible && <FeedDetailMenu onEdit={handleEdit} onDelete={handleDelete} />}
             </div>
           </div>
           <div className="feed-body">

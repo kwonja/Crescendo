@@ -9,6 +9,7 @@ import ErrorPage from '../components/error/ErrorPage';
 import MyPage from '../pages/MyPage';
 import Favorite from '../pages/Favorite';
 import PasswordReset from '../pages/PasswordReset';
+import DanceChallenge from '../pages/DanceChallenge';
 
 export const router = createBrowserRouter([
   {
@@ -42,7 +43,7 @@ export const router = createBrowserRouter([
       },
       {
         path: '/dance',
-        element: <Main />,
+        element: <DanceChallenge />,
       },
       {
         path: '/game',

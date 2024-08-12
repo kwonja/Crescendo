@@ -10,7 +10,8 @@ interface FavoriteState {
   error: string | null;
   page: number;
   hasMore: boolean;
-  idolId: number;
+  idolGroupId: number | null;
+  idolId: number | null;
   sortByVotes: boolean;
 }
 
@@ -20,7 +21,8 @@ const initialState: FavoriteState = {
   error: null,
   page: 0,
   hasMore: true,
-  idolId: 0,
+  idolGroupId: null,
+  idolId: null,
   sortByVotes: false,
 };
 
@@ -31,7 +33,7 @@ export const getFavoriteRankList = createAsyncThunk<
   { state: RootState }
 >('favoriteRankList/getFavoriteRankList', async (_, thunkAPI) => {
   const state = thunkAPI.getState().favorite;
-  const response = await getFavoriteRankListAPI(state.page, 3, state.idolId, state.sortByVotes);
+  const response = await getFavoriteRankListAPI(state.page, 3, state.idolGroupId, state.idolId, state.sortByVotes);
   return response;
 });
 
@@ -52,22 +54,46 @@ const favoriteSlice = createSlice({
   name: 'favoriteRankList',
   initialState,
   reducers: {
-    resetPage(state) {
-      state.page = 0;
-      state.favoriteRankList = [];
-      state.hasMore = true;
-      state.status = '';
-      state.error = null;
+    resetState() {
+      return initialState;
+    },
+    
+    setIdolGroupId(state, action: PayloadAction<number|null>) {
+      if (state.idolGroupId !== action.payload){
+        state.page = 0;
+        state.favoriteRankList = [];
+        state.hasMore = true;
+        state.error = null;
+        state.idolId = null;
+        state.idolGroupId = action.payload;
+      }
     },
 
-    setIdolId(state, action) {
-      state.idolId = action.payload;
+    setIdolId(state, action: PayloadAction<number|null>) {
+      if (state.idolId !== action.payload){
+        state.page = 0;
+        state.favoriteRankList = [];
+        state.hasMore = true;
+        state.status = '';
+        state.error = null;
+        state.idolId = action.payload;
+      }
     },
 
     setSortByVotes(state, action) {
-      if (action.payload === '최신순' || action.payload === '정렬') {
+      if (action.payload === '최신순' && state.sortByVotes === true) {
+        state.page = 0;
+        state.favoriteRankList = [];
+        state.hasMore = true;
+        state.status = '';
+        state.error = null;
         state.sortByVotes = false;
-      } else if (action.payload === '좋아요순') {
+      } else if (action.payload === '좋아요순' && state.sortByVotes === false) {
+        state.page = 0;
+        state.favoriteRankList = [];
+        state.hasMore = true;
+        state.status = '';
+        state.error = null;
         state.sortByVotes = true;
       }
     },
@@ -106,6 +132,6 @@ const favoriteSlice = createSlice({
   },
 });
 
-export const { resetPage, setIdolId, setSortByVotes } = favoriteSlice.actions;
+export const { resetState, setIdolGroupId, setIdolId, setSortByVotes } = favoriteSlice.actions;
 
 export default favoriteSlice.reducer;

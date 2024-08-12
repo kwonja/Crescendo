@@ -22,5 +22,7 @@ public class MessageController {
         MessageResponse messageResponse = dmService.saveMessage(message);
 
         simpMessagingTemplate.convertAndSend("/topic/messages/" + message.getRecipientId(), messageResponse);
+        simpMessagingTemplate.convertAndSend("/topic/messages/" + message.getWriterId(), messageResponse);
+
     }
 }

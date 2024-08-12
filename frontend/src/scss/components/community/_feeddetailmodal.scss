@@ -25,7 +25,7 @@
     position: fixed;
     flex-direction: row;
     padding: 0;
-    top: 200px;
+    top: 100px;
     filter: none;
 
     &.blurred {
@@ -60,14 +60,12 @@
       border-radius: 20px;
       width: 800px;
       max-width: 800px;
-      
 
-      
       .feed-header {
         display: flex;
         align-items: center;
-        justify-content: space-between  ;
-        
+        justify-content: space-between;
+
         .profile-image {
           width: 50px;
           height: 50px;
@@ -85,7 +83,7 @@
           display: flex;
           flex-direction: column;
           align-items: flex-start;
-          
+
           .nickname {
             font-size: 24px;
             font-style: normal;
@@ -109,15 +107,15 @@
           display: flex;
           align-items: center;
           margin-left: auto;
-          position: relative; 
-  
+          position: relative;
+
           .heart-button {
             width: 40px;
             height: 40px;
-            position: relative; 
+            position: relative;
             z-index: 1;
           }
-          .heart-button:hover{
+          .heart-button:hover {
             cursor: pointer;
           }
 
@@ -135,36 +133,36 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            
+
             box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.25);
             z-index: 2;
           }
-  
+
           .dots-button {
             width: 40px;
             height: 40px;
             margin-left: 15px;
             visibility: hidden;
           }
-          .dots-button:hover{
+          .dots-button:hover {
             cursor: pointer;
           }
           .dots-button.visible {
-            visibility: visible; 
+            visibility: visible;
           }
         }
       }
 
       .feed-body {
         margin-top: 10px;
-        
+
         .slider-container {
           display: flex;
           flex-direction: column;
           align-items: center;
           min-height: 200px;
           justify-content: center;
-          
+
           .image-slider {
             position: relative;
             display: flex;
@@ -280,31 +278,30 @@
         border-color: #f66;
         object-fit: cover;
         flex-shrink: 0;
-        
       }
 
       .comments {
         flex: 1;
         overflow-y: auto;
         margin-top: 10px;
-  
+
         .comment {
           padding: 10px;
           margin: 10px;
           border-radius: 10px;
           border: 3px solid #f66;
           background: #fff;
-  
+
           .comment-header {
             display: flex;
             align-items: center;
             margin-bottom: 5px;
           }
-  
+
           .comment-nickname {
             font-weight: bold;
           }
-  
+
           .comment-date {
             margin-left: auto;
             color: gray;
@@ -312,7 +309,6 @@
         }
       }
     }
-
 
     .comment-input {
       display: flex;
@@ -338,7 +334,7 @@
 
   .feed-edit-modal {
     z-index: 1100;
-  
+
     .modal-content {
       background-color: white;
       border-radius: 20px 20px 0px 0px;
@@ -350,7 +346,7 @@
       flex-direction: column;
 
       top: -50px;
-  
+
       .close {
         color: white;
         position: absolute;
@@ -359,19 +355,19 @@
         font-size: 24px;
         cursor: pointer;
       }
-  
+
       .modal-header {
         display: flex;
         flex-direction: row;
         justify-content: flex-start;
         background: #f66;
         border-radius: 10px 10px 0px 0px;
-    
+
         font-size: 23px;
         letter-spacing: 2.3px;
         font-weight: 400;
         line-height: 100%; /* 23px */
-    
+
         .modal-header-title {
           width: 90px;
           height: 44px;
@@ -379,20 +375,19 @@
           justify-content: center;
           align-items: center;
           color: #fff;
-          
+
           h2 {
             font-size: 23px;
           }
         }
-
       }
-  
+
       .modal-body {
         flex: 1;
         padding: 20px;
         overflow-y: auto;
       }
-  
+
       .submit-container {
         position: absolute;
         bottom: 20px;
@@ -401,5 +396,4 @@
       }
     }
   }
-  
 }

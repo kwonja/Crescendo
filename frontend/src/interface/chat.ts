@@ -19,4 +19,6 @@ export interface Message {
   writerId: number;
   writerNickName: string;
   writerProfilePath: string;
+  dmGroupId: number;
 }
+//DM그룹아이디

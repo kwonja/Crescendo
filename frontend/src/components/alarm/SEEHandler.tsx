@@ -5,8 +5,6 @@ import { incrementUnRead } from '../../features/alarm/alarmSlice';
 
 export default function SEEHandler() {
   const dispatch = useAppDispatch();
-  // const [notifications, setNotifications] = useState<Notification[]>([]);
-  // const [unreadCount, setUnreadCount] = useState<number>(0);
   const { isLoggedIn } = useAppSelector(state => state.auth);
   const sse = useRef<EventSource | null>(null);
   useEffect(() => {
@@ -17,7 +15,6 @@ export default function SEEHandler() {
         dispatch(incrementUnRead());
       });
       sse.current.onerror = () => {
-        // console.log("에러요~")
         sse.current?.close();
         setTimeout(() => {
           if (isLoggedIn) connectSSE();
@@ -26,7 +23,6 @@ export default function SEEHandler() {
     };
 
     if (isLoggedIn) {
-      // console.log('실행');
       connectSSE();
     }
 

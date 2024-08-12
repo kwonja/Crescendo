@@ -19,7 +19,9 @@ export default function Chatroom() {
   const client = useRef<CompatClient | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [isScroll, setScroll] = useState<boolean>(false);
-  const { dmGroupId, opponentNickName } = useAppSelector(state => state.chatroom.selectedGroup);
+  const { dmGroupId, opponentNickName, opponentId } = useAppSelector(
+    state => state.chatroom.selectedGroup,
+  );
   const { messageList, currentPage } = useAppSelector(state => state.message);
   const messageListRef = useRef<HTMLDivElement>(null);
   const [prevScrollHeight, setPrevScrollHeight] = useState(0);
@@ -31,7 +33,7 @@ export default function Chatroom() {
     client.current.connect(
       {},
       (frame: string) => {
-        client.current?.subscribe(`/topic/messages/${dmGroupId}`, content => {
+        client.current?.subscribe(`/topic/messages/${getUserId()}`, content => {
           const newMessage: Message = JSON.parse(content.body);
           setScroll(true);
           dispatch(setMessage(newMessage));
@@ -39,20 +41,25 @@ export default function Chatroom() {
       },
       (error: any) => {},
     );
-  }, [dmGroupId, dispatch]);
+  }, [dispatch]);
 
   const HandleMessageSend = () => {
     const message = inputRef.current!.value;
-    client.current!.send(
-      '/app/message',
-      {},
-      JSON.stringify({
-        dmGroupId: dmGroupId,
-        message: message,
-        writerId: getUserId(),
-      }),
-    );
-    inputRef.current!.value = '';
+
+    if(message !== '')
+    {
+      client.current!.send(
+        '/app/message',
+        {},
+        JSON.stringify({
+          dmGroupId: dmGroupId,
+          message: message,
+          writerId: getUserId(),
+          recipientId: opponentId,
+        }),
+      );
+      inputRef.current!.value = '';
+    }
   };
   const handleKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
@@ -68,7 +75,6 @@ export default function Chatroom() {
 
   useEffect(() => {
     connect();
-
     return () => {
       if (client.current) {
         client.current.disconnect(() => {
@@ -77,6 +83,7 @@ export default function Chatroom() {
       }
     };
   }, [connect, dispatch]);
+
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
       const target = entries[0];
@@ -124,7 +131,7 @@ export default function Chatroom() {
               dispatch(setIsSelected(false));
               dispatch(
                 setSelectedGroup({
-                  dmGroupId: 0,
+                  dmGroupId: -1,
                   opponentId: 0,
                   opponentProfilePath: '',
                   opponentNickName: '',

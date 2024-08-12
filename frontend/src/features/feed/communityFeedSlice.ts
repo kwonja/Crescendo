@@ -21,9 +21,9 @@ const initialState: CommunityFeedState = {
   error: '',
   page: 0,
   hasMore: true,
-  filterCondition: '필터',
-  sortCondition: '정렬',
-  searchCondition: '검색',
+  filterCondition: '',
+  sortCondition: '',
+  searchCondition: '',
   keyword: '',
 };
 

@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { CommunityInfo, CommunityListResponse } from '../../interface/communityList';
 import { getCommunityListAPI } from '../../apis/community';
+import { RootState } from '../../store/store';
 
 // 슬라이스의 상태 타입 정의
 type PromiseStatus = 'loading' | 'success' | 'failed' | '';
@@ -24,10 +25,11 @@ const initialState: CommunityListState = {
 };
 
 // 전체 커뮤니티 리스트 가져오는 함수
-export const getCommunityList = createAsyncThunk(
+export const getCommunityList = createAsyncThunk<CommunityListResponse, any, {state:RootState}>(
   'communityList/getCommunityList',
-  async ({ page, size }: { page: number; size: number }) => {
-    const response = await getCommunityListAPI(page, size);
+  async (_, thunkAPI) => {
+    const {page, keyword} = thunkAPI.getState().communityList;
+    const response = await getCommunityListAPI(page, 4, keyword);
     return response;
   },
 );
@@ -36,16 +38,16 @@ const communityListSlice = createSlice({
   name: 'communityList',
   initialState,
   reducers: {
-    resetPage(state) {
+    resetPage() {
+      return initialState;
+    },
+
+    setKeyword(state, action) {
       state.page = 0;
       state.communityList = [];
       state.hasMore = true;
       state.status = '';
       state.error = null;
-      state.keyword = '';
-    },
-
-    setKeyword(state, action) {
       state.keyword = action.payload;
     },
   },
