@@ -194,7 +194,10 @@ public class ChallengeServiceImpl implements ChallengeService {
             try {
                 // JSON 응답을 파싱하여 유사도 점수를 추출
                 Map<String, Object> responseMap = objectMapper.readValue(responseBody, Map.class);
-                return (Double) responseMap.get("similarity");
+
+                // similarity 값을 Number로 받아서 처리
+                Number similarityScore = (Number) responseMap.get("similarity");
+                return similarityScore.doubleValue();  // double로 변환하여 반환
             } catch (Exception e) {
                 throw new RuntimeException("Failed to process similarity score", e);
             }
