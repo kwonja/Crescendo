@@ -200,7 +200,7 @@ const SignUp = () => {
       errors.nickname = '욕설이 포함된 닉네임은 사용할 수 없습니다.';
       hasError = true;
     } else if (!isValidNickname(nickname)) {
-      errors.nickname = '닉네임은 영어, 숫자 또는 한글로 구성되며 최대 10글자여야 합니다.';
+      errors.nickname = '닉네임은 영어, 숫자 또는 한글로 구성되며 최대 10글자 이내여야 합니다.';
       hasError = true;
     }
 
@@ -313,7 +313,7 @@ const SignUp = () => {
               {fieldErrors.verificationCode}
             </p>
             <p
-              className={`verification-message ${!isVerificationButtonDisabled && verificationCodeValidity === 0 || codeVerified ? 'hidden' : ''}`}
+              className={`verification-message ${(!isVerificationButtonDisabled && verificationCodeValidity === 0) || codeVerified ? 'hidden' : ''}`}
             >
               {verificationCodeValidity > 0
                 ? `인증 번호는 ${verificationCodeValidity}초간 유효합니다.`

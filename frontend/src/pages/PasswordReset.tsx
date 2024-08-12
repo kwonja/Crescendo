@@ -95,7 +95,7 @@ const PasswordReset: React.FC = () => {
     dispatch(sendVerificationCode(email));
     setFieldErrors(prev => ({ ...prev, verificationCode: '인증번호가 전송되었습니다.' }));
     setIsVerificationButtonDisabled(true);
-    setVerificationCountdown(60); // 60초
+    setVerificationCountdown(15); // 60초
     setVerificationCodeValidity(300); // 5분
     setIsFirstVerification(false);
     setIsEmailLocked(true);
