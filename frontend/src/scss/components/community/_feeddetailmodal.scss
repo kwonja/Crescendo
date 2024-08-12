@@ -327,6 +327,8 @@
             }
             .comment-menu {
               position: absolute;
+              right: 50px;
+              top: 39px;
             }
           }
           .reply-icon {
@@ -365,6 +367,11 @@
           display: flex;
           justify-content: flex-start;
           align-items: center;
+
+          .comment-edit-input{
+            color: black;
+            background-color: transparent;
+          }
         }
       }
     }

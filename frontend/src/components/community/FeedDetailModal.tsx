@@ -13,7 +13,7 @@ import { ReactComponent as UserProfileImageDefault } from '../../assets/images/U
 import { ReactComponent as ReplyIcon } from '../../assets/images/Feed/comment.svg';
 import { ReactComponent as CommentWriteButton } from '../../assets/images/white_write.svg';
 import FeedDetailMenu from './DropdownMenu';
-import CommentMenu from './DropdownMenu';
+import CommentMenu from './DropdownMenu';  // 이 부분은 그대로 유지합니다.
 import EditFeed from './EditFeed';
 import '../../scss/components/community/_feeddetailmodal.scss';
 
@@ -55,8 +55,10 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
   const [newComment, setNewComment] = useState('');
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [menuVisible, setMenuVisible] = useState(false);
-  const [commentMenuVisible, setCommentsMenuVisible] = useState(false);
+  const [commentMenuVisible, setCommentsMenuVisible] = useState<{ [key: number]: boolean }>({});
   const [editModalVisible, setEditModalVisible] = useState(false);
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null); // 수정 중인 댓글 ID 상태 추가
+  const [editedContent, setEditedContent] = useState<string>(''); // 수정 중인 댓글 내용 상태 추가
   const commentsRef = useRef<HTMLDivElement | null>(null);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -77,8 +79,6 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
       const response = await api.get(`/api/v1/community/feed/${feedId}/comment`, {
         params: { page: 0, size: 5 },
       });
-      //eslint-disable-next-line no-console
-      console.log('Comments:', response);
       setComments(response.data.content);
     } catch (error) {
       console.error('Error fetching comments:', error);
@@ -145,8 +145,12 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
   const handleMenuToggle = () => {
     setMenuVisible(prevVisible => !prevVisible);
   };
-  const handleCommentMenuToggle = () => {
-    setCommentsMenuVisible(prevVisible => !prevVisible);
+
+  const handleCommentMenuToggle = (commentId: number) => {
+    setCommentsMenuVisible(prevState => ({
+      ...prevState,
+      [commentId]: !prevState[commentId], // 해당 댓글의 메뉴 가시성을 토글
+    }));
   };
 
   const handleEdit = () => {
@@ -173,6 +177,44 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
         console.error('피드 삭제 오류:', error);
         alert('삭제에 실패했습니다.');
       }
+    }
+  };
+
+  // 댓글 수정 모드로 전환
+  const handleCommentEditClick = (commentId: number, currentContent: string) => {
+    setEditingCommentId(commentId);
+    setEditedContent(currentContent);
+  };
+
+  // 댓글 수정 완료
+  const handleCommentEditSubmit = (commentId: number) => {
+    if (editedContent.trim() === '') {
+      alert('댓글 내용을 입력해주세요.');
+      return;
+    }
+
+    Authapi.put(`/api/v1/community/feed/${feedId}/comment/${commentId}`, { content: editedContent })
+      .then(() => {
+        setEditingCommentId(null); // 수정 모드 종료
+        loadComments(); // 수정 후 댓글 목록 다시 불러오기
+      })
+      .catch(error => {
+        console.error('댓글 수정 오류:', error);
+        alert('댓글 수정에 실패했습니다.');
+      });
+  };
+
+  // 댓글 삭제
+  const handleCommentDelete = (commentId: number) => {
+    const confirmDelete = window.confirm('댓글을 삭제하시겠습니까?');
+    if (confirmDelete) {
+      Authapi.delete(`/api/v1/community/feed/${feedId}/comment/${commentId}`)
+        .then(() => {
+          loadComments();
+        })
+        .catch(error => {
+          console.error('댓글 삭제 오류:', error);
+        });
     }
   };
 
@@ -274,16 +316,38 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
                       </div>
                     </div>
                     <CommentMenuIcon
-                      className={`comment-dots-button ${currentUserId === feedDetail.userId ? 'visible' : ''}`}
-                      onClick={handleCommentMenuToggle}
+                      className={`comment-dots-button ${currentUserId === comment.userId ? 'visible' : ''}`}
+                      onClick={() => handleCommentMenuToggle(comment.feedCommentId)}
                     />
                     <div className="comment-menu">
-                      {commentMenuVisible && (
-                        <CommentMenu onEdit={handleEdit} onDelete={handleDelete} />
+                      {commentMenuVisible[comment.feedCommentId] && (
+                        <CommentMenu
+                          onEdit={() => handleCommentEditClick(comment.feedCommentId, comment.content)}
+                          onDelete={() => handleCommentDelete(comment.feedCommentId)}
+                        />
                       )}
                     </div>
                   </div>
-                  <div className="comment-content">{comment.content}</div>
+                  <div className="comment-content">
+                    {editingCommentId === comment.feedCommentId ? (
+                      <div className="editing-comment">
+                        <input
+                          type="text"
+                          className='comment-edit-input'
+                          value={editedContent}
+                          onChange={(e) => setEditedContent(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') handleCommentEditSubmit(comment.feedCommentId);
+                          }}
+                        />
+                        <button onClick={() => handleCommentEditSubmit(comment.feedCommentId)}>
+                          수정
+                        </button>
+                      </div>
+                    ) : (
+                      <p>{comment.content}</p>
+                    )}
+                  </div>
                   <div className="reply-icon-container">
                     <ReplyIcon className="reply-icon" />
                     <div className="reply-count">
