@@ -5,13 +5,19 @@ import { useAppDispatch } from '../../store/hooks/hook';
 import { toggleFeedLike } from '../../features/feed/communityFeedSlice';
 import { ReactComponent as HeartIcon } from '../../assets/images/Feed/white_heart.svg';
 import { ReactComponent as FullHeartIcon } from '../../assets/images/Feed/white_fullheart.svg';
-import { ReactComponent as MenuIcon } from '../../assets/images/Feed/white_dots.svg';
+import { ReactComponent as FeedMenuIcon } from '../../assets/images/Feed/white_dots.svg';
+import { ReactComponent as CommentMenuIcon } from '../../assets/images/Feed/dots.svg';
 import { ReactComponent as NextButton } from '../../assets/images/Feed/next_button.svg';
 import { ReactComponent as PrevButton } from '../../assets/images/Feed/prev_button.svg';
 import { ReactComponent as UserProfileImageDefault } from '../../assets/images/UserProfile/reduser.svg';
+import { ReactComponent as ReplyIcon } from '../../assets/images/Feed/comment.svg';
+import { ReactComponent as CommentWriteButton } from '../../assets/images/white_write.svg';
 import FeedDetailMenu from './DropdownMenu';
+import CommentMenu from './DropdownMenu';
 import EditFeed from './EditFeed';
 import '../../scss/components/community/_feeddetailmodal.scss';
+
+const MAX_COMMENT_LENGTH = 50;
 
 type FeedDetailResponse = {
   userId: number;
@@ -34,6 +40,7 @@ type Comment = {
   profileImagePath: string | null;
   content: string;
   createdAt: string;
+  replyCnt: number;
 };
 
 type FeedDetailModalProps = {
@@ -48,6 +55,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
   const [newComment, setNewComment] = useState('');
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [menuVisible, setMenuVisible] = useState(false);
+  const [commentMenuVisible, setCommentsMenuVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const commentsRef = useRef<HTMLDivElement | null>(null);
   const dispatch = useAppDispatch();
@@ -69,9 +77,17 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
       const response = await api.get(`/api/v1/community/feed/${feedId}/comment`, {
         params: { page: 0, size: 5 },
       });
+      //eslint-disable-next-line no-console
+      console.log('Comments:', response);
       setComments(response.data.content);
     } catch (error) {
       console.error('Error fetching comments:', error);
+    }
+  };
+
+  const handleNewCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.length <= MAX_COMMENT_LENGTH) {
+      setNewComment(e.target.value);
     }
   };
 
@@ -128,6 +144,9 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
 
   const handleMenuToggle = () => {
     setMenuVisible(prevVisible => !prevVisible);
+  };
+  const handleCommentMenuToggle = () => {
+    setCommentsMenuVisible(prevVisible => !prevVisible);
   };
 
   const handleEdit = () => {
@@ -195,7 +214,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
               ) : (
                 <HeartIcon className="heart-button" onClick={handleLikeToggle} />
               )}
-              <MenuIcon
+              <FeedMenuIcon
                 className={`dots-button ${currentUserId === feedDetail.userId ? 'visible' : ''}`}
                 onClick={handleMenuToggle}
               />
@@ -248,24 +267,41 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
                         <UserProfileImageDefault className="comment-profile-image-default" />
                       )}
                     </div>
-                    <div className="comment-nickname">{comment.nickname}</div>
-                    <div className="comment-date">
-                      {new Date(comment.createdAt).toLocaleString()}
+                    <div className="comment-user-info">
+                      <div className="comment-nickname">{comment.nickname}</div>
+                      <div className="comment-date">
+                        {new Date(comment.createdAt).toLocaleString()}
+                      </div>
+                    </div>
+                    <CommentMenuIcon
+                      className={`comment-dots-button ${currentUserId === feedDetail.userId ? 'visible' : ''}`}
+                      onClick={handleCommentMenuToggle}
+                    />
+                    <div className="comment-menu">
+                      {commentMenuVisible && (
+                        <CommentMenu onEdit={handleEdit} onDelete={handleDelete} />
+                      )}
                     </div>
                   </div>
                   <div className="comment-content">{comment.content}</div>
+                  <div className="reply-icon-container">
+                    <ReplyIcon className="reply-icon" />
+                    <div className="reply-count">
+                      {comment.replyCnt}개의 <div>&nbsp;답글</div>
+                    </div>
+                  </div>
                 </div>
               ))
             )}
           </div>
-          <div className="comment-input">
+          <div className="comment-input-container">
             <input
               type="text"
               placeholder="여기에 입력하세요."
               value={newComment}
-              onChange={e => setNewComment(e.target.value)}
+              onChange={handleNewCommentChange}
             />
-            <button onClick={handleAddComment}>추가</button>
+            <CommentWriteButton className="comment-write-button" onClick={handleAddComment} />
           </div>
         </div>
       </div>
