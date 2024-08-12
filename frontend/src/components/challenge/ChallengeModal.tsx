@@ -37,7 +37,6 @@ export default function ChallengeModal({ onClose }: ModalProps) {
   };
 
   useEffect(() => {
-    // Clean up the video URL when the component is unmounted or a new file is selected
     return () => {
       if (videoPreview) {
         URL.revokeObjectURL(videoPreview);
