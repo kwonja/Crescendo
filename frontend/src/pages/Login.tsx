@@ -16,19 +16,10 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState(''); // 비밀번호 상태 관리
   const [showPassword, setShowPassword] = useState(false); // 비밀번호 시각화 상태 관리
   const [rememberMe, setRememberMe] = useState(localStorage.getItem('rememberMe') === 'true'); // 로컬 스토리지에서 '아이디 저장' 체크박스 상태 불러오기
-  // const [autoLogin, setAutoLogin] = useState(localStorage.getItem('autoLogin') === 'true'); // 로컬 스토리지에서 '자동 로그인' 체크박스 상태 불러오기
   const [errorMessage, setErrorMessage] = useState(''); // 에러 메시지 상태 관리
 
   // 컴포넌트가 처음 마운트될 때만 실행
   useEffect(() => {
-    // if (autoLogin && email) {
-    //   const storedPassword = localStorage.getItem('password');
-    //   if (storedPassword) {
-    //     setPassword(storedPassword);
-    //     dispatch(login({ email, password: storedPassword }));
-    //   }
-    // }
-    // }, [autoLogin, email, dispatch]);
   }, [email, dispatch]);
 
   useEffect(() => {
@@ -59,14 +50,6 @@ const Login: React.FC = () => {
       localStorage.removeItem('rememberMe'); // 'rememberMe' 상태를 로컬 스토리지에서 제거
       localStorage.removeItem('email'); // 이메일을 로컬 스토리지에서 제거
     }
-
-    // '자동 로그인' 체크박스 상태를 로컬 스토리지에 저장
-    // localStorage.setItem('autoLogin', autoLogin.toString());
-    // if (autoLogin) {
-    //   localStorage.setItem('password', password); // '자동 로그인' 시 비밀번호 저장
-    // } else {
-    //   localStorage.removeItem('password'); // '자동 로그인' 해제 시 비밀번호 제거
-    // }
 
     // 이메일 유효성 검사
     if (!isValidEmail(email)) {
@@ -127,13 +110,9 @@ const Login: React.FC = () => {
             >
               {showPassword ? '숨기기' : '보이기'} {/* 비밀번호 시각화 토글 버튼 */}
             </Visualization>
-            <button
-              type="button"
-              onClick={() => alert('비밀번호 찾기 기능을 구현하세요')}
-              className="forgot-password"
-            >
-              비밀번호를 잊으셨나요? {/* 비밀번호 찾기 버튼 */}
-            </button>
+            <Link to="/password-reset" className="forgot-password">
+              비밀번호를 잊으셨나요?
+            </Link>
           </div>
           <div className="form-actions">
             <div className="checkbox-group">
@@ -146,15 +125,6 @@ const Login: React.FC = () => {
                 <div className="custom-checkbox"></div>
                 <label>이메일저장</label>
               </div>
-              {/* <div className="form-checkbox">
-                <input
-                  type="checkbox"
-                  checked={autoLogin}
-                  onChange={() => setAutoLogin(!autoLogin)}
-                />
-                <div className="custom-checkbox"></div>
-                <label>자동로그인</label>
-              </div> */}
             </div>
             <div className="button-group">
               <div className="signup-link">
@@ -167,9 +137,8 @@ const Login: React.FC = () => {
               </button>
             </div>
           </div>
-          {error && <p className="error-message">{error}</p>} {/* 서버 에러 메시지 */}
+          {error && <p className="error-message">{error}</p>}
           {errorMessage && <p className="error-message">{errorMessage}</p>}{' '}
-          {/* 클라이언트 에러 메시지 */}
         </form>
       </div>
     </div>

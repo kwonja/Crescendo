@@ -31,16 +31,18 @@ public class DanceChallengeJoin extends CreatedAtEntity {
     @Column(length = 500)
     private String videoPath;
 
-    private Integer score;
+    private Double score;
 
     @OneToMany(mappedBy = "danceChallengeJoin",  cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DanceChallengeJoinLike> danceChallengeJoinLikes = new ArrayList<>();
 
     @Builder
-    public DanceChallengeJoin(User user, DanceChallenge danceChallenge, String videoPath, List<DanceChallengeJoinLike> danceChallengeJoinLikes) {
+
+    public DanceChallengeJoin(User user, DanceChallenge danceChallenge, String videoPath, Double score, List<DanceChallengeJoinLike> danceChallengeJoinLikes) {
         this.user = user;
         this.danceChallenge = danceChallenge;
         this.videoPath = videoPath;
+        this.score = score;
         this.danceChallengeJoinLikes = danceChallengeJoinLikes;
     }
 }

@@ -59,7 +59,7 @@ export default function Profile({ userInfo, handleUpdate, handleFollow, userId }
             <img src={`${IMAGE_BASE_URL}${profilePath}`} alt="유저 프로필" ref={imageRef} />
           )}
         </div>
-        
+
         {isEditing ? (
           <>
             <div>닉네임</div>

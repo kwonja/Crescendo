@@ -10,6 +10,7 @@ const TermsModal = ({ isOpen, onClose }: TermsModalProps) => {
   if (!isOpen) return null;
 
   return (
+    <div className='termsmodal-container'>
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={e => e.stopPropagation()}>
         <h2>커뮤니티 약관</h2>
@@ -24,6 +25,7 @@ const TermsModal = ({ isOpen, onClose }: TermsModalProps) => {
         <p>위 약관에 동의하시면 회원 가입을 진행해 주세요.</p>
         <button onClick={onClose}>닫기</button>
       </div>
+    </div>
     </div>
   );
 };

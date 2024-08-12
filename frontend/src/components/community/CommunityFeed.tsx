@@ -14,9 +14,10 @@ import Button from '../common/Button';
 
 interface FeedProps {
   feed: FeedInfo;
+  onClick: () => void;
 }
 
-export default function CommunityFeed({ feed }: FeedProps) {
+export default function CommunityFeed({ feed, onClick }: FeedProps) {
   const {
     feedId,
     userId,
@@ -33,8 +34,12 @@ export default function CommunityFeed({ feed }: FeedProps) {
   const dispatch = useAppDispatch();
   const [imgIdx, setImgIdx] = useState<number>(0);
 
+  const handleClick = () => {
+    onClick();
+  };
+
   return (
-    <div className="feed">
+    <div className="feed" onClick={handleClick}>
       <div className="upper">
         <UserProfile
           userId={userId}
@@ -42,11 +47,12 @@ export default function CommunityFeed({ feed }: FeedProps) {
           date={lastModified}
           userProfilePath={profilePath ? IMAGE_BASE_URL + profilePath : null}
         />
-        <Dots className="dots hoverup" />
+        <Dots className="dots hoverup" onClick={(e) => e.stopPropagation()}/>
       </div>
       {imagePaths.length > 0 && (
         <div className="feed_image_box">
           <div className="slider">
+            <div onClick={(e) => e.stopPropagation()}>
             <Button
               className={`square empty ${imgIdx <= 0 ? 'hidden ' : ''}`}
               onClick={() => {
@@ -55,6 +61,7 @@ export default function CommunityFeed({ feed }: FeedProps) {
             >
               <LeftBtn />
             </Button>
+            </div>
             <div className="main_img_container">
               {imgIdx > 0 && (
                 <img
@@ -79,16 +86,19 @@ export default function CommunityFeed({ feed }: FeedProps) {
                 {imgIdx + 1}/{imagePaths.length}
               </div>
             </div>
+            <div onClick={(e) => e.stopPropagation()}>
             <Button
               className={`square empty ${imgIdx >= imagePaths.length - 1 ? 'hidden ' : ''}`}
               onClick={() => setImgIdx(prev => prev + 1)}
             >
               <RightBtn />
             </Button>
+            </div>
           </div>
-          <div className="pagination-dots">
+          <div className="pagination-dots" onClick={(e) => e.stopPropagation()}>
             {imagePaths.map((_, idx) => (
               <div
+                key={idx}
                 className={`pagination-dot ${idx === imgIdx ? 'active' : ''}`}
                 onClick={() => setImgIdx(idx)}
               ></div>
@@ -102,7 +112,7 @@ export default function CommunityFeed({ feed }: FeedProps) {
           <div key={index}>#{tag}</div>
         ))}
       </div>
-      <div className="feed_heart_box">
+      <div className="feed_heart_box" onClick={(e) => e.stopPropagation()}>
         {likeCnt}
         {!isLike ? (
           <Heart
@@ -120,7 +130,7 @@ export default function CommunityFeed({ feed }: FeedProps) {
           />
         )}
       </div>
-      <div className="feed_comment_box">
+      <div className="feed_comment_box" onClick={(e) => e.stopPropagation()}>
         {' '}
         {commentCnt}
         <Comment className="hoverup" />

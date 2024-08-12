@@ -10,13 +10,13 @@
   height: 900px;
   position: relative;
   .left {
-    width: calc(100%/3)*1;
+    width: calc(100% / 3) * 1;
     border: 1px solid black;
     height: 600px;
     position: relative;
   }
-  .right{
-    width: calc(100%/3)*2;
+  .right {
+    width: calc(100% / 3) * 2;
     border: 1px solid black;
     height: 600px;
   }
@@ -56,7 +56,7 @@
   }
 
   .progress-bar {
-    width: calc(100%/3)*2;
+    width: calc(100% / 3) * 2;
     accent-color: #f66;
     &:active {
       cursor: grabbing;

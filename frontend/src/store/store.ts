@@ -9,6 +9,7 @@ import messagesReducer from '../features/chat/messageSlice';
 import favoriteReducer from '../features/favorite/favoriteSlice';
 import alarmReducer from '../features/alarm/alarmSlice';
 import communityFeedReducer from '../features/feed/communityFeedSlice';
+import commentReducer from '../features/comment/commentSlice';
 
 export const store = configureStore({
   reducer: {
@@ -22,6 +23,7 @@ export const store = configureStore({
     favorite: favoriteReducer,
     alarm: alarmReducer,
     communityFeed: communityFeedReducer,
+    comment: commentReducer
   },
 });
 

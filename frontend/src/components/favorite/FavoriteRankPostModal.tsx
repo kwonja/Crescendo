@@ -41,7 +41,7 @@ export default function FavoriteRankPostModal({ onClose, idolGroupList }: Favori
       getIdolList();
       setSelectedIdol('');
     }
-  }, [selectedGroup]);
+  }, [selectedGroup, idolGroupList]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {

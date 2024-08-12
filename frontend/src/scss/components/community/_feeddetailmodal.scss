@@ -1,7 +1,10 @@
 .feed-detail-modal {
+  z-index: 1000;
+
   .modal-overlay {
     position: fixed;
-    top: 0;
+    width: max-content;
+    height: auto;
     left: 0;
     right: 0;
     bottom: 0;
@@ -9,28 +12,35 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
   }
 
   .modal-content {
     border-style: none;
     width: 1300px;
-    max-height: 90vh;
+    max-width: 1300px;
+    max-height: 602px;
     border-radius: 20px;
     background: #f66;
     display: flex;
-    position: relative;
+    position: fixed;
     flex-direction: row;
     padding: 0;
+    top: 100px;
+    filter: none;
+
+    &.blurred {
+      filter: blur(1px);
+      pointer-events: none;
+    }
 
     .close-button {
       position: absolute;
       color: #f66;
-      top: -110px;
+      top: -32px;
       right: -10px;
       background: transparent;
       border: none;
-      font-size: 24px;
+      font-size: 30px;
       cursor: pointer;
       width: 30px;
       height: 30px;
@@ -41,42 +51,31 @@
     }
 
     .feed-detail-left {
-      flex: 1; // This will take the remaining space
+      flex: 1;
       padding: 10px;
       color: #fff;
       background-color: #f66;
       border-radius: 8px 0 0 8px;
       overflow-y: auto;
-
-      .feed-icons {
-        width: min-content;
-        display: flex;
-        align-items: center;
-        margin-left: 200px;
-
-        .heart-button {
-          width: 40px;
-          height: 40px;
-        }
-
-        .dots-button {
-          width: 40px;
-          height: 40px;
-          margin-left: 15px;
-        }
-      }
+      border-radius: 20px;
+      width: 800px;
+      max-width: 800px;
 
       .feed-header {
         display: flex;
         align-items: center;
+        justify-content: space-between;
 
         .profile-image {
           width: 50px;
           height: 50px;
+          max-width: 50px;
+          max-height: 50px;
           border-radius: 50%;
           margin-right: 10px;
           border-width: 3px;
           stroke: #fff;
+          object-fit: cover;
           flex-shrink: 0;
         }
 
@@ -92,11 +91,64 @@
             line-height: normal;
           }
 
-          .date {
+          .feed-date {
             font-size: 14px;
             font-style: normal;
             font-weight: 400;
             line-height: normal;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
+
+        .feed-icons {
+          width: min-content;
+          display: flex;
+          align-items: center;
+          margin-left: auto;
+          position: relative;
+
+          .heart-button {
+            width: 40px;
+            height: 40px;
+            position: relative;
+            z-index: 1;
+          }
+          .heart-button:hover {
+            cursor: pointer;
+          }
+
+          .like-count {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            bottom: 0px;
+            right: 80px;
+            background-color: white;
+            color: #f66;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.25);
+            z-index: 2;
+          }
+
+          .dots-button {
+            width: 40px;
+            height: 40px;
+            margin-left: 15px;
+            visibility: hidden;
+          }
+          .dots-button:hover {
+            cursor: pointer;
+          }
+          .dots-button.visible {
+            visibility: visible;
           }
         }
       }
@@ -108,6 +160,8 @@
           display: flex;
           flex-direction: column;
           align-items: center;
+          min-height: 200px;
+          justify-content: center;
 
           .image-slider {
             position: relative;
@@ -115,15 +169,17 @@
             align-items: center;
             justify-content: center;
             margin-bottom: 10px;
-
-            width: 326px;
-            height: 324px;
             flex-shrink: 0;
 
             img {
               border-radius: 20px;
               border: 8px solid #fff;
+              background-color: #fff;
               box-shadow: 5px 5px 4px 0px rgba(0, 0, 0, 0.25);
+              width: 326px;
+              height: 324px;
+              object-fit: cover;
+              user-select: none;
             }
 
             .prev-button,
@@ -138,14 +194,15 @@
               height: 60px;
               flex-shrink: 0;
               cursor: pointer;
+              user-select: none;
             }
 
             .prev-button {
-              left: -67px;
+              left: -209px;
             }
 
             .next-button {
-              right: -67px;
+              right: -209px;
             }
 
             .image-counter {
@@ -153,12 +210,15 @@
               top: 15px;
               right: 15px;
               color: #f66;
-              font-size: 28px;
+              background-color: rgba(255, 255, 255, 0.5);
+              padding: 10px;
+              font-size: 20px;
               font-style: normal;
               font-weight: 400;
               line-height: normal;
               border-radius: 8px;
               z-index: 2;
+              user-select: none;
             }
           }
         }
@@ -169,8 +229,8 @@
           align-items: flex-start;
           margin-left: 20px;
           padding-right: 20px;
-          max-height: 100%; // 부모 요소의 높이를 기준으로 설정
-          overflow-y: auto; // 스크롤 추가
+          max-height: 100%;
+          overflow-y: auto;
 
           .feed-content {
             margin-top: 10px;
@@ -180,7 +240,7 @@
           .feed-tags {
             margin-top: 10px;
             display: flex;
-            flex-wrap: wrap; // 태그가 줄바꿈되도록 설정
+            flex-wrap: wrap;
 
             .tag {
               display: inline-block;
@@ -188,7 +248,7 @@
               color: #fff;
               padding: 5px 5px;
               border-radius: 15px;
-              margin-right: 5px; // 태그 간격 추가
+              margin-right: 5px;
             }
           }
         }
@@ -196,8 +256,10 @@
     }
 
     .feed-detail-right {
-      width: 500px; // Fixed width for the comments section
-      height: auto;
+      width: 500px;
+      max-width: 500px;
+      height: 602px;
+      max-height: 602px;
       flex-shrink: 0;
       padding: 0;
       border-radius: 20px;
@@ -205,34 +267,45 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      overflow-y: auto; // 스크롤 추가
-    }
-
-    .comments {
-      flex: 1;
       overflow-y: auto;
-      margin-top: 10px;
 
-      .comment {
-        padding: 10px;
-        margin: 10px;
-        border-radius: 10px;
-        border: 3px solid #f66;
-        background: #fff;
+      .comment-profile-image {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin-right: 10px;
+        border-width: 3px;
+        border-color: #f66;
+        object-fit: cover;
+        flex-shrink: 0;
+      }
 
-        .comment-header {
-          display: flex;
-          align-items: center;
-          margin-bottom: 5px;
-        }
+      .comments {
+        flex: 1;
+        overflow-y: auto;
+        margin-top: 10px;
 
-        .comment-nickname {
-          font-weight: bold;
-        }
+        .comment {
+          padding: 10px;
+          margin: 10px;
+          border-radius: 10px;
+          border: 3px solid #f66;
+          background: #fff;
 
-        .comment-date {
-          margin-left: auto;
-          color: gray;
+          .comment-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+          }
+
+          .comment-nickname {
+            font-weight: bold;
+          }
+
+          .comment-date {
+            margin-left: auto;
+            color: gray;
+          }
         }
       }
     }
@@ -255,6 +328,71 @@
         border: none;
         border-radius: 4px;
         cursor: pointer;
+      }
+    }
+  }
+
+  .feed-edit-modal {
+    z-index: 1100;
+
+    .modal-content {
+      background-color: white;
+      border-radius: 20px 20px 0px 0px;
+      width: 950px;
+      height: 609px;
+      border: 5px solid #f66;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+
+      top: -50px;
+
+      .close {
+        color: white;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 24px;
+        cursor: pointer;
+      }
+
+      .modal-header {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        background: #f66;
+        border-radius: 10px 10px 0px 0px;
+
+        font-size: 23px;
+        letter-spacing: 2.3px;
+        font-weight: 400;
+        line-height: 100%; /* 23px */
+
+        .modal-header-title {
+          width: 90px;
+          height: 44px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: #fff;
+
+          h2 {
+            font-size: 23px;
+          }
+        }
+      }
+
+      .modal-body {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+      }
+
+      .submit-container {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        z-index: 10;
       }
     }
   }

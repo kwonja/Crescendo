@@ -83,8 +83,8 @@ export default function CommunityDetail() {
     setShowDetail(false);
   };
 
-  const handleShowDetail = () => {
-    setSelectedFeedId(1); // 테스트용 피드 ID를 1로 설정
+  const handleShowDetail = (feedId: number) => {
+    setSelectedFeedId(feedId);
     setShowDetail(true);
   };
 
@@ -171,29 +171,13 @@ export default function CommunityDetail() {
             ></SearchInput>
           </div>
         </div>
-        {isSelected === 'feed' && <CommunityFeedList idolGroupId={idolGroupId} />}
+        {isSelected === 'feed' && (
+          <CommunityFeedList idolGroupId={idolGroupId} onFeedClick={handleShowDetail} />
+        )}
         {isSelected === 'gallery' && <GalleryList />}
       </div>
 
       {isLoggedIn && <WriteButton className="write-button" onClick={handleShow} />}
-
-      {/* 테스트용 피드 상세 모달 열기 버튼 */}
-      <button
-        onClick={handleShowDetail}
-        style={{
-          position: 'fixed',
-          bottom: '20px',
-          left: '20px',
-          padding: '10px 20px',
-          background: '#007BFF',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer',
-        }}
-      >
-        테스트용 피드 상세 모달 열기
-      </button>
 
       {selectedFeedId && (
         <FeedDetailModal show={showDetail} onClose={handleCloseDetail} feedId={selectedFeedId} />
@@ -225,7 +209,7 @@ export default function CommunityDetail() {
               </span>
             </div>
             <div className="modal-body">
-              {activeTab === 'feed' ? <FeedForm /> : <GalleryForm />}
+              {activeTab === 'feed' ? <FeedForm onClose={handleClose} /> : <GalleryForm />}
             </div>
           </div>
         </div>

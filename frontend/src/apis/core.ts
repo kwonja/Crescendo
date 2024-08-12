@@ -4,9 +4,6 @@ export const BASE_URL = 'https://i11b108.p.ssafy.io/server';
 export const IMAGE_BASE_URL = 'https://i11b108.p.ssafy.io/server/files/';
 const config = {
   baseURL: BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
   withCredentials: true,
 };
 
@@ -18,7 +15,7 @@ export const Authapi = axios.create(config); // 인증이 필요한 요청용 �
 let accessToken: string | null = null;
 
 // userId 전역 변수
-let userId: number = 0;
+let userId: number = -1;
 
 export const getUserId = () => {
   return userId;

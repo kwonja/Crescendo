@@ -13,6 +13,4 @@ public class CrescendoApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(CrescendoApplication.class, args);
 	}
-
-
 }
