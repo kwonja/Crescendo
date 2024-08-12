@@ -4,7 +4,7 @@ import { FanArtListResponse, GalleryInfo, getGalleryListParams } from '../../int
 import { getCommunityFeedListAPI, toggleFeedLikeAPI } from '../../apis/feed';
 import { PromiseStatus } from '../feed/feedSlice';
 import { RootState } from '../../store/store';
-import { getCommunityFanArtListAPI } from '../../apis/fanart';
+import { getCommunityFanArtListAPI, toggleFanArtLikeAPI } from '../../apis/fanart';
 
 interface CommunityDetailState {
   feedList: FeedInfo[];
@@ -83,13 +83,26 @@ export const getFanArtList = createAsyncThunk<FanArtListResponse, number, { stat
 
 // 피드 하트 클릭
 export const toggleFeedLike = createAsyncThunk(
-  'favoriteRankList/toggleIsLike',
+  'communityDetailSlice/toggleFeedLike',
   async (feedId: number, { rejectWithValue }) => {
     try {
       await toggleFeedLikeAPI(feedId);
       return feedId;
     } catch (error) {
       return rejectWithValue('Failed to toggle feed-like');
+    }
+  },
+);
+
+// 팬아트 하트 클릭
+export const toggleFanArtLike = createAsyncThunk(
+  'communityDetailSlice/toggleFanArtLike',
+  async (fanArtId: number, { rejectWithValue }) => {
+    try {
+      await toggleFanArtLikeAPI(fanArtId);
+      return fanArtId;
+    } catch (error) {
+      return rejectWithValue('Failed to toggle fan-art-like');
     }
   },
 );
@@ -103,36 +116,53 @@ const communityDetailSlice = createSlice({
     },
 
     setFilterCondition: (state, action: PayloadAction<string>) => {
-      state.feedList = [];
-      state.status = '';
-      state.error = '';
-      state.page = 0;
-      state.hasMore = true;
-      state.filterCondition = action.payload;
+      if (state.filterCondition !== action.payload) {
+        state.feedList = [];
+        state.fanArtList = [];
+        state.goodsList = [];
+        state.status = '';
+        state.error = '';
+        state.page = 0;
+        state.hasMore = true;
+        state.filterCondition = action.payload;
+      }
     },
 
     setSortCondition: (state, action: PayloadAction<string>) => {
-      state.feedList = [];
-      state.status = '';
-      state.error = '';
-      state.page = 0;
-      state.hasMore = true;
-      state.sortCondition = action.payload;
+      if (state.sortCondition !== action.payload) {
+        state.feedList = [];
+        state.fanArtList = [];
+        state.goodsList = [];
+        state.status = '';
+        state.error = '';
+        state.page = 0;
+        state.hasMore = true;
+        state.sortCondition = action.payload;
+      }
     },
 
     searchFeed: (state, action: PayloadAction<{ searchOption: string; searchKeyword: string }>) => {
-      state.feedList = [];
-      state.status = '';
-      state.error = '';
-      state.page = 0;
-      state.hasMore = true;
-      state.searchCondition = action.payload.searchOption;
-      state.keyword = action.payload.searchKeyword;
+      if (state.searchCondition !==action.payload.searchOption || state.keyword !== action.payload.searchKeyword) {
+        state.feedList = [];
+        state.fanArtList = [];
+        state.goodsList = [];
+        state.status = '';
+        state.error = '';
+        state.page = 0;
+        state.hasMore = true;
+        state.searchCondition = action.payload.searchOption;
+        state.keyword = action.payload.searchKeyword;
+      }
     },
 
     updateFeed: (state, action: PayloadAction<{feed:FeedInfo; feedId:number}>) => {
       state.feedList = [...state.feedList.map((feed)=> feed.feedId=== action.payload.feedId?action.payload.feed:feed)];
+    },
+
+    updateFanArt: (state, action: PayloadAction<{fanArt:GalleryInfo; fanArtId:number}>) => {
+      state.fanArtList = [...state.fanArtList.map((fanArt)=> fanArt.fanArtId=== action.payload.fanArtId?action.payload.fanArt:fanArt)];
     }
+
   },
   extraReducers(builder) {
     builder
@@ -173,9 +203,20 @@ const communityDetailSlice = createSlice({
         state.status = 'failed';
         state.error = action.error.message;
       })
+      .addCase(toggleFanArtLike.fulfilled, (state, action: PayloadAction<number>) => {
+        const fanArtId = action.payload;
+        const fanArt = state.fanArtList.find(fanArt => fanArt.fanArtId === fanArtId);
+        if (fanArt) {
+          fanArt.isLike = !fanArt.isLike;
+          fanArt.isLike ? fanArt.likeCnt++ : fanArt.likeCnt--;
+        }
+      })
+      .addCase(toggleFanArtLike.rejected, (state, action) => {
+        state.error = action.payload as string;
+      })
   },
 });
 
-export const { resetState, setFilterCondition, setSortCondition, searchFeed, updateFeed } =
+export const { resetState, setFilterCondition, setSortCondition, searchFeed, updateFeed, updateFanArt } =
   communityDetailSlice.actions;
 export default communityDetailSlice.reducer;

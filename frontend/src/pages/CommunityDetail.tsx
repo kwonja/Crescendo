@@ -5,7 +5,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import SearchInput from '../components/common/SearchInput';
 import Dropdown from '../components/common/Dropdown';
 import CommunityFeedList from '../components/community/CommunityFeedList';
-import GalleryList from '../components/common/GalleryList';
 import FeedForm from '../components/community/PostFeed';
 import GalleryForm from '../components/community/PostGallery';
 import { ReactComponent as WriteButton } from '../assets/images/write.svg';
@@ -44,7 +43,7 @@ export default function CommunityDetail() {
 
   const [communityDetail, setCommunityDetail] = useState<CommunityDetailInfo>(initialDetail);
   const { isLoggedIn } = useAppSelector(state => state.auth);
-  const [isSelected, setIsSelected] = useState<'feed' | 'fan-art'>('feed');
+  const [isSelected, setIsSelected] = useState<'feed' | 'fan-art'|'goods'>('feed');
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
   const menuRef = useRef<HTMLDivElement>(null);
   const [searchOption, setSearchOption] = useState<string>('');
@@ -134,6 +133,12 @@ export default function CommunityDetail() {
             onClick={() => setIsSelected('fan-art')}
           >
             팬아트
+          </div>
+          <div
+            className={`item ${isSelected === 'goods' ? 'active' : ''}`}
+            onClick={() => setIsSelected('goods')}
+          >
+            굿즈
           </div>
           <div className="indicator" style={indicatorStyle}></div>
         </div>

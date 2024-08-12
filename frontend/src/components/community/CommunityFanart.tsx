@@ -6,6 +6,8 @@ import { ReactComponent as Comment } from '../../assets/images/Gallery/whitecomm
 import { GalleryInfo } from '../../interface/gallery';
 import { IMAGE_BASE_URL } from '../../apis/core';
 import UserProfile from '../common/UserProfile';
+import { useAppDispatch } from '../../store/hooks/hook';
+import { toggleFanArtLike } from '../../features/communityDetail/communityDetailSlice';
 
 interface FanArtProps {
   fanArt: GalleryInfo;
@@ -14,6 +16,7 @@ interface FanArtProps {
 
 export default function CommunityFanart({fanArt, onClick}:FanArtProps) {
   const {
+          fanArtId,
           userId,
           profileImagePath,
           nickname,
@@ -24,6 +27,9 @@ export default function CommunityFanart({fanArt, onClick}:FanArtProps) {
           title,
           isLike
         } = fanArt;
+  
+  const dispatch = useAppDispatch();
+      
 
   return (
     <div className="gallery">
@@ -33,7 +39,7 @@ export default function CommunityFanart({fanArt, onClick}:FanArtProps) {
         <div className="type">팬아트</div>
         <div className="title">{title}</div>
         <div className="dots_box">
-          <Dots className='dots'/>
+          <Dots className='dots hoverup'/>
         </div>
       </div>
       <div className="gallery_info">
@@ -50,7 +56,8 @@ export default function CommunityFanart({fanArt, onClick}:FanArtProps) {
           <div className='gallery_comment_cnt'>{commentCnt}</div>
         </div>
         <div className = "gallery_heart_box">
-          {isLike?<FullHeart className="gallery_heart" />:<Heart className="gallery_heart" />}
+          {isLike?<FullHeart className="gallery_heart hoverup" onClick={()=>dispatch(toggleFanArtLike(fanArtId))} />
+                  :<Heart className="gallery_heart hoverup" onClick={()=>dispatch(toggleFanArtLike(fanArtId))} />}
           <div className='gallery_heart_cnt'>{likeCnt}</div>
         </div>
       </div>

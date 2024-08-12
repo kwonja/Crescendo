@@ -52,6 +52,7 @@
     }
 
   }
+  
 
 
   &_info {
@@ -68,6 +69,10 @@
     bottom: 0px;
     width: 30px;
     height: 30px;
+  }
+  
+  .hoverup:hover {
+    transform: scale(1.1);
   }
 
   &_comment_box {
