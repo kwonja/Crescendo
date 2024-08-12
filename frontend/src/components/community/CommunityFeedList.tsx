@@ -4,7 +4,12 @@ import CommunityFeed from './CommunityFeed';
 import { useAppDispatch } from '../../store/hooks/hook';
 import { getFeedList, resetState } from '../../features/feed/communityFeedSlice';
 
-export default function CommunityFeedList({ idolGroupId }: { idolGroupId: number }) {
+interface CommunityFeedListProps {
+  idolGroupId: number;
+  onFeedClick: (feedId: number) => void;
+}
+
+export default function CommunityFeedList({ idolGroupId, onFeedClick }: CommunityFeedListProps) {
   const { feedList, hasMore, status, keyword } = useAppSelector(state => state.communityFeed);
   const dispatch = useAppDispatch();
   const observer = useRef<IntersectionObserver | null>(null);
@@ -36,7 +41,9 @@ export default function CommunityFeedList({ idolGroupId }: { idolGroupId: number
   return (
     <div className="feedlist">
       {status === 'loading' || feedList.length > 0 ? (
-        feedList.map((feed, index) => <CommunityFeed key={index} feed={feed} />)
+        feedList.map((feed, index) => (
+          <CommunityFeed key={feed.feedId} feed={feed} onClick={() => onFeedClick(feed.feedId)} />
+        ))
       ) : keyword ? (
         <div className="text-center text-xl">'{keyword}'에 해당하는 피드를 찾을 수 없습니다.</div>
       ) : (

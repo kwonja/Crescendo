@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
 import { Authapi } from '../../apis/core';
+import { useParams } from 'react-router-dom';
 import { ReactComponent as AddImage } from '../../assets/images/img_add.svg';
 import { ReactComponent as AddTag } from '../../assets/images/tag_add.svg';
 import { ReactComponent as RemoveTag } from '../../assets/images/tag_remove.svg';
@@ -10,39 +9,56 @@ import '../../scss/components/community/_postfeed.scss';
 
 type ImageWithId = {
   id: number;
-  file: File;
+  url: string;
+  file?: File; 
+  isNew: boolean;
 };
 
-type FeedFormProps = {
+type EditFeedProps = {
   onClose: () => void;
+  feedId: number;
+  initialContent: string;
+  initialTags: string[];
+  initialImages: string[];
 };
 
-const FeedForm: React.FC<FeedFormProps> = ({ onClose }) => {
+const EditFeed: React.FC<EditFeedProps> = ({ onClose, feedId, initialContent, initialTags, initialImages }) => {
   const [images, setImages] = useState<ImageWithId[]>([]);
-  const [content, setContent] = useState('');
-  const [tags, setTags] = useState<string[]>([]);
+  const [content, setContent] = useState(initialContent);
+  const [tags, setTags] = useState<string[]>(initialTags);
   const [newTag, setNewTag] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { idolGroupId } = useParams<{ idolGroupId: string }>();
   const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
-  const navigate = useNavigate();
+
+  const { idolGroupId } = useParams<{ idolGroupId: string }>();
+
+  useEffect(() => {
+    
+    const initialImageObjects = initialImages.map((url, index) => ({
+        id: index,
+        url: `https://i11b108.p.ssafy.io/server/files/${url}`,
+        isNew: false,
+      }));
+    setImages(initialImageObjects);
+  }, [initialImages]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const fileList = Array.from(e.target.files);
       const newImages = fileList.map(file => ({
         id: Date.now() + Math.random(),
+        url: URL.createObjectURL(file),
         file: file,
+        isNew: true,
       }));
 
-      // 중복 검사 및 용량 제한 검사
-      const existingFiles = new Set(images.map(image => image.file.name));
+      const existingFiles = new Set(images.map(image => image.file?.name));
       const filteredImages = newImages.filter(image => {
-        if (existingFiles.has(image.file.name)) {
+        if (existingFiles.has(image.file!.name)) {
           return false;
         }
-        if (image.file.size > MAX_FILE_SIZE) {
-          alert(`${image.file.name} 파일이 너무 큽니다. 20MB 이하의 파일만 업로드 가능합니다.`);
+        if (image.file!.size > MAX_FILE_SIZE) {
+          alert(`${image.file!.name} 파일이 너무 큽니다. 20MB 이하의 파일만 업로드 가능합니다.`);
           return false;
         }
         return true;
@@ -53,7 +69,6 @@ const FeedForm: React.FC<FeedFormProps> = ({ onClose }) => {
         alert('이미지는 최대 10장까지 업로드 가능합니다.');
       }
 
-      // 동일 파일 재업로드를 위해 초기화
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
@@ -93,31 +108,41 @@ const FeedForm: React.FC<FeedFormProps> = ({ onClose }) => {
 
     const formData = new FormData();
     formData.append('content', content);
-    images.forEach(image => formData.append('imageList', image.file));
-    tags.forEach(tag => formData.append('tagList', tag));
-    formData.append('idolGroupId', idolGroupId ?? '');
 
-    // 데이터 확인용 로그 출력
-    // for (let pair of formData.entries()) {
-    //   console.log(pair[0] + ': ' + pair[1]);
-    // }
+    for (const image of images) {
+        if (!image.isNew) {
+            const response = await fetch(image.url);
+            const blob = await response.blob();
+            const file = new File([blob], `existing_image_${image.id}.jpg`, { type: blob.type });
+            formData.append('imageList', file);
+        } else if (image.isNew && image.file) {
+            formData.append('imageList', image.file);
+        }
+    }
+
+
+    tags.forEach(tag => formData.append('tagList', tag));
+
+    // 필요한가?
+    if (idolGroupId) {
+        formData.append('idolGroupId', idolGroupId);
+    }
 
     try {
-      const response = await Authapi.post('/api/v1/community/feed', formData, {
+      const response = await Authapi.put(`/api/v1/community/feed/${feedId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-      if (response.status === 201) {
-        alert('피드가 성공적으로 등록되었습니다.');
+      if (response.status === 204) {
+        alert('피드가 성공적으로 수정되었습니다.');
         window.scrollTo(0, 0);
-        navigate(0);
         onClose();
       }
     } catch (error) {
-      alert('피드 작성에 실패했습니다.');
+      alert('피드 수정에 실패했습니다.');
     }
-  };
+};
 
   const handleAddImageClick = () => {
     if (fileInputRef.current) {
@@ -138,29 +163,13 @@ const FeedForm: React.FC<FeedFormProps> = ({ onClose }) => {
     }
   };
 
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose(); // ESC 키를 누르면 모달 닫기
-      }
-    };
-
-    // 이벤트 리스너 추가
-    window.addEventListener('keydown', handleKeyDown);
-
-    // 컴포넌트가 언마운트되거나 모달이 닫힐 때 이벤트 리스너 제거
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [onClose]);
-
   return (
     <form onSubmit={handleSubmit} className="feed-form">
       <div className="form-group image-upload-group">
         <div className="image-preview">
           {images.map((imageWithId, index) => (
             <div key={imageWithId.id} className="image-wrapper">
-              <img src={URL.createObjectURL(imageWithId.file)} alt={`preview-${index}`} />
+              <img src={imageWithId.url} alt={`preview-${index}`} />
               <RemoveIcon
                 className="remove-image"
                 onClick={() => handleImageRemove(imageWithId.id)}
@@ -192,7 +201,7 @@ const FeedForm: React.FC<FeedFormProps> = ({ onClose }) => {
             placeholder="내용을 입력하세요"
             rows={5}
             value={content}
-            onChange={handleContentChange} // 내용 변경 시 content 상태 업데이트
+            onChange={handleContentChange} 
           />
           <span className="char-count">{content.length}/400</span>
         </div>
@@ -226,11 +235,11 @@ const FeedForm: React.FC<FeedFormProps> = ({ onClose }) => {
       </div>
       <div className="submit-container">
         <button type="submit" className="submit-button">
-          작성
+          수정
         </button>
       </div>
     </form>
   );
 };
 
-export default FeedForm;
+export default EditFeed;
