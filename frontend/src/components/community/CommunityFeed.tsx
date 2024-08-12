@@ -33,6 +33,7 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
   } = feed;
   const dispatch = useAppDispatch();
   const [imgIdx, setImgIdx] = useState<number>(0);
+  const [animation, setAnimation] = useState<string>("");
 
   const handleClick = () => {
     onClick();
@@ -56,6 +57,7 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
             <Button
               className={`square empty ${imgIdx <= 0 ? 'hidden ' : ''}`}
               onClick={() => {
+                setAnimation('slideRight');
                 setImgIdx(prev => prev - 1);
               }}
             >
@@ -65,19 +67,22 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
             <div className="main_img_container">
               {imgIdx > 0 && (
                 <img
-                  className="prev_img"
+                  key={`prev-${imgIdx}`}
+                  className={`prev_img ${animation}`}
                   src={IMAGE_BASE_URL + imagePaths[imgIdx - 1]}
                   alt="이미지 없음"
                 />
               )}
               <img
-                className="main_img"
+                key={`main-${imgIdx}`}
+                className={`main_img ${animation}`}
                 src={IMAGE_BASE_URL + imagePaths[imgIdx]}
                 alt="이미지 없음"
               />
               {imgIdx < imagePaths.length - 1 && (
                 <img
-                  className="next_img"
+                  key={`next-${imgIdx}`}
+                  className={`next_img ${animation}`}
                   src={IMAGE_BASE_URL + imagePaths[imgIdx + 1]}
                   alt="이미지 없음"
                 />
@@ -89,7 +94,10 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
             <div onClick={(e) => e.stopPropagation()}>
             <Button
               className={`square empty ${imgIdx >= imagePaths.length - 1 ? 'hidden ' : ''}`}
-              onClick={() => setImgIdx(prev => prev + 1)}
+              onClick={() => {
+                setAnimation('slideLeft');
+                setImgIdx(prev => prev + 1);
+              }}
             >
               <RightBtn />
             </Button>
@@ -100,7 +108,10 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
               <div
                 key={idx}
                 className={`pagination-dot ${idx === imgIdx ? 'active' : ''}`}
-                onClick={() => setImgIdx(idx)}
+                onClick={() => {
+                  setAnimation("");
+                  setImgIdx(idx)
+                }}
               ></div>
             ))}
           </div>
