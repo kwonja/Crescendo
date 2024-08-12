@@ -10,7 +10,7 @@ interface CommunityFeedListProps {
 }
 
 export default function CommunityFeedList({ idolGroupId, onFeedClick }: CommunityFeedListProps) {
-  const { feedList, hasMore, status, keyword } = useAppSelector(state => state.communityFeed);
+  const { feedList, hasMore, status, keyword } = useAppSelector(state => state.communityDetail);
   const dispatch = useAppDispatch();
   const observer = useRef<IntersectionObserver | null>(null);
 
@@ -41,7 +41,7 @@ export default function CommunityFeedList({ idolGroupId, onFeedClick }: Communit
   return (
     <div className="feedlist">
       {status === 'loading' || feedList.length > 0 ? (
-        feedList.map((feed, index) => (
+        feedList.map((feed) => (
           <CommunityFeed key={feed.feedId} feed={feed} onClick={() => onFeedClick(feed.feedId)} />
         ))
       ) : keyword ? (

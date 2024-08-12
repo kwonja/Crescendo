@@ -1,11 +1,14 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { FeedInfo, FeedListResponse, getFeedListParams } from '../../interface/feed';
+import { GalleryInfo } from '../../interface/gallery';
 import { getCommunityFeedListAPI, toggleFeedLikeAPI } from '../../apis/feed';
 import { PromiseStatus } from '../feed/feedSlice';
 import { RootState } from '../../store/store';
 
-interface CommunityFeedState {
+interface CommunityDetailState {
   feedList: FeedInfo[];
+  fanartList: GalleryInfo[],
+  goodsList: GalleryInfo[],
   status: PromiseStatus;
   error: string | undefined;
   page: number;
@@ -15,8 +18,10 @@ interface CommunityFeedState {
   searchCondition: string;
   keyword: string;
 }
-const initialState: CommunityFeedState = {
+const initialState: CommunityDetailState = {
   feedList: [],
+  fanartList: [],
+  goodsList: [],
   status: '',
   error: '',
   page: 0,
@@ -32,7 +37,7 @@ export const getFeedList = createAsyncThunk<FeedListResponse, number, { state: R
   'communityFeedSlice/getFeedList',
   async (idolGroupId, thunkAPI) => {
     const { page, filterCondition, sortCondition, searchCondition, keyword } =
-      thunkAPI.getState().communityFeed;
+      thunkAPI.getState().communityDetail;
     const params: getFeedListParams = {
       'idol-group-id': idolGroupId,
       page,
@@ -61,8 +66,8 @@ export const toggleFeedLike = createAsyncThunk(
   },
 );
 
-const communityFeedSlice = createSlice({
-  name: 'communityFeed',
+const communityDetailSlice = createSlice({
+  name: 'communityDetail',
   initialState: initialState,
   reducers: {
     resetState: () => {
@@ -131,5 +136,5 @@ const communityFeedSlice = createSlice({
 });
 
 export const { resetState, setFilterCondition, setSortCondition, searchFeed, updateFeed } =
-  communityFeedSlice.actions;
-export default communityFeedSlice.reducer;
+  communityDetailSlice.actions;
+export default communityDetailSlice.reducer;
