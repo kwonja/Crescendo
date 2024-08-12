@@ -3,6 +3,8 @@ package com.sokpulee.crescendo.domain.feed.dto.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 public class FeedCommentResponse {
 
@@ -23,8 +25,12 @@ public class FeedCommentResponse {
 
     private int replyCnt;
 
+    private LocalDateTime createdAt;
 
-    public FeedCommentResponse(Long feedCommentId,Long userId, String profileImagePath, String nickname, int likeCnt, boolean isLike, String content, int replyCnt) {
+    private LocalDateTime lastModified;
+
+
+    public FeedCommentResponse(Long feedCommentId,Long userId, String profileImagePath, String nickname, int likeCnt, boolean isLike, String content, int replyCnt, LocalDateTime createdAt, LocalDateTime lastModified) {
         this.feedCommentId = feedCommentId;
         this.userId = userId;
         this.profileImagePath = profileImagePath;
@@ -33,5 +39,7 @@ public class FeedCommentResponse {
         this.isLike = isLike;
         this.content = content;
         this.replyCnt = replyCnt;
+        this.createdAt = createdAt;
+        this.lastModified = lastModified;
     }
 }

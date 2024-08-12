@@ -38,6 +38,7 @@ public class DanceChallengeRepositoryImpl implements DanceChallengeRepositoryCus
                         danceChallenge.endAt,
                         user.id,
                         user.nickname,
+                        user.profilePath,
                         danceChallengeJoin.count().intValue()
                 ))
                 .from(danceChallenge)
