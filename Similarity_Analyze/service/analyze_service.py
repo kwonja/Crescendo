@@ -83,3 +83,36 @@ def find_best_start_frame(base_landmarks, compare_landmarks, search_window=10):
             best_frame = i
 
     return best_frame
+
+def get_analyze(base_landmarks, compare_landmarks):
+    base_start = find_best_start_frame(base_landmarks, compare_landmarks)
+    compare_start = base_start
+
+    total_similarity = 0
+    common_frames = min(len(base_landmarks) - base_start, len(compare_landmarks) - compare_start)
+
+    if common_frames <= 0:
+        print("Error: No common frames to compare.")
+        return None
+
+    for i in range(common_frames):
+        base_frame_landmarks = normalize_landmarks(base_landmarks[base_start + i]['landmarks'])
+        compare_frame_landmarks = normalize_landmarks(compare_landmarks[compare_start + i]['landmarks'])
+
+        if len(base_frame_landmarks) != len(compare_frame_landmarks):
+            continue
+
+        frame_similarity = 0
+        for j in range(len(base_frame_landmarks)):
+            frame_similarity += calculate_cosine_similarity(base_frame_landmarks[j], compare_frame_landmarks[j])
+
+        total_similarity += frame_similarity
+
+    average_similarity = total_similarity / (common_frames * len(base_frame_landmarks))
+
+    similarity_score = average_similarity * 1.2
+    similarity_score = min(similarity_score, 1)
+
+    similarity_percentage = similarity_score * 100
+
+    return similarity_percentage
