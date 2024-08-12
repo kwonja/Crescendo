@@ -61,6 +61,7 @@ public class DanceChallengeJoinRepositoryImpl implements DanceChallengeJoinRepos
                             Projections.constructor(GetDanceChallengeJoinResponse.class,
                                     danceChallengeJoin.id,
                                     danceChallengeJoin.videoPath,
+                                    danceChallengeJoin.score,
                                     user.id,
                                     user.nickname,
                                     danceChallengeJoinLike.count().intValue()
