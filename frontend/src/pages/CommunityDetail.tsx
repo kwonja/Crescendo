@@ -26,6 +26,9 @@ export default function CommunityDetail() {
     throw new Error('invalid parameter');
   }
   const idolGroupId: number = Number(params.idolGroupId);
+  const filterOptions = useRef(['전체', '팔로우만']);
+  const sortOptions = useRef(['최신순', '좋아요순']);
+  const searchOptions = useRef(['내용', '작성자']);
 
   const initialDetail: CommunityDetailInfo = {
     idolGroupId: 0,
@@ -138,7 +141,7 @@ export default function CommunityDetail() {
             <Dropdown
               className="text"
               defaultValue='필터'
-              options={['전체', '팔로우만']}
+              options={filterOptions.current}
               onSelect={selected => dispatch(setFilterCondition(selected))}
             />
           </div>
@@ -147,7 +150,7 @@ export default function CommunityDetail() {
               <Dropdown
                 className="text"
                 defaultValue='정렬'
-                options={['최신순', '좋아요순']}
+                options={sortOptions.current}
                 onSelect={selected => dispatch(setSortCondition(selected))}
                 iconPosition="left"
               />
@@ -156,7 +159,7 @@ export default function CommunityDetail() {
               <Dropdown
                 className="text"
                 defaultValue='검색'
-                options={['내용', '작성자']}
+                options={searchOptions.current}
                 onSelect={selected => setSearchOption(selected)}
                 iconPosition="left"
               />
