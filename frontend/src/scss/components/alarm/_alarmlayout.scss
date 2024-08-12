@@ -51,11 +51,6 @@
     margin-left: 5px;
     .content {
       font-size: 14px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 1; /* 두 줄 표시 */
-      -webkit-box-orient: vertical;
     }
   }
   .lastchattime {

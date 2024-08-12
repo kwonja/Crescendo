@@ -4,7 +4,6 @@ import FriendProfile from './FriendProfile';
 
 export default function Followerlist() {
   const { followerList, error, status } = useAppSelector(state => state.follower);
-
   if (status === 'loading') {
     return <div>Loading...</div>;
   }

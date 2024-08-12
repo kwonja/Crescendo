@@ -1,31 +1,38 @@
 import React, { ChangeEvent, useRef, useState } from 'react';
 import { getUserId, IMAGE_BASE_URL } from '../../apis/core';
-import { UserInfo } from '../../interface/user';
 import { modifyProfileAPI } from '../../apis/user';
+import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
+import { handleFollow, handleInfoUpdate } from '../../features/mypage/profileSlice';
+import { followAPI } from '../../apis/follow';
 
 interface ProfileProps {
-  userInfo: UserInfo;
-  handleUpdate: (nickname: string, introduction: string) => void;
-  handleFollow: () => void;
   userId: number;
 }
 
-export default function Profile({ userInfo, handleUpdate, handleFollow, userId }: ProfileProps) {
-  const { nickname, introduction, isFollowing, profilePath } = userInfo;
+export default function Profile({userId }: ProfileProps) {
+
+  const dispatch = useAppDispatch();
+  const {nickname,introduction,profilePath,isFollowing}= useAppSelector(state => state.profile.userInfo)
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const nickeRef = useRef<HTMLInputElement>(null);
   const introRef = useRef<HTMLTextAreaElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
-  const handleSaveClick = async () => {
+
+
+  const handleFollowClick = async() => {
+    dispatch(handleFollow());
+    await followAPI(userId);
+  };
+  const handleSaveClick = () => {
     if (selectedFile) {
       const formData = new FormData();
       formData.append('profileImage', selectedFile);
-      await modifyProfileAPI(formData);
+     modifyProfileAPI(formData);
     }
     const newNickname = nickeRef.current?.value || nickname;
     const newIntroduction = introRef.current?.value || introduction;
-    handleUpdate(newNickname, newIntroduction);
+    dispatch(handleInfoUpdate({nickname : newNickname, introduction: newIntroduction}));
     setIsEditing(prev => !prev);
   };
   const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -90,20 +97,20 @@ export default function Profile({ userInfo, handleUpdate, handleFollow, userId }
               </button>
             </div>
           ) : (
-            <div className="profile_edit">
-              <button onClick={() => setIsEditing(prev => !prev)}>프로필 수정</button>
+            <div className="profile_edit" onClick={() => setIsEditing(prev => !prev)}>
+              <button>프로필 수정</button>
             </div>
           )}
         </>
       ) : (
         <>
           {isFollowing ? (
-            <div className="profile_edit">
-              <button onClick={handleFollow}>Unfollow</button>
+            <div className="profile_edit" onClick={handleFollowClick}>
+              <button type="button">Unfollow</button>
             </div>
           ) : (
-            <div className="profile_edit">
-              <button onClick={handleFollow}>Follow</button>
+            <div className="profile_edit" onClick={handleFollowClick}>
+              <button type="button">Follow</button>
             </div>
           )}
         </>

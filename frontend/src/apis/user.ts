@@ -13,7 +13,7 @@ export const getMyFeedAPI = async (userId: number, page: number, size: number) =
 
 export const getUserInfoAPI = async (userId: number, loggedInUserId: number) => {
   const response = await Authapi.get(`/api/v1/user/${userId}?loggedInUserId=${loggedInUserId}`);
-  return response;
+  return response.data;
 };
 
 export const modifyNicknameAPI = async (userId: number, nickname: string) => {

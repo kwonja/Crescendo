@@ -18,7 +18,7 @@ export default function SEEHandler() {
         sse.current?.close();
         setTimeout(() => {
           if (isLoggedIn) connectSSE();
-        }, 3000);
+        }, 5000);
       };
     };
 
