@@ -60,3 +60,26 @@ def calculate_cosine_similarity(landmark1, landmark2):
     dot_product = np.dot(vector1, vector2)
     return dot_product / (norm1 * norm2)
 
+def find_best_start_frame(base_landmarks, compare_landmarks, search_window=10):
+    best_frame = 0
+    max_similarity = -float('inf')
+
+    for i in range(search_window):
+        if i >= len(base_landmarks) or i >= len(compare_landmarks):
+            break
+
+        base_frame_landmarks = normalize_landmarks(base_landmarks[i]['landmarks'])
+        compare_frame_landmarks = normalize_landmarks(compare_landmarks[i]['landmarks'])
+
+        if len(base_frame_landmarks) != len(compare_frame_landmarks):
+            continue
+
+        similarity = 0
+        for j in range(len(base_frame_landmarks)):
+            similarity += calculate_cosine_similarity(base_frame_landmarks[j], compare_frame_landmarks[j])
+
+        if similarity > max_similarity:
+            max_similarity = similarity
+            best_frame = i
+
+    return best_frame
