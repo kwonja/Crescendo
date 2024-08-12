@@ -3,7 +3,7 @@ from service import analyze_service
 
 app = Flask(__name__)
 
-BASE_URL = "https://i11b108.p.ssafy.io/files/"
+BASE_URL = "https://i11b108.p.ssafy.io/server/files/"
 
 
 @app.route('/api/v1/challenge/similarity/landmark', methods=['POST'])
