@@ -9,7 +9,6 @@ import FeedForm from '../components/community/PostFeed';
 import GalleryForm from '../components/community/PostGallery';
 import { ReactComponent as WriteButton } from '../assets/images/write.svg';
 import FeedDetailModal from '../components/community/FeedDetailModal';
-import '../scss/page/_communitydetail.scss';
 import { getCommunityDetailAPI, toggleFavoriteAPI } from '../apis/community';
 import { useAppDispatch, useAppSelector } from '../store/hooks/hook';
 import { CommunityDetailInfo } from '../interface/communityList';
@@ -19,6 +18,7 @@ import {
   setSortCondition,
 } from '../features/communityDetail/communityDetailSlice';
 import CommunityFanArtList from '../components/community/CommunityFanartList';
+import CommunityGoodsList from '../components/community/CommunityGoodsList';
 
 export default function CommunityDetail() {
   const params = useParams();
@@ -185,6 +185,9 @@ export default function CommunityDetail() {
         )}
         {isSelected === 'fan-art' && (
           <CommunityFanArtList idolGroupId={idolGroupId} onFanArtClick={()=>{}}/>
+        )}
+        {isSelected === 'goods' && (
+          <CommunityGoodsList idolGroupId={idolGroupId} onGoodsClick={()=>{}}/>
         )}
       </div>
 

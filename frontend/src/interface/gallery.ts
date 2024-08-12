@@ -6,6 +6,7 @@ export interface GalleryInfo {
     nickname: string;
     likeCnt: number;
     fanArtImagePathList: string[];
+    goodsImagePathList: string[];
     content: string;
     commentCnt: number;
     createdAt: string;
