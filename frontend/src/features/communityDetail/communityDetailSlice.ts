@@ -1,10 +1,11 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { FeedInfo, FeedListResponse, getFeedListParams } from '../../interface/feed';
-import { FanArtListResponse, GalleryInfo, getGalleryListParams } from '../../interface/gallery';
+import { GalleryInfo, GalleryListResponse, getGalleryListParams } from '../../interface/gallery';
 import { getCommunityFeedListAPI, toggleFeedLikeAPI } from '../../apis/feed';
 import { PromiseStatus } from '../feed/feedSlice';
 import { RootState } from '../../store/store';
 import { getCommunityFanArtListAPI, toggleFanArtLikeAPI } from '../../apis/fanart';
+import { getCommunityGoodsListAPI, toggleGoodsLikeAPI } from '../../apis/goods';
 
 interface CommunityDetailState {
   feedList: FeedInfo[];
@@ -54,7 +55,7 @@ export const getFeedList = createAsyncThunk<FeedListResponse, number, { state: R
   },
 );
 
-export const getFanArtList = createAsyncThunk<FanArtListResponse, number, { state: RootState }>(
+export const getFanArtList = createAsyncThunk<GalleryListResponse, number, { state: RootState }>(
   'communityDetailSlice/getFanArtList',
   async (idolGroupId, thunkAPI) => {
     const { page, filterCondition, sortCondition, searchCondition, keyword } =
@@ -81,6 +82,33 @@ export const getFanArtList = createAsyncThunk<FanArtListResponse, number, { stat
   },
 );
 
+export const getGoodsList = createAsyncThunk<GalleryListResponse, number, { state: RootState }>(
+  'communityDetailSlice/getGoodsList',
+  async (idolGroupId, thunkAPI) => {
+    const { page, filterCondition, sortCondition, searchCondition, keyword } =
+      thunkAPI.getState().communityDetail;
+    const params: getGalleryListParams = {
+      'idol-group-id': idolGroupId,
+      page,
+      size: 3,
+      title: '',
+      nickname: '',
+      content: '',
+      sortByFollowed: filterCondition === '팔로우만',
+      sortByLiked: sortCondition === '좋아요순',
+    };
+    if (searchCondition === '작성자')
+      params.nickname = keyword; 
+    else if (searchCondition === '내용')
+      params.content = keyword;
+    else {
+      params.title = keyword;
+    }
+    const response = await getCommunityGoodsListAPI(params);
+    return response;
+  },
+);
+
 // 피드 하트 클릭
 export const toggleFeedLike = createAsyncThunk(
   'communityDetailSlice/toggleFeedLike',
@@ -103,6 +131,19 @@ export const toggleFanArtLike = createAsyncThunk(
       return fanArtId;
     } catch (error) {
       return rejectWithValue('Failed to toggle fan-art-like');
+    }
+  },
+);
+
+// 굿즈 하트 클릭
+export const toggleGoodsLike = createAsyncThunk(
+  'communityDetailSlice/toggleGoodsLike',
+  async (goodsId: number, { rejectWithValue }) => {
+    try {
+      await toggleGoodsLikeAPI(goodsId);
+      return goodsId;
+    } catch (error) {
+      return rejectWithValue('Failed to toggle goods-like');
     }
   },
 );
@@ -161,6 +202,10 @@ const communityDetailSlice = createSlice({
 
     updateFanArt: (state, action: PayloadAction<{fanArt:GalleryInfo; fanArtId:number}>) => {
       state.fanArtList = [...state.fanArtList.map((fanArt)=> fanArt.fanArtId=== action.payload.fanArtId?action.payload.fanArt:fanArt)];
+    },
+
+    updateGoods: (state, action: PayloadAction<{goods:GalleryInfo; goodsId:number}>) => {
+      state.goodsList = [...state.goodsList.map((goods)=> goods.goodsId=== action.payload.goodsId?action.payload.goods:goods)];
     }
 
   },
@@ -214,9 +259,33 @@ const communityDetailSlice = createSlice({
       .addCase(toggleFanArtLike.rejected, (state, action) => {
         state.error = action.payload as string;
       })
+      .addCase(getGoodsList.pending, state => {
+        state.status = 'loading';
+      })
+      .addCase(getGoodsList.fulfilled, (state, action) => {
+        state.status = 'success';
+        state.goodsList = [...state.goodsList, ...action.payload.content];
+        state.page += 1;
+        state.hasMore = !action.payload.last;
+      })
+      .addCase(getGoodsList.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
+      .addCase(toggleGoodsLike.fulfilled, (state, action: PayloadAction<number>) => {
+        const goodsId = action.payload;
+        const goods = state.goodsList.find(goods => goods.goodsId === goodsId);
+        if (goods) {
+          goods.isLike = !goods.isLike;
+          goods.isLike ? goods.likeCnt++ : goods.likeCnt--;
+        }
+      })
+      .addCase(toggleGoodsLike.rejected, (state, action) => {
+        state.error = action.payload as string;
+      })
   },
 });
 
-export const { resetState, setFilterCondition, setSortCondition, searchFeed, updateFeed, updateFanArt } =
+export const { resetState, setFilterCondition, setSortCondition, searchFeed, updateFeed, updateGoods } =
   communityDetailSlice.actions;
 export default communityDetailSlice.reducer;

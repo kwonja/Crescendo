@@ -1,5 +1,6 @@
 export interface GalleryInfo {
     fanArtId: number;
+    goodsId: number;
     userId: number;
     profileImagePath: string;
     nickname: string;
@@ -14,7 +15,7 @@ export interface GalleryInfo {
     isLike: boolean;
 }
 
-export interface FanArtListResponse {
+export interface GalleryListResponse {
     content: GalleryInfo[];
     pageable: {
     // 페이지와 관련된 페이징 정보
