@@ -12,7 +12,7 @@ public class LandmarkPosition {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "landmart_position_id")
+    @Column(name = "landmark_position_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
