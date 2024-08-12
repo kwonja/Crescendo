@@ -82,6 +82,8 @@ public class ChallengeServiceImpl implements ChallengeService {
         if (response.getStatusCode().is2xxSuccessful()) {
             String responseBody = response.getBody();
 
+            System.out.println(responseBody);
+
             try {
                 LandmarkResponse landmarkResponse = objectMapper.readValue(responseBody, LandmarkResponse.class);
 
