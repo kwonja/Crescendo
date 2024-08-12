@@ -4,27 +4,41 @@
   margin: 0 auto;
   border-left: 1px solid #f66;
   border-right: 1px solid #f66;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 900px;
   position: relative;
-
   .left {
-    position: absolute;
-    width: 405px;
-    height: 705px;
-    top: 50px;
-    left: 0px;
+    width: calc(100%/3)*1;
+    border: 1px solid black;
+    height: 600px;
+    position: relative;
+  }
+  .right{
+    width: calc(100%/3)*2;
+    border: 1px solid black;
+    height: 600px;
   }
 
   .video-container {
-    position: relative;
-    width: 100%;
+    position: absolute;
+    width: 70%;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   .video-player {
     width: 100%;
+    margin: 0 auto;
     display: block;
+    border-radius: 30px;
+    box-shadow: 0px 5px 4px 4px rgba(0, 0, 0, 0.25);
   }
 
   .controls {
+    width: 100%;
     position: absolute;
     bottom: 3px;
     left: 0px;
@@ -42,7 +56,7 @@
   }
 
   .progress-bar {
-    width: 300px;
+    width: calc(100%/3)*2;
     accent-color: #f66;
     &:active {
       cursor: grabbing;

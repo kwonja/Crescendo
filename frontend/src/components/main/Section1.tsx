@@ -15,8 +15,10 @@ const Section1 = () => {
             피드, 팬아트 등 당신만의 맞춤 덕질로 다양하게 즐겨보세요.
           </span>
           <br />
-          <Link className='block w-2/5' to="community">
-            <button className=" w-full px-3 py-1.5 text-sm shadow-sm section1-button">덕질 하러가기</button>
+          <Link className="block w-2/5" to="community">
+            <button className=" w-full px-3 py-1.5 text-sm shadow-sm section1-button">
+              덕질 하러가기
+            </button>
           </Link>
         </div>
         <Image1 className="section1-card1 " data-aos="fade-left" data-aos-duration="1500" />
