@@ -11,7 +11,7 @@ interface AlarmItemProps {
 }
 export default function AlarmListItem({ alarm }: AlarmItemProps) {
   const dispatch = useAppDispatch();
-  const { alarmChannelId, content,createdAt, alarmId } = alarm;
+  const { alarmChannelId, content, createdAt, alarmId } = alarm;
   const handleReadAlarm = async (alarmId: number) => {
     try {
       await readAlarm(alarmId);
@@ -34,12 +34,15 @@ export default function AlarmListItem({ alarm }: AlarmItemProps) {
     <div className="alarmlistitem" onClick={() => handleReadAlarm(alarmId)}>
       <div className="cont w-8/12">
         <div className="flex flex-row gap-3 w-full">
-          <div className="nickname">{content.substring(0,content.indexOf('님'))}</div>
+          <div className="nickname">{content.substring(0, content.indexOf('님'))}</div>
           <div>{Channel(alarmChannelId)}</div>
         </div>
         <div className="content w-11/12">{content}</div>
       </div>
-      <div className="cursor-pointer text-sm absolute right-3 bottom-2" onClick={() => handleDeleteAlarm(alarmId)}>
+      <div
+        className="cursor-pointer text-sm absolute right-3 bottom-2"
+        onClick={() => handleDeleteAlarm(alarmId)}
+      >
         삭제
       </div>
       <div className="lastchattime">{timeAgo(createdAt)}</div>

@@ -57,32 +57,34 @@ export default function Challenge() {
   };
 
   return (
-    <div className='challenge'>
-      <div className='left'>
-      <div className='video-container' onClick={togglePlayPause}>
-        <video
-          ref={videoRef}
-          className='video-player'
-          onTimeUpdate={updateProgress}
-          src='Dance.mp4'
-        />
-        <div className='controls'>
-          <button className='play-pause-button'>
-            {isPlaying ? <Pause/> : <Play/>}
-          </button>
-          <input
-            type='range'
-            className='progress-bar'
-            min='0'
-            max='100'
-            value={progress}
-            onChange={handleProgressChange}
+    <div className="challenge">
+      <div className="left">
+        <div className="video-container" onClick={togglePlayPause}>
+          <video
+            ref={videoRef}
+            className="video-player"
+            onTimeUpdate={updateProgress}
+            src="Dance.mp4"
           />
+          <div className="controls">
+            <button className="play-pause-button">{isPlaying ? <Pause /> : <Play />}</button>
+            <input
+              type="range"
+              className="progress-bar"
+              min="0"
+              max="100"
+              value={progress}
+              onChange={handleProgressChange}
+            />
+          </div>
+          <div className="big-play-pause-button">
+            {isPlaying ? (
+              <Pause className="w-20 h-20 fade-out" />
+            ) : (
+              <Play className="w-20 h-20 fade-out" />
+            )}
+          </div>
         </div>
-         <div className='big-play-pause-button'>
-         {isPlaying ? <Pause className='w-20 h-20 fade-out'/> : <Play className='w-20 h-20 fade-out'/>}
-         </div>
-      </div>
       </div>
     </div>
   );

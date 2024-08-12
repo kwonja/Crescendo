@@ -6,11 +6,7 @@ import FavoriteRankList from '../components/favorite/FavoriteRankList';
 import { IdolGroupInfo, IdolInfo } from '../interface/favorite';
 import { getidolGroupListAPI, getIdolListAPI } from '../apis/favorite';
 import { useAppDispatch, useAppSelector } from '../store/hooks/hook';
-import {
-  setIdolGroupId,
-  setIdolId,
-  setSortByVotes,
-} from '../features/favorite/favoriteSlice';
+import { setIdolGroupId, setIdolId, setSortByVotes } from '../features/favorite/favoriteSlice';
 import { ReactComponent as WriteButton } from '../assets/images/write.svg';
 import FavoriteRankPostModal from '../components/favorite/FavoriteRankPostModal';
 
@@ -20,7 +16,7 @@ export default function Favorite() {
   const [idolOption, setIdolOption] = useState<string>('');
   const [idolList, setIdolList] = useState<IdolInfo[]>([]);
   const [showWriteModal, setShowWriteModal] = useState<boolean>(false);
-  const { isLoggedIn } = useAppSelector(state=>state.auth);
+  const { isLoggedIn } = useAppSelector(state => state.auth);
   const dispatch = useAppDispatch();
   const idolGroupOptions = useMemo(() => {
     return ['전체', ...idolGroupList.map(group => group.groupName)];
@@ -36,7 +32,6 @@ export default function Favorite() {
       setIdolGroupList(response);
     };
     getIdolGroupList();
-
   }, []);
 
   //멤버 리스트 가져오기
@@ -45,23 +40,20 @@ export default function Favorite() {
       setIdolList([]);
       return;
     }
-    const selectedGroupId = idolGroupList.find(
-      group => group.groupName === idolGroupOption,
-    )?.groupId||null;
+    const selectedGroupId =
+      idolGroupList.find(group => group.groupName === idolGroupOption)?.groupId || null;
     dispatch(setIdolGroupId(selectedGroupId));
     const getIdolList = async (groupId: number) => {
       const response = await getIdolListAPI(groupId);
       setIdolList(response);
     };
     if (selectedGroupId) getIdolList(selectedGroupId);
-
   }, [idolGroupOption, idolGroupList, dispatch]);
 
   // 아이돌Id 등록
   useEffect(() => {
-    const selectedIdolId = idolList.find(idol => idol.idolName === idolOption)?.idolId||null;
+    const selectedIdolId = idolList.find(idol => idol.idolName === idolOption)?.idolId || null;
     dispatch(setIdolId(selectedIdolId));
-
   }, [idolOption, idolList, dispatch]);
 
   return (
@@ -76,7 +68,7 @@ export default function Favorite() {
             <div className="menu">
               <Dropdown
                 className="group text"
-                defaultValue='그룹'
+                defaultValue="그룹"
                 options={idolGroupOptions}
                 onSelect={selected => setIdolGroupOption(selected)}
               />
@@ -84,7 +76,7 @@ export default function Favorite() {
             <div className="menu">
               <Dropdown
                 className="member text"
-                defaultValue='멤버'
+                defaultValue="멤버"
                 options={idolOptions}
                 onSelect={selected => setIdolOption(selected)}
               />
@@ -93,7 +85,7 @@ export default function Favorite() {
           <div className="sort menu">
             <Dropdown
               className="sort text"
-              defaultValue='정렬'
+              defaultValue="정렬"
               options={['최신순', '좋아요순']}
               onSelect={selected => {
                 dispatch(setSortByVotes(selected));
@@ -104,8 +96,15 @@ export default function Favorite() {
         </div>
         <FavoriteRankList />
       </div>
-      {isLoggedIn && <WriteButton className="write-button" onClick={()=>setShowWriteModal(true)} />}
-      {showWriteModal && <FavoriteRankPostModal onClose={()=>setShowWriteModal(false)} idolGroupList={idolGroupList} />}
+      {isLoggedIn && (
+        <WriteButton className="write-button" onClick={() => setShowWriteModal(true)} />
+      )}
+      {showWriteModal && (
+        <FavoriteRankPostModal
+          onClose={() => setShowWriteModal(false)}
+          idolGroupList={idolGroupList}
+        />
+      )}
     </div>
   );
 }

@@ -1,7 +1,5 @@
-import React from 'react'
+import React from 'react';
 
 export default function VideoPlayer() {
-  return (
-    <div>VideoPlayer</div>
-  )
+  return <div>VideoPlayer</div>;
 }
