@@ -96,6 +96,10 @@ const communityFeedSlice = createSlice({
       state.searchCondition = action.payload.searchOption;
       state.keyword = action.payload.searchKeyword;
     },
+
+    updateFeed: (state, action: PayloadAction<{feed:FeedInfo; feedId:number}>) => {
+      state.feedList = [...state.feedList.map((feed)=> feed.feedId=== action.payload.feedId?action.payload.feed:feed)];
+    }
   },
   extraReducers(builder) {
     builder
@@ -126,6 +130,6 @@ const communityFeedSlice = createSlice({
   },
 });
 
-export const { resetState, setFilterCondition, setSortCondition, searchFeed } =
+export const { resetState, setFilterCondition, setSortCondition, searchFeed, updateFeed } =
   communityFeedSlice.actions;
 export default communityFeedSlice.reducer;
