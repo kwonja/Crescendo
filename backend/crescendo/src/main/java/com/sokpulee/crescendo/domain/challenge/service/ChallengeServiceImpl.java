@@ -180,6 +180,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("landmark_positions", frames);
+        System.out.println(frames.get(0));
         requestBody.put("video_url", videoUrl);
 
         HttpHeaders headers = new HttpHeaders();
