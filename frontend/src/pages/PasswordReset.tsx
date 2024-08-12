@@ -10,7 +10,6 @@ import '../scss/page/_passwordreset.scss';
 const PasswordReset: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error, emailAuthId } = useSelector((state: RootState) => state.auth);
-
   const [email, setEmail] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
   const [codeVerified, setCodeVerified] = useState(false);
@@ -121,17 +120,23 @@ const PasswordReset: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isValidPassword(password)) {
-      setFieldErrors(prev => ({ ...prev, password: '유효한 비밀번호를 입력해 주세요.' }));
+      setFieldErrors(prev => ({
+        ...prev,
+        password:
+          '비밀번호는 최소 8자 이상, 32자 이하이며, 영어, 숫자, 특수문자를 각각 1개 이상 포함해야 합니다.',
+      }));
       return;
     }
+
     if (password !== confirmPassword) {
       setFieldErrors(prev => ({ ...prev, confirmPassword: '비밀번호가 일치하지 않습니다.' }));
       return;
     }
-    dispatch(
+
+    const resultAction = await dispatch(
       resetPassword({
         email,
         newPassword: password,
@@ -139,6 +144,13 @@ const PasswordReset: React.FC = () => {
         randomKey: verificationCode,
       }),
     );
+
+    if (resetPassword.fulfilled.match(resultAction)) {
+      alert('비밀번호를 변경하였습니다.');
+      window.location.href = '/login';
+    } else if (resetPassword.rejected.match(resultAction)) {
+      alert('비밀번호 변경 실패: ' + resultAction.payload);
+    }
   };
 
   return (
