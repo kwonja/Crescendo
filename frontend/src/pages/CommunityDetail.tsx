@@ -19,6 +19,7 @@ import {
   setFilterCondition,
   setSortCondition,
 } from '../features/communityDetail/communityDetailSlice';
+import CommunityFanArtList from '../components/community/CommunityFanartList';
 
 export default function CommunityDetail() {
   const params = useParams();
@@ -43,7 +44,7 @@ export default function CommunityDetail() {
 
   const [communityDetail, setCommunityDetail] = useState<CommunityDetailInfo>(initialDetail);
   const { isLoggedIn } = useAppSelector(state => state.auth);
-  const [isSelected, setIsSelected] = useState<'feed' | 'gallery'>('feed');
+  const [isSelected, setIsSelected] = useState<'feed' | 'fan-art'>('feed');
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
   const menuRef = useRef<HTMLDivElement>(null);
   const [searchOption, setSearchOption] = useState<string>('');
@@ -129,10 +130,10 @@ export default function CommunityDetail() {
             피드
           </div>
           <div
-            className={`item ${isSelected === 'gallery' ? 'active' : ''}`}
-            onClick={() => setIsSelected('gallery')}
+            className={`item ${isSelected === 'fan-art' ? 'active' : ''}`}
+            onClick={() => setIsSelected('fan-art')}
           >
-            갤러리
+            팬아트
           </div>
           <div className="indicator" style={indicatorStyle}></div>
         </div>
@@ -177,7 +178,9 @@ export default function CommunityDetail() {
         {isSelected === 'feed' && (
           <CommunityFeedList idolGroupId={idolGroupId} onFeedClick={handleShowDetail} />
         )}
-        {isSelected === 'gallery' && <GalleryList />}
+        {isSelected === 'fan-art' && (
+          <CommunityFanArtList idolGroupId={idolGroupId} onFanArtClick={()=>{}}/>
+        )}
       </div>
 
       {isLoggedIn && <WriteButton className="write-button" onClick={handleShow} />}

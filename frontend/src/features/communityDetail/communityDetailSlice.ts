@@ -1,13 +1,14 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { FeedInfo, FeedListResponse, getFeedListParams } from '../../interface/feed';
-import { GalleryInfo } from '../../interface/gallery';
+import { FanArtListResponse, GalleryInfo, getGalleryListParams } from '../../interface/gallery';
 import { getCommunityFeedListAPI, toggleFeedLikeAPI } from '../../apis/feed';
 import { PromiseStatus } from '../feed/feedSlice';
 import { RootState } from '../../store/store';
+import { getCommunityFanArtListAPI } from '../../apis/fanart';
 
 interface CommunityDetailState {
   feedList: FeedInfo[];
-  fanartList: GalleryInfo[],
+  fanArtList: GalleryInfo[],
   goodsList: GalleryInfo[],
   status: PromiseStatus;
   error: string | undefined;
@@ -20,7 +21,7 @@ interface CommunityDetailState {
 }
 const initialState: CommunityDetailState = {
   feedList: [],
-  fanartList: [],
+  fanArtList: [],
   goodsList: [],
   status: '',
   error: '',
@@ -34,7 +35,7 @@ const initialState: CommunityDetailState = {
 
 // 피드 가져오기
 export const getFeedList = createAsyncThunk<FeedListResponse, number, { state: RootState }>(
-  'communityFeedSlice/getFeedList',
+  'communityDetailSlice/getFeedList',
   async (idolGroupId, thunkAPI) => {
     const { page, filterCondition, sortCondition, searchCondition, keyword } =
       thunkAPI.getState().communityDetail;
@@ -49,6 +50,33 @@ export const getFeedList = createAsyncThunk<FeedListResponse, number, { state: R
     };
     searchCondition === '작성자' ? (params.nickname = keyword) : (params.content = keyword);
     const response = await getCommunityFeedListAPI(params);
+    return response;
+  },
+);
+
+export const getFanArtList = createAsyncThunk<FanArtListResponse, number, { state: RootState }>(
+  'communityDetailSlice/getFanArtList',
+  async (idolGroupId, thunkAPI) => {
+    const { page, filterCondition, sortCondition, searchCondition, keyword } =
+      thunkAPI.getState().communityDetail;
+    const params: getGalleryListParams = {
+      'idol-group-id': idolGroupId,
+      page,
+      size: 3,
+      title: '',
+      nickname: '',
+      content: '',
+      sortByFollowed: filterCondition === '팔로우만',
+      sortByLiked: sortCondition === '좋아요순',
+    };
+    if (searchCondition === '작성자')
+      params.nickname = keyword; 
+    else if (searchCondition === '내용')
+      params.content = keyword;
+    else {
+      params.title = keyword;
+    }
+    const response = await getCommunityFanArtListAPI(params);
     return response;
   },
 );
@@ -131,7 +159,20 @@ const communityDetailSlice = createSlice({
       })
       .addCase(toggleFeedLike.rejected, (state, action) => {
         state.error = action.payload as string;
-      });
+      })
+      .addCase(getFanArtList.pending, state => {
+        state.status = 'loading';
+      })
+      .addCase(getFanArtList.fulfilled, (state, action) => {
+        state.status = 'success';
+        state.fanArtList = [...state.fanArtList, ...action.payload.content];
+        state.page += 1;
+        state.hasMore = !action.payload.last;
+      })
+      .addCase(getFanArtList.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
   },
 });
 
