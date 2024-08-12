@@ -3,6 +3,8 @@ from service import analyze_service
 
 app = Flask(__name__)
 
+BASE_URL = "https://i11b108.p.ssafy.io/files/"
+
 
 @app.route('/api/v1/challenge/similarity/landmark', methods=['POST'])
 def get_landmarks():
@@ -15,6 +17,8 @@ def get_landmarks():
 
     if not video_url:
         return jsonify({"error": "video_url is required"}), 400
+
+    video_url = BASE_URL + video_url
 
     landmarks = analyze_service.get_landmark_position(video_url)
 
@@ -47,6 +51,8 @@ def analyze_similarity():
 
     if not video_url or not landmark_positions:
         return jsonify({"error": "video_url and landmark_positions are required"}), 400
+
+    video_url = BASE_URL + video_url
 
     base_landmarks = [
         {
