@@ -8,7 +8,7 @@ import chatroomReducer from '../features/chat/chatroomSlice';
 import messagesReducer from '../features/chat/messageSlice';
 import favoriteReducer from '../features/favorite/favoriteSlice';
 import alarmReducer from '../features/alarm/alarmSlice';
-import communityFeedReducer from '../features/feed/communityFeedSlice';
+import communityFeedReducer from '../features/communityDetail/communityDetailSlice';
 import commentReducer from '../features/comment/commentSlice';
 
 export const store = configureStore({

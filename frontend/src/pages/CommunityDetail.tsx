@@ -18,7 +18,7 @@ import {
   searchFeed,
   setFilterCondition,
   setSortCondition,
-} from '../features/feed/communityFeedSlice';
+} from '../features/communityDetail/communityDetailSlice';
 
 export default function CommunityDetail() {
   const params = useParams();

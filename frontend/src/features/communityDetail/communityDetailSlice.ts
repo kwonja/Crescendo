@@ -1,7 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { FeedInfo, FeedListResponse, getFeedListParams } from '../../interface/feed';
 import { getCommunityFeedListAPI, toggleFeedLikeAPI } from '../../apis/feed';
-import { PromiseStatus } from './feedSlice';
+import { PromiseStatus } from '../feed/feedSlice';
 import { RootState } from '../../store/store';
 
 interface CommunityFeedState {

@@ -7,7 +7,7 @@ import { ReactComponent as RightBtn } from '../../assets/images/right.svg';
 import { ReactComponent as LeftBtn } from '../../assets/images/left.svg';
 import { FeedInfo } from '../../interface/feed';
 import { useAppDispatch } from '../../store/hooks/hook';
-import { toggleFeedLike } from '../../features/feed/communityFeedSlice';
+import { toggleFeedLike } from '../../features/communityDetail/communityDetailSlice';
 import UserProfile from '../common/UserProfile';
 import { IMAGE_BASE_URL } from '../../apis/core';
 import Button from '../common/Button';

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import { useAppSelector } from '../../store/hooks/hook';
 import CommunityFeed from './CommunityFeed';
 import { useAppDispatch } from '../../store/hooks/hook';
-import { getFeedList, resetState } from '../../features/feed/communityFeedSlice';
+import { getFeedList, resetState } from '../../features/communityDetail/communityDetailSlice';
 
 interface CommunityFeedListProps {
   idolGroupId: number;
