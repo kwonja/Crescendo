@@ -1,9 +1,8 @@
 package com.sokpulee.crescendo.domain.goods.controller;
 
-import com.sokpulee.crescendo.domain.goods.dto.request.GoodsAddRequest;
-import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentAddRequest;
-import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentUpdateRequest;
-import com.sokpulee.crescendo.domain.goods.dto.request.GoodsUpdateRequest;
+import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtSearchCondition;
+import com.sokpulee.crescendo.domain.goods.dto.request.*;
+import com.sokpulee.crescendo.domain.goods.dto.response.*;
 import com.sokpulee.crescendo.domain.goods.service.GoodsService;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
@@ -12,6 +11,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequiredArgsConstructor
@@ -141,6 +144,140 @@ public class GoodsController {
         goodsService.addGoodsReply(loggedInUserId,goodsId,goodsCommentId,goodsReplyAddRequest);
 
         return ResponseEntity.status(CREATED).build();
+    }
+
+    @PostMapping("/goods-like/{goods-id}")
+    @Operation(summary = "굿즈 좋아요 및 좋아요 삭제", description = "굿즈 좋아요 및 좋아요 삭제 API")
+    public ResponseEntity<?> likeGoods(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("goods-id") Long goodsId
+    ){
+        if(loggedInUserId == null){
+            throw new AuthenticationRequiredException();
+        }
+
+        goodsService.likeGoods(loggedInUserId,goodsId);
+
+        return ResponseEntity.status(OK).build();
+    }
+
+    @GetMapping("/favorite")
+    @Operation(summary = "좋아요한 굿즈 조회", description = "좋아요한 굿즈 조회 API")
+    public ResponseEntity<Page<FavoriteGoodsResponse>> favoriteGoods(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        if(loggedInUserId == null){
+            throw new AuthenticationRequiredException();
+        }
+
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<FavoriteGoodsResponse> favoriteGoodsResponses = goodsService.getFavoriteGoods(loggedInUserId,pageable);
+
+        return ResponseEntity.ok(favoriteGoodsResponses);
+    }
+
+    @GetMapping("/my-goods")
+    @Operation(summary = "내가 쓴 굿즈", description = "내가 쓴 굿즈 API")
+    public ResponseEntity<Page<MyGoodsResponse>> getMyGoods(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        if(loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<MyGoodsResponse> myGoodsResponses = goodsService.getMyGoods(loggedInUserId,pageable);
+
+        return ResponseEntity.ok(myGoodsResponses);
+    }
+
+    @GetMapping
+    @Operation(summary = "굿즈 조회", description = "굿즈 조회 API")
+    public ResponseEntity<Page<GoodsResponse>> getGoods(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @RequestParam("idol-group-id") Long idolGroupId,
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String nickname,
+            @RequestParam(required = false) String content,
+            @RequestParam(required = false) boolean sortByFollowed,
+            @RequestParam(required = false) boolean sortByLiked
+    ){
+        Pageable pageable = PageRequest.of(page, size);
+
+        GoodsSearchCondition condition = GoodsSearchCondition.builder()
+                .title(title)
+                .nickname(nickname)
+                .content(content)
+                .sortByFollowed(sortByFollowed)
+                .sortByLiked(sortByLiked)
+                .build();
+
+        Page<GoodsResponse> goodsResponses = goodsService.getGoods(loggedInUserId,idolGroupId,pageable,condition);
+
+        return ResponseEntity.ok(goodsResponses);
+    }
+
+    @GetMapping("/{goods-id}")
+    @Operation(summary = "굿즈 상세조회", description = "굿즈 상세조회 API")
+    public ResponseEntity<GoodsDetailResponse> getGoodsDetail(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("goods-id") Long goodsId
+    ){
+        GoodsDetailResponse goodsDetailResponse = goodsService.getGoodsDetail(loggedInUserId, goodsId);
+
+        return ResponseEntity.ok(goodsDetailResponse);
+    }
+
+    @GetMapping("/{goods-id}/comment")
+    @Operation(summary = "굿즈 댓글조회", description = "굿즈 댓글조회 API")
+    public ResponseEntity<Page<GoodsCommentResponse>> getGoodsComment(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("goods-id") Long goodsId,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<GoodsCommentResponse> goodsCommentResponses = goodsService.getGoodsComment(loggedInUserId,goodsId,pageable);
+
+        return ResponseEntity.ok(goodsCommentResponses);
+    }
+
+    @PostMapping("/goods-comment-like/{goods-comment-id}")
+    @Operation(summary = "굿즈 댓글 및 답글 좋아요 & 좋아요 삭제", description = "굿즈 댓글 및 답글 좋아요 & 좋아요 삭제 API")
+    public ResponseEntity<?> likeGoodsComment(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("goods-comment-id") Long goodsCommentId
+    ){
+        if (loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+        goodsService.likeGoodsComment(loggedInUserId,goodsCommentId);
+
+        return ResponseEntity.status(OK).build();
+    }
+
+    @GetMapping("/{goods-id}/comment/{goods-comment-id}/reply")
+    @Operation(summary = "굿즈 답글조회", description = "굿즈 답글조회 API")
+    public ResponseEntity<Page<GoodsReplyResponse>> getGoodsReply(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @PathVariable("goods-id") Long goodsId,
+            @PathVariable("goods-comment-id") Long goodsCommentId,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<GoodsReplyResponse> goodsReplyResponses = goodsService.getGoodsReply(loggedInUserId,goodsId,goodsCommentId,pageable);
+
+        return ResponseEntity.ok(goodsReplyResponses);
     }
 
 

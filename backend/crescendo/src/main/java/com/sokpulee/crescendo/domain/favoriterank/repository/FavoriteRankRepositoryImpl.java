@@ -11,6 +11,8 @@ import com.sokpulee.crescendo.domain.favoriterank.dto.response.FavoriteRankBestP
 import com.sokpulee.crescendo.domain.favoriterank.dto.response.FavoriteRankResponse;
 import com.sokpulee.crescendo.domain.favoriterank.entity.QFavoriteRank;
 import com.sokpulee.crescendo.domain.favoriterank.entity.QFavoriteRankVoting;
+import com.sokpulee.crescendo.domain.idol.entity.QIdol;
+import com.sokpulee.crescendo.domain.idol.entity.QIdolGroup;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -33,6 +35,8 @@ public class FavoriteRankRepositoryImpl implements FavoriteRankCustomRepository 
     public Page<FavoriteRankResponse> findFavoriteRank(Long userId, FavoriteRanksSearchCondition condition, Pageable pageable) {
         QFavoriteRank favoriteRank = QFavoriteRank.favoriteRank;
         QFavoriteRankVoting favoriteRankVoting = QFavoriteRankVoting.favoriteRankVoting;
+        QIdol idol = QIdol.idol;
+        QIdolGroup idolGroup = QIdolGroup.idolGroup;
 
         JPAQuery<FavoriteRankResponse> query;
 
@@ -46,8 +50,11 @@ public class FavoriteRankRepositoryImpl implements FavoriteRankCustomRepository 
             // 메인 쿼리 작성
             query = queryFactory
                     .select(Projections.constructor(FavoriteRankResponse.class,
+                            idol.idolGroup.name.as("idolGroupName"),
+                            idol.name.as("idolName"),
                             favoriteRank.user.id,
                             favoriteRank.user.nickname,
+                            favoriteRank.user.profilePath,
                             favoriteRank.id,
                             favoriteRank.favoriteIdolImagePath,
                             favoriteRankVoting.id.countDistinct().as("likeCnt"),
@@ -57,8 +64,11 @@ public class FavoriteRankRepositoryImpl implements FavoriteRankCustomRepository 
             // 'isLike' 컬럼을 제외한 메인 쿼리 작성
             query = queryFactory
                     .select(Projections.constructor(FavoriteRankResponse.class,
+                            idol.idolGroup.name.as("idolGroupName"),
+                            idol.name.as("idolName"),
                             favoriteRank.user.id,
                             favoriteRank.user.nickname,
+                            favoriteRank.user.profilePath,
                             favoriteRank.id,
                             favoriteRank.favoriteIdolImagePath,
                             favoriteRankVoting.id.countDistinct().as("likeCnt"),
@@ -66,9 +76,22 @@ public class FavoriteRankRepositoryImpl implements FavoriteRankCustomRepository 
         }
 
         query.from(favoriteRank)
-                .leftJoin(favoriteRankVoting).on(favoriteRank.id.eq(favoriteRankVoting.favoriteRank.id))
-                .where(favoriteRank.idol.id.eq(condition.getIdolId()))
-                .groupBy(favoriteRank.id)
+                .leftJoin(favoriteRank.idol, idol)
+                .leftJoin(idol.idolGroup, idolGroup)
+                .leftJoin(favoriteRankVoting).on(favoriteRank.id.eq(favoriteRankVoting.favoriteRank.id));
+
+        BooleanExpression conditionExpression = null;
+        if (condition.getIdolId() != null) {
+            conditionExpression = idol.id.eq(condition.getIdolId());
+        } else if (condition.getIdolGroupId() != null) {
+            conditionExpression = idol.idolGroup.id.eq(condition.getIdolGroupId());
+        }
+
+        if (conditionExpression != null) {
+            query.where(conditionExpression);
+        }
+
+        query.groupBy(favoriteRank.id)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize());
 
@@ -78,14 +101,12 @@ public class FavoriteRankRepositoryImpl implements FavoriteRankCustomRepository 
             query.orderBy(favoriteRank.createdAt.desc());
         }
 
-        // 데이터 목록 및 총 개수 가져오기
         List<FavoriteRankResponse> favoriteRanks = query.fetch();
 
-        // 총 개수 계산
         Long total = Optional.ofNullable(
                 queryFactory.select(favoriteRank.count())
                         .from(favoriteRank)
-                        .where(favoriteRank.idol.id.eq(condition.getIdolId()))
+                        .where(conditionExpression)
                         .fetchOne()
         ).orElse(0L);
 

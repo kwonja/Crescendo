@@ -1,15 +1,21 @@
 import React from 'react';
-import { follow } from '../../interface/follow';
+import { user } from '../../interface/user';
+import { IMAGE_BASE_URL } from '../../apis/core';
+import { Link } from 'react-router-dom';
 
-interface FriendProps {
-  follow: follow;
+interface UserProps {
+  user: user;
 }
-export default function FriendProfile({ follow }: FriendProps) {
-  const { nickname, profilePath } = follow;
+
+export default function FriendProfile({ user }: UserProps) {
+  const { nickname, userProfilePath, userId } = user;
+
   return (
     <div className="friendprofile">
-      <img src={profilePath} alt="유저 프로필" />
-      <span>{nickname}</span>
+      <Link to={`/mypage/${userId}`}>
+        <img src={`${IMAGE_BASE_URL}${userProfilePath}`} alt="유저 프로필" />
+      </Link>
+      <div className="friendprofile_nickname">{nickname}</div>
     </div>
   );
 }

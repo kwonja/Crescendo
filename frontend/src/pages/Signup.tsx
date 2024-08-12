@@ -53,7 +53,7 @@ const SignUp = () => {
 
   useEffect(() => {
     let timer: ReturnType<typeof setInterval>;
-    if (verificationCountdown > 0) {
+    if (verificationCountdown > 0 && !codeVerified) {
       timer = setInterval(() => {
         setVerificationCountdown(prev => prev - 1);
       }, 1000);
@@ -64,11 +64,11 @@ const SignUp = () => {
     return () => {
       if (timer) clearInterval(timer);
     };
-  }, [verificationCountdown]);
+  }, [verificationCountdown, codeVerified]);
 
   useEffect(() => {
     let validityTimer: ReturnType<typeof setInterval>;
-    if (verificationCodeValidity > 0) {
+    if (verificationCodeValidity > 0 && !codeVerified) {
       validityTimer = setInterval(() => {
         setVerificationCodeValidity(prev => prev - 1);
       }, 1000);
@@ -76,7 +76,7 @@ const SignUp = () => {
     return () => {
       if (validityTimer) clearInterval(validityTimer);
     };
-  }, [verificationCodeValidity]);
+  }, [verificationCodeValidity, codeVerified]);
 
   useEffect(() => {
     if (termsAccepted) {
@@ -142,6 +142,8 @@ const SignUp = () => {
       setCodeVerified(true);
       setFieldErrors(prev => ({ ...prev, verificationCode: '인증이 완료되었습니다.' }));
       setIsVerificationCodeLocked(true);
+      setVerificationCountdown(0); // 타이머를 멈추기 위해 설정
+      setVerificationCodeValidity(0); // 타이머를 멈추기 위해 설정
     } else {
       setFieldErrors(prev => ({ ...prev, verificationCode: '인증번호가 틀립니다.' }));
     }
@@ -311,7 +313,7 @@ const SignUp = () => {
               {fieldErrors.verificationCode}
             </p>
             <p
-              className={`verification-message ${!isVerificationButtonDisabled && verificationCodeValidity === 0 ? 'hidden' : ''}`}
+              className={`verification-message ${(!isVerificationButtonDisabled && verificationCodeValidity === 0) || codeVerified ? 'hidden' : ''}`}
             >
               {verificationCodeValidity > 0
                 ? `인증 번호는 ${verificationCodeValidity}초간 유효합니다.`

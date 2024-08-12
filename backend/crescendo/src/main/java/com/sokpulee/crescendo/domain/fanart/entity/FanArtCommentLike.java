@@ -3,6 +3,7 @@ package com.sokpulee.crescendo.domain.fanart.entity;
 import com.sokpulee.crescendo.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,4 +22,10 @@ public class FanArtCommentLike {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Builder
+    public FanArtCommentLike(FanArtComment fanArtComment, User user) {
+        this.fanArtComment = fanArtComment;
+        this.user = user;
+    }
 }

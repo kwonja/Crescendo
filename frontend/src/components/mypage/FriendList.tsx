@@ -1,54 +1,63 @@
 import React, { useEffect, useState } from 'react';
 import SearchInput from '../common/SearchInput';
 
-import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
-import { getUserFollower } from '../../features/follow/followerSlice';
-import { getUserFollowing } from '../../features/follow/followingSlice';
+import { useAppDispatch } from '../../store/hooks/hook';
+import { getUserFollower } from '../../features/mypage/followerSlice';
+import { getUserFollowing } from '../../features/mypage/followingSlice';
 import FollowingList from './FollowingList';
 import Followerlist from './FollowerList';
+import { UserInfo } from '../../interface/user';
 
-export default function FriendList() {
+interface FrinedsProps {
+  userInfo: UserInfo;
+  userId: number;
+}
+type ModeState = 'follower' | 'following' | '';
+export default function FriendList({ userInfo, userId }: FrinedsProps) {
   const dispatch = useAppDispatch();
-  const { followingList } = useAppSelector(state => state.following);
-  const { followerList} = useAppSelector(state => state.follower);
-  const [isSelected, setIsSelected] = useState<'follower' | 'following'>('follower');
+  const [isSelected, setIsSelected] = useState<ModeState>('');
+
+  const handleModeClick = (mode: ModeState) => {
+    setIsSelected(prevMode => (prevMode === mode ? '' : mode));
+  };
 
   useEffect(() => {
     if (isSelected === 'follower') {
-      const promise = dispatch(getUserFollower(1));
+      const promise = dispatch(getUserFollower(userId));
       return () => promise.abort();
     } else {
-      const promise = dispatch(getUserFollowing(1));
+      const promise = dispatch(getUserFollowing(userId));
 
       return () => promise.abort();
     }
-  }, [dispatch, isSelected]);
+  }, [dispatch, isSelected, userId]);
+
   return (
     <>
       <div className="friend">
         <div className="listbar">
           <div
             className={`follow left ${isSelected === 'follower' ? 'active' : ''}`}
-            onClick={() => setIsSelected('follower')}
+            onClick={() => handleModeClick('follower')}
           >
+            <span>{userInfo.followerNum}</span>
             <div>팔로우</div>
-            <span>{followerList.length}</span>
           </div>
           <div
             className={`follow right ${isSelected === 'following' ? 'active' : ''}`}
-            onClick={() => setIsSelected('following')}
+            onClick={() => handleModeClick('following')}
           >
-            <div>팔로워</div>
-            <span>{followingList.length}</span>
+            <span>{userInfo.followingNum}</span>
+            <div>팔로잉</div>
           </div>
         </div>
       </div>
-      <div className="list">
-        <SearchInput placeholder="친구를 검색하세요" />
-          {isSelected === 'follower' ? (
-            <Followerlist/>
-          ) : <FollowingList/>}
-      </div>
+      {isSelected !== '' && (
+        <div className="list">
+          <SearchInput placeholder="친구를 검색하세요" />
+          {isSelected === 'follower' ? <Followerlist /> : <FollowingList />}
+        </div>
+      )}
     </>
   );
 }

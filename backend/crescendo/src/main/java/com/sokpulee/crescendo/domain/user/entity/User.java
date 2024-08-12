@@ -77,4 +77,8 @@ public class User {
     public void deleteRefreshToken() {
         this.refreshToken = null;
     }
+
+    public void updateIdol(Idol idol) {
+        this.idol = idol;
+    }
 }

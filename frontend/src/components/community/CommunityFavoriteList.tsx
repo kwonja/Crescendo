@@ -3,8 +3,8 @@ import Button from '../common/Button';
 import { ReactComponent as RightBtn } from '../../assets/images/right.svg';
 import { ReactComponent as LeftBtn } from '../../assets/images/left.svg';
 import CommunityCard from './CommunityCard';
-import { communityInfo } from '../../interface/communityList';
-import { getFavoriteListAPI } from '../../apis/communityList';
+import { CommunityInfo } from '../../interface/communityList';
+import { getFavoriteListAPI } from '../../apis/community';
 
 export default function CommunityFavoriteList() {
   // 상수 또는 변수(상태) 초기화
@@ -12,11 +12,11 @@ export default function CommunityFavoriteList() {
   const MOVE_STEP = 4;
 
   const [idx, setIdx] = useState<number>(-1);
-  const [communityList, setCommunityList] = useState<communityInfo[]>([]);
-  const [showList, setShowList] = useState<communityInfo[]>([]);
+  const [communityList, setCommunityList] = useState<CommunityInfo[]>([]);
+  const [showList, setShowList] = useState<CommunityInfo[]>([]);
 
   // 리스트 불러오기
-  useEffect(() => { 
+  useEffect(() => {
     const getFavoriteList = async () => {
       try {
         const response = await getFavoriteListAPI();
@@ -28,7 +28,6 @@ export default function CommunityFavoriteList() {
     };
 
     getFavoriteList();
-    
   }, []);
 
   useEffect(() => {
@@ -36,7 +35,7 @@ export default function CommunityFavoriteList() {
     let tmp = [...communityList];
     tmp = tmp.slice(idx, idx + SIZE_PER_PAGE);
     setShowList(tmp);
-  }, [idx]);
+  }, [communityList, idx]);
 
   function incrementIdx() {
     if (idx + SIZE_PER_PAGE + MOVE_STEP < communityList.length - 1)
@@ -61,14 +60,18 @@ export default function CommunityFavoriteList() {
         </Button>
       }
       <div className="communityfavoritelist_contents">
-        {showList.length>0?showList.map(community => (
-          <CommunityCard
-            idolGroupId={community.idolGroupId}
-            name={community.name}
-            profile={community.profile}
-            key={community.idolGroupId}
-          />
-        )):<div>"즐겨찾기 커뮤니티가 없습니다."</div>}
+        {showList.length > 0 ? (
+          showList.map(community => (
+            <CommunityCard
+              idolGroupId={community.idolGroupId}
+              name={community.name}
+              profile={community.profile}
+              key={community.idolGroupId}
+            />
+          ))
+        ) : (
+          <div>"즐겨찾기 커뮤니티가 없습니다."</div>
+        )}
       </div>
       {
         <Button

@@ -9,6 +9,7 @@ import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
 import com.sokpulee.crescendo.global.util.jwt.JWTUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -74,7 +75,7 @@ public class UserController {
     @PatchMapping(value = "/mypage/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "프로필 수정", description = "프로필 수정 API")
     public ResponseEntity<?> updateProfile(
-            @AuthPrincipal Long userId,
+            @Parameter(hidden = true) @AuthPrincipal Long userId,
             @Valid @ModelAttribute ProfileUpdateRequest request
     ) {
 
@@ -144,4 +145,19 @@ public class UserController {
         return userService.searchUsersByNickname(nickname, pageable);
     }
 
+    @PatchMapping("/favorite-idol")
+    @Operation(summary = "최애 아이돌 변경", description = "최애 아이돌 변경 API")
+    public ResponseEntity<?> updateFavoriteIdol(
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
+            @Valid @RequestBody UpdateFavoriteIdolRequest updateFavoriteIdolRequest
+    ) {
+
+        if(loggedInUserId == null) {
+            throw new AuthenticationRequiredException();
+        }
+
+        userService.updateFavoriteIdol(loggedInUserId, updateFavoriteIdolRequest);
+
+        return ResponseEntity.status(NO_CONTENT).build();
+    }
 }

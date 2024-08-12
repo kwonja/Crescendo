@@ -1,13 +1,8 @@
 package com.sokpulee.crescendo.domain.feed.service;
 
-import com.sokpulee.crescendo.domain.feed.dto.request.FeedAddRequest;
-import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentAddRequest;
-import com.sokpulee.crescendo.domain.feed.dto.request.FeedCommentUpdateRequest;
-import com.sokpulee.crescendo.domain.feed.dto.request.FeedUpdateRequest;
-import com.sokpulee.crescendo.domain.feed.dto.response.FeedCommentResponse;
-import com.sokpulee.crescendo.domain.feed.dto.response.FeedDetailResponse;
-import com.sokpulee.crescendo.domain.feed.dto.response.FeedReplyResponse;
-import com.sokpulee.crescendo.domain.feed.dto.response.FeedResponse;
+import com.sokpulee.crescendo.domain.alarm.service.AlarmService;
+import com.sokpulee.crescendo.domain.feed.dto.request.*;
+import com.sokpulee.crescendo.domain.feed.dto.response.*;
 import com.sokpulee.crescendo.domain.feed.entity.*;
 import com.sokpulee.crescendo.domain.feed.repository.*;
 import com.sokpulee.crescendo.domain.idol.entity.IdolGroup;
@@ -38,6 +33,7 @@ public class FeedServiceImpl implements FeedService {
     private final FileSaveHelper fileSaveHelper;
     private final FeedLikeRepository feedLikeRepository;
     private final FeedCommentLikeRepository feedCommentLikeRepository;
+    private final AlarmService alarmService;
 
 
     @Override
@@ -54,7 +50,6 @@ public class FeedServiceImpl implements FeedService {
         Feed feed = Feed.builder()
                 .idolGroup(idolGroup)
                 .user(user)
-                .title(feedAddRequest.getTitle())
                 .content(feedAddRequest.getContent())
                 .likeCnt(0)
                 .commentCnt(0)
@@ -112,14 +107,12 @@ public class FeedServiceImpl implements FeedService {
         User user = userRepository.findById(loggedInUserId)
                 .orElseThrow(UserNotFoundException::new);
 
-        IdolGroup idolGroup = idolGroupRepository.findById(feedUpdateRequest.getIdolGroupId())
-                .orElseThrow(IdolGroupNotFoundException::new);
 
         if (!feed.getUser().getId().equals(loggedInUserId)) {
             throw new UnAuthorizedAccessException();
         }
 
-        feed.changeFeed(idolGroup, feedUpdateRequest.getTitle(), feedUpdateRequest.getContent());
+        feed.changeFeed(feedUpdateRequest.getContent());
 
         feed.getImageList().clear();
 
@@ -165,7 +158,10 @@ public class FeedServiceImpl implements FeedService {
             throw new UnAuthorizedAccessException();
         }
 
-        feedComment.getParentFeedComment().minusReplyCnt();
+        if (feedComment.getParentFeedComment() != null) {
+            feedComment.getParentFeedComment().minusReplyCnt();
+        }
+
         feed.minusCommentCnt(feedComment.getReplyCnt());
 
         feedCommentRepository.delete(feedComment);
@@ -205,20 +201,21 @@ public class FeedServiceImpl implements FeedService {
         if (existingFeedLike.isPresent()) {
             feedLikeRepository.delete(existingFeedLike.get());
             feed.minusLikeCnt();
-        }
-        else {
+        } else {
             FeedLike feedLike = FeedLike.builder()
                     .user(user)
                     .feed(feed)
                     .build();
             feed.plusLikeCnt();
             feedLikeRepository.save(feedLike);
+
+            alarmService.feedLikeAlarm(feed.getIdolGroup().getName(), feed.getUser().getId(), loggedInUserId, feed.getFeedId());
         }
     }
 
     @Override
-    public Page<FeedResponse> getFeed(Long loggedInUserId, Pageable pageable) {
-        return feedRepository.findFeeds(loggedInUserId, pageable);
+    public Page<FeedResponse> getFeed(Long loggedInUserId, Long idolGroupId, Pageable pageable, FeedSearchCondition condition) {
+        return feedRepository.findFeeds(loggedInUserId, idolGroupId, pageable, condition);
     }
 
     @Override
@@ -234,8 +231,8 @@ public class FeedServiceImpl implements FeedService {
 
         FeedDetailResponse response;
 
-        if(loggedInUserId == null){
-             response = FeedDetailResponse.builder()
+        if (loggedInUserId == null) {
+            response = FeedDetailResponse.builder()
                     .userId(user.getId())
                     .profileImagePath(user.getProfilePath())
                     .nickname(user.getNickname())
@@ -248,15 +245,15 @@ public class FeedServiceImpl implements FeedService {
                     .commentCnt(feed.getCommentCnt())
                     .tagList(tagList)
                     .build();
-        }else{
+        } else {
             User user1 = userRepository.findById(loggedInUserId)
                     .orElseThrow(UserNotFoundException::new);
 
-            Optional<FeedLike> feedLike = feedLikeRepository.findByFeedAndUser(feed,user1);
+            Optional<FeedLike> feedLike = feedLikeRepository.findByFeedAndUser(feed, user1);
             boolean isLike = feedLike.isPresent();
 
 
-             response = FeedDetailResponse.builder()
+            response = FeedDetailResponse.builder()
                     .userId(user.getId())
                     .profileImagePath(user.getProfilePath())
                     .nickname(user.getNickname())
@@ -274,13 +271,28 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
-    public Page<FeedCommentResponse> getFeedComment(Long loggedInUserId,Long feedId, Pageable pageable) {
+    public Page<FeedCommentResponse> getFeedComment(Long loggedInUserId, Long feedId, Pageable pageable) {
         return feedCommentRepository.findFeedComments(loggedInUserId, feedId, pageable);
     }
 
     @Override
     public Page<FeedReplyResponse> getFeedReply(Long loggedInUserId, Long feedId, Long feedCommentId, Pageable pageable) {
-        return feedCommentRepository.findFeedReply(loggedInUserId,feedId,feedCommentId,pageable);
+        return feedCommentRepository.findFeedReply(loggedInUserId, feedId, feedCommentId, pageable);
+    }
+
+    @Override
+    public Page<FavoriteFeedResponse> getFavoriteFeed(Long loggedInUserId, Pageable pageable) {
+        return feedRepository.findFavoriteFeeds(loggedInUserId, pageable);
+    }
+
+    @Override
+    public Page<MyFeedResponse> getMyFeed(Long loggedInUserId, Pageable pageable) {
+        return feedRepository.findMyFeeds(loggedInUserId,pageable);
+    }
+
+    @Override
+    public Page<GetFeedByUserIdResponse> getFeedByUserId(Long userId, Pageable pageable) {
+        return feedRepository.findFeedByUserId(userId, pageable);
     }
 
     @Override
@@ -297,14 +309,15 @@ public class FeedServiceImpl implements FeedService {
         if (existingFeedCommentLike.isPresent()) {
             feedCommentLikeRepository.delete(existingFeedCommentLike.get());
             feedComment.minusLikeCnt();
-        }
-        else {
+        } else {
             FeedCommentLike feedCommentLike = FeedCommentLike.builder()
                     .user(user)
                     .feedComment(feedComment)
                     .build();
             feedComment.plusLikeCnt();
             feedCommentLikeRepository.save(feedCommentLike);
+
+            alarmService.feedCommentLikeAlarm(feedComment.getContent(), feedComment.getUser().getId(), loggedInUserId, feedComment.getFeed().getFeedId());
         }
     }
 
@@ -326,6 +339,8 @@ public class FeedServiceImpl implements FeedService {
         feed.plusCommentCnt();
 
         feedCommentRepository.save(feedComment);
+
+        alarmService.feedCommentAlarm(feed.getIdolGroup().getName(), feedComment.getContent(), feed.getUser().getId(), loggedInUserId, feed.getFeedId());
     }
 
     @Override
@@ -340,8 +355,7 @@ public class FeedServiceImpl implements FeedService {
                 .orElseThrow(FeedCommentNotFoundException::new);
 
 
-
-        if(parentFeedComment.getFeed().getFeedId() == feedId){
+        if (parentFeedComment.getFeed().getFeedId() == feedId) {
             FeedComment feedComment = FeedComment.builder()
                     .feed(feed)
                     .parentFeedComment(parentFeedComment)
@@ -353,14 +367,14 @@ public class FeedServiceImpl implements FeedService {
                 feedCommentRepository.save(feedComment);
                 feed.plusCommentCnt();
                 parentFeedComment.plusReplyCnt();
+
+                alarmService.feedReplyAlarm(parentFeedComment.getContent(), feedComment.getContent(), parentFeedComment.getUser().getId(), loggedInUserId, feed.getFeedId());
             } else {
                 throw new FeedCommentNotFoundException();
             }
-        }else{
+        } else {
             throw new FeedCommentNotFoundException();
         }
-
-
     }
 
 

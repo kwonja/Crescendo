@@ -26,7 +26,7 @@ public class CommunityServiceImpl implements CommunityService {
 
     private final CommunityFavoritesRepository communityFavoritesRepository;
     private final UserRepository userRepository;
-    private  final IdolGroupRepository idolGroupRepository;
+    private final IdolGroupRepository idolGroupRepository;
 
     @Override
     public void toggleFavorite(Long idolGroupId, Long loggedInUserId) {
@@ -38,9 +38,11 @@ public class CommunityServiceImpl implements CommunityService {
         Optional<CommunityFavorites> favorite = communityFavoritesRepository.findByUserAndIdolGroup(user, idolGroup);
 
         if (favorite.isPresent()) {
+            favorite.get().getIdolGroup().minusFavoriteCnt();
             communityFavoritesRepository.delete(favorite.get());
         } else {
             CommunityFavorites newFavorite = new CommunityFavorites(user, idolGroup);
+            newFavorite.getIdolGroup().plusFavoriteCnt();
             communityFavoritesRepository.save(newFavorite);
         }
 
@@ -54,20 +56,27 @@ public class CommunityServiceImpl implements CommunityService {
         Page<CommunityFavorites> favoritesPage = communityFavoritesRepository.findByUser(user, pageable);
 
         return favoritesPage.map(favorite -> new FavoritesGetResponse(
-                        favorite.getIdolGroup().getId(),
-                        favorite.getIdolGroup().getName(),
-                        favorite.getIdolGroup().getProfile()
+                favorite.getIdolGroup().getId(),
+                favorite.getIdolGroup().getName(),
+                favorite.getIdolGroup().getProfile()
         ));
     }
 
     @Override
-    public Page<IdolGroupGetResponse> getIdolGroups(Pageable pageable) {
-        return idolGroupRepository.findAll(pageable)
-                .map(idolGroup -> new IdolGroupGetResponse(
-                        idolGroup.getId(),
-                        idolGroup.getName(),
-                        idolGroup.getProfile()
-                ));
+    public Page<IdolGroupGetResponse> getIdolGroups(String keyword, Pageable pageable) {
+        Page<IdolGroup> idolGroupPage;
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            // 검색어가 없으면 전체 목록을 페이징하여 반환
+            idolGroupPage = idolGroupRepository.findAll(pageable);
+        } else {
+            // 검색어가 있으면 해당 검색어를 포함하는 목록을 페이징하여 반환
+            idolGroupPage = idolGroupRepository.findByNameContaining(keyword, pageable);
+        }
+
+        return idolGroupPage.map(idolGroup ->
+                new IdolGroupGetResponse(idolGroup.getId(), idolGroup.getName(), idolGroup.getProfile())
+        );
     }
 
     @Override
@@ -81,13 +90,15 @@ public class CommunityServiceImpl implements CommunityService {
                 .peopleNum(idolGroup.getPeopleNum())
                 .introduction(idolGroup.getIntroduction())
                 .profile(idolGroup.getProfile())
-                .banner(idolGroup.getBanner());
+                .banner(idolGroup.getBanner())
+                .favoriteCnt(idolGroup.getFavoriteCnt());
+
 
         if (loggedInUserId != null) {
             User user = userRepository.findById(loggedInUserId)
                     .orElseThrow(UserNotFoundException::new);
 
-            boolean isFavorite  = communityFavoritesRepository.existsByUserAndIdolGroup(user, idolGroup);
+            boolean isFavorite = communityFavoritesRepository.existsByUserAndIdolGroup(user, idolGroup);
             builder.isFavorite(isFavorite);
         }
 

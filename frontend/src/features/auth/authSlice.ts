@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { api, setUserId, setAccessToken } from '../../apis/core';
+import { api, Authapi, setUserId, setAccessToken } from '../../apis/core';
 
 // 인터페이스
 interface AuthState {
@@ -35,6 +35,7 @@ export const login = createAsyncThunk(
       setAccessToken(accessToken);
       return { email, accessToken };
     } catch (error) {
+      // console.log(error);
       return rejectWithValue('로그인 실패');
     }
   },
@@ -115,15 +116,55 @@ export const verifyEmailCode = createAsyncThunk(
   },
 );
 
+// 비밀번호 재설정 비동기 함수
+export const resetPassword = createAsyncThunk(
+  'auth/resetPassword',
+  async (
+    {
+      email,
+      newPassword,
+      emailAuthId,
+      randomKey,
+    }: { email: string; newPassword: string; emailAuthId: number; randomKey: string },
+    { rejectWithValue },
+  ) => {
+    try {
+      await api.patch('/api/v1/auth/password', { email, newPassword, emailAuthId, randomKey });
+    } catch (error) {
+      return rejectWithValue('비밀번호 변경 실패');
+    }
+  },
+);
+
 // 로그아웃 비동기 함수
 export const logoutUser = createAsyncThunk('auth/logoutUser', async (_, { rejectWithValue }) => {
   try {
-    await api.post('/api/v1/auth/logout', {}); // refresh token 만료 요청
+    await Authapi.post('/api/v1/auth/logout', {}); // refresh token 만료 요청
     setAccessToken(null); // 엑세스 토큰 삭제
+    setUserId(-1);
+    localStorage.removeItem('autoLogin');
+    localStorage.removeItem('password');
   } catch (error) {
     return rejectWithValue('로그아웃 실패');
   }
 });
+
+// 자동 로그인, 로그인 연장
+// 리프레쉬 토큰으로 엑세스 토큰 재발급 요청
+export const refreshToken = createAsyncThunk(
+  'auth/refreshToken',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/api/v1/auth/refresh-token', {}, { withCredentials: true });
+      setUserId(response.data.userId);
+      const newAccessToken = response.headers.authorization.split(' ')[1];
+      setAccessToken(newAccessToken);
+      return newAccessToken;
+    } catch (error) {
+      return rejectWithValue('');
+    }
+  },
+);
 
 // 슬라이스 생성
 const authSlice = createSlice({
@@ -148,6 +189,10 @@ const authSlice = createSlice({
       state.accessToken = null;
       state.emailAuthId = null;
       setAccessToken(null); // 엑세스 토큰 삭제
+    },
+    setAccessToken(state, action: PayloadAction<string | null>) {
+      state.accessToken = action.payload;
+      state.isLoggedIn = !!action.payload;
     },
   },
   extraReducers: builder => {
@@ -236,8 +281,34 @@ const authSlice = createSlice({
         state.email = '';
         state.accessToken = null;
         state.emailAuthId = null;
+        setAccessToken(null);
       })
       .addCase(logoutUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(refreshToken.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(refreshToken.fulfilled, (state, action: PayloadAction<string>) => {
+        state.loading = false;
+        state.accessToken = action.payload;
+        state.isLoggedIn = true;
+      })
+      .addCase(refreshToken.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+        state.isLoggedIn = false;
+      })
+      .addCase(resetPassword.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(resetPassword.fulfilled, state => {
+        state.loading = false;
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

@@ -4,7 +4,6 @@
 
 @import 'components/common/buttons';
 @import 'components/header/usermenu';
-@import 'components/header/chatroom';
 @import 'components/header/header';
 @import 'components/mypage/profile';
 @import 'components/mypage/friendlist';
@@ -13,14 +12,38 @@
 @import 'components/common/search';
 @import 'components/common/gallery';
 @import 'components/common/gallerylist';
+@import 'components/common/dropdown';
+@import 'components/common/commonmodal';
 @import 'components/community/communitycard';
 @import 'components/community/communityfavoritelist';
 @import 'components/community/communitylist';
+@import 'components/favorite/bestphotoslide';
+@import 'components/favorite/favoriteranklist';
+@import 'components/favorite/favoriterankpostmodal';
+@import 'components/favorite/actionmenu';
+@import 'components/challenge//challengelist';
 
+@import 'components/chat/chatlayout';
+@import 'components/chat/chatroomlistitem';
+@import 'components/chat/chatroom';
+@import 'components/chat/message';
+@import 'components/signup/termsmodal';
+@import 'components/searchuser/searchuser';
+
+@import 'components/alarm/alarmlayout';
+@import 'components/challenge/challenge';
+@import 'components//challenge//challengeitem';
+@import 'components/challenge/holdmodal';
+
+@import 'components/main/section';
 @import 'base/font';
 @import 'page/mypage';
-@import 'components/signup/termsmodal';
 @import 'page/login';
 @import 'page/communitymain';
 @import 'page/communitydetail';
+@import 'page/favorite';
 @import 'layout/frame';
+@import 'components/community/postfeed';
+@import 'components/community/feeddetailmodal';
+@import 'components/community/_dropdownmenu';
+@import 'page/_passwordreset.scss';
