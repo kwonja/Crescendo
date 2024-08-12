@@ -82,8 +82,6 @@ public class ChallengeServiceImpl implements ChallengeService {
         if (response.getStatusCode().is2xxSuccessful()) {
             String responseBody = response.getBody();
 
-            System.out.println(responseBody);
-
             try {
                 LandmarkResponse landmarkResponse = objectMapper.readValue(responseBody, LandmarkResponse.class);
 
@@ -182,7 +180,6 @@ public class ChallengeServiceImpl implements ChallengeService {
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("landmark_positions", frames);
-        System.out.println(frames.get(0));
         requestBody.put("video_url", videoUrl);
 
         HttpHeaders headers = new HttpHeaders();
