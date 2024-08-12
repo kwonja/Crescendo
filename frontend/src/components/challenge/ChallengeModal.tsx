@@ -25,8 +25,7 @@ export default function ChallengeModal({ onClose }: ModalProps) {
     formData.append('endAt', timeRef.current.value);
     formData.append('video', fileRef.current.files[0]);
 
-    const response = await postChallenge(formData);
-    console.log(response);
+    await postChallenge(formData);
   };
 
   const handleFileChange = () => {
