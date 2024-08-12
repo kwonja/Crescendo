@@ -10,7 +10,7 @@ import '../../scss/components/community/_postfeed.scss';
 type ImageWithId = {
   id: number;
   url: string;
-  file?: File; 
+  file?: File;
   isNew: boolean;
 };
 
@@ -22,7 +22,13 @@ type EditFeedProps = {
   initialImages: string[];
 };
 
-const EditFeed: React.FC<EditFeedProps> = ({ onClose, feedId, initialContent, initialTags, initialImages }) => {
+const EditFeed: React.FC<EditFeedProps> = ({
+  onClose,
+  feedId,
+  initialContent,
+  initialTags,
+  initialImages,
+}) => {
   const [images, setImages] = useState<ImageWithId[]>([]);
   const [content, setContent] = useState(initialContent);
   const [tags, setTags] = useState<string[]>(initialTags);
@@ -33,12 +39,11 @@ const EditFeed: React.FC<EditFeedProps> = ({ onClose, feedId, initialContent, in
   const { idolGroupId } = useParams<{ idolGroupId: string }>();
 
   useEffect(() => {
-    
     const initialImageObjects = initialImages.map((url, index) => ({
-        id: index,
-        url: `https://i11b108.p.ssafy.io/server/files/${url}`,
-        isNew: false,
-      }));
+      id: index,
+      url: `https://i11b108.p.ssafy.io/server/files/${url}`,
+      isNew: false,
+    }));
     setImages(initialImageObjects);
   }, [initialImages]);
 
@@ -110,22 +115,21 @@ const EditFeed: React.FC<EditFeedProps> = ({ onClose, feedId, initialContent, in
     formData.append('content', content);
 
     for (const image of images) {
-        if (!image.isNew) {
-            const response = await fetch(image.url);
-            const blob = await response.blob();
-            const file = new File([blob], `existing_image_${image.id}.jpg`, { type: blob.type });
-            formData.append('imageList', file);
-        } else if (image.isNew && image.file) {
-            formData.append('imageList', image.file);
-        }
+      if (!image.isNew) {
+        const response = await fetch(image.url);
+        const blob = await response.blob();
+        const file = new File([blob], `existing_image_${image.id}.jpg`, { type: blob.type });
+        formData.append('imageList', file);
+      } else if (image.isNew && image.file) {
+        formData.append('imageList', image.file);
+      }
     }
-
 
     tags.forEach(tag => formData.append('tagList', tag));
 
     // 필요한가?
     if (idolGroupId) {
-        formData.append('idolGroupId', idolGroupId);
+      formData.append('idolGroupId', idolGroupId);
     }
 
     try {
@@ -142,7 +146,7 @@ const EditFeed: React.FC<EditFeedProps> = ({ onClose, feedId, initialContent, in
     } catch (error) {
       alert('피드 수정에 실패했습니다.');
     }
-};
+  };
 
   const handleAddImageClick = () => {
     if (fileInputRef.current) {
@@ -201,7 +205,7 @@ const EditFeed: React.FC<EditFeedProps> = ({ onClose, feedId, initialContent, in
             placeholder="내용을 입력하세요"
             rows={5}
             value={content}
-            onChange={handleContentChange} 
+            onChange={handleContentChange}
           />
           <span className="char-count">{content.length}/400</span>
         </div>

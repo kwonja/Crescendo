@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ReactComponent as Crown } from '../assets/images/crown.svg';
 import Feed from '../components/common/Feed';
 import { useAppDispatch, useAppSelector } from '../store/hooks/hook';
@@ -18,7 +18,6 @@ export default function MyPage() {
   const { id } = useParams<{ id: string }>();
   const numericId = id ? parseInt(id, 10) : NaN;
 
-  
   useEffect(() => {
     dispatch(getMyFeedList(numericId));
   }, [dispatch, numericId]);
@@ -51,7 +50,7 @@ export default function MyPage() {
   return (
     <div className="mypage">
       <div className="mypage_left">
-        <LeftInfo/>
+        <LeftInfo />
       </div>
       <div className="mypage_center">
         <div className="myfavorite">

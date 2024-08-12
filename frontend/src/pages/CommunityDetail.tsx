@@ -137,7 +137,7 @@ export default function CommunityDetail() {
           <div className="filter menu">
             <Dropdown
               className="text"
-              defaultValue='필터'
+              defaultValue="필터"
               options={['전체', '팔로우만']}
               onSelect={selected => dispatch(setFilterCondition(selected))}
             />
@@ -146,7 +146,7 @@ export default function CommunityDetail() {
             <div className="sort menu">
               <Dropdown
                 className="text"
-                defaultValue='정렬'
+                defaultValue="정렬"
                 options={['최신순', '좋아요순']}
                 onSelect={selected => dispatch(setSortCondition(selected))}
                 iconPosition="left"
@@ -155,7 +155,7 @@ export default function CommunityDetail() {
             <div className="search menu">
               <Dropdown
                 className="text"
-                defaultValue='검색'
+                defaultValue="검색"
                 options={['내용', '작성자']}
                 onSelect={selected => setSearchOption(selected)}
                 iconPosition="left"

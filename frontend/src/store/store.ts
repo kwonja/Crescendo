@@ -23,7 +23,7 @@ export const store = configureStore({
     favorite: favoriteReducer,
     alarm: alarmReducer,
     communityFeed: communityFeedReducer,
-    comment: commentReducer
+    comment: commentReducer,
   },
 });
 

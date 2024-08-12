@@ -1,6 +1,6 @@
 export interface FavoriteRankInfo {
-  idolGroupName: string,
-  idolName: string,
+  idolGroupName: string;
+  idolName: string;
   writerId: number;
   writerNickname: string;
   writerProfilePath: string | null;
