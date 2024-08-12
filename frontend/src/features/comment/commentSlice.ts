@@ -18,13 +18,23 @@ const getApiEndpoint = (type: string, postId: number) => {
 // 댓글 조회 액션 (비동기)
 export const fetchComments = createAsyncThunk(
   'comments/fetchComments',
-  async ({ type, postId, page, size }: { type: string; postId: number; page: number; size: number }) => {
+  async ({
+    type,
+    postId,
+    page,
+    size,
+  }: {
+    type: string;
+    postId: number;
+    page: number;
+    size: number;
+  }) => {
     const endpoint = getApiEndpoint(type, postId); // 게시물 유형에 맞는 API 엔드포인트를 생성
     const response = await api.get(endpoint, {
       params: { page, size }, // 페이지와 사이즈를 기반으로 댓글 목록을 요청
     });
     return { type, postId, comments: response.data.content }; // 결과를 슬라이스로 반환하여 상태에 저장
-  }
+  },
 );
 
 // 댓글 작성 액션 (비동기)
@@ -37,7 +47,7 @@ export const postComment = createAsyncThunk(
 
     const response = await Authapi.post(endpoint, formData); // 댓글을 서버로 전송
     return { type, postId, comment: response.data }; // 새로 작성된 댓글을 반환하여 상태에 추가
-  }
+  },
 );
 
 // Redux Slice 정의
@@ -49,7 +59,7 @@ const commentSlice = createSlice({
     error: null as string | null, // 오류 메시지 상태
   },
   reducers: {}, // 동기 액션을 정의할 수 있는 부분 (현재는 비어 있음)
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
       // 댓글 조회 액션이 성공했을 때 상태 업데이트
       .addCase(fetchComments.fulfilled, (state, action) => {

@@ -120,8 +120,12 @@ export const verifyEmailCode = createAsyncThunk(
 export const resetPassword = createAsyncThunk(
   'auth/resetPassword',
   async (
-    { email, newPassword, emailAuthId, randomKey }: 
-    { email: string; newPassword: string; emailAuthId: number; randomKey: string },
+    {
+      email,
+      newPassword,
+      emailAuthId,
+      randomKey,
+    }: { email: string; newPassword: string; emailAuthId: number; randomKey: string },
     { rejectWithValue },
   ) => {
     try {

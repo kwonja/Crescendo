@@ -8,18 +8,16 @@ interface ModalProps {
   onClose: () => void;
 }
 export default function ChallengeModal({ onClose }: ModalProps) {
+  const titleRef = useRef<HTMLInputElement>(null);
+  const timeRef = useRef<HTMLInputElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoPreview, setVideoPreview] = useState<string | null>(null);
 
-    const titleRef = useRef<HTMLInputElement>(null);
-    const timeRef = useRef<HTMLInputElement>(null);
-    const fileRef = useRef<HTMLInputElement>(null);
-    const videoRef = useRef<HTMLVideoElement>(null);
-    const [videoPreview, setVideoPreview] = useState<string | null>(null);
-
-    const CreateChallenge = async () => {
-
+  const CreateChallenge = async () => {
     if (!titleRef.current?.value || !timeRef.current?.value || !fileRef.current?.files) {
-        alert("전부 입력해주세요")
-        return;
+      alert('전부 입력해주세요');
+      return;
     }
 
     const formData = new FormData();
@@ -33,7 +31,7 @@ export default function ChallengeModal({ onClose }: ModalProps) {
 
   const handleFileChange = () => {
     if (fileRef.current?.files && fileRef.current.files.length > 0) {
-        const file = fileRef.current.files[0];
+      const file = fileRef.current.files[0];
       const videoURL = URL.createObjectURL(file);
       setVideoPreview(videoURL);
     }
@@ -61,10 +59,22 @@ export default function ChallengeModal({ onClose }: ModalProps) {
             <label htmlFor="video" className="video_label">
               <AddImage />
             </label>
-            <input id="video" type="file" className="hidden"  accept="video/mp4" ref={fileRef} onChange={handleFileChange}/>
+            <input
+              id="video"
+              type="file"
+              className="hidden"
+              accept="video/mp4"
+              ref={fileRef}
+              onChange={handleFileChange}
+            />
             <div className="right-content">
-              <input type="text" className="input_title" placeholder="제목을 입력하세요" ref={titleRef}/>
-              <input className="input_date" id="cal" type="datetime-local" ref={timeRef}/>
+              <input
+                type="text"
+                className="input_title"
+                placeholder="제목을 입력하세요"
+                ref={titleRef}
+              />
+              <input className="input_date" id="cal" type="datetime-local" ref={timeRef} />
               {videoPreview && (
                 <video ref={videoRef} controls src={videoPreview} className="w-32 object-cover" />
               )}

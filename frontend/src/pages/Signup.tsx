@@ -313,7 +313,7 @@ const SignUp = () => {
               {fieldErrors.verificationCode}
             </p>
             <p
-              className={`verification-message ${!isVerificationButtonDisabled && verificationCodeValidity === 0 || codeVerified ? 'hidden' : ''}`}
+              className={`verification-message ${(!isVerificationButtonDisabled && verificationCodeValidity === 0) || codeVerified ? 'hidden' : ''}`}
             >
               {verificationCodeValidity > 0
                 ? `인증 번호는 ${verificationCodeValidity}초간 유효합니다.`

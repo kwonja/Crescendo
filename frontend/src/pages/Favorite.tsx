@@ -86,7 +86,7 @@ export default function Favorite() {
           <div className="sort menu">
             <Dropdown
               className="sort text"
-              defaultValue='정렬'
+              defaultValue="정렬"
               options={sortOptions}
               onSelect={selected => {
                 dispatch(setSortByVotes(selected));
