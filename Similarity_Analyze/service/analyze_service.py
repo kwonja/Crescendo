@@ -1,5 +1,6 @@
 import mediapipe as mp
 import cv2
+import numpy as np
 
 def get_landmark_position(video_path):
     mp_pose = mp.solutions.pose
@@ -33,8 +34,7 @@ def get_landmark_position(video_path):
     return processed_landmarks
 
 def normalize_landmarks(landmarks):
-    # 기준 랜드마크(코)를 기준으로 정규화
-    base_point = landmarks[0]  # 코의 좌표
+    base_point = landmarks[0]
     normalized_landmarks = []
 
     for lm in landmarks:
@@ -47,3 +47,16 @@ def normalize_landmarks(landmarks):
         normalized_landmarks.append(normalized_landmark)
 
     return normalized_landmarks
+
+def calculate_cosine_similarity(landmark1, landmark2):
+    vector1 = np.array([landmark1['x'], landmark1['y'], landmark1['z']])
+    vector2 = np.array([landmark2['x'], landmark2['y'], landmark2['z']])
+    norm1 = np.linalg.norm(vector1)
+    norm2 = np.linalg.norm(vector2)
+
+    if norm1 == 0 or norm2 == 0:
+        return 0.0
+
+    dot_product = np.dot(vector1, vector2)
+    return dot_product / (norm1 * norm2)
+
