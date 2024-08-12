@@ -55,7 +55,6 @@ const followerSlice = createSlice({
       })
       .addCase(getUserFollowing.fulfilled, (state, action) => {
         state.status = 'sucess';
-        console.log(action.payload);
         state.followingList = action.payload.followingList;
       })
       .addCase(getUserFollowing.rejected, (state, action) => {
