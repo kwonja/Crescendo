@@ -130,10 +130,10 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
           />
         )}
       </div>
-      <div className="feed_comment_box" onClick={(e) => e.stopPropagation()}>
+      <div className="feed_comment_box" >
         {' '}
         {commentCnt}
-        <Comment className="hoverup" />
+        <Comment />
       </div>
     </div>
   );
