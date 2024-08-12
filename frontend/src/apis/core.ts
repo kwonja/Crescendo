@@ -1,7 +1,6 @@
 import axios from 'axios';
-// export const BASE_URL = 'http://i11b108.p.ssafy.io:8000';
-export const BASE_URL = 'https://i11b108.p.ssafy.io/server';
-export const IMAGE_BASE_URL = 'https://i11b108.p.ssafy.io/server/files/';
+export const BASE_URL = 'https://www.crescendo.o-r.kr/server';
+export const IMAGE_BASE_URL = 'https://www.crescendo.o-r.kr/server/files/';
 const config = {
   baseURL: BASE_URL,
   withCredentials: true,
