@@ -1,22 +1,21 @@
 .action-menu {
-    position: absolute; /* 부모 요소에 대해 절대 위치 지정 */
-    background-color: white;
-    border: 1px solid #ccc;
+  position: absolute; /* 부모 요소에 대해 절대 위치 지정 */
+  background-color: white;
+  border: 1px solid #ccc;
+  width: 100px;
+  margin: 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+  .action-menu-item {
     width: 100px;
-    margin: 0;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    height: 36px;
+    text-align: center;
+    font-size: 18px;
+    padding: 5px 10px;
+    cursor: pointer;
 
-    .action-menu-item {
-        width: 100px;
-        height: 36px;
-        text-align: center;
-        font-size: 18px;
-        padding: 5px 10px;
-        cursor: pointer; 
-        
-        &:hover {
-            background-color: #f0f0f0;
-        }
+    &:hover {
+      background-color: #f0f0f0;
     }
+  }
 }
-

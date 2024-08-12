@@ -18,9 +18,9 @@ export default function SearchInput({ placeholder, value, onChange, onSearch }: 
           onChange={onChange}
           placeholder={placeholder}
           className="search-input"
-          onKeyUp={(event)=>{
-            if (event.key==='Enter' && onSearch) {
-              onSearch()
+          onKeyUp={event => {
+            if (event.key === 'Enter' && onSearch) {
+              onSearch();
             }
           }}
         />

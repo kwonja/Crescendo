@@ -5,13 +5,20 @@ import { ReactComponent as Heart } from '../../assets/images/Favorite/heart.svg'
 import { ReactComponent as FullHeart } from '../../assets/images/Favorite/fullheart.svg';
 import { IMAGE_BASE_URL } from '../../apis/core';
 import UserProfile from '../common/UserProfile';
-import { getFavoriteRankList, resetState, toggleIsLike } from '../../features/favorite/favoriteSlice';
+import {
+  getFavoriteRankList,
+  resetState,
+  toggleIsLike,
+} from '../../features/favorite/favoriteSlice';
 import ActionMenu from './ActionMenu';
 
 export default function FavoriteRankList() {
   const { favoriteRankList, status, hasMore } = useAppSelector(state => state.favorite);
   const [showActionMenu, setShowActionMenu] = useState<boolean>(false);
-  const [actionMenuPosition, setActionMenuPosition] = useState<{top:number, left:number}>({top:0, left:0});
+  const [actionMenuPosition, setActionMenuPosition] = useState<{ top: number; left: number }>({
+    top: 0,
+    left: 0,
+  });
   const [selectedRankId, setSelectedRankId] = useState<number>(-1);
   const dispatch = useAppDispatch();
   const observer = useRef<IntersectionObserver | null>(null);
@@ -40,21 +47,22 @@ export default function FavoriteRankList() {
     [hasMore, dispatch, status],
   );
 
-
-  const handleDotsClick = (event:React.MouseEvent<SVGSVGElement, MouseEvent>, id:number) => {
+  const handleDotsClick = (event: React.MouseEvent<SVGSVGElement, MouseEvent>, id: number) => {
     const { pageX, pageY } = event;
-    setSelectedRankId(id)
-    setActionMenuPosition({top:pageY, left:pageX})
+    setSelectedRankId(id);
+    setActionMenuPosition({ top: pageY, left: pageX });
     setShowActionMenu(true);
-
-  }
+  };
 
   return (
     <div className="favoriteranklist">
       {favoriteRankList.map(rankEntry => (
         <div className="favoriteranklist_card" key={rankEntry.favoriteRankId}>
           <div className="dotsbox">
-            <Dots className="hoverup" onClick={(event)=>handleDotsClick(event,rankEntry.favoriteRankId)}/>
+            <Dots
+              className="hoverup"
+              onClick={event => handleDotsClick(event, rankEntry.favoriteRankId)}
+            />
           </div>
           <div className="favoriteranklist_card_label text-4xl">
             <div>{rankEntry.idolGroupName}</div>
@@ -87,8 +95,16 @@ export default function FavoriteRankList() {
           </div>
         </div>
       ))}
-      {showActionMenu && <ActionMenu favoriteRankId={selectedRankId} position={actionMenuPosition} onClose={()=>setShowActionMenu(false)}/>}
-      {(status ==='success' || status === '') && hasMore && <div ref={loadMoreElementRef}>Load More..</div>}
+      {showActionMenu && (
+        <ActionMenu
+          favoriteRankId={selectedRankId}
+          position={actionMenuPosition}
+          onClose={() => setShowActionMenu(false)}
+        />
+      )}
+      {(status === 'success' || status === '') && hasMore && (
+        <div ref={loadMoreElementRef}>Load More..</div>
+      )}
     </div>
   );
 }

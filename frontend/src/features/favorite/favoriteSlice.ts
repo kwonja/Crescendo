@@ -33,7 +33,13 @@ export const getFavoriteRankList = createAsyncThunk<
   { state: RootState }
 >('favoriteRankList/getFavoriteRankList', async (_, thunkAPI) => {
   const state = thunkAPI.getState().favorite;
-  const response = await getFavoriteRankListAPI(state.page, 3, state.idolGroupId, state.idolId, state.sortByVotes);
+  const response = await getFavoriteRankListAPI(
+    state.page,
+    3,
+    state.idolGroupId,
+    state.idolId,
+    state.sortByVotes,
+  );
   return response;
 });
 
@@ -57,9 +63,9 @@ const favoriteSlice = createSlice({
     resetState() {
       return initialState;
     },
-    
-    setIdolGroupId(state, action: PayloadAction<number|null>) {
-      if (state.idolGroupId !== action.payload){
+
+    setIdolGroupId(state, action: PayloadAction<number | null>) {
+      if (state.idolGroupId !== action.payload) {
         state.page = 0;
         state.favoriteRankList = [];
         state.hasMore = true;
@@ -69,8 +75,8 @@ const favoriteSlice = createSlice({
       }
     },
 
-    setIdolId(state, action: PayloadAction<number|null>) {
-      if (state.idolId !== action.payload){
+    setIdolId(state, action: PayloadAction<number | null>) {
+      if (state.idolId !== action.payload) {
         state.page = 0;
         state.favoriteRankList = [];
         state.hasMore = true;

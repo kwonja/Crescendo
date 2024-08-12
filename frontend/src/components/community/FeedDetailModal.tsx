@@ -177,7 +177,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
   };
 
   const getAbsolutePath = (path: string | null) => {
-    return path ? `https://i11b108.p.ssafy.io/server/files/${path}` : '';
+    return path ? `https://www.crescendo.o-r.kr/server/files/${path}` : '';
   };
 
   if (!show || !feedDetail) return null;

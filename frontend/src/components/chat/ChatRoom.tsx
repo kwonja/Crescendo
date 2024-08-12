@@ -46,8 +46,7 @@ export default function Chatroom() {
   const HandleMessageSend = () => {
     const message = inputRef.current!.value;
 
-    if(message !== '')
-    {
+    if (message !== '') {
       client.current!.send(
         '/app/message',
         {},
