@@ -20,10 +20,10 @@ export default function Dropdown({
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(defaultValue);
 
-  useEffect(()=> {
+  useEffect(() => {
     setIsOpen(false);
     setSelected(defaultValue);
-  }, [options, defaultValue]) 
+  }, [options, defaultValue]);
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
@@ -44,7 +44,9 @@ export default function Dropdown({
         {iconPosition === 'left' && (
           <div className="dropdown_icon">{isOpen ? <MenuUp /> : <MenuDown />}</div>
         )}
-        <div className={`dropdown_head_value ${selected===defaultValue?"is_default":""}`}>{selected}</div>
+        <div className={`dropdown_head_value ${selected === defaultValue ? 'is_default' : ''}`}>
+          {selected}
+        </div>
         {iconPosition !== 'left' && (
           <div className="dropdown_icon">{isOpen ? <MenuUp /> : <MenuDown />}</div>
         )}

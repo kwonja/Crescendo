@@ -48,7 +48,7 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
           date={lastModified}
           userProfilePath={profilePath ? IMAGE_BASE_URL + profilePath : null}
         />
-        <Dots className="dots hoverup" onClick={(e) => e.stopPropagation()}/>
+        <Dots className="dots hoverup" onClick={e => e.stopPropagation()} />
       </div>
       {imagePaths.length > 0 && (
         <div className="feed_image_box">
@@ -103,7 +103,7 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
             </Button>
             </div>
           </div>
-          <div className="pagination-dots" onClick={(e) => e.stopPropagation()}>
+          <div className="pagination-dots" onClick={e => e.stopPropagation()}>
             {imagePaths.map((_, idx) => (
               <div
                 key={idx}
@@ -123,7 +123,7 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
           <div key={index}>#{tag}</div>
         ))}
       </div>
-      <div className="feed_heart_box" onClick={(e) => e.stopPropagation()}>
+      <div className="feed_heart_box" onClick={e => e.stopPropagation()}>
         {likeCnt}
         {!isLike ? (
           <Heart

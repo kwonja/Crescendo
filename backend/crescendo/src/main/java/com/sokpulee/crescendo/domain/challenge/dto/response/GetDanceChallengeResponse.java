@@ -14,9 +14,10 @@ public class GetDanceChallengeResponse {
     private LocalDateTime endAt;
     private Long userId;
     private String nickname;
+    private String profilePath;
     private int participants;
 
-    public GetDanceChallengeResponse(Long challengeId, String title, String challengeVideoPath, LocalDateTime createdAt, LocalDateTime endAt, Long userId, String nickname, int participants) {
+    public GetDanceChallengeResponse(Long challengeId, String title, String challengeVideoPath, LocalDateTime createdAt, LocalDateTime endAt, Long userId, String nickname, String profilePath, int participants) {
         this.challengeId = challengeId;
         this.title = title;
         this.challengeVideoPath = challengeVideoPath;
@@ -24,6 +25,7 @@ public class GetDanceChallengeResponse {
         this.endAt = endAt;
         this.userId = userId;
         this.nickname = nickname;
+        this.profilePath = profilePath;
         this.participants = participants;
     }
 }

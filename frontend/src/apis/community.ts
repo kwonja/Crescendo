@@ -5,11 +5,11 @@ import {
   CommunityDetailInfo,
 } from '../interface/communityList';
 
-export const getCommunityListAPI = async (page: number, size: number, keyword:string) => {
+export const getCommunityListAPI = async (page: number, size: number, keyword: string) => {
   const params = {
     page,
     size,
-    keyword
+    keyword,
   };
   const response = await api.get(`/api/v1/community`, { params });
   return response.data as CommunityListResponse;

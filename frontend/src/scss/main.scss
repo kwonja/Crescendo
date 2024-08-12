@@ -21,6 +21,7 @@
 @import 'components/favorite/favoriteranklist';
 @import 'components/favorite/favoriterankpostmodal';
 @import 'components/favorite/actionmenu';
+@import 'components/challenge//challengelist';
 
 @import 'components/chat/chatlayout';
 @import 'components/chat/chatroomlistitem';
@@ -30,6 +31,9 @@
 @import 'components/searchuser/searchuser';
 
 @import 'components/alarm/alarmlayout';
+@import 'components/challenge/challenge';
+@import 'components//challenge//challengeitem';
+@import 'components/challenge/holdmodal';
 
 @import 'components/main/section';
 @import 'base/font';

@@ -19,8 +19,7 @@ const Login: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState(''); // 에러 메시지 상태 관리
 
   // 컴포넌트가 처음 마운트될 때만 실행
-  useEffect(() => {
-  }, [email, dispatch]);
+  useEffect(() => {}, [email, dispatch]);
 
   useEffect(() => {
     if (isLoggedIn) {

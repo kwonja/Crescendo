@@ -25,10 +25,10 @@ const initialState: CommunityListState = {
 };
 
 // 전체 커뮤니티 리스트 가져오는 함수
-export const getCommunityList = createAsyncThunk<CommunityListResponse, any, {state:RootState}>(
+export const getCommunityList = createAsyncThunk<CommunityListResponse, any, { state: RootState }>(
   'communityList/getCommunityList',
   async (_, thunkAPI) => {
-    const {page, keyword} = thunkAPI.getState().communityList;
+    const { page, keyword } = thunkAPI.getState().communityList;
     const response = await getCommunityListAPI(page, 4, keyword);
     return response;
   },

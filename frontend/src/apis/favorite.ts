@@ -52,16 +52,16 @@ export const getBestPhotoListAPI = async () => {
   return bestRankList;
 };
 
-export const postFavoriteRankAPI = async (data:FormData) => {
-  const response = await Authapi.post('/api/v1/favorite-rank', data, 
-    {
+export const postFavoriteRankAPI = async (data: FormData) => {
+  const response = await Authapi.post('/api/v1/favorite-rank', data, {
     headers: {
       'Content-Type': 'multipart/form-data',
-    }})
+    },
+  });
   return response;
-}
+};
 
-export const deleteFavoriteRankAPI = async (favoriteRankId:number) => {
+export const deleteFavoriteRankAPI = async (favoriteRankId: number) => {
   const response = await Authapi.delete(`/api/v1/favorite-rank/${favoriteRankId}`);
   return response;
-}
+};
