@@ -27,6 +27,11 @@
       -webkit-line-clamp: 1; /* 두 줄 표시 */
       -webkit-box-orient: vertical;
     }
+    .nickname{
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
   .lastchattime {
     position: absolute;

@@ -2,6 +2,7 @@ import React from 'react';
 import { ReactComponent as Participant } from '../../assets/images/challenge/participant.svg';
 import { ReactComponent as Timer } from '../../assets/images/challenge/timer.svg';
 import { ReactComponent as Play } from '../../assets/images/challenge/playbtn.svg';
+import { ReactComponent as Enter } from '../../assets/images/challenge/enter.svg';
 export default function ChallengeItem() {
   return (
     <div className="challengeitem">
@@ -16,6 +17,7 @@ export default function ChallengeItem() {
               <Participant /> 300명
             </li>
           </ul>
+          <Enter className='absolute right-3 top-3'/>
           <div className="challengeitem_title">뉴진스 안무 커버 댄스방</div>
         </div>
         <div className="big-play-button">

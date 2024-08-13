@@ -141,7 +141,7 @@ export default function Chatroom() {
             }}
           />
         </div>
-        <div>{opponentNickName}</div>
+        <div className='w-8/12 truncate'>{opponentNickName}</div>
         <Hamburger />
       </div>
 

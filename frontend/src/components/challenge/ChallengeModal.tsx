@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ReactComponent as Close } from '../../assets/images/challenge/close.svg';
 import { ReactComponent as AddImage } from '../../assets/images/img_add.svg';
 import { postChallenge } from '../../apis/challenge';
-// import { ReactComponent as Calendar } from '../../assets/images/challenge/calendar.svg';
 
 interface ModalProps {
   onClose: () => void;
@@ -54,9 +53,12 @@ export default function ChallengeModal({ onClose }: ModalProps) {
         </div>
         <div className="holdmodal-body">
           <div className="flex flex-row w-full">
-            <label htmlFor="video" className="video_label">
+          {videoPreview ? (
+                <video ref={videoRef} controls src={videoPreview} className="video-preview object-cover" />
+              ) : <label htmlFor="video" className="video_label">
               <AddImage />
-            </label>
+            </label>}
+            
             <input
               id="video"
               type="file"
@@ -73,9 +75,13 @@ export default function ChallengeModal({ onClose }: ModalProps) {
                 ref={titleRef}
               />
               <input className="input_date" id="cal" type="datetime-local" ref={timeRef} />
-              {videoPreview && (
-                <video ref={videoRef} controls src={videoPreview} className="w-32 object-cover" />
-              )}
+              {
+                videoPreview && (
+                <label htmlFor="video" className="video_label_add">
+                  <AddImage className='w-16 h-16'/>
+                  </label>)
+              }
+              
               <button className="modal-btn" onClick={CreateChallenge}>
                 생성
               </button>

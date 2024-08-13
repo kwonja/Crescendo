@@ -2,22 +2,25 @@
   width: 100%;
   max-width: 1300px;
   margin: 0 auto;
-  border-left: 1px solid #f66;
-  border-right: 1px solid #f66;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   height: 900px;
   position: relative;
-  .left {
+  .left-box {
     width: calc(100% / 3) * 1;
-    border: 1px solid black;
     height: 600px;
     position: relative;
   }
+  .left {
+    width: calc(100% / 3) * 1;
+    height: 600px;
+    position: fixed;
+    top: 50px;
+    left: 100px;
+  }
   .right {
     width: calc(100% / 3) * 2;
-    border: 1px solid black;
     height: 600px;
   }
 
@@ -30,7 +33,7 @@
   }
 
   .video-player {
-    width: 100%;
+    width: 90%;
     margin: 0 auto;
     display: block;
     border-radius: 30px;
@@ -38,10 +41,10 @@
   }
 
   .controls {
-    width: 100%;
+    width: 90%;
     position: absolute;
     bottom: 3px;
-    left: 0px;
+    left: 30px;
     display: flex;
     align-items: center;
     margin-top: 10px;

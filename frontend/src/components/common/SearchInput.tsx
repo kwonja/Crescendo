@@ -6,11 +6,12 @@ interface InputProps {
   value?: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onSearch?: () => void;
+  className?: string;
 }
 
-export default function SearchInput({ placeholder, value, onChange, onSearch }: InputProps) {
+export default function SearchInput({ placeholder, value, onChange, onSearch,className }: InputProps) {
   return (
-    <div className="search-container">
+    <div className={`${className} search-container`}>
       <span>
         <input
           type="text"

@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useRef, useState } from 'react';
 import { getUserId, IMAGE_BASE_URL } from '../../apis/core';
-import { modifyProfileAPI } from '../../apis/user';
+import { modifyIntroductionAPI, modifyNicknameAPI, modifyProfileAPI } from '../../apis/user';
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
 import { handleFollow, handleInfoUpdate } from '../../features/mypage/profileSlice';
 import { followAPI } from '../../apis/follow';
@@ -24,14 +24,17 @@ export default function Profile({userId }: ProfileProps) {
     dispatch(handleFollow());
     await followAPI(userId);
   };
-  const handleSaveClick = () => {
+  const handleSaveClick = async() => {
     if (selectedFile) {
       const formData = new FormData();
       formData.append('profileImage', selectedFile);
-     modifyProfileAPI(formData);
+      await modifyProfileAPI(formData);
     }
     const newNickname = nickeRef.current?.value || nickname;
     const newIntroduction = introRef.current?.value || introduction;
+
+    if(introduction !== newIntroduction) await modifyIntroductionAPI(getUserId(),newIntroduction);
+    if(newNickname !== nickname) await modifyNicknameAPI(getUserId(),newNickname);
     dispatch(handleInfoUpdate({nickname : newNickname, introduction: newIntroduction}));
     setIsEditing(prev => !prev);
   };

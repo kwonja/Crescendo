@@ -12,8 +12,10 @@ export default function Challenge() {
 
   return (
     <div className="challenge">
-      <div className="left">
-        <VideoPlayer />
+      <div className="left-box">
+      </div>
+      <div className='left'>
+      <VideoPlayer />
       </div>
       <div className="right">
         <ChallengeList />
