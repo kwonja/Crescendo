@@ -321,10 +321,16 @@
               margin-left: 180px;
               width: 24px;
               height: 24px;
+              visibility: hidden;
             }
             .comment-dots-button:hover {
               cursor: pointer;
             }
+
+            .comment-dots-button.visible {
+              visibility: visible;
+            }
+
             .comment-menu {
               position: relative;
               right: 10px;
