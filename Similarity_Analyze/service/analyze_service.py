@@ -84,4 +84,13 @@ def get_analyze(base_landmarks, compare_landmarks):
         total_similarity += frame_similarity
 
     similarity_percentage = total_similarity / min(len(base_landmarks), len(compare_landmarks))
-    return similarity_percentage * 100  # 유사도를 0-100 범위로 변환하여 반환
+
+    # similarity_percentage가 2보다 크면 100%, 0.5보다 작으면 0%, 그 사이의 값은 선형 변환
+    similarity_percentage *= 100
+    if similarity_percentage >= 2:
+        return 100
+    elif similarity_percentage <= 0.5:
+        return 0
+    else:
+        # 선형 변환: 0.5에서 2 사이의 값을 0%에서 100%로 변환
+        return (similarity_percentage - 0.5) * (100 / (2 - 0.5))
