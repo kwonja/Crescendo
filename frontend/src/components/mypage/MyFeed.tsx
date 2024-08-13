@@ -12,6 +12,7 @@ import UserProfile from '../common/UserProfile';
 import { IMAGE_BASE_URL } from '../../apis/core';
 import Button from '../common/Button';
 import { toggleFeedLike } from '../../features/communityDetail/communityDetailSlice';
+import { Link } from 'react-router-dom';
 
 interface FeedProps {
   feed: MyFeedInfo;
@@ -29,6 +30,8 @@ export default function MyFeed({ feed }: FeedProps) {
     commentCnt,
     tagList,
     isLike,
+    idolGroupId,
+    idolGroupName
   } = feed;
   const dispatch = useAppDispatch();
   const [imgIdx, setImgIdx] = useState<number>(0);
@@ -44,6 +47,7 @@ export default function MyFeed({ feed }: FeedProps) {
           date={new Date(createdAt).toLocaleString()}
           userProfilePath={profileImagePath ? IMAGE_BASE_URL + profileImagePath : null}
         />
+        <div className='community_name'><Link to={`/community/${idolGroupId}`}>{idolGroupName}</Link></div>
         <Dots className="dots hoverup" onClick={e => e.stopPropagation()} />
       </div>
       {feedImagePathList.length > 0 && (

@@ -11,6 +11,8 @@ export interface MyFeedInfo {
   content: string; // 피드 본문
   commentCnt: number; // 댓글 수
   tagList: string[]; // 태그 리스트
+  idolGroupId: number;
+  idolGroupName: string;
 }
 
 export interface FeedInfo {

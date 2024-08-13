@@ -9,6 +9,7 @@ import UserProfile from '../common/UserProfile';
 import { useAppDispatch } from '../../store/hooks/hook';
 import { toggleFanArtLike } from '../../features/communityDetail/communityDetailSlice';
 import { decrementLike, incrementLike } from '../../features/mypage/myFeedSlice';
+import { Link } from 'react-router-dom';
 
 interface FanArtProps {
   fanArt: MyFanArtInfo;
@@ -23,9 +24,11 @@ export default function MyFanart({fanArt}:FanArtProps) {
           likeCnt,
           fanArtImagePathList,
           commentCnt,
-          lastModified,
+          createdAt,
           title,
-          isLike
+          isLike,
+          idolGroupId,
+          idolGroupName
         } = fanArt;
   
   const dispatch = useAppDispatch();
@@ -33,6 +36,7 @@ export default function MyFanart({fanArt}:FanArtProps) {
 
   return (
     <div className="gallery">
+      <div className='community_name'><Link to={`/community/${idolGroupId}`}>{idolGroupName}</Link></div>
       <img className='gallery-img' src={IMAGE_BASE_URL+fanArtImagePathList[0]} alt="팬아트그림" />
 
       <div className="title_box">
@@ -47,7 +51,7 @@ export default function MyFanart({fanArt}:FanArtProps) {
           <UserProfile
             userId={userId}
             userNickname={nickname}
-            date={lastModified}
+            date={new Date(createdAt).toLocaleString()}
             userProfilePath={profileImagePath ? IMAGE_BASE_URL + profileImagePath : null}
           />
         </div>

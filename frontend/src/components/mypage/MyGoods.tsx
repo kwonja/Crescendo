@@ -9,6 +9,7 @@ import UserProfile from '../common/UserProfile';
 import { useAppDispatch } from '../../store/hooks/hook';
 import { toggleGoodsLike } from '../../features/communityDetail/communityDetailSlice';
 import { decrementLike, incrementLike } from '../../features/mypage/myFeedSlice';
+import { Link } from 'react-router-dom';
 
 interface GoodsProps {
   goods: MyGoodsInfo;
@@ -25,7 +26,9 @@ export default function MyGoods({goods}:GoodsProps) {
           commentCnt,
           createdAt,
           title,
-          isLike
+          isLike,
+          idolGroupId,
+          idolGroupName
         } = goods;
   
   const dispatch = useAppDispatch();
@@ -33,6 +36,7 @@ export default function MyGoods({goods}:GoodsProps) {
 
   return (
     <div className="gallery">
+      <div className='community_name'><Link to={`/community/${idolGroupId}`}>{idolGroupName}</Link></div>
       <img className='gallery-img' src={goodsImagePathList?IMAGE_BASE_URL+goodsImagePathList[0]:''} alt="굿즈그림" />
 
       <div className="title_box">

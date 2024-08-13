@@ -28,6 +28,8 @@ export interface MyFanArtInfo {
     title: string;
     like: boolean;
     isLike: boolean;
+    idolGroupId: number;
+    idolGroupName: string;
 }
 
 export interface GoodsInfo {
@@ -62,6 +64,8 @@ export interface MyGoodsInfo {
     title: string;
     like: boolean;
     isLike: boolean;
+    idolGroupId: number;
+    idolGroupName: string;    
 }
 
 export interface getGalleryListParams {
