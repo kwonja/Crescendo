@@ -260,7 +260,9 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
                             imagePaths,
                             f.getContent(),
                             Optional.ofNullable(f.getCommentCnt()).orElse(0), // 여기에서 null 체크
-                            tags
+                            tags,
+                            f.getIdolGroup().getName(),
+                            f.getIdolGroup().getId()
                     );
                 })
                 .collect(Collectors.toList());
@@ -327,7 +329,9 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
                             imagePaths,
                             f.getContent(),
                             Optional.ofNullable(f.getCommentCnt()).orElse(0), // 여기에서 null 체크
-                            tags
+                            tags,
+                            f.getIdolGroup().getName(),
+                            f.getIdolGroup().getId()
                     );
                 })
                 .collect(Collectors.toList());

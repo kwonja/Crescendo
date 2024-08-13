@@ -1,6 +1,7 @@
 package com.sokpulee.crescendo.domain.goods.controller;
 
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtSearchCondition;
+import com.sokpulee.crescendo.domain.feed.dto.response.GetFeedByUserIdResponse;
 import com.sokpulee.crescendo.domain.goods.dto.request.*;
 import com.sokpulee.crescendo.domain.goods.dto.response.*;
 import com.sokpulee.crescendo.domain.goods.service.GoodsService;
@@ -278,6 +279,21 @@ public class GoodsController {
         Page<GoodsReplyResponse> goodsReplyResponses = goodsService.getGoodsReply(loggedInUserId,goodsId,goodsCommentId,pageable);
 
         return ResponseEntity.ok(goodsReplyResponses);
+    }
+
+    @GetMapping("/user/{user-id}")
+    @Operation(summary = "특정 회원이 쓴 굿즈 조회", description = "특정 회원이 쓴 굿즈 조회 API")
+    public ResponseEntity<Page<GetGoodsByUserIdResponse>> getGoodsByUserId(
+            @PathVariable("user-id") Long userId,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<GetGoodsByUserIdResponse> myGoodsResponses = goodsService.getGoodsByUserId(userId, pageable);
+
+        return ResponseEntity.ok(myGoodsResponses);
     }
 
 
