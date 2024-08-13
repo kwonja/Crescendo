@@ -317,7 +317,8 @@ public class GoodsCustomRepositoryImpl implements GoodsCustomRepository{
                             f.getContent(),
                             Optional.ofNullable(f.getCommentCnt()).orElse(0),
                             f.getIdolGroup().getName(),
-                            f.getIdolGroup().getId()
+                            f.getIdolGroup().getId(),
+                            f.getTitle()
                             );
                 })
                 .collect(Collectors.toList());

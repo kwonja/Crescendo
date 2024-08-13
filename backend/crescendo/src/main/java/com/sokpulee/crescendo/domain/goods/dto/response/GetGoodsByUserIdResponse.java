@@ -36,7 +36,9 @@ public class GetGoodsByUserIdResponse {
 
     private Long idolGroupId;
 
-    public GetGoodsByUserIdResponse(Long goodsId, Long userId, String profileImagePath, String nickname, LocalDateTime createdAt, LocalDateTime lastModified, int likeCnt, boolean isLike, List<String> goodsImagePathList, String content, int commentCnt, String idolGroupName, Long idolGroupId) {
+    private String title;
+
+    public GetGoodsByUserIdResponse(Long goodsId, Long userId, String profileImagePath, String nickname, LocalDateTime createdAt, LocalDateTime lastModified, int likeCnt, boolean isLike, List<String> goodsImagePathList, String content, int commentCnt, String idolGroupName, Long idolGroupId, String title) {
         this.goodsId = goodsId;
         this.userId = userId;
         this.profileImagePath = profileImagePath;
@@ -50,5 +52,6 @@ public class GetGoodsByUserIdResponse {
         this.commentCnt = commentCnt;
         this.idolGroupName = idolGroupName;
         this.idolGroupId = idolGroupId;
+        this.title = title;
     }
 }
