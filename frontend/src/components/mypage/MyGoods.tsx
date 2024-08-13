@@ -23,7 +23,7 @@ export default function MyGoods({goods}:GoodsProps) {
           likeCnt,
           goodsImagePathList,
           commentCnt,
-          lastModified,
+          createdAt,
           title,
           isLike
         } = goods;
@@ -33,7 +33,7 @@ export default function MyGoods({goods}:GoodsProps) {
 
   return (
     <div className="gallery">
-      <img className='gallery-img' src={IMAGE_BASE_URL+goodsImagePathList[0]} alt="굿즈그림" />
+      <img className='gallery-img' src={goodsImagePathList?IMAGE_BASE_URL+goodsImagePathList[0]:''} alt="굿즈그림" />
 
       <div className="title_box">
         <div className="type">굿즈</div>
@@ -47,7 +47,7 @@ export default function MyGoods({goods}:GoodsProps) {
           <UserProfile
             userId={userId}
             userNickname={nickname}
-            date={lastModified}
+            date={new Date(createdAt).toLocaleString()}
             userProfilePath={profileImagePath ? IMAGE_BASE_URL + profileImagePath : null}
           />
         </div>

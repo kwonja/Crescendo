@@ -2,8 +2,9 @@
 
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { MyFeedInfo } from '../../interface/feed';
-import { getMyFanArtAPI, getMyFeedAPI } from '../../apis/user';
+import { getMyFanArtAPI, getMyFeedAPI, getMyGoodsAPI } from '../../apis/user';
 import { MyFanArtInfo, MyGoodsInfo } from '../../interface/gallery';
+import { RootState } from '../../store/store';
 
 export type PromiseStatus = 'loading' | 'success' | 'failed' | '';
 
@@ -26,18 +27,21 @@ const initialState: MyFeedState = {
   page: 0,
 };
 
-export const getMyFeedList = createAsyncThunk('myFeedSlice/getMyFeedList', async (userId: number) => {
-  const response = await getMyFeedAPI(userId, 0, 3);
+export const getMyFeedList = createAsyncThunk('myFeedSlice/getMyFeedList', async (userId: number, thunkAPI) => {
+  const rootState = thunkAPI.getState() as RootState;
+  const response = await getMyFeedAPI(userId, rootState.myFeed.page, 3);
   return response;
 });
 
-export const getMyFanArtList = createAsyncThunk('myFeedSlice/getMyFanArtList', async (userId: number) => {
-  const response = await getMyFanArtAPI(userId, 0, 3);
+export const getMyFanArtList = createAsyncThunk('myFeedSlice/getMyFanArtList', async (userId: number, thunkAPI) => {
+  const rootState = thunkAPI.getState() as RootState;
+  const response = await getMyFanArtAPI(userId, rootState.myFeed.page, 3);
   return response;
 });
 
-export const getMyGoodsList = createAsyncThunk('myFeedSlice/getMyGoodsList', async (userId: number) => {
-  const response = await getMyFanArtAPI(userId, 0, 3);
+export const getMyGoodsList = createAsyncThunk('myFeedSlice/getMyGoodsList', async (userId: number, thunkAPI) => {
+  const rootState = thunkAPI.getState() as RootState;
+  const response = await getMyGoodsAPI(userId, rootState.myFeed.page, 3);
   return response;
 });
 
