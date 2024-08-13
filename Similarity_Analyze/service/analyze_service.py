@@ -64,12 +64,10 @@ def calculate_dtw_similarity(base_landmarks, compare_landmarks):
     base_points = [[lm['x'], lm['y'], lm['z']] for lm in base_landmarks]
     compare_points = [[lm['x'], lm['y'], lm['z']] for lm in compare_landmarks]
 
-    # FastDTW를 사용하여 DTW 거리 계산
     distance, _ = fastdtw(base_points, compare_points, dist=euclidean)
 
-    # DTW 거리 값을 적절히 스케일링하여 유사도로 변환
-    max_distance = np.sqrt(3)  # 최대 거리 (Euclidean 거리에서 최대 차원 수를 반영)
-    similarity = np.exp(-distance / max_distance)  # 거리 값을 유사도로 변환 (0-1 사이)
+    max_distance = np.sqrt(3)
+    similarity = np.exp(-distance / max_distance)
 
     return similarity
 
@@ -85,12 +83,10 @@ def get_analyze(base_landmarks, compare_landmarks):
 
     similarity_percentage = total_similarity / min(len(base_landmarks), len(compare_landmarks))
 
-    # similarity_percentage가 2보다 크면 100%, 0.5보다 작으면 0%, 그 사이의 값은 선형 변환
     similarity_percentage *= 100
     if similarity_percentage >= 2:
         return 100
     elif similarity_percentage <= 0.5:
         return 0
     else:
-        # 선형 변환: 0.5에서 2 사이의 값을 0%에서 100%로 변환
         return (similarity_percentage - 0.5) * (100 / (2 - 0.5))
