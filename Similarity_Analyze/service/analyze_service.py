@@ -72,6 +72,10 @@ def calculate_dtw_similarity(base_landmarks, compare_landmarks):
     return similarity
 
 def get_analyze(base_landmarks, compare_landmarks):
+    if len(base_landmarks) == 0 or len(compare_landmarks) == 0:
+        print("Error: One of the landmark lists is empty.")
+        return 0  # 또는 적절한 기본값을 반환하거나 예외를 발생시킴
+
     total_similarity = 0
 
     for base_frame, compare_frame in zip(base_landmarks, compare_landmarks):

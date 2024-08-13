@@ -5,3 +5,4 @@ numpy
 fastdtw
 scipy
 python-dotenv
+psutil
