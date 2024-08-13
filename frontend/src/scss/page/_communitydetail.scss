@@ -86,7 +86,6 @@
   .modal-body {
     flex: 1;
     padding: 20px;
-    overflow-y: auto; /* 세로 스크롤 추가 */
   }
 
   .modal-body::-webkit-scrollbar {

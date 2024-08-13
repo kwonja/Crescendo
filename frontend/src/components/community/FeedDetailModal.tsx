@@ -77,7 +77,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
   const loadComments = useCallback(async () => {
     try {
       const response = await api.get(`/api/v1/community/feed/${feedId}/comment`, {
-        params: { page: 0, size: 5 },
+        params: { page: 0, size: 100 },
       });
       //eslint-disable-next-line no-console
       console.log('Comments:', response);
@@ -90,6 +90,12 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
   const handleNewCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length <= MAX_COMMENT_LENGTH) {
       setNewComment(e.target.value);
+    }
+  };
+
+  const handleNewCommentKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleAddComment();
     }
   };
 
@@ -384,10 +390,18 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
                             if (e.key === 'Enter') handleCommentEditSubmit(comment.feedCommentId);
                           }}
                         />
-                        <button onClick={() => handleCommentEditSubmit(comment.feedCommentId)}>
+                        <button
+                          className="comment-edit-submit-button"
+                          onClick={() => handleCommentEditSubmit(comment.feedCommentId)}
+                        >
                           수정
                         </button>
-                        <button onClick={handleCommentEditCancel}>취소</button>
+                        <button
+                          className="comment-edit-exit-button"
+                          onClick={handleCommentEditCancel}
+                        >
+                          취소
+                        </button>
                       </div>
                     ) : (
                       <p>{comment.content}</p>
@@ -409,6 +423,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
               placeholder="여기에 입력하세요."
               value={newComment}
               onChange={handleNewCommentChange}
+              onKeyDown={handleNewCommentKeyDown}
             />
             <CommentWriteButton className="comment-write-button" onClick={handleAddComment} />
           </div>

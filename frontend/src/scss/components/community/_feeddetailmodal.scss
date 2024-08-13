@@ -307,12 +307,12 @@
 
               .comment-nickname {
                 font-size: 24px;
+              }
 
-                .comment-date {
-                  font-size: 14px;
-                  margin-left: auto;
-                  color: #000;
-                }
+              .comment-date {
+                font-size: 14px;
+                margin-left: auto;
+                color: #000;
               }
             }
 
@@ -366,6 +366,8 @@
             display: flex;
             justify-content: flex-start;
             align-items: center;
+            overflow: hidden;
+            word-break: break-all;
 
             .comment-edit-input {
               color: black;
@@ -377,11 +379,14 @@
               align-items: flex-end;
               input {
                 font-size: 18px;
-                width: 300px;
+                width: 330px;
+                margin-right: 10px;
               }
               button {
                 font-size: 20px;
-                margin-right: 20px;
+              }
+              .comment-edit-exit-button {
+                margin-left: 10px;
               }
             }
           }
