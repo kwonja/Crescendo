@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 venv
 __pycache__/
+.env
 
 ### STS ###
 .apt_generated

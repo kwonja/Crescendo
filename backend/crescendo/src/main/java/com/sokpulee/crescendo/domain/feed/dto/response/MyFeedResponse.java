@@ -1,6 +1,7 @@
 package com.sokpulee.crescendo.domain.feed.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sokpulee.crescendo.domain.idol.entity.IdolGroup;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -34,7 +35,11 @@ public class MyFeedResponse {
 
     private List<String> tagList;
 
-    public MyFeedResponse(Long feedId,Long userId, String profileImagePath, String nickname, LocalDateTime createdAt, LocalDateTime lastModified, int likeCnt, boolean isLike, List<String> feedImagePathList, String content, int commentCnt, List<String> tagList) {
+    private String idolGroupName;
+
+    private Long idolGroupId;
+
+    public MyFeedResponse(Long feedId,Long userId, String profileImagePath, String nickname, LocalDateTime createdAt, LocalDateTime lastModified, int likeCnt, boolean isLike, List<String> feedImagePathList, String content, int commentCnt, List<String> tagList, String idolGroupName, Long idolGroupId) {
         this.feedId = feedId;
         this.userId = userId;
         this.profileImagePath = profileImagePath;
@@ -47,5 +52,7 @@ public class MyFeedResponse {
         this.content = content;
         this.commentCnt = commentCnt;
         this.tagList = tagList;
+        this.idolGroupName = idolGroupName;
+        this.idolGroupId = idolGroupId;
     }
 }
