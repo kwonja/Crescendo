@@ -3,18 +3,17 @@ import { ReactComponent as Dots } from '../../assets/images/Gallery/whitedots.sv
 import { ReactComponent as FullHeart } from '../../assets/images/Gallery/whitefullheart.svg';
 import { ReactComponent as Heart } from '../../assets/images/Gallery/whiteheart.svg';
 import { ReactComponent as Comment } from '../../assets/images/Gallery/whitecomment.svg';
-import { GoodsInfo } from '../../interface/gallery';
+import { MyGoodsInfo } from '../../interface/gallery';
 import { IMAGE_BASE_URL } from '../../apis/core';
 import UserProfile from '../common/UserProfile';
 import { useAppDispatch } from '../../store/hooks/hook';
 import { toggleGoodsLike } from '../../features/communityDetail/communityDetailSlice';
 
 interface GoodsProps {
-  goods: GoodsInfo;
-  onClick: () => void;
+  goods: MyGoodsInfo;
 }
 
-export default function CommunityGoods({goods}:GoodsProps) {
+export default function MyGoods({goods}:GoodsProps) {
   const {
           goodsId,
           userId,

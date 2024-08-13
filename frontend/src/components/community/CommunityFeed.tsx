@@ -23,7 +23,7 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
     userId,
     profileImagePath,
     nickname,
-    lastModified,
+    createdAt,
     likeCnt,
     feedImagePathList,
     content,
@@ -45,7 +45,7 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
         <UserProfile
           userId={userId}
           userNickname={nickname}
-          date={lastModified}
+          date={new Date(createdAt).toLocaleString()}
           userProfilePath={profileImagePath ? IMAGE_BASE_URL + profileImagePath : null}
         />
         <Dots className="dots hoverup" onClick={e => e.stopPropagation()} />

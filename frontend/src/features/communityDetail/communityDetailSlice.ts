@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { FeedInfo, FeedListResponse, getFeedListParams } from '../../interface/feed';
-import { GalleryInfo, GalleryListResponse, getGalleryListParams } from '../../interface/gallery';
+import { FeedInfo, getFeedListParams, PageableResponse } from '../../interface/feed';
+import { FanArtInfo, getGalleryListParams, GoodsInfo } from '../../interface/gallery';
 import { getCommunityFeedListAPI, toggleFeedLikeAPI } from '../../apis/feed';
 import { PromiseStatus } from '../mypage/myFeedSlice';
 import { RootState } from '../../store/store';
@@ -9,8 +9,8 @@ import { getCommunityGoodsListAPI, toggleGoodsLikeAPI } from '../../apis/goods';
 
 interface CommunityDetailState {
   feedList: FeedInfo[];
-  fanArtList: GalleryInfo[],
-  goodsList: GalleryInfo[],
+  fanArtList: FanArtInfo[],
+  goodsList: GoodsInfo[],
   status: PromiseStatus;
   error: string | undefined;
   page: number;
@@ -35,7 +35,7 @@ const initialState: CommunityDetailState = {
 };
 
 // 피드 가져오기
-export const getFeedList = createAsyncThunk<FeedListResponse, number, { state: RootState }>(
+export const getFeedList = createAsyncThunk<PageableResponse<FeedInfo>, number, { state: RootState }>(
   'communityDetailSlice/getFeedList',
   async (idolGroupId, thunkAPI) => {
     const { page, filterCondition, sortCondition, searchCondition, keyword } =
@@ -55,7 +55,7 @@ export const getFeedList = createAsyncThunk<FeedListResponse, number, { state: R
   },
 );
 
-export const getFanArtList = createAsyncThunk<GalleryListResponse, number, { state: RootState }>(
+export const getFanArtList = createAsyncThunk<PageableResponse<FanArtInfo>, number, { state: RootState }>(
   'communityDetailSlice/getFanArtList',
   async (idolGroupId, thunkAPI) => {
     const { page, filterCondition, sortCondition, searchCondition, keyword } =
@@ -82,7 +82,7 @@ export const getFanArtList = createAsyncThunk<GalleryListResponse, number, { sta
   },
 );
 
-export const getGoodsList = createAsyncThunk<GalleryListResponse, number, { state: RootState }>(
+export const getGoodsList = createAsyncThunk<PageableResponse<GoodsInfo>, number, { state: RootState }>(
   'communityDetailSlice/getGoodsList',
   async (idolGroupId, thunkAPI) => {
     const { page, filterCondition, sortCondition, searchCondition, keyword } =
@@ -200,11 +200,11 @@ const communityDetailSlice = createSlice({
       state.feedList = [...state.feedList.map((feed)=> feed.feedId=== action.payload.feedId?action.payload.feed:feed)];
     },
 
-    updateFanArt: (state, action: PayloadAction<{fanArt:GalleryInfo; fanArtId:number}>) => {
+    updateFanArt: (state, action: PayloadAction<{fanArt:FanArtInfo; fanArtId:number}>) => {
       state.fanArtList = [...state.fanArtList.map((fanArt)=> fanArt.fanArtId=== action.payload.fanArtId?action.payload.fanArt:fanArt)];
     },
 
-    updateGoods: (state, action: PayloadAction<{goods:GalleryInfo; goodsId:number}>) => {
+    updateGoods: (state, action: PayloadAction<{goods:GoodsInfo; goodsId:number}>) => {
       state.goodsList = [...state.goodsList.map((goods)=> goods.goodsId=== action.payload.goodsId?action.payload.goods:goods)];
     }
 

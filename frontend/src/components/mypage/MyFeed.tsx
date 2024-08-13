@@ -5,16 +5,16 @@ import { ReactComponent as Comment } from '../../assets/images/Feed/comment.svg'
 import { ReactComponent as FullHeart } from '../../assets/images/Feed/fullheart.svg';
 import { ReactComponent as RightBtn } from '../../assets/images/right.svg';
 import { ReactComponent as LeftBtn } from '../../assets/images/left.svg';
-import { FeedInfo } from '../../interface/feed';
+import { MyFeedInfo } from '../../interface/feed';
 import { useAppDispatch } from '../../store/hooks/hook';
 import { decrementLike, incrementLike } from '../../features/mypage/myFeedSlice';
-import { ChatDateTranfer } from '../../utils/ChatDateTranfer';
 import UserProfile from '../common/UserProfile';
 import { IMAGE_BASE_URL } from '../../apis/core';
 import Button from '../common/Button';
+import { toggleFeedLike } from '../../features/communityDetail/communityDetailSlice';
 
 interface FeedProps {
-  feed: FeedInfo;
+  feed: MyFeedInfo;
 }
 export default function MyFeed({ feed }: FeedProps) {
   const {
@@ -22,7 +22,7 @@ export default function MyFeed({ feed }: FeedProps) {
     userId,
     profileImagePath,
     nickname,
-    lastModified,
+    createdAt,
     likeCnt,
     feedImagePathList,
     content,
@@ -41,7 +41,7 @@ export default function MyFeed({ feed }: FeedProps) {
         <UserProfile
           userId={userId}
           userNickname={nickname}
-          date={ChatDateTranfer(lastModified)}
+          date={new Date(createdAt).toLocaleString()}
           userProfilePath={profileImagePath ? IMAGE_BASE_URL + profileImagePath : null}
         />
         <Dots className="dots hoverup" onClick={e => e.stopPropagation()} />
@@ -125,6 +125,7 @@ export default function MyFeed({ feed }: FeedProps) {
           <Heart
             className="hoverup"
             onClick={() => {
+              dispatch(toggleFeedLike(feedId));
               dispatch(incrementLike(feedId));
             }}
           />
@@ -132,6 +133,7 @@ export default function MyFeed({ feed }: FeedProps) {
           <FullHeart
             className="hoverup"
             onClick={() => {
+              dispatch(toggleFeedLike(feedId));
               dispatch(decrementLike(feedId));
             }}
           />
