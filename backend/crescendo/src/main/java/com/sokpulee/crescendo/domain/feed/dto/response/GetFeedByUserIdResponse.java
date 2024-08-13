@@ -34,7 +34,11 @@ public class GetFeedByUserIdResponse {
 
     private List<String> tagList;
 
-    public GetFeedByUserIdResponse(Long feedId,Long userId, String profileImagePath, String nickname, LocalDateTime createdAt, LocalDateTime lastModified, int likeCnt, boolean isLike, List<String> feedImagePathList, String content, int commentCnt, List<String> tagList) {
+    private String IdolGroupName;
+
+    private Long idolGroupId;
+
+    public GetFeedByUserIdResponse(Long feedId,Long userId, String profileImagePath, String nickname, LocalDateTime createdAt, LocalDateTime lastModified, int likeCnt, boolean isLike, List<String> feedImagePathList, String content, int commentCnt, List<String> tagList, String IdolGroupName, Long idolGroupId) {
         this.feedId = feedId;
         this.userId = userId;
         this.profileImagePath = profileImagePath;
@@ -47,5 +51,7 @@ public class GetFeedByUserIdResponse {
         this.content = content;
         this.commentCnt = commentCnt;
         this.tagList = tagList;
+        this.IdolGroupName = IdolGroupName;
+        this.idolGroupId = idolGroupId;
     }
 }

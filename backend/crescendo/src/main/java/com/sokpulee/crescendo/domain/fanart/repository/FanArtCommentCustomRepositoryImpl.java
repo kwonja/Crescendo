@@ -55,7 +55,9 @@ public class FanArtCommentCustomRepositoryImpl implements FanArtCommentCustomRep
                             f.getLikeCnt(),
                             isLike,
                             f.getContent(),
-                            f.getReplyCnt()
+                            f.getReplyCnt(),
+                            f.getCreatedAt(),
+                            f.getLastModified()
                     );
                 })
                 .toList();
@@ -97,7 +99,9 @@ public class FanArtCommentCustomRepositoryImpl implements FanArtCommentCustomRep
                             f.getUser().getNickname(),
                             f.getLikeCnt(),
                             isLike,
-                            f.getContent()
+                            f.getContent(),
+                            f.getCreatedAt(),
+                            f.getLastModified()
                     );
                 })
                 .toList();

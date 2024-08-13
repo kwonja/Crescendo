@@ -54,7 +54,9 @@ public class GoodsCommentCustomRepositoryImpl implements GoodsCommentCustomRepos
                             f.getLikeCnt(),
                             isLike,
                             f.getContent(),
-                            f.getReplyCnt()
+                            f.getReplyCnt(),
+                            f.getCreatedAt(),
+                            f.getLastModified()
                     );
                 })
                 .toList();
@@ -97,7 +99,9 @@ public class GoodsCommentCustomRepositoryImpl implements GoodsCommentCustomRepos
                             f.getUser().getNickname(),
                             f.getLikeCnt(),
                             isLike,
-                            f.getContent()
+                            f.getContent(),
+                            f.getCreatedAt(),
+                            f.getLastModified()
                     );
                 })
                 .toList();

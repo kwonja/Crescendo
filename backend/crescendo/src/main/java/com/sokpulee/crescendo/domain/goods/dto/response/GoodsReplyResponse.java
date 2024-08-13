@@ -3,6 +3,8 @@ package com.sokpulee.crescendo.domain.goods.dto.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 public class GoodsReplyResponse {
 
@@ -19,12 +21,18 @@ public class GoodsReplyResponse {
 
     private String content;
 
-    public GoodsReplyResponse(Long writerId, String profileImagePath, String nickname, int likeCnt, boolean isLike, String content) {
+    private LocalDateTime createdAt;
+
+    private LocalDateTime lastModified;
+
+    public GoodsReplyResponse(Long writerId, String profileImagePath, String nickname, int likeCnt, boolean isLike, String content, LocalDateTime createdAt, LocalDateTime lastModified) {
         this.writerId = writerId;
         this.profileImagePath = profileImagePath;
         this.nickname = nickname;
         this.likeCnt = likeCnt;
         this.isLike = isLike;
         this.content = content;
+        this.createdAt = createdAt;
+        this.lastModified = lastModified;
     }
 }

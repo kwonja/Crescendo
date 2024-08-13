@@ -24,7 +24,7 @@ import CommunityGoodsList from '../components/community/CommunityGoodsList';
 export default function CommunityDetail() {
   const params = useParams();
   if (params.idolGroupId === undefined || !/^[1-9]\d*$/.test(params.idolGroupId)) {
-    throw new Error('invalid parameter');
+    throw new Error('잘못된 접근입니다.');
   }
   const idolGroupId: number = Number(params.idolGroupId);
   const [filterOptions, setFilterOptions] = useState<string[]>([]);
@@ -44,7 +44,7 @@ export default function CommunityDetail() {
 
   const [communityDetail, setCommunityDetail] = useState<CommunityDetailInfo>(initialDetail);
   const { isLoggedIn } = useAppSelector(state => state.auth);
-  const [isSelected, setIsSelected] = useState<'feed' | 'fan-art'|'goods'>('feed');
+  const [isSelected, setIsSelected] = useState<'feed' | 'fan-art' | 'goods'>('feed');
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
   const menuRef = useRef<HTMLDivElement>(null);
   const [searchOption, setSearchOption] = useState<string>('');
@@ -81,9 +81,10 @@ export default function CommunityDetail() {
     setSearchKeyword('');
     // 드롭다운 초기화시키기위해 options 재설정
     setFilterOptions(['전체', '팔로우만']);
-    setSortOptions(['최신순', '좋아요순']); 
-    isSelected === 'feed'?setSearchOptions(['내용', '작성자'])
-                      :setSearchOptions(['제목', '내용', '작성자']);
+    setSortOptions(['최신순', '좋아요순']);
+    isSelected === 'feed'
+      ? setSearchOptions(['내용', '작성자'])
+      : setSearchOptions(['제목', '내용', '작성자']);
   }, [isSelected, dispatch]);
 
   const handleClose = () => setShow(false);
@@ -153,7 +154,7 @@ export default function CommunityDetail() {
           <div className="filter menu">
             <Dropdown
               className="text"
-              defaultValue='필터'
+              defaultValue="필터"
               options={filterOptions}
               onSelect={selected => dispatch(setFilterCondition(selected))}
             />
@@ -162,7 +163,7 @@ export default function CommunityDetail() {
             <div className="sort menu">
               <Dropdown
                 className="text"
-                defaultValue='정렬'
+                defaultValue="정렬"
                 options={sortOptions}
                 onSelect={selected => dispatch(setSortCondition(selected))}
                 iconPosition="left"
@@ -171,7 +172,7 @@ export default function CommunityDetail() {
             <div className="search menu">
               <Dropdown
                 className="text"
-                defaultValue='검색'
+                defaultValue="검색"
                 options={searchOptions}
                 onSelect={selected => setSearchOption(selected)}
                 iconPosition="left"
@@ -191,10 +192,10 @@ export default function CommunityDetail() {
           <CommunityFeedList idolGroupId={idolGroupId} onFeedClick={handleShowDetail} />
         )}
         {isSelected === 'fan-art' && (
-          <CommunityFanArtList idolGroupId={idolGroupId} onFanArtClick={()=>{}}/>
+          <CommunityFanArtList idolGroupId={idolGroupId} onFanArtClick={() => {}} />
         )}
         {isSelected === 'goods' && (
-          <CommunityGoodsList idolGroupId={idolGroupId} onGoodsClick={()=>{}}/>
+          <CommunityGoodsList idolGroupId={idolGroupId} onGoodsClick={() => {}} />
         )}
       </div>
 
