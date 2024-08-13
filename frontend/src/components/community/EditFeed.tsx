@@ -41,7 +41,7 @@ const EditFeed: React.FC<EditFeedProps> = ({
   useEffect(() => {
     const initialImageObjects = initialImages.map((url, index) => ({
       id: index,
-      url: `https://i11b108.p.ssafy.io/server/files/${url}`,
+      url: `https://www.crescendo.o-r.kr/server/files/${url}`,
       isNew: false,
     }));
     setImages(initialImageObjects);
