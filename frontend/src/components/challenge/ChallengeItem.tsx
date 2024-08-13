@@ -14,7 +14,7 @@ interface ChallengeProps {
 }
 export default function ChallengeItem({ Challenge }: ChallengeProps) {
   const dispath = useAppDispatch();
-  const { title, challengeVideoPath, participants,challengeId } = Challenge;
+  const { title, challengeVideoPath, participants, challengeId } = Challenge;
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [duration, setDuration] = useState<number>(0);
 
@@ -45,7 +45,9 @@ export default function ChallengeItem({ Challenge }: ChallengeProps) {
               <Participant /> {participants}
             </li>
           </ul>
-           <Link to={`/dance/${challengeId}`}><Enter className="absolute right-3 top-3" /></Link>
+          <Link to={`/dance/${challengeId}`}>
+            <Enter className="absolute right-3 top-3" />
+          </Link>
           <div className="challengeitem_title">{title}</div>
         </div>
         <div className="big-play-button">
