@@ -13,7 +13,7 @@ import { ReactComponent as UserProfileImageDefault } from '../../assets/images/U
 import { ReactComponent as ReplyIcon } from '../../assets/images/Feed/comment.svg';
 import { ReactComponent as CommentWriteButton } from '../../assets/images/white_write.svg';
 import FeedDetailMenu from './DropdownMenu';
-import CommentMenu from './DropdownMenu';  // 이 부분은 그대로 유지합니다.
+import CommentMenu from './DropdownMenu'; // 이 부분은 그대로 유지합니다.
 import EditFeed from './EditFeed';
 import '../../scss/components/community/_feeddetailmodal.scss';
 
@@ -79,6 +79,8 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
       const response = await api.get(`/api/v1/community/feed/${feedId}/comment`, {
         params: { page: 0, size: 5 },
       });
+      //eslint-disable-next-line no-console
+      console.log('Comments:', response);
       setComments(response.data.content);
     } catch (error) {
       console.error('Error fetching comments:', error);
@@ -182,8 +184,15 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
 
   // 댓글 수정 모드로 전환
   const handleCommentEditClick = (commentId: number, currentContent: string) => {
+    handleCommentMenuToggle(commentId);
     setEditingCommentId(commentId);
     setEditedContent(currentContent);
+  };
+
+  // 댓글 수정 모드 취소
+  const handleCommentEditCancel = () => {
+    setEditingCommentId(null);
+    setEditedContent('');
   };
 
   // 댓글 수정 완료
@@ -193,14 +202,47 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
       return;
     }
 
-    Authapi.put(`/api/v1/community/feed/${feedId}/comment/${commentId}`, { content: editedContent })
+    const formData = new FormData();
+    formData.append('content', editedContent);
+
+    //eslint-disable-next-line no-console
+    console.log(formData);
+
+    Authapi.patch(`/api/v1/community/feed/${feedId}/comment/${commentId}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
       .then(() => {
         setEditingCommentId(null); // 수정 모드 종료
         loadComments(); // 수정 후 댓글 목록 다시 불러오기
       })
       .catch(error => {
-        console.error('댓글 수정 오류:', error);
-        alert('댓글 수정에 실패했습니다.');
+        if (error.response) {
+          const { status, data } = error.response;
+
+          // 400 Bad Request 처리
+          if (status === 400 && data.exception === 'InvalidFeedCommentContentFormatException') {
+            alert('댓글 내용 형식이 올바르지 않습니다.');
+          }
+          // 404 Not Found 처리
+          else if (status === 404 && data.exception === 'FeedCommentNotFoundException') {
+            alert('댓글을 찾을 수 없습니다.');
+          }
+          // 기타 상태 코드 처리
+          else {
+            console.error('댓글 수정 오류:', status, data);
+            alert(`댓글 수정에 실패했습니다. 서버 응답: ${status}`);
+          }
+        } else if (error.request) {
+          // 요청이 전송되었으나 응답이 없는 경우
+          console.error('응답 없음:', error.request);
+          alert('서버로부터 응답을 받지 못했습니다.');
+        } else {
+          // 요청을 보내기 전에 발생한 오류
+          console.error('요청 설정 오류:', error.message);
+          alert('요청을 처리하는 중에 오류가 발생했습니다.');
+        }
       });
   };
 
@@ -322,7 +364,9 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
                     <div className="comment-menu">
                       {commentMenuVisible[comment.feedCommentId] && (
                         <CommentMenu
-                          onEdit={() => handleCommentEditClick(comment.feedCommentId, comment.content)}
+                          onEdit={() =>
+                            handleCommentEditClick(comment.feedCommentId, comment.content)
+                          }
                           onDelete={() => handleCommentDelete(comment.feedCommentId)}
                         />
                       )}
@@ -333,16 +377,17 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
                       <div className="editing-comment">
                         <input
                           type="text"
-                          className='comment-edit-input'
+                          className="comment-edit-input"
                           value={editedContent}
-                          onChange={(e) => setEditedContent(e.target.value)}
-                          onKeyDown={(e) => {
+                          onChange={e => setEditedContent(e.target.value)}
+                          onKeyDown={e => {
                             if (e.key === 'Enter') handleCommentEditSubmit(comment.feedCommentId);
                           }}
                         />
                         <button onClick={() => handleCommentEditSubmit(comment.feedCommentId)}>
                           수정
                         </button>
+                        <button onClick={handleCommentEditCancel}>취소</button>
                       </div>
                     ) : (
                       <p>{comment.content}</p>

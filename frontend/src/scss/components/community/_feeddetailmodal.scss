@@ -326,9 +326,9 @@
               cursor: pointer;
             }
             .comment-menu {
-              position: absolute;
-              right: 50px;
-              top: 39px;
+              position: relative;
+              right: 10px;
+              top: -20px;
             }
           }
           .reply-icon {
@@ -368,9 +368,22 @@
           justify-content: flex-start;
           align-items: center;
 
-          .comment-edit-input{
+          .comment-edit-input {
             color: black;
             background-color: transparent;
+          }
+
+          .editing-comment {
+            display: flex;
+            align-items: flex-end;
+            input {
+              font-size: 18px;
+              width: 300px;
+            }
+            button {
+              font-size: 20px;
+              margin-right: 20px;
+            }
           }
         }
       }
