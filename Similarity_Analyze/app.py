@@ -1,10 +1,12 @@
+import os
 from flask import Flask, request, jsonify
 from service import analyze_service
+from dotenv import load_dotenv
 
 app = Flask(__name__)
+load_dotenv()
 
-BASE_URL = "https://i11b108.p.ssafy.io/server/files/"
-
+BASE_URL = os.environ.get("BASE_URL")
 
 @app.route('/api/v1/challenge/similarity/landmark', methods=['POST'])
 def get_landmarks():
