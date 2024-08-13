@@ -9,22 +9,22 @@ interface ProfileProps {
   userId: number;
 }
 
-export default function Profile({userId }: ProfileProps) {
-
+export default function Profile({ userId }: ProfileProps) {
   const dispatch = useAppDispatch();
-  const {nickname,introduction,profilePath,isFollowing}= useAppSelector(state => state.profile.userInfo)
+  const { nickname, introduction, profilePath, isFollowing } = useAppSelector(
+    state => state.profile.userInfo,
+  );
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const nickeRef = useRef<HTMLInputElement>(null);
   const introRef = useRef<HTMLTextAreaElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
 
-
-  const handleFollowClick = async() => {
+  const handleFollowClick = async () => {
     dispatch(handleFollow());
     await followAPI(userId);
   };
-  const handleSaveClick = async() => {
+  const handleSaveClick = async () => {
     if (selectedFile) {
       const formData = new FormData();
       formData.append('profileImage', selectedFile);
@@ -33,9 +33,9 @@ export default function Profile({userId }: ProfileProps) {
     const newNickname = nickeRef.current?.value || nickname;
     const newIntroduction = introRef.current?.value || introduction;
 
-    if(introduction !== newIntroduction) await modifyIntroductionAPI(getUserId(),newIntroduction);
-    if(newNickname !== nickname) await modifyNicknameAPI(getUserId(),newNickname);
-    dispatch(handleInfoUpdate({nickname : newNickname, introduction: newIntroduction}));
+    if (introduction !== newIntroduction) await modifyIntroductionAPI(getUserId(), newIntroduction);
+    if (newNickname !== nickname) await modifyNicknameAPI(getUserId(), newNickname);
+    dispatch(handleInfoUpdate({ nickname: newNickname, introduction: newIntroduction }));
     setIsEditing(prev => !prev);
   };
   const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -76,7 +76,7 @@ export default function Profile({userId }: ProfileProps) {
             <input type="text" className="nickname_edit" defaultValue={nickname} ref={nickeRef} />
           </>
         ) : (
-          <div className="nickname">{nickname}</div>
+          <div className="nickname break-all">{nickname}</div>
         )}
 
         {isEditing ? (
@@ -85,7 +85,7 @@ export default function Profile({userId }: ProfileProps) {
             <textarea className="content content_edit" defaultValue={introduction} ref={introRef} />
           </>
         ) : (
-          <div className="content">{introduction}</div>
+          <div className="content break-all">{introduction}</div>
         )}
       </div>
       {userId === getUserId() ? (

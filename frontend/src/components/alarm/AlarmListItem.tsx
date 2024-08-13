@@ -4,17 +4,16 @@ import { Alarm } from '../../interface/alarm';
 import { Channel } from './ChannelFunc';
 import { deleteAlamrAPI, readAlarm } from '../../apis/alarm';
 import { useAppDispatch } from '../../store/hooks/hook';
-import { decrementUnRead, deleteAlarm,readAlarmUpdate } from '../../features/alarm/alarmSlice';
+import { decrementUnRead, deleteAlarm, readAlarmUpdate } from '../../features/alarm/alarmSlice';
 import { useNavigate } from 'react-router-dom';
 
 interface AlarmItemProps {
   alarm: Alarm;
 }
 export default function AlarmListItem({ alarm }: AlarmItemProps) {
-
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { alarmChannelId, content, createdAt, alarmId,isRead,relatedId } = alarm;
+  const { alarmChannelId, content, createdAt, alarmId, isRead, relatedId } = alarm;
   const handleReadAlarm = async (alarmId: number) => {
     try {
       await readAlarm(alarmId);
@@ -27,12 +26,11 @@ export default function AlarmListItem({ alarm }: AlarmItemProps) {
     //알람을 읽은과 동시에 이동시키는게 중요할듯!
     //1번 채널은  팔로우
     //2번 채널은  피드
-    if(alarmChannelId === 1){
+    if (alarmChannelId === 1) {
       navigate(`/mypage/${relatedId}`);
-    }else if(alarmChannelId ===2){
+    } else if (alarmChannelId === 2) {
       navigate(`/community/${relatedId}`);
     }
-
   };
 
   const handleDeleteAlarm = async (alarmId: number) => {
@@ -50,7 +48,7 @@ export default function AlarmListItem({ alarm }: AlarmItemProps) {
         <div className="flex flex-row gap-3 w-full">
           <div className="nickname">{content.substring(0, content.indexOf('님'))}</div>
           <div>{Channel(alarmChannelId)}</div>
-           {!isRead ? (<div className='rounded-full w-2.5 h-2.5 bg-white my-auto'></div>) : null}
+          {!isRead ? <div className="rounded-full w-2.5 h-2.5 bg-white my-auto"></div> : null}
         </div>
         <div className="content w-11/12">{content}</div>
       </div>

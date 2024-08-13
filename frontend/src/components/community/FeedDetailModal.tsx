@@ -62,7 +62,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
     } catch (error) {
       console.error('Error fetching feed details:', error);
     }
-  },[feedId]);
+  }, [feedId]);
 
   const loadComments = useCallback(async () => {
     try {
@@ -73,7 +73,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
     } catch (error) {
       console.error('Error fetching comments:', error);
     }
-  },[feedId]);
+  }, [feedId]);
 
   useEffect(() => {
     if (show) {
@@ -81,7 +81,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
       loadFeedDetail();
       loadComments();
     }
-  }, [show, feedId,loadComments,loadFeedDetail]);
+  }, [show, feedId, loadComments, loadFeedDetail]);
 
   const handlePrevImage = () => {
     setActiveImageIndex(prevIndex =>

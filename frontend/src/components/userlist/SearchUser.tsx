@@ -92,7 +92,7 @@ export default function SearchUser({ handleMode }: SearchProps) {
             className="w-11/12 flex flex-row align-center justgap-2 p-2.5 border-b-2 border-white mx-auto"
             key={list.userId}
           >
-            <div className='w-10/12'>
+            <div className="w-10/12">
               <FriendProfile user={list} />
             </div>
             <div className="flex flex-col gap-0.5 ml-auto justify-center text-sm">

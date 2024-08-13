@@ -10,6 +10,7 @@ import MyPage from '../pages/MyPage';
 import Favorite from '../pages/Favorite';
 import Challenge from '../pages/Challenge';
 import PasswordReset from '../pages/PasswordReset';
+import ChallengeDetails from '../components/challenge/ChallengeDetails';
 
 export const router = createBrowserRouter([
   {
@@ -44,6 +45,10 @@ export const router = createBrowserRouter([
       {
         path: '/dance',
         element: <Challenge />,
+      },
+      {
+        path: '/dance/:challengeId',
+        element: <ChallengeDetails />,
       },
       {
         path: '/game',
