@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import SearchInput from '../common/SearchInput';
 
-import { useAppDispatch } from '../../store/hooks/hook';
+import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
 import { getUserFollower } from '../../features/mypage/followerSlice';
 import { getUserFollowing } from '../../features/mypage/followingSlice';
 import FollowingList from './FollowingList';
 import Followerlist from './FollowerList';
-import { UserInfo } from '../../interface/user';
 
 interface FrinedsProps {
-  userInfo: UserInfo;
   userId: number;
 }
 type ModeState = 'follower' | 'following' | '';
-export default function FriendList({ userInfo, userId }: FrinedsProps) {
+export default function FriendList({userId }: FrinedsProps) {
+  const { userInfo } = useAppSelector(state => state.profile);
   const dispatch = useAppDispatch();
   const [isSelected, setIsSelected] = useState<ModeState>('');
 
@@ -27,7 +26,6 @@ export default function FriendList({ userInfo, userId }: FrinedsProps) {
       return () => promise.abort();
     } else {
       const promise = dispatch(getUserFollowing(userId));
-
       return () => promise.abort();
     }
   }, [dispatch, isSelected, userId]);

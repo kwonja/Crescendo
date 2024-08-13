@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from '../features/auth/authSlice';
-import feedReducer from '../features/feed/feedSlice';
+import feedReducer from '../features/mypage/myFeedSlice';
 import communityListReducer from '../features/communityList/communityListSlice';
 import followerReducer from '../features/mypage/followerSlice';
 import followingReducer from '../features/mypage/followingSlice';
@@ -8,8 +8,9 @@ import chatroomReducer from '../features/chat/chatroomSlice';
 import messagesReducer from '../features/chat/messageSlice';
 import favoriteReducer from '../features/favorite/favoriteSlice';
 import alarmReducer from '../features/alarm/alarmSlice';
-import communityFeedReducer from '../features/feed/communityFeedSlice';
+import communityDetailReducer from '../features/communityDetail/communityDetailSlice';
 import commentReducer from '../features/comment/commentSlice';
+import profileReducer from '../features/mypage/profileSlice';
 
 export const store = configureStore({
   reducer: {
@@ -22,8 +23,9 @@ export const store = configureStore({
     message: messagesReducer,
     favorite: favoriteReducer,
     alarm: alarmReducer,
-    communityFeed: communityFeedReducer,
+    communityDetail: communityDetailReducer,
     comment: commentReducer,
+    profile: profileReducer
   },
 });
 

@@ -9,7 +9,6 @@ import { setIsSelected, setSelectedGroup } from '../../features/chat/chatroomSli
 import { ModeState } from '../header/LoginHeader';
 import { createChatroom, getOpponent } from '../../apis/chat';
 import { AxiosError } from 'axios';
-import { followAPI } from '../../apis/follow';
 import { getUserId } from '../../apis/core';
 
 interface SearchProps {
@@ -83,16 +82,6 @@ export default function SearchUser({ handleMode }: SearchProps) {
     );
   };
 
-  const HandleFollowClick = async (userId: number) => {
-    try {
-      await followAPI(userId);
-      // console.log(response);
-      alert('팔로우가 되었습니다');
-    } catch (err: unknown) {
-      // console.log(err);
-    }
-  };
-
   return (
     <div className="searchuser">
       <SearchInput placeholder="유저를 검색하세요" onChange={OnchangeHandler} value={inputValue} />
@@ -109,9 +98,6 @@ export default function SearchUser({ handleMode }: SearchProps) {
             <div className="flex flex-col gap-0.5 ml-auto justify-center text-sm">
               <div className="cursor-pointer" onClick={e => handleChatClick(list, e)}>
                 채팅
-              </div>
-              <div className="cursor-pointer" onClick={() => HandleFollowClick(list.userId)}>
-                팔로우
               </div>
             </div>
           </div>

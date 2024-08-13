@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api, Authapi, getUserId } from '../../apis/core';
 import { useAppDispatch } from '../../store/hooks/hook';
-import { toggleFeedLike } from '../../features/feed/communityFeedSlice';
+import { toggleFeedLike } from '../../features/communityDetail/communityDetailSlice';
 import { ReactComponent as HeartIcon } from '../../assets/images/Feed/white_heart.svg';
 import { ReactComponent as FullHeartIcon } from '../../assets/images/Feed/white_fullheart.svg';
 import { ReactComponent as FeedMenuIcon } from '../../assets/images/Feed/white_dots.svg';
@@ -65,16 +65,16 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
 
   const currentUserId = getUserId();
 
-  const loadFeedDetail = async () => {
+  const loadFeedDetail = useCallback(async () => {
     try {
       const response = await Authapi.get(`/api/v1/community/feed/${feedId}`);
       setFeedDetail(response.data);
     } catch (error) {
       console.error('Error fetching feed details:', error);
     }
-  };
+  }, [feedId]);
 
-  const loadComments = async () => {
+  const loadComments = useCallback(async () => {
     try {
       const response = await api.get(`/api/v1/community/feed/${feedId}/comment`, {
         params: { page: 0, size: 5 },
@@ -85,7 +85,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
     } catch (error) {
       console.error('Error fetching comments:', error);
     }
-  };
+  }, [feedId]);
 
   const handleNewCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length <= MAX_COMMENT_LENGTH) {
@@ -99,7 +99,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
       loadFeedDetail();
       loadComments();
     }
-  }, [show, feedId]);
+  }, [show, feedId, loadComments, loadFeedDetail]);
 
   const handlePrevImage = () => {
     setActiveImageIndex(prevIndex =>

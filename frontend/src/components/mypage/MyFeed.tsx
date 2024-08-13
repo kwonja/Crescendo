@@ -12,7 +12,7 @@ import { ChatDateTranfer } from '../../utils/ChatDateTranfer';
 interface FeedProps {
   feed: FeedInfo;
 }
-export default function Feed({ feed }: FeedProps) {
+export default function MyFeed({ feed }: FeedProps) {
   const { nickname, createdAt, likeCnt, content, commentCnt, tagList, isLike, feedId } = feed;
   const dispatch = useAppDispatch();
   return (

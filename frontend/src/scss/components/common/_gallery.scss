@@ -1,69 +1,109 @@
 .gallery {
-  width: 310px;
-  height: 490px;
   display: flex;
+  width: fit-content;
+  height: fit-content;
   flex-direction: column;
   background-color: #f66;
   position: relative;
+  border-radius: 20px;
+  overflow: hidden;
   box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  img {
+
+  .gallery-img {
     width: 310px;
-    height: 400px;
-    border-radius: 10px;
+    height: auto;;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
   }
-  .upper {
-    display: flex;
-    flex-direction: row;
-  }
+
   .title_box {
+    position:relative;
     width: 100%;
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding-left: 10px;
+    padding: 10px;
     margin-top: 10px;
     gap: 5px;
+    
+    .type {
+      width: 24px;
+      height: 10px;
+      background-color: #fff;
+      color: #f66;
+      font-size: 8px;
+      text-align: center;
+    }
+
     .title {
       font-size: 20px;
       color: #fff;
       text-align: center;
     }
+
+    .dots_box {
+      position: absolute;
+      right:0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
   }
-  .type {
-    width: 24px;
-    height: 10px;
-    background-color: #fff;
-    color: #f66;
-    font-size: 8px;
-    text-align: center;
+  
+
+
+  &_info {
+    position: relative;
+    display: flex;
+    align-items: center;
+    color: #fff;
+    margin: 10px;
   }
 
-  &_userinfo {
-    display: flex;
-    width: 100%;
-    height: 30px;
-    flex-direction: row;
-    align-items: center;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    padding-left: 10px;
-    gap: 5px;
-    position: relative;
-  }
-  &_heart {
+  &_heart_box {
     position: absolute;
     right: 50px;
     bottom: 0px;
+    width: 30px;
+    height: 30px;
   }
-  &_comment {
+  
+  .hoverup:hover {
+    transform: scale(1.1);
+  }
+
+  &_comment_box {
     position: absolute;
     right: 10px;
     bottom: 0px;
+    width: 30px;
+    height: 30px;
   }
 
-  &_profile {
-    display: flex;
-    flex-direction: column;
-    color: #fff;
+  &_heart, &_comment {
+    position: absolute;
+    right: 0;
   }
+
+  &_comment_cnt, &_heart_cnt {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    bottom: 0px;
+    background-color: white;
+    color: #f66;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.25);
+    z-index: 2;
+  }
+  
 }
