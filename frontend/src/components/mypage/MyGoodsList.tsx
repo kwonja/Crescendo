@@ -44,7 +44,7 @@ export default function MyGoodsList({ userId }: MyGoodsListProps) {
           <MyGoods key={goods.goodsId} goods={goods} />
         ))
       ) :  (
-        <div className="text-center text-xl">작성된 굿즈가 없습니다.</div>
+        <div className="text-center text-xl w-full">작성된 굿즈가 없습니다.</div>
       )}
       {hasMore && <div ref={loadMoreElementRef}>Load More..</div>}
     </div>

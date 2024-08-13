@@ -45,9 +45,9 @@ export default function CommunityFanartList({ idolGroupId, onFanArtClick }: Comm
           <CommunityFanart key={fanArt.fanArtId} fanArt={fanArt} onClick={() => onFanArtClick(fanArt.fanArtId)} />
         ))
       ) : keyword ? (
-        <div className="text-center text-xl">'{keyword}'에 해당하는 팬아트를 찾을 수 없습니다.</div>
+        <div className="text-center text-xl w-full">'{keyword}'에 해당하는 팬아트를 찾을 수 없습니다.</div>
       ) : (
-        <div className="text-center text-xl">작성된 팬아트가 없습니다.</div>
+        <div className="text-center text-xl w-full">작성된 팬아트가 없습니다.</div>
       )}
       {hasMore && <div ref={loadMoreElementRef}>Load More..</div>}
     </div>
