@@ -13,7 +13,7 @@ public class FeedResponse {
 
     private Long userId;
 
-    private String profilePath;
+    private String profileImagePath;
 
     private String nickname;
 
@@ -26,7 +26,7 @@ public class FeedResponse {
     @JsonProperty("isLike")
     private Boolean isLike;
 
-    private List<String> imagePaths; // 리스트 형태
+    private List<String> feedImagePathList; // 리스트 형태
 
     private String content;
 
@@ -34,19 +34,19 @@ public class FeedResponse {
 
     private List<String> tags; // 리스트 형태
 
-    public FeedResponse(Long feedId, Long userId, String profilePath, String nickname,
+    public FeedResponse(Long feedId, Long userId, String profileImagePath, String nickname,
                         LocalDateTime createdAt, LocalDateTime lastModified, Integer likeCnt,
-                        Boolean isLike, List<String> imagePaths, String content, Integer commentCnt,
+                        Boolean isLike, List<String> feedImagePathList, String content, Integer commentCnt,
                         List<String> tags) {
         this.feedId = feedId;
         this.userId = userId;
-        this.profilePath = profilePath;
+        this.profileImagePath = profileImagePath;
         this.nickname = nickname;
         this.createdAt = createdAt;
         this.lastModified = lastModified;
         this.likeCnt = likeCnt;
         this.isLike = isLike;
-        this.imagePaths = imagePaths;
+        this.feedImagePathList = feedImagePathList;
         this.content = content;
         this.commentCnt = commentCnt;
         this.tags = tags;
