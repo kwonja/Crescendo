@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
         if(loggedInUserId != null) {
             User loggedInUser = userRepository.findById(loggedInUserId).orElseThrow(UserNotFoundException::new);
             userInfo
-                    .isFollowing(followRepository.existsByFollowingAndFollower(user, loggedInUser));
+                    .isFollowing(followRepository.existsByFollowingAndFollower(loggedInUser, user));
         }
 
         return userInfo.build();
