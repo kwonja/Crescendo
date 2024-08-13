@@ -6,6 +6,7 @@ import com.sokpulee.crescendo.domain.fanart.service.FanArtService;
 import com.sokpulee.crescendo.domain.feed.dto.request.FeedAddRequest;
 import com.sokpulee.crescendo.domain.feed.dto.response.*;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsCommentUpdateRequest;
+import com.sokpulee.crescendo.domain.goods.dto.response.GetGoodsByUserIdResponse;
 import com.sokpulee.crescendo.global.auth.annotation.AuthPrincipal;
 import com.sokpulee.crescendo.global.exception.custom.AuthenticationRequiredException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -283,6 +284,21 @@ public class FanArtController {
         fanArtService.likeFanArtComment(loggedInUserId,fanArtCommentId);
 
         return ResponseEntity.status(OK).build();
+    }
+
+    @GetMapping("/user/{user-id}")
+    @Operation(summary = "특정 회원이 쓴 팬아트 조회", description = "특정 회원이 쓴 팬아트 조회 API")
+    public ResponseEntity<Page<GetFanArtByUserIdResponse>> getFanArtByUserId(
+            @PathVariable("user-id") Long userId,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<GetFanArtByUserIdResponse> myFanArtResponses = fanArtService.getFanArtByUserId(userId, pageable);
+
+        return ResponseEntity.ok(myFanArtResponses);
     }
 
 }

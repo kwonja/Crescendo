@@ -302,6 +302,11 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
+    public Page<GetGoodsByUserIdResponse> getGoodsByUserId(Long userId, Pageable pageable) {
+        return goodsRepository.findGoodsByUserId(userId, pageable);
+    }
+
+    @Override
     public void addGoodsComment(Long loggedInUserId, Long goodsId, GoodsCommentAddRequest goodsCommentAddRequest) {
         User user = userRepository.findById(loggedInUserId)
                 .orElseThrow(UserNotFoundException::new);

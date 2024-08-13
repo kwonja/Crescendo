@@ -4,10 +4,12 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.sokpulee.crescendo.domain.feed.entity.Feed;
+import com.sokpulee.crescendo.domain.feed.dto.response.GetFeedByUserIdResponse;
+import com.sokpulee.crescendo.domain.feed.entity.*;
 import com.sokpulee.crescendo.domain.follow.entity.QFollow;
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsSearchCondition;
 import com.sokpulee.crescendo.domain.goods.dto.response.FavoriteGoodsResponse;
+import com.sokpulee.crescendo.domain.goods.dto.response.GetGoodsByUserIdResponse;
 import com.sokpulee.crescendo.domain.goods.dto.response.GoodsResponse;
 import com.sokpulee.crescendo.domain.goods.dto.response.MyGoodsResponse;
 import com.sokpulee.crescendo.domain.goods.entity.Goods;
@@ -24,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class GoodsCustomRepositoryImpl implements GoodsCustomRepository{
 
@@ -265,5 +268,66 @@ public class GoodsCustomRepositoryImpl implements GoodsCustomRepository{
                 .fetchOne()).orElse(0L);
 
         return new PageImpl<>(goodsResponses, pageable, total);
+    }
+
+    @Override
+    public Page<GetGoodsByUserIdResponse> findGoodsByUserId(Long userId, Pageable pageable) {
+        QGoods goods = QGoods.goods;
+        QUser user = QUser.user;
+        QGoodsImage goodsImage = QGoodsImage.goodsImage;
+        QGoodsLike goodsLike = QGoodsLike.goodsLike;
+        QIdolGroup idolGroup = QIdolGroup.idolGroup;
+
+        // 페이징 및 기본 정보 조회
+        List<Goods> goodsList = queryFactory
+                .selectFrom(goods)
+                .leftJoin(goods.user, user).fetchJoin()
+                .where(user.id.eq(userId))
+                .orderBy(goods.createdAt.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .distinct()
+                .fetch();
+
+        // 피드 응답 변환
+        List<GetGoodsByUserIdResponse> goodsResponse = goodsList.stream()
+                .map(f -> {
+                    Boolean isLike = userId != null ? Optional.ofNullable(queryFactory
+                            .select(goodsLike.count())
+                            .from(goodsLike)
+                            .where(goodsLike.goods.eq(f).and(goodsLike.user.id.eq(userId)))
+                            .fetchOne()).orElse(0L) > 0 : false;
+
+                    List<String> imagePaths = queryFactory
+                            .select(goodsImage.imagePath)
+                            .from(goodsImage)
+                            .where(goodsImage.goods.eq(f))
+                            .fetch();
+
+                    return new GetGoodsByUserIdResponse(
+                            f.getGoodsId(),
+                            f.getUser().getId(),
+                            f.getUser().getProfilePath(),
+                            f.getUser().getNickname(),
+                            f.getCreatedAt(),
+                            f.getLastModified(),
+                            Optional.ofNullable(f.getLikeCnt()).orElse(0), // 여기에서 null 체크
+                            isLike,
+                            imagePaths,
+                            f.getContent(),
+                            Optional.ofNullable(f.getCommentCnt()).orElse(0),
+                            f.getIdolGroup().getName(),
+                            f.getIdolGroup().getId()
+                            );
+                })
+                .collect(Collectors.toList());
+
+        Long total = Optional.ofNullable(queryFactory
+                .select(goods.count())
+                .from(goods)
+                .where(user.id.eq(userId))
+                .fetchOne()).orElse(0L);
+
+        return new PageImpl<>(goodsResponse, pageable, total);
     }
 }
