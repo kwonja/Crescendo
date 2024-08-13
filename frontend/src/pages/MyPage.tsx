@@ -3,7 +3,7 @@ import { ReactComponent as Crown } from '../assets/images/crown.svg';
 import Feed from '../components/common/Feed';
 import { useAppDispatch, useAppSelector } from '../store/hooks/hook';
 import Gallery from '../components/common/Gallery';
-import { getMyFeedList } from '../features/feed/feedSlice';
+import { getMyFeedList } from '../features/mypage/myFeedSlice';
 import newjeans from '../assets/images/newjeans.png';
 import { useParams } from 'react-router-dom';
 

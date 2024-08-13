@@ -21,14 +21,14 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
   const {
     feedId,
     userId,
-    profilePath,
+    profileImagePath,
     nickname,
     lastModified,
     likeCnt,
-    imagePaths,
+    feedImagePathList,
     content,
     commentCnt,
-    tags,
+    tagList,
     isLike,
   } = feed;
   const dispatch = useAppDispatch();
@@ -46,11 +46,11 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
           userId={userId}
           userNickname={nickname}
           date={lastModified}
-          userProfilePath={profilePath ? IMAGE_BASE_URL + profilePath : null}
+          userProfilePath={profileImagePath ? IMAGE_BASE_URL + profileImagePath : null}
         />
         <Dots className="dots hoverup" onClick={e => e.stopPropagation()} />
       </div>
-      {imagePaths.length > 0 && (
+      {feedImagePathList.length > 0 && (
         <div className="feed_image_box">
           <div className="slider">
             <div onClick={(e) => e.stopPropagation()}>
@@ -69,31 +69,31 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
                 <img
                   key={`prev-${imgIdx}`}
                   className={`prev_img ${animation}`}
-                  src={IMAGE_BASE_URL + imagePaths[imgIdx - 1]}
+                  src={IMAGE_BASE_URL + feedImagePathList[imgIdx - 1]}
                   alt="이미지 없음"
                 />
               )}
               <img
                 key={`main-${imgIdx}`}
                 className={`main_img ${animation}`}
-                src={IMAGE_BASE_URL + imagePaths[imgIdx]}
+                src={IMAGE_BASE_URL + feedImagePathList[imgIdx]}
                 alt="이미지 없음"
               />
-              {imgIdx < imagePaths.length - 1 && (
+              {imgIdx < feedImagePathList.length - 1 && (
                 <img
                   key={`next-${imgIdx}`}
                   className={`next_img ${animation}`}
-                  src={IMAGE_BASE_URL + imagePaths[imgIdx + 1]}
+                  src={IMAGE_BASE_URL + feedImagePathList[imgIdx + 1]}
                   alt="이미지 없음"
                 />
               )}
               <div className="image-counter">
-                {imgIdx + 1}/{imagePaths.length}
+                {imgIdx + 1}/{feedImagePathList.length}
               </div>
             </div>
             <div onClick={(e) => e.stopPropagation()}>
             <Button
-              className={`square empty ${imgIdx >= imagePaths.length - 1 ? 'hidden ' : ''}`}
+              className={`square empty ${imgIdx >= feedImagePathList.length - 1 ? 'hidden ' : ''}`}
               onClick={() => {
                 setAnimation('slideLeft');
                 setImgIdx(prev => prev + 1);
@@ -104,7 +104,7 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
             </div>
           </div>
           <div className="pagination-dots" onClick={e => e.stopPropagation()}>
-            {imagePaths.map((_, idx) => (
+            {feedImagePathList.map((_, idx) => (
               <div
                 key={idx}
                 className={`pagination-dot ${idx === imgIdx ? 'active' : ''}`}
@@ -119,7 +119,7 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
       )}
       <div className="text">{content}</div>
       <div className="tag">
-        {tags.map((tag, index) => (
+        {tagList.map((tag, index) => (
           <div key={index}>#{tag}</div>
         ))}
       </div>

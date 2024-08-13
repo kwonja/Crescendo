@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from '../features/auth/authSlice';
-import feedReducer from '../features/feed/feedSlice';
+import feedReducer from '../features/mypage/myFeedSlice';
 import communityListReducer from '../features/communityList/communityListSlice';
 import followerReducer from '../features/mypage/followerSlice';
 import followingReducer from '../features/mypage/followingSlice';

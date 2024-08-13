@@ -1,13 +1,13 @@
 //Ducks 패턴 공부예정
 
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { FeedData } from '../../interface/feed';
+import { FeedInfo } from '../../interface/feed';
 import { getMyFeedAPI } from '../../apis/user';
 
 export type PromiseStatus = 'loading' | 'success' | 'failed' | '';
 
 interface FeedProps {
-  myFeedList: FeedData[];
+  myFeedList: FeedInfo[];
   status: PromiseStatus;
   error: string | undefined;
 }
