@@ -11,7 +11,7 @@ export default function Challenge() {
   const { currentPage, challengeLists } = useAppSelector(state => state.challenge);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   useEffect(() => {
-    dispatch(getChallengeList({ page: currentPage, size: 10, title: '', sortBy: '' }));
+    dispatch(getChallengeList({ page: currentPage, size: 4, title: '', sortBy: '' }));
   }, [dispatch, currentPage,isModalOpen]);
 
 

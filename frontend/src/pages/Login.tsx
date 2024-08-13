@@ -70,16 +70,10 @@ const Login: React.FC = () => {
 
   return (
     <div className="login-container">
-      {' '}
-      {/* 로그인 페이지 컨테이너 */}
       <h1 className="login-title">로그인</h1>
       <div className="login-wrapper">
         <form onSubmit={handleSubmit} className="login-form">
-          {' '}
-          {/* 로그인 폼 */}
           <div className="form-group">
-            {' '}
-            {/* 이메일 입력 그룹 */}
             <input
               type="email"
               id="email"
@@ -91,8 +85,6 @@ const Login: React.FC = () => {
             />
           </div>
           <div className="form-group password-group">
-            {' '}
-            {/* 비밀번호 입력 그룹 */}
             <input
               type={showPassword ? 'text' : 'password'}
               id="password"

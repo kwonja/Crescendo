@@ -50,7 +50,7 @@ export default function AlarmListItem({ alarm }: AlarmItemProps) {
           <div>{Channel(alarmChannelId)}</div>
           {!isRead ? <div className="rounded-full w-2.5 h-2.5 bg-white my-auto"></div> : null}
         </div>
-        <div className="content w-11/12">{content}</div>
+        <div className="content w-11/12 break-all">{content}</div>
       </div>
       <div
         className="cursor-pointer text-sm absolute right-3 bottom-2"

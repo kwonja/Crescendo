@@ -35,4 +35,6 @@ public interface FanArtService {
     Page<FanArtCommentResponse> getFanArtComment(Long loggedInUserId,Long fanArtId,Pageable pageable);
 
     FanArtDetailResponse getFanArtDetail(Long loggedInUserId, Long fanArtId);
+
+    Page<GetFanArtByUserIdResponse> getFanArtByUserId(Long userId,Pageable pageable);
 }

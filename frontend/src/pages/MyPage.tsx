@@ -1,26 +1,22 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ReactComponent as Crown } from '../assets/images/crown.svg';
-import Feed from '../components/common/Feed';
-import { useAppDispatch, useAppSelector } from '../store/hooks/hook';
-import Gallery from '../components/common/Gallery';
-import { getMyFeedList } from '../features/feed/feedSlice';
 import newjeans from '../assets/images/newjeans.png';
 import { useParams } from 'react-router-dom';
-
 import LeftInfo from '../components/mypage/LeftInfo';
+import MyFeedList from '../components/mypage/MyFeedList';
+import MyFanartList from '../components/mypage/MyFanArtList';
+import MyGoodsList from '../components/mypage/MyGoodsList';
+
 export default function MyPage() {
-  const [isSelected, setIsSelected] = useState<'feed' | 'gallery'>('feed');
+  const [isSelected, setIsSelected] = useState<'feed' | 'fanArt' | 'goods'>('feed');
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
   const menuRef = useRef<HTMLDivElement>(null);
-  const feedlist = useAppSelector(state => state.feed.myFeedList);
-  const dispatch = useAppDispatch();
 
   const { id } = useParams<{ id: string }>();
+  if (id === undefined || !/^[1-9]\d*$/.test(id)) {
+    throw new Error('잘못된 접근입니다.');
+  }
   const numericId = id ? parseInt(id, 10) : NaN;
-
-  useEffect(() => {
-    dispatch(getMyFeedList(numericId));
-  }, [dispatch, numericId]);
 
   const updateIndicator = () => {
     const menuElement = menuRef.current;
@@ -78,29 +74,36 @@ export default function MyPage() {
               내 피드
             </div>
             <div
-              className={`item ${isSelected === 'gallery' ? 'active' : ''}`}
-              onClick={() => setIsSelected('gallery')}
+              className={`item ${isSelected === 'fanArt' ? 'active' : ''}`}
+              onClick={() => setIsSelected('fanArt')}
             >
-              내 갤러리
+              내 팬아트
+            </div>
+            <div
+              className={`item ${isSelected === 'goods' ? 'active' : ''}`}
+              onClick={() => setIsSelected('goods')}
+            >
+              내 굿즈
             </div>
           </div>
           <div className="indicator" style={indicatorStyle}></div>
         </div>
 
         {isSelected === 'feed' && (
-          <div className="">
-            {feedlist.map(feed => (
-              <Feed key={feed.feedId} feed={feed} />
-            ))}
+          <div className="mypage_feed">
+            <MyFeedList userId={numericId} />
           </div>
         )}
 
-        {isSelected === 'gallery' && (
-          <div className="mypage_gallery">
-            <Gallery />
-            <Gallery />
-            <Gallery />
-            <Gallery />
+        {isSelected === 'fanArt' && (
+          <div className="mypage_fanart">
+            <MyFanartList userId={numericId} />
+          </div>
+        )}
+
+        {isSelected === 'goods' && (
+          <div className="mypage_goods">
+            <MyGoodsList userId={numericId} /> 
           </div>
         )}
       </div>

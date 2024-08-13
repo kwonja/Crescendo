@@ -7,6 +7,7 @@ import com.sokpulee.crescendo.domain.challenge.dto.ai.LandmarkFrame;
 import com.sokpulee.crescendo.domain.challenge.dto.ai.LandmarkResponse;
 import com.sokpulee.crescendo.domain.challenge.dto.request.CreateDanceChallengeRequest;
 import com.sokpulee.crescendo.domain.challenge.dto.request.JoinDanceChallengeRequest;
+import com.sokpulee.crescendo.domain.challenge.dto.response.ChallengeVideoResponse;
 import com.sokpulee.crescendo.domain.challenge.dto.response.GetDanceChallengeJoinResponse;
 import com.sokpulee.crescendo.domain.challenge.dto.response.GetDanceChallengeResponse;
 import com.sokpulee.crescendo.domain.challenge.entity.DanceChallenge;
@@ -272,5 +273,14 @@ public class ChallengeServiceImpl implements ChallengeService {
     @Override
     public Page<GetDanceChallengeJoinResponse> getChallengeJoins(Long challengeId, String nickname, String sortBy, Long loggedInUserId, Pageable pageable) {
         return danceChallengeJoinRepository.searchChallengeJoins(challengeId, nickname, sortBy, loggedInUserId, pageable);
+    }
+
+    @Override
+    public ChallengeVideoResponse getChallengeById(Long challengeId) {
+
+        DanceChallenge danceChallenge = danceChallengeRepository.findById(challengeId)
+                .orElseThrow(ChallengeNotFoundException::new);
+
+        return new ChallengeVideoResponse(danceChallenge.getVideoPath());
     }
 }

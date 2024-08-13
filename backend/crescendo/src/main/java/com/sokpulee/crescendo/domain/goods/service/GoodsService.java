@@ -35,4 +35,6 @@ public interface GoodsService {
     Page<GoodsReplyResponse> getGoodsReply(Long loggedInUserId,Long goodsId,Long goodsCommentId,Pageable pageable);
 
     GoodsDetailResponse getGoodsDetail(Long loggedInUserId, Long goodsId);
+
+    Page<GetGoodsByUserIdResponse> getGoodsByUserId(Long userId,Pageable pageable);
 }

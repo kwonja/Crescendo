@@ -12,6 +12,5 @@ export const followingAPI = async (userId: number) => {
 
 export const followAPI = async (userIdToFollow: number) => {
   const response = await Authapi.post(`/api/v1/follow`, { userIdToFollow });
-  console.log(response);
   return response;
 };

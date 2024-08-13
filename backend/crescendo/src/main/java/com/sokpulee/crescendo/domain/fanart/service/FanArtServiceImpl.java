@@ -304,6 +304,11 @@ public class FanArtServiceImpl implements FanArtService {
     }
 
     @Override
+    public Page<GetFanArtByUserIdResponse> getFanArtByUserId(Long userId, Pageable pageable) {
+        return fanArtRepository.findFanArtByUserId(userId, pageable);
+    }
+
+    @Override
     public void addFanArtComment(Long loggedInUserId, Long fanArtId, FanArtCommentAddRequest fanArtCommentAddRequest) {
         User user = userRepository.findById(loggedInUserId)
                 .orElseThrow(UserNotFoundException::new);
