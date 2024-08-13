@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api, Authapi, getUserId } from '../../apis/core';
+import { Authapi, getUserId } from '../../apis/core';
 import { useAppDispatch } from '../../store/hooks/hook';
 import { toggleFeedLike } from '../../features/communityDetail/communityDetailSlice';
-import { ReactComponent as HeartIcon } from '../../assets/images/Feed/white_heart.svg';
-import { ReactComponent as FullHeartIcon } from '../../assets/images/Feed/white_fullheart.svg';
+import { ReactComponent as FeedHeartIcon } from '../../assets/images/Feed/white_heart.svg';
+import { ReactComponent as FeedFullHeartIcon } from '../../assets/images/Feed/white_fullheart.svg';
+import { ReactComponent as CommentHeartIcon } from '../../assets/images/Feed/heart.svg';
+import { ReactComponent as CommentFullHeartIcon } from '../../assets/images/Feed/fullheart.svg';
 import { ReactComponent as FeedMenuIcon } from '../../assets/images/Feed/white_dots.svg';
 import { ReactComponent as CommentMenuIcon } from '../../assets/images/Feed/dots.svg';
 import { ReactComponent as NextButton } from '../../assets/images/Feed/next_button.svg';
@@ -13,7 +15,7 @@ import { ReactComponent as UserProfileImageDefault } from '../../assets/images/U
 import { ReactComponent as ReplyIcon } from '../../assets/images/Feed/comment.svg';
 import { ReactComponent as CommentWriteButton } from '../../assets/images/white_write.svg';
 import FeedDetailMenu from './DropdownMenu';
-import CommentMenu from './DropdownMenu'; // 이 부분은 그대로 유지합니다.
+import CommentMenu from './DropdownMenu';
 import EditFeed from './EditFeed';
 import '../../scss/components/community/_feeddetailmodal.scss';
 
@@ -41,6 +43,8 @@ type Comment = {
   content: string;
   createdAt: string;
   replyCnt: number;
+  likeCnt: number;
+  isLike?: boolean;
 };
 
 type FeedDetailModalProps = {
@@ -54,8 +58,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [menuVisible, setMenuVisible] = useState(false);
-  const [commentMenuVisible, setCommentsMenuVisible] = useState<{ [key: number]: boolean }>({});
+  const [activeMenuId, setActiveMenuId] = useState<number | null>(null);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null); // 수정 중인 댓글 ID 상태 추가
   const [editedContent, setEditedContent] = useState<string>(''); // 수정 중인 댓글 내용 상태 추가
@@ -76,7 +79,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
 
   const loadComments = useCallback(async () => {
     try {
-      const response = await api.get(`/api/v1/community/feed/${feedId}/comment`, {
+      const response = await Authapi.get(`/api/v1/community/feed/${feedId}/comment`, {
         params: { page: 0, size: 100 },
       });
       //eslint-disable-next-line no-console
@@ -107,6 +110,14 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
     }
   }, [show, feedId, loadComments, loadFeedDetail]);
 
+  useEffect(() => {
+    if (!show) {
+      setEditingCommentId(null);
+      setEditedContent('');
+      setActiveMenuId(null);
+    }
+  }, [show]);
+
   const handlePrevImage = () => {
     setActiveImageIndex(prevIndex =>
       prevIndex > 0 ? prevIndex - 1 : feedDetail!.feedImagePathList.length - 1,
@@ -135,7 +146,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
       });
   };
 
-  const handleLikeToggle = () => {
+  const handleFeedLikeToggle = () => {
     if (feedDetail) {
       dispatch(toggleFeedLike(feedId));
       setFeedDetail(prevDetail =>
@@ -150,19 +161,54 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
     }
   };
 
-  const handleMenuToggle = () => {
-    setMenuVisible(prevVisible => !prevVisible);
+  const handleCommentLikeToggle = (commentId: number) => {
+    // 현재 댓글의 상태를 찾아서 저장
+    const commentIndex = comments.findIndex(comment => comment.feedCommentId === commentId);
+    if (commentIndex === -1) return; // 댓글이 없을 경우 아무것도 하지 않음
+
+    const originalComment = comments[commentIndex];
+    const updatedComment = {
+      ...originalComment,
+      isLike: !originalComment.isLike,
+      likeCnt: originalComment.isLike ? originalComment.likeCnt - 1 : originalComment.likeCnt + 1,
+    };
+
+    // 로컬 상태를 먼저 업데이트
+    const updatedComments = [...comments];
+    updatedComments[commentIndex] = updatedComment;
+    setComments(updatedComments);
+
+    // 서버에 요청 보내기
+    Authapi.post(`/api/v1/community/feed/feed-comment-like/${commentId}`).catch(error => {
+      console.error('댓글 좋아요 오류:', error);
+
+      // 실패할 경우 원래 상태로 롤백
+      setComments(prevComments => {
+        const rollbackComments = [...prevComments];
+        rollbackComments[commentIndex] = originalComment;
+        return rollbackComments;
+      });
+    });
+  };
+
+  const handleMenuToggle = (feedId: number) => {
+    if (activeMenuId === feedId) {
+      setActiveMenuId(null); // 이미 열려 있는 메뉴를 닫음
+    } else {
+      setActiveMenuId(feedId); // 새로운 메뉴를 열음
+    }
   };
 
   const handleCommentMenuToggle = (commentId: number) => {
-    setCommentsMenuVisible(prevState => ({
-      ...prevState,
-      [commentId]: !prevState[commentId], // 해당 댓글의 메뉴 가시성을 토글
-    }));
+    if (activeMenuId === commentId) {
+      setActiveMenuId(null); // 이미 열려 있는 메뉴를 닫음
+    } else {
+      setActiveMenuId(commentId); // 새로운 메뉴를 열음
+    }
   };
 
   const handleEdit = () => {
-    setMenuVisible(false);
+    setActiveMenuId(null);
     setEditModalVisible(true);
   };
 
@@ -173,7 +219,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
 
   // 피드 삭제
   const handleDelete = async () => {
-    setMenuVisible(false);
+    setActiveMenuId(null);
     const confirmDelete = window.confirm('삭제 후에는 복구가 불가능합니다. 정말 삭제하시겠습니까?');
     if (confirmDelete) {
       try {
@@ -296,19 +342,23 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
               <div className="feed-date">{new Date(feedDetail.createdAt).toLocaleString()}</div>
             </div>
             <div className="feed-icons">
-              <div className="like-count">
+              <div className="feed-like-count">
                 {feedDetail.likeCnt > 99 ? '99+' : feedDetail.likeCnt}
               </div>
               {feedDetail.isLike ? (
-                <FullHeartIcon className="heart-button" onClick={handleLikeToggle} />
+                <FeedFullHeartIcon className="feed-heart-button" onClick={handleFeedLikeToggle} />
               ) : (
-                <HeartIcon className="heart-button" onClick={handleLikeToggle} />
+                <FeedHeartIcon className="feed-heart-button" onClick={handleFeedLikeToggle} />
               )}
               <FeedMenuIcon
-                className={`dots-button ${currentUserId === feedDetail.userId ? 'visible' : ''}`}
-                onClick={handleMenuToggle}
+                className={`feed-dots-button ${currentUserId === feedDetail.userId ? 'visible' : ''}`}
+                onClick={() => handleMenuToggle(feedId)}
               />
-              {menuVisible && <FeedDetailMenu onEdit={handleEdit} onDelete={handleDelete} />}
+              <div className="feed-menu">
+                {activeMenuId === feedId && (
+                  <FeedDetailMenu onEdit={handleEdit} onDelete={handleDelete} />
+                )}
+              </div>
             </div>
           </div>
           <div className="feed-body">
@@ -363,19 +413,35 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
                         {new Date(comment.createdAt).toLocaleString()}
                       </div>
                     </div>
-                    <CommentMenuIcon
-                      className={`comment-dots-button ${currentUserId === comment.userId ? 'visible' : ''}`}
-                      onClick={() => handleCommentMenuToggle(comment.feedCommentId)}
-                    />
-                    <div className="comment-menu">
-                      {commentMenuVisible[comment.feedCommentId] && (
-                        <CommentMenu
-                          onEdit={() =>
-                            handleCommentEditClick(comment.feedCommentId, comment.content)
-                          }
-                          onDelete={() => handleCommentDelete(comment.feedCommentId)}
+                    <div className="comment-icons">
+                      <div className="comment-like-count">
+                        {comment.likeCnt > 99 ? '99+' : comment.likeCnt}
+                      </div>
+                      {comment.isLike ? (
+                        <CommentFullHeartIcon
+                          className="comment-heart-button"
+                          onClick={() => handleCommentLikeToggle(comment.feedCommentId)}
+                        />
+                      ) : (
+                        <CommentHeartIcon
+                          className="comment-heart-button"
+                          onClick={() => handleCommentLikeToggle(comment.feedCommentId)}
                         />
                       )}
+                      <CommentMenuIcon
+                        className={`comment-dots-button ${currentUserId === comment.userId ? 'visible' : ''}`}
+                        onClick={() => handleCommentMenuToggle(comment.feedCommentId)}
+                      />
+                      <div className="comment-menu">
+                        {activeMenuId === comment.feedCommentId && (
+                          <CommentMenu
+                            onEdit={() =>
+                              handleCommentEditClick(comment.feedCommentId, comment.content)
+                            }
+                            onDelete={() => handleCommentDelete(comment.feedCommentId)}
+                          />
+                        )}
+                      </div>
                     </div>
                   </div>
                   <div className="comment-content">
