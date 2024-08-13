@@ -10,6 +10,7 @@ import favoriteReducer from '../features/favorite/favoriteSlice';
 import alarmReducer from '../features/alarm/alarmSlice';
 import communityDetailReducer from '../features/communityDetail/communityDetailSlice';
 import commentReducer from '../features/comment/commentSlice';
+import profileReducer from '../features/mypage/profileSlice';
 
 export const store = configureStore({
   reducer: {
@@ -23,7 +24,8 @@ export const store = configureStore({
     favorite: favoriteReducer,
     alarm: alarmReducer,
     communityDetail: communityDetailReducer,
-    comment: commentReducer
+    comment: commentReducer,
+    profile: profileReducer
   },
 });
 

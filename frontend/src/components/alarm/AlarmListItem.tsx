@@ -1,17 +1,20 @@
 import React from 'react';
 import { timeAgo } from '../../utils/TimeAgo';
 import { Alarm } from '../../interface/alarm';
-import { Channel } from './ChannelHook';
+import { Channel } from './ChannelFunc';
 import { deleteAlamrAPI, readAlarm } from '../../apis/alarm';
 import { useAppDispatch } from '../../store/hooks/hook';
 import { decrementUnRead, deleteAlarm,readAlarmUpdate } from '../../features/alarm/alarmSlice';
+import { useNavigate } from 'react-router-dom';
 
 interface AlarmItemProps {
   alarm: Alarm;
 }
 export default function AlarmListItem({ alarm }: AlarmItemProps) {
+
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { alarmChannelId, content, createdAt, alarmId,isRead } = alarm;
+  const { alarmChannelId, content, createdAt, alarmId,isRead,relatedId } = alarm;
   const handleReadAlarm = async (alarmId: number) => {
     try {
       await readAlarm(alarmId);
@@ -20,6 +23,16 @@ export default function AlarmListItem({ alarm }: AlarmItemProps) {
     } catch (err) {
       // console.log(err);
     }
+
+    //알람을 읽은과 동시에 이동시키는게 중요할듯!
+    //1번 채널은  팔로우
+    //2번 채널은  피드
+    if(alarmChannelId === 1){
+      navigate(`/mypage/${relatedId}`);
+    }else if(alarmChannelId ===2){
+      navigate(`/community/${relatedId}`);
+    }
+
   };
 
   const handleDeleteAlarm = async (alarmId: number) => {
@@ -32,8 +45,8 @@ export default function AlarmListItem({ alarm }: AlarmItemProps) {
   };
 
   return (
-    <div className="alarmlistitem" onClick={() => handleReadAlarm(alarmId)}>
-      <div className="cont w-8/12">
+    <div className="alarmlistitem">
+      <div className="cont w-8/12 cursor-pointer" onClick={() => handleReadAlarm(alarmId)}>
         <div className="flex flex-row gap-3 w-full">
           <div className="nickname">{content.substring(0, content.indexOf('님'))}</div>
           <div>{Channel(alarmChannelId)}</div>
