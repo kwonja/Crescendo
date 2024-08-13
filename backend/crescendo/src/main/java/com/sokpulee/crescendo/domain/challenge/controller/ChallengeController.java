@@ -2,6 +2,7 @@ package com.sokpulee.crescendo.domain.challenge.controller;
 
 import com.sokpulee.crescendo.domain.challenge.dto.request.CreateDanceChallengeRequest;
 import com.sokpulee.crescendo.domain.challenge.dto.request.JoinDanceChallengeRequest;
+import com.sokpulee.crescendo.domain.challenge.dto.response.ChallengeVideoResponse;
 import com.sokpulee.crescendo.domain.challenge.dto.response.GetDanceChallengeJoinResponse;
 import com.sokpulee.crescendo.domain.challenge.dto.response.GetDanceChallengeResponse;
 import com.sokpulee.crescendo.domain.challenge.service.ChallengeService;
@@ -119,6 +120,17 @@ public class ChallengeController {
         Pageable pageable = PageRequest.of(page, size);
 
         return challengeService.getChallenges(title, sortBy, pageable);
+    }
+
+    @GetMapping("/{challenge-id}")
+    @Operation(summary = "챌린지 상세 조회", description = "챌린지 상세 조회 API")
+    public ResponseEntity<?> getChallengeVideoById(
+            @PathVariable("challenge-id") Long challengeId
+    ){
+
+        ChallengeVideoResponse response = challengeService.getChallengeById(challengeId);
+
+        return ResponseEntity.status(OK).body(response);
     }
 
     @GetMapping("/{challenge-id}/join")
