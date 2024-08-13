@@ -141,7 +141,7 @@ export default function Chatroom() {
             }}
           />
         </div>
-        <div>{opponentNickName}</div>
+        <div className="w-8/12 truncate break-all flex justify-center">{opponentNickName}</div>
         <Hamburger />
       </div>
 

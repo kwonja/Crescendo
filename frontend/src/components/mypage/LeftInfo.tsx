@@ -13,14 +13,11 @@ export default function LeftInfo() {
 
   useEffect(() => {
     dispatch(getUserInfo({ pathId: Number(id), userId: getUserId() }));
-
-  }, [dispatch,id]);
+  }, [dispatch, id]);
   return (
     <>
-      <Profile
-        userId={ Number(id)}
-      />
-      <FriendList userId={ Number(id)} />
+      <Profile userId={Number(id)} />
+      <FriendList userId={Number(id)} />
     </>
   );
 }

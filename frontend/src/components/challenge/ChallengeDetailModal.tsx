@@ -1,43 +1,40 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ReactComponent as Close } from '../../assets/images/challenge/close.svg';
 import { ReactComponent as AddImage } from '../../assets/images/img_add.svg';
-import { postChallengeAPI } from '../../apis/challenge';
+import { postChallengeJoinAPI } from '../../apis/challenge';
 import { isAxiosError } from 'axios';
 
 interface ModalProps {
   onClose: () => void;
+  challengeId: number;
 }
-export default function ChallengeModal({ onClose }: ModalProps) {
-  const titleRef = useRef<HTMLInputElement>(null);
-  const timeRef = useRef<HTMLInputElement>(null);
+export default function ChallengeDetailModal({ onClose,challengeId }: ModalProps) {
   const fileRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const [isLoading,setIsLoading] = useState<boolean>(false);
+  const [videoPreview, setVideoPreview] = useState<string | null>(null);
+
   const CreateChallenge = async () => {
-    if (!titleRef.current?.value || !timeRef.current?.value || !fileRef.current?.files) {
-      alert('전부 입력해주세요');
+    if (!fileRef.current?.files) {
+      alert('파일을 입력해주세요');
       return;
     }
 
     const formData = new FormData();
-    formData.append('title', titleRef.current.value);
-    formData.append('endAt', timeRef.current.value);
     formData.append('video', fileRef.current.files[0]);
     try{
-      setIsLoading(true);
-          const response = await postChallengeAPI(formData);
-          console.log(response);
-      }catch(err : unknown){
-          if (isAxiosError(err)) {
-              // Axios 에러인 경우
-              alert(err.response?.data);
-            }
-      }finally{
-          setIsLoading(false);
-          onClose();
-      }
-
+        setIsLoading(true);
+        const response = await postChallengeJoinAPI(challengeId,formData);
+        console.log(response);
+    }catch(err : unknown){
+        if (isAxiosError(err)) {
+            // Axios 에러인 경우
+            alert(err.response?.data);
+          }
+    }finally{
+        setIsLoading(false);
+        onClose();
+    }
   };
 
   const handleFileChange = () => {
@@ -56,15 +53,15 @@ export default function ChallengeModal({ onClose }: ModalProps) {
     };
   }, [videoPreview]);
   return (
-    <div className="holdmodal">
-      <div className="holdmodal-content">
-        <div className="holdmodal-header">
-          <div className="holdmodal-title">챌린지생성</div>
+    <div className="detailmodal">
+      <div className="detailmodal-content">
+        <div className="detailmodal-header">
+          <div className="detailmodal-title">챌린지등록</div>
           <span className="close" onClick={onClose}>
             <Close />
           </span>
         </div>
-        <div className="holdmodal-body">
+        <div className="detailmodal-body">
           <div className="flex flex-row w-full">
             {videoPreview ? (
               <video
@@ -88,21 +85,8 @@ export default function ChallengeModal({ onClose }: ModalProps) {
               onChange={handleFileChange}
             />
             <div className="right-content">
-              <input
-                type="text"
-                className="input_title"
-                placeholder="제목을 입력하세요"
-                ref={titleRef}
-              />
-              <input className="input_date" id="cal" type="datetime-local" ref={timeRef} />
-              {videoPreview && (
-                <label htmlFor="video" className="video_label_add">
-                  <AddImage className="w-16 h-16" />
-                </label>
-              )}
-
               <button className="modal-btn" onClick={CreateChallenge}>
-                생성
+                등록
               </button>
             </div>
           </div>

@@ -11,7 +11,7 @@ interface FrinedsProps {
   userId: number;
 }
 type ModeState = 'follower' | 'following' | '';
-export default function FriendList({userId }: FrinedsProps) {
+export default function FriendList({ userId }: FrinedsProps) {
   const { userInfo } = useAppSelector(state => state.profile);
   const dispatch = useAppDispatch();
   const [isSelected, setIsSelected] = useState<ModeState>('');
@@ -35,24 +35,24 @@ export default function FriendList({userId }: FrinedsProps) {
       <div className="friend">
         <div className="listbar">
           <div
-            className={`follow left ${isSelected === 'follower' ? 'active' : ''}`}
-            onClick={() => handleModeClick('follower')}
-          >
-            <span>{userInfo.followerNum}</span>
-            <div>팔로우</div>
-          </div>
-          <div
-            className={`follow right ${isSelected === 'following' ? 'active' : ''}`}
+            className={`follow left ${isSelected === 'following' ? 'active' : ''}`}
             onClick={() => handleModeClick('following')}
           >
             <span>{userInfo.followingNum}</span>
             <div>팔로잉</div>
           </div>
+          <div
+            className={`follow right ${isSelected === 'follower' ? 'active' : ''}`}
+            onClick={() => handleModeClick('follower')}
+          >
+            <span>{userInfo.followerNum}</span>
+            <div>팔로워</div>
+          </div>
         </div>
       </div>
       {isSelected !== '' && (
         <div className="list">
-          <SearchInput placeholder="친구를 검색하세요" />
+          <SearchInput placeholder="친구를 검색하세요" className="mt-5 flex" />
           {isSelected === 'follower' ? <Followerlist /> : <FollowingList />}
         </div>
       )}

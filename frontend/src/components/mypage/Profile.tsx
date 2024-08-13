@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useRef, useState } from 'react';
 import { getUserId, IMAGE_BASE_URL } from '../../apis/core';
-import { modifyProfileAPI } from '../../apis/user';
+import { modifyIntroductionAPI, modifyNicknameAPI, modifyProfileAPI } from '../../apis/user';
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
 import { handleFollow, handleInfoUpdate } from '../../features/mypage/profileSlice';
 import { followAPI } from '../../apis/follow';
@@ -9,30 +9,33 @@ interface ProfileProps {
   userId: number;
 }
 
-export default function Profile({userId }: ProfileProps) {
-
+export default function Profile({ userId }: ProfileProps) {
   const dispatch = useAppDispatch();
-  const {nickname,introduction,profilePath,isFollowing}= useAppSelector(state => state.profile.userInfo)
+  const { nickname, introduction, profilePath, isFollowing } = useAppSelector(
+    state => state.profile.userInfo,
+  );
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const nickeRef = useRef<HTMLInputElement>(null);
   const introRef = useRef<HTMLTextAreaElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
 
-
-  const handleFollowClick = async() => {
+  const handleFollowClick = async () => {
     dispatch(handleFollow());
     await followAPI(userId);
   };
-  const handleSaveClick = () => {
+  const handleSaveClick = async () => {
     if (selectedFile) {
       const formData = new FormData();
       formData.append('profileImage', selectedFile);
-     modifyProfileAPI(formData);
+      await modifyProfileAPI(formData);
     }
     const newNickname = nickeRef.current?.value || nickname;
     const newIntroduction = introRef.current?.value || introduction;
-    dispatch(handleInfoUpdate({nickname : newNickname, introduction: newIntroduction}));
+
+    if (introduction !== newIntroduction) await modifyIntroductionAPI(getUserId(), newIntroduction);
+    if (newNickname !== nickname) await modifyNicknameAPI(getUserId(), newNickname);
+    dispatch(handleInfoUpdate({ nickname: newNickname, introduction: newIntroduction }));
     setIsEditing(prev => !prev);
   };
   const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -73,7 +76,7 @@ export default function Profile({userId }: ProfileProps) {
             <input type="text" className="nickname_edit" defaultValue={nickname} ref={nickeRef} />
           </>
         ) : (
-          <div className="nickname">{nickname}</div>
+          <div className="nickname break-all">{nickname}</div>
         )}
 
         {isEditing ? (
@@ -82,7 +85,7 @@ export default function Profile({userId }: ProfileProps) {
             <textarea className="content content_edit" defaultValue={introduction} ref={introRef} />
           </>
         ) : (
-          <div className="content">{introduction}</div>
+          <div className="content break-all">{introduction}</div>
         )}
       </div>
       {userId === getUserId() ? (

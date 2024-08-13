@@ -1,4 +1,4 @@
-.holdmodal {
+.detailmodal {
   position: fixed;
   top: 0;
   left: 0;
@@ -11,16 +11,16 @@
   z-index: 5000;
 }
 
-.holdmodal-content {
+.detailmodal-content {
   background-color: #ffffff;
   border-radius: 10px;
   border: 5px solid #f66;
-  width: 800px;
+  width: 600px;
   height: 508px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   animation: fadeIn 0.3s ease-in-out; /* 모달이 부드럽게 나타나는 효과 */
 }
-.holdmodal-header {
+.detailmodal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -29,7 +29,7 @@
   height: 44px;
   padding: 0px 20px;
 
-  .holdmodal-title {
+  .detailmodal-title {
     color: white;
     font-size: 20px;
     letter-spacing: 2.3px;
@@ -42,7 +42,7 @@
   }
 }
 
-.holdmodal-body {
+.detailmodal-body {
   display: flex;
   width: 100%;
   padding: 10px;
@@ -157,4 +157,19 @@ input[type='datetime-local']::-webkit-calendar-picker-indicator {
   color: #fff;
   border-radius: 15px;
   box-shadow: 3px 3px 4px 0px rgba(0, 0, 0, 0.25);
+}
+.loading{
+    position: fixed;
+    top: 50%;
+    left: 60%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    height: 500px;
+    color: black;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 6000;
+    font-size: 50px;
 }

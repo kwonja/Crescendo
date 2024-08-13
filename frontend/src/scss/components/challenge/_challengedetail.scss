@@ -1,12 +1,12 @@
-.challenge {
+.challengedetail {
   width: 100%;
+  height: 900px;
   max-width: 1300px;
   margin: 0 auto;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  height: 900px;
   position: relative;
+
   .left-box {
     width: calc(100% / 3) * 1;
     height: 600px;
@@ -26,8 +26,8 @@
 
   .video-container {
     position: absolute;
-    width: 70%;
-    top: 50px;
+    width: 90%;
+    top: 0px;
     left: 50%;
     transform: translateX(-50%);
   }
@@ -36,16 +36,6 @@
     width: 90%;
     margin: 0 auto;
     display: block;
-    border-radius: 30px;
-    box-shadow: 0px 5px 4px 4px rgba(0, 0, 0, 0.25);
-  }
-  .no-video {
-    width: 90%;
-    height: 567px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     border-radius: 30px;
     box-shadow: 0px 5px 4px 4px rgba(0, 0, 0, 0.25);
   }
@@ -87,23 +77,39 @@
     transition: opacity 3s ease; /* 애니메이션을 적용 */
     z-index: 2;
   }
-}
 
-.fade-out {
-  opacity: 1px;
-  animation: test;
-  animation-duration: 3s;
-  animation-iteration-count: forwards;
-  visibility: hidden;
-}
-
-@keyframes test {
-  0% {
-    opacity: 1;
-    visibility: visible;
+  .original {
+    width: 405px;
+    height: 600px;
+    position: fixed;
+    top: 100px;
+    left: 110px;
   }
-  100% {
-    opacity: 0;
-    visibility: hidden;
+  .challenger {
+    width: 405px;
+    height: 600px;
+    position: fixed;
+    top: 100px;
+    left: 510px;
+    border-left: 3px solid #f66;
+
+    .no-video {
+      width: 90%;
+      height: 580px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 30px;
+      box-shadow: 0px 5px 4px 4px rgba(0, 0, 0, 0.25);
+    }
+  }
+  .challenge-room {
+    width: 430px;
+    margin-left: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: space-between;
   }
 }

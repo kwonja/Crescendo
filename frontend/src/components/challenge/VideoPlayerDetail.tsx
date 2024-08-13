@@ -3,8 +3,9 @@ import { ReactComponent as Play } from '../../assets/images/challenge/playbtn.sv
 import { ReactComponent as Pause } from '../../assets/images/challenge/pause.svg';
 import { useAppSelector } from '../../store/hooks/hook';
 import { IMAGE_BASE_URL } from '../../apis/core';
-export default function VideoPlayer() {
-  const { selectedChallenge } = useAppSelector(state => state.challenge);
+
+export default function VideoPlayerDetail() {
+   const { selectedChallengeDetail } = useAppSelector(state => state.challengeDetail);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -29,13 +30,6 @@ export default function VideoPlayer() {
       };
     }
   }, []);
-
-  useEffect(() => {
-    if (selectedChallenge.challengeId !== 0 && videoRef.current) {
-      videoRef.current.play();
-      setIsPlaying(true);
-    }
-  }, [selectedChallenge]);
 
   const togglePlayPause = () => {
     const videoElement = videoRef.current;
@@ -65,12 +59,18 @@ export default function VideoPlayer() {
       setProgress((videoElement.currentTime / videoElement.duration) * 100);
     }
   };
+  useEffect(() => {
+    if (selectedChallengeDetail.challengeJoinId !== 0 && videoRef.current) {
+      videoRef.current.play();
+      setIsPlaying(true);
+    }
+  }, [selectedChallengeDetail]);
 
   return (
     <div className="video-container" onClick={togglePlayPause}>
-      {selectedChallenge.challengeVideoPath === '' ? (
+      {selectedChallengeDetail.challengeVideoPath === '' ? (
         <div className="no-video">
-          <div className="text-2xl">챌린지를 구경해보세요!</div>
+          <div className="text-2xl">다른 사람의 챌린지를 구경해보세요!</div>
         </div>
       ) : (
         <>
@@ -78,7 +78,7 @@ export default function VideoPlayer() {
             ref={videoRef}
             className="video-player"
             onTimeUpdate={updateProgress}
-            src={`${IMAGE_BASE_URL}${selectedChallenge.challengeVideoPath}`}
+            src={`${IMAGE_BASE_URL}${selectedChallengeDetail.challengeVideoPath}`}
           />
           <div className="controls">
             <button className="play-pause-button">{isPlaying ? <Pause /> : <Play />}</button>
@@ -98,6 +98,7 @@ export default function VideoPlayer() {
               <Play className="w-20 h-20 fade-out" />
             )}
           </div>
+          <div className='absolute text-black top-2 right-10 text-3xl'>{Math.floor(selectedChallengeDetail.score)} 점</div>
         </>
       )}
     </div>

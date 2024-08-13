@@ -66,5 +66,6 @@ const alarmSlice = createSlice({
   },
 });
 
-export const { incrementUnRead, decrementUnRead, deleteAlarm,readAlarmUpdate } = alarmSlice.actions;
+export const { incrementUnRead, decrementUnRead, deleteAlarm, readAlarmUpdate } =
+  alarmSlice.actions;
 export default alarmSlice.reducer;
