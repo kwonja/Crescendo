@@ -1,5 +1,5 @@
 .feed {
-  width: 1260px;
+  width: 1000x;
   border-bottom: 1px solid #f66;
   display: flex;
   flex-direction: column;
@@ -7,6 +7,10 @@
   margin-top: 30px;
   padding-bottom: 30px;
   position: relative;
+
+  &list {
+    margin-top:20px;
+  }
 
   .upper {
     width: 100%;

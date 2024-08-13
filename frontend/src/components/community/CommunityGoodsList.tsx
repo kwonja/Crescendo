@@ -45,9 +45,9 @@ export default function CommunityGoodsList({ idolGroupId, onGoodsClick }: Commun
           <CommunityGoods key={goods.goodsId} goods={goods} onClick={() => onGoodsClick(goods.goodsId)} />
         ))
       ) : keyword ? (
-        <div className="text-center text-xl">'{keyword}'에 해당하는 굿즈를 찾을 수 없습니다.</div>
+        <div className="text-center text-xl w-full">'{keyword}'에 해당하는 굿즈를 찾을 수 없습니다.</div>
       ) : (
-        <div className="text-center text-xl">작성된 굿즈가 없습니다.</div>
+        <div className="text-center text-xl w-full">작성된 굿즈가 없습니다.</div>
       )}
       {hasMore && <div ref={loadMoreElementRef}>Load More..</div>}
     </div>

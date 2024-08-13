@@ -44,7 +44,7 @@ export default function MyFanartList({ userId }: MyFanArtListProps) {
           <MyFanart key={fanArt.fanArtId} fanArt={fanArt} />
         ))
       ) : (
-        <div className="text-center text-xl">작성한 팬아트가 없습니다.</div>
+        <div className="text-center text-xl w-full">작성한 팬아트가 없습니다.</div>
       )
       }
       {hasMore && <div ref={loadMoreElementRef}>Load More..</div>}
