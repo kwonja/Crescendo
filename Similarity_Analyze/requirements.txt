@@ -4,4 +4,4 @@ opencv-python
 numpy
 fastdtw
 scipy
-dotenv
+python-dotenv
