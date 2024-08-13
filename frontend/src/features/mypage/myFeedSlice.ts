@@ -6,23 +6,23 @@ import { getMyFeedAPI } from '../../apis/user';
 
 export type PromiseStatus = 'loading' | 'success' | 'failed' | '';
 
-interface FeedProps {
+interface MyFeedState {
   myFeedList: FeedInfo[];
   status: PromiseStatus;
   error: string | undefined;
 }
-const initialState: FeedProps = {
+const initialState: MyFeedState = {
   myFeedList: [],
   status: '',
   error: '',
 };
 
-export const getMyFeedList = createAsyncThunk('feedSlice/getMyFeedList', async (userId: number) => {
+export const getMyFeedList = createAsyncThunk('myFeedSlice/getMyFeedList', async (userId: number) => {
   const response = await getMyFeedAPI(userId, 0, 10);
   return response;
 });
 
-const feedSlice = createSlice({
+const myFeedSlice = createSlice({
   name: 'feed',
   initialState: initialState,
   reducers: {
@@ -57,5 +57,5 @@ const feedSlice = createSlice({
   },
 });
 
-export const { incrementLike, decrementLike } = feedSlice.actions;
-export default feedSlice.reducer;
+export const { incrementLike, decrementLike } = myFeedSlice.actions;
+export default myFeedSlice.reducer;

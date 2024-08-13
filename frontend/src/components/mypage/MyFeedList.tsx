@@ -3,7 +3,7 @@ import { useAppSelector } from '../../store/hooks/hook';
 import CommunityFeed from '../community/CommunityFeed';
 
 export default function MyFeedList() {
-  const feedlist = useAppSelector(state => state.feed.myFeedList);
+  const feedlist = useAppSelector(state => state.myFeed.myFeedList);
 
   return (
     <div className="feedlist">
