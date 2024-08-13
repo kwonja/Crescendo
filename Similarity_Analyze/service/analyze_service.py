@@ -2,6 +2,14 @@ import mediapipe as mp
 import cv2
 import numpy as np
 
+def get_video_length(video_path):
+    cap = cv2.VideoCapture(video_path)
+    if not cap.isOpened():
+        return float('inf')
+    length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) / cap.get(cv2.CAP_PROP_FPS)
+    cap.release()
+    return length
+
 def get_landmark_position(video_path):
     mp_pose = mp.solutions.pose
     cap = cv2.VideoCapture(video_path)
