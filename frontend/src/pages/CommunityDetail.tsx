@@ -13,6 +13,7 @@ import { getCommunityDetailAPI, toggleFavoriteAPI } from '../apis/community';
 import { useAppDispatch, useAppSelector } from '../store/hooks/hook';
 import { CommunityDetailInfo } from '../interface/communityList';
 import {
+  resetState,
   searchFeed,
   setFilterCondition,
   setSortCondition,
@@ -26,9 +27,9 @@ export default function CommunityDetail() {
     throw new Error('invalid parameter');
   }
   const idolGroupId: number = Number(params.idolGroupId);
-  const filterOptions = useRef(['전체', '팔로우만']);
-  const sortOptions = useRef(['최신순', '좋아요순']);
-  const searchOptions = useRef(['내용', '작성자']);
+  const [filterOptions, setFilterOptions] = useState<string[]>([]);
+  const [sortOptions, setSortOptions] = useState<string[]>([]);
+  const [searchOptions, setSearchOptions] = useState<string[]>([]);
 
   const initialDetail: CommunityDetailInfo = {
     idolGroupId: 0,
@@ -75,9 +76,15 @@ export default function CommunityDetail() {
         });
       }
     }
+    dispatch(resetState());
     setSearchOption('');
     setSearchKeyword('');
-  }, [isSelected]);
+    // 드롭다운 초기화시키기위해 options 재설정
+    setFilterOptions(['전체', '팔로우만']);
+    setSortOptions(['최신순', '좋아요순']); 
+    isSelected === 'feed'?setSearchOptions(['내용', '작성자'])
+                      :setSearchOptions(['제목', '내용', '작성자']);
+  }, [isSelected, dispatch]);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -147,7 +154,7 @@ export default function CommunityDetail() {
             <Dropdown
               className="text"
               defaultValue='필터'
-              options={filterOptions.current}
+              options={filterOptions}
               onSelect={selected => dispatch(setFilterCondition(selected))}
             />
           </div>
@@ -156,7 +163,7 @@ export default function CommunityDetail() {
               <Dropdown
                 className="text"
                 defaultValue='정렬'
-                options={sortOptions.current}
+                options={sortOptions}
                 onSelect={selected => dispatch(setSortCondition(selected))}
                 iconPosition="left"
               />
@@ -165,7 +172,7 @@ export default function CommunityDetail() {
               <Dropdown
                 className="text"
                 defaultValue='검색'
-                options={searchOptions.current}
+                options={searchOptions}
                 onSelect={selected => setSearchOption(selected)}
                 iconPosition="left"
               />
