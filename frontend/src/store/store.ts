@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from '../features/auth/authSlice';
-import feedReducer from '../features/mypage/myFeedSlice';
+import myFeedReducer from '../features/mypage/myFeedSlice';
 import communityListReducer from '../features/communityList/communityListSlice';
 import followerReducer from '../features/mypage/followerSlice';
 import followingReducer from '../features/mypage/followingSlice';
@@ -15,7 +15,7 @@ import profileReducer from '../features/mypage/profileSlice';
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    feed: feedReducer,
+    myFeed: myFeedReducer,
     communityList: communityListReducer,
     follower: followerReducer,
     following: followingReducer,

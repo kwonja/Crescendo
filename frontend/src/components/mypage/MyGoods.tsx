@@ -3,18 +3,19 @@ import { ReactComponent as Dots } from '../../assets/images/Gallery/whitedots.sv
 import { ReactComponent as FullHeart } from '../../assets/images/Gallery/whitefullheart.svg';
 import { ReactComponent as Heart } from '../../assets/images/Gallery/whiteheart.svg';
 import { ReactComponent as Comment } from '../../assets/images/Gallery/whitecomment.svg';
-import { GoodsInfo } from '../../interface/gallery';
+import { MyGoodsInfo } from '../../interface/gallery';
 import { IMAGE_BASE_URL } from '../../apis/core';
 import UserProfile from '../common/UserProfile';
 import { useAppDispatch } from '../../store/hooks/hook';
 import { toggleGoodsLike } from '../../features/communityDetail/communityDetailSlice';
+import { decrementLike, incrementLike } from '../../features/mypage/myFeedSlice';
+import { Link } from 'react-router-dom';
 
 interface GoodsProps {
-  goods: GoodsInfo;
-  onClick: () => void;
+  goods: MyGoodsInfo;
 }
 
-export default function CommunityGoods({goods}:GoodsProps) {
+export default function MyGoods({goods}:GoodsProps) {
   const {
           goodsId,
           userId,
@@ -23,9 +24,11 @@ export default function CommunityGoods({goods}:GoodsProps) {
           likeCnt,
           goodsImagePathList,
           commentCnt,
-          lastModified,
+          createdAt,
           title,
-          isLike
+          isLike,
+          idolGroupId,
+          idolGroupName
         } = goods;
   
   const dispatch = useAppDispatch();
@@ -33,7 +36,8 @@ export default function CommunityGoods({goods}:GoodsProps) {
 
   return (
     <div className="gallery">
-      <img className='gallery-img' src={IMAGE_BASE_URL+goodsImagePathList[0]} alt="굿즈그림" />
+      <div className='community_name'><Link to={`/community/${idolGroupId}`}>{idolGroupName}</Link></div>
+      <img className='gallery-img' src={goodsImagePathList?IMAGE_BASE_URL+goodsImagePathList[0]:''} alt="굿즈그림" />
 
       <div className="title_box">
         <div className="type">굿즈</div>
@@ -47,7 +51,7 @@ export default function CommunityGoods({goods}:GoodsProps) {
           <UserProfile
             userId={userId}
             userNickname={nickname}
-            date={lastModified}
+            date={new Date(createdAt).toLocaleString()}
             userProfilePath={profileImagePath ? IMAGE_BASE_URL + profileImagePath : null}
           />
         </div>
@@ -56,8 +60,18 @@ export default function CommunityGoods({goods}:GoodsProps) {
           <div className='gallery_comment_cnt'>{commentCnt}</div>
         </div>
         <div className = "gallery_heart_box">
-          {isLike?<FullHeart className="gallery_heart hoverup" onClick={()=>dispatch(toggleGoodsLike(goodsId))} />
-                  :<Heart className="gallery_heart hoverup" onClick={()=>dispatch(toggleGoodsLike(goodsId))} />}
+          {isLike?<FullHeart 
+                    className="gallery_heart hoverup" 
+                    onClick={()=>{
+                      dispatch(decrementLike({id:goodsId, type:'goods'}))
+                      dispatch(toggleGoodsLike(goodsId))
+                    }} />
+                  :<Heart 
+                    className="gallery_heart hoverup" 
+                    onClick={()=>{
+                      dispatch(incrementLike({id:goodsId, type:'goods'}))
+                      dispatch(toggleGoodsLike(goodsId))
+                    }} />}
           <div className='gallery_heart_cnt'>{likeCnt}</div>
         </div>
       </div>

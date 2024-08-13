@@ -1,43 +1,102 @@
 //Ducks 패턴 공부예정
 
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { FeedInfo } from '../../interface/feed';
-import { getMyFeedAPI } from '../../apis/user';
+import { MyFeedInfo } from '../../interface/feed';
+import { getMyFanArtAPI, getMyFeedAPI, getMyGoodsAPI } from '../../apis/user';
+import { MyFanArtInfo, MyGoodsInfo } from '../../interface/gallery';
+import { RootState } from '../../store/store';
 
 export type PromiseStatus = 'loading' | 'success' | 'failed' | '';
 
-interface FeedProps {
-  myFeedList: FeedInfo[];
+interface MyFeedState {
+  myFeedList: MyFeedInfo[];
+  myFanArtList: MyFanArtInfo[];
+  myGoodsList: MyGoodsInfo[];
   status: PromiseStatus;
   error: string | undefined;
+  hasMore: boolean;
+  page: number;
 }
-const initialState: FeedProps = {
+const initialState: MyFeedState = {
   myFeedList: [],
+  myFanArtList: [],
+  myGoodsList: [],
   status: '',
   error: '',
+  hasMore: true,
+  page: 0,
 };
 
-export const getMyFeedList = createAsyncThunk('feedSlice/getMyFeedList', async (userId: number) => {
-  const response = await getMyFeedAPI(userId, 0, 10);
+export const getMyFeedList = createAsyncThunk('myFeedSlice/getMyFeedList', async (userId: number, thunkAPI) => {
+  const rootState = thunkAPI.getState() as RootState;
+  const response = await getMyFeedAPI(userId, rootState.myFeed.page, 3);
   return response;
 });
 
-const feedSlice = createSlice({
+export const getMyFanArtList = createAsyncThunk('myFeedSlice/getMyFanArtList', async (userId: number, thunkAPI) => {
+  const rootState = thunkAPI.getState() as RootState;
+  const response = await getMyFanArtAPI(userId, rootState.myFeed.page, 3);
+  return response;
+});
+
+export const getMyGoodsList = createAsyncThunk('myFeedSlice/getMyGoodsList', async (userId: number, thunkAPI) => {
+  const rootState = thunkAPI.getState() as RootState;
+  const response = await getMyGoodsAPI(userId, rootState.myFeed.page, 3);
+  return response;
+});
+
+const myFeedSlice = createSlice({
   name: 'feed',
   initialState: initialState,
   reducers: {
-    incrementLike: (state, action: PayloadAction<number>) => {
-      const feed = state.myFeedList.find(feed => feed.feedId === action.payload);
-      if (feed) {
-        feed.likeCnt += 1;
-        feed.isLike = true;
+    resetState: () => {
+      return initialState;
+    },
+
+    incrementLike: (state, action: PayloadAction<{type:'feed'|'fanArt'|'goods', id:number}>) => {
+      if (action.payload.type === 'feed') {
+        const feed = state.myFeedList.find(feed => feed.feedId === action.payload.id);
+        if (feed) {
+          feed.likeCnt += 1;
+          feed.isLike = true;
+        }
+      }
+      else if (action.payload.type === 'fanArt') {
+        const fanArt = state.myFanArtList.find(fanArt => fanArt.fanArtId === action.payload.id);
+        if (fanArt) {
+          fanArt.likeCnt += 1;
+          fanArt.isLike = true;
+        }
+      }
+      else if (action.payload.type === 'goods') {
+        const goods = state.myGoodsList.find(goods => goods.goodsId === action.payload.id);
+        if (goods) {
+          goods.likeCnt += 1;
+          goods.isLike = true;
+        }
       }
     },
-    decrementLike: (state, action: PayloadAction<number>) => {
-      const feed = state.myFeedList.find(feed => feed.feedId === action.payload);
-      if (feed) {
-        feed.likeCnt -= 1;
-        feed.isLike = false;
+    decrementLike: (state, action: PayloadAction<{type:'feed'|'fanArt'|'goods', id:number}>) => {
+      if (action.payload.type === 'feed') {
+        const feed = state.myFeedList.find(feed => feed.feedId === action.payload.id);
+        if (feed) {
+          feed.likeCnt -= 1;
+          feed.isLike = false;
+        }
+      }
+      else if (action.payload.type === 'fanArt') {
+        const fanArt = state.myFanArtList.find(fanArt => fanArt.fanArtId === action.payload.id);
+        if (fanArt) {
+          fanArt.likeCnt -= 1;
+          fanArt.isLike = false;
+        }
+      }
+      else if (action.payload.type === 'goods') {
+        const goods = state.myGoodsList.find(goods => goods.goodsId === action.payload.id);
+        if (goods) {
+          goods.likeCnt -= 1;
+          goods.isLike = false;
+        }
       }
     },
   },
@@ -48,14 +107,42 @@ const feedSlice = createSlice({
       })
       .addCase(getMyFeedList.fulfilled, (state, action) => {
         state.status = 'success';
-        state.myFeedList = [...action.payload.content];
+        state.myFeedList = [...state.myFeedList, ...action.payload.content];
+        state.page += 1;
+        state.hasMore = !action.payload.last;
       })
       .addCase(getMyFeedList.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
+      .addCase(getMyFanArtList.pending, state => {
+        state.status = 'loading';
+      })
+      .addCase(getMyFanArtList.fulfilled, (state, action) => {
+        state.status = 'success';
+        state.myFanArtList = [...state.myFanArtList, ...action.payload.content];
+        state.page += 1;
+        state.hasMore = !action.payload.last;
+      })
+      .addCase(getMyFanArtList.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
+      .addCase(getMyGoodsList.pending, state => {
+        state.status = 'loading';
+      })
+      .addCase(getMyGoodsList.fulfilled, (state, action) => {
+        state.status = 'success';
+        state.myGoodsList = [...state.myGoodsList, ...action.payload.content];
+        state.page += 1;
+        state.hasMore = !action.payload.last;
+      })
+      .addCase(getMyGoodsList.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
       });
   },
 });
 
-export const { incrementLike, decrementLike } = feedSlice.actions;
-export default feedSlice.reducer;
+export const { resetState, incrementLike, decrementLike } = myFeedSlice.actions;
+export default myFeedSlice.reducer;

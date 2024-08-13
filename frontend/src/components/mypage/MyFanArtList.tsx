@@ -1,15 +1,15 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { useAppSelector } from '../../store/hooks/hook';
 import { useAppDispatch } from '../../store/hooks/hook';
-import MyFeed from './MyFeed';
-import { getMyFeedList, resetState } from '../../features/mypage/myFeedSlice';
+import { getMyFanArtList, resetState } from '../../features/mypage/myFeedSlice';
+import MyFanart from './MyFanart';
 
-interface MyFeedListProps {
+interface MyFanArtListProps {
   userId: number;
 }
 
-export default function MyFeedList({ userId }: MyFeedListProps) {
-  const { myFeedList, hasMore, status } = useAppSelector(state => state.myFeed);
+export default function MyFanartList({ userId }: MyFanArtListProps) {
+  const { myFanArtList, hasMore, status, } = useAppSelector(state => state.myFeed);
   const dispatch = useAppDispatch();
   const observer = useRef<IntersectionObserver | null>(null);
 
@@ -26,7 +26,7 @@ export default function MyFeedList({ userId }: MyFeedListProps) {
 
       observer.current = new IntersectionObserver(entries => {
         if (entries[0].isIntersecting && hasMore && (status === 'success' || status === '')) {
-          dispatch(getMyFeedList(userId));
+          dispatch(getMyFanArtList(userId));
         }
       });
 
@@ -38,14 +38,15 @@ export default function MyFeedList({ userId }: MyFeedListProps) {
   );
 
   return (
-    <div className="feedlist">
-      {status === 'loading' || myFeedList.length > 0 ? (
-        myFeedList.map((feed) => (
-          <MyFeed key={feed.feedId} feed={feed}  />
+    <div className="gallerylist">
+      {status === 'loading' || myFanArtList.length > 0 ? (
+        myFanArtList.map((fanArt) => (
+          <MyFanart key={fanArt.fanArtId} fanArt={fanArt} />
         ))
       ) : (
-        <div className="text-center text-xl">작성한 피드가 없습니다.</div>
-      )}
+        <div className="text-center text-xl">작성한 팬아트가 없습니다.</div>
+      )
+      }
       {hasMore && <div ref={loadMoreElementRef}>Load More..</div>}
     </div>
   );
