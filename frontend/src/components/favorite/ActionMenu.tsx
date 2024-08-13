@@ -1,19 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { deleteFavoriteRankAPI } from '../../apis/favorite';
 import CommonModal from '../common/CommonModal';
-import ReactDOM from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 
 interface ActionMenuProps {
   favoriteRankId: number;
-  position: {
-    top: number;
-    left: number;
-  };
   onClose: () => void;
 }
 
-export default function ActionMenu({ favoriteRankId, position, onClose }: ActionMenuProps) {
+export default function ActionMenu({ favoriteRankId, onClose }: ActionMenuProps) {
   const navigate = useNavigate();
   const menuRef = useRef<HTMLDivElement>(null);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
@@ -50,14 +45,10 @@ export default function ActionMenu({ favoriteRankId, position, onClose }: Action
     }
   };
 
-  return ReactDOM.createPortal(
+  return (
     <div
       ref={menuRef}
       className="action-menu"
-      style={{
-        top: `${position.top}px`,
-        left: `${position.left}px`,
-      }}
     >
       <div className="action-menu-item" onClick={() => setShowDeleteModal(true)}>
         삭제
@@ -71,7 +62,6 @@ export default function ActionMenu({ favoriteRankId, position, onClose }: Action
           closeOnOutsideClick={true}
         />
       )}
-    </div>,
-    document.body,
-  );
+    </div>
+  )
 }

@@ -14,12 +14,7 @@ import ActionMenu from './ActionMenu';
 
 export default function FavoriteRankList() {
   const { favoriteRankList, status, hasMore } = useAppSelector(state => state.favorite);
-  const [showActionMenu, setShowActionMenu] = useState<boolean>(false);
-  const [actionMenuPosition, setActionMenuPosition] = useState<{ top: number; left: number }>({
-    top: 0,
-    left: 0,
-  });
-  const [selectedRankId, setSelectedRankId] = useState<number>(-1);
+  const [showActionMenu, setShowActionMenu] = useState<number|null>(null);
   const dispatch = useAppDispatch();
   const observer = useRef<IntersectionObserver | null>(null);
 
@@ -47,13 +42,6 @@ export default function FavoriteRankList() {
     [hasMore, dispatch, status],
   );
 
-  const handleDotsClick = (event: React.MouseEvent<SVGSVGElement, MouseEvent>, id: number) => {
-    const { pageX, pageY } = event;
-    setSelectedRankId(id);
-    setActionMenuPosition({ top: pageY, left: pageX });
-    setShowActionMenu(true);
-  };
-
   return (
     <div className="favoriteranklist">
       {favoriteRankList.map(rankEntry => (
@@ -61,8 +49,14 @@ export default function FavoriteRankList() {
           <div className="dotsbox">
             <Dots
               className="hoverup"
-              onClick={event => handleDotsClick(event, rankEntry.favoriteRankId)}
+              onClick={()=> setShowActionMenu(rankEntry.favoriteRankId)}
             />
+            {showActionMenu===rankEntry.favoriteRankId && (
+              <ActionMenu
+                favoriteRankId={rankEntry.favoriteRankId}
+                onClose={() => setShowActionMenu(null)}
+              />
+            )}
           </div>
           <div className="favoriteranklist_card_label text-4xl">
             <div>{rankEntry.idolGroupName}</div>
@@ -76,7 +70,7 @@ export default function FavoriteRankList() {
               userId={rankEntry.writerId}
               userNickname={rankEntry.writerNickname}
               userProfilePath={IMAGE_BASE_URL + rankEntry.writerProfilePath}
-              date={rankEntry.createdAt ? rankEntry.createdAt.split('T')[0] : ''}
+              date={new Date(rankEntry.createdAt).toLocaleString()}
             />
             <div className="heartbox">
               {rankEntry.likeCnt}
@@ -95,16 +89,8 @@ export default function FavoriteRankList() {
           </div>
         </div>
       ))}
-      {showActionMenu && (
-        <ActionMenu
-          favoriteRankId={selectedRankId}
-          position={actionMenuPosition}
-          onClose={() => setShowActionMenu(false)}
-        />
-      )}
-      {(status === 'success' || status === '') && hasMore && (
-        <div ref={loadMoreElementRef}>Load More..</div>
-      )}
+      
+      {(status === 'success' || status === '') && hasMore && (<div ref={loadMoreElementRef}>Load More..</div>)}
     </div>
   );
 }
