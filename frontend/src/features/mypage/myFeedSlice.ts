@@ -50,53 +50,49 @@ const myFeedSlice = createSlice({
     },
 
     incrementLike: (state, action: PayloadAction<{type:'feed'|'fanArt'|'goods', id:number}>) => {
-      switch(action.payload.type) {
-        case 'feed':
-          const feed = state.myFeedList.find(feed => feed.feedId === action.payload.id);
-          if (feed) {
-            feed.likeCnt += 1;
-            feed.isLike = true;
-          }
-          break;
-        case 'fanArt':
-          const fanArt = state.myFanArtList.find(fanArt => fanArt.fanArtId === action.payload.id);
-          if (fanArt) {
-            fanArt.likeCnt += 1;
-            fanArt.isLike = true;
-          }
-          break;
-        case 'goods':
-          const goods = state.myGoodsList.find(goods => goods.goodsId === action.payload.id);
-          if (goods) {
-            goods.likeCnt += 1;
-            goods.isLike = true;
-          }
-          break;
+      if (action.payload.type === 'feed') {
+        const feed = state.myFeedList.find(feed => feed.feedId === action.payload.id);
+        if (feed) {
+          feed.likeCnt += 1;
+          feed.isLike = true;
+        }
+      }
+      else if (action.payload.type === 'fanArt') {
+        const fanArt = state.myFanArtList.find(fanArt => fanArt.fanArtId === action.payload.id);
+        if (fanArt) {
+          fanArt.likeCnt += 1;
+          fanArt.isLike = true;
+        }
+      }
+      else if (action.payload.type === 'goods') {
+        const goods = state.myGoodsList.find(goods => goods.goodsId === action.payload.id);
+        if (goods) {
+          goods.likeCnt += 1;
+          goods.isLike = true;
+        }
       }
     },
     decrementLike: (state, action: PayloadAction<{type:'feed'|'fanArt'|'goods', id:number}>) => {
-      switch(action.payload.type) {
-        case 'feed':
-          const feed = state.myFeedList.find(feed => feed.feedId === action.payload.id);
-          if (feed) {
-            feed.likeCnt -= 1;
-            feed.isLike = false;
-          }
-          break;
-        case 'fanArt':
-          const fanArt = state.myFanArtList.find(fanArt => fanArt.fanArtId === action.payload.id);
-          if (fanArt) {
-            fanArt.likeCnt -= 1;
-            fanArt.isLike = false;
-          }
-          break;
-        case 'goods':
-          const goods = state.myGoodsList.find(goods => goods.goodsId === action.payload.id);
-          if (goods) {
-            goods.likeCnt -= 1;
-            goods.isLike = false;
-          }
-          break;
+      if (action.payload.type === 'feed') {
+        const feed = state.myFeedList.find(feed => feed.feedId === action.payload.id);
+        if (feed) {
+          feed.likeCnt -= 1;
+          feed.isLike = false;
+        }
+      }
+      else if (action.payload.type === 'fanArt') {
+        const fanArt = state.myFanArtList.find(fanArt => fanArt.fanArtId === action.payload.id);
+        if (fanArt) {
+          fanArt.likeCnt -= 1;
+          fanArt.isLike = false;
+        }
+      }
+      else if (action.payload.type === 'goods') {
+        const goods = state.myGoodsList.find(goods => goods.goodsId === action.payload.id);
+        if (goods) {
+          goods.likeCnt -= 1;
+          goods.isLike = false;
+        }
       }
     },
   },
