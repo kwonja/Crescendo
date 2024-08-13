@@ -61,6 +61,7 @@ type Reply = {
   likeCnt: number;
   isLike?: boolean;
   content: string;
+  createdAt: string;
 };
 
 const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId }) => {
@@ -74,6 +75,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editedContent, setEditedContent] = useState<string>('');
   const [replyVisibility, setReplyVisibility] = useState<{ [key: number]: boolean }>({});
+  const [replyInputVisibility, setReplyInputVisibility] = useState<{ [key: number]: boolean }>({});
   const commentsRef = useRef<HTMLDivElement | null>(null);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -199,6 +201,12 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
   };
 
   const handleAddReply = (commentId: number) => {
+    if (!currentUserId) {
+      alert("로그인이 필요한 서비스입니다.");
+      navigate('/login');
+      return;
+    }
+
     const replyContent = newReply[commentId]?.trim();
     if (!replyContent) return;
 
@@ -279,6 +287,13 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
       loadReplies(commentId);
       setReplyVisibility(prevState => ({ ...prevState, [commentId]: true }));
     }
+  };
+
+  const handleReplyInputToggle = (commentId: number) => {
+    setReplyInputVisibility(prevState => ({
+      ...prevState,
+      [commentId]: !prevState[commentId],
+    }));
   };
 
   const handleEdit = () => {
@@ -543,20 +558,25 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
                       onClick={() => handleReplyToggle(comment.feedCommentId)}
                     />
                     <div className="reply-count">
-                      {comment.replyCnt}개의 <div>&nbsp;답글</div>
-                      <div className="reply-input-container">
-                        <input
-                          type="text"
-                          placeholder="답글을 입력하세요."
-                          value={newReply[comment.feedCommentId] || ''}
-                          onChange={e => handleNewReplyChange(e, comment.feedCommentId)}
-                          onKeyDown={e => handleNewReplyKeyDown(e, comment.feedCommentId)}
-                        />
-                        <CommentWriteButton
-                          className="comment-write-button"
-                          onClick={() => handleAddReply(comment.feedCommentId)}
-                        />
+                      {comment.replyCnt}개의{' '}
+                      <div onClick={() => handleReplyInputToggle(comment.feedCommentId)}>
+                        &nbsp;답글
                       </div>
+                      {replyInputVisibility[comment.feedCommentId] && (
+                        <div className="reply-input-container">
+                          <input
+                            type="text"
+                            placeholder="답글을 입력하세요."
+                            value={newReply[comment.feedCommentId] || ''}
+                            onChange={e => handleNewReplyChange(e, comment.feedCommentId)}
+                            onKeyDown={e => handleNewReplyKeyDown(e, comment.feedCommentId)}
+                          />
+                          <CommentWriteButton
+                            className="reply-write-button"
+                            onClick={() => handleAddReply(comment.feedCommentId)}
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
                   {replyVisibility[comment.feedCommentId] && (
@@ -577,6 +597,9 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
                             </div>
                             <div className="reply-user-info">
                               <div className="reply-nickname">{reply.nickname}</div>
+                              <div className="comment-date">
+                                {new Date(reply.createdAt).toLocaleString()}
+                              </div>
                               <div className="reply-content">{reply.content}</div>
                             </div>
                           </div>
