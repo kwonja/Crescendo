@@ -10,6 +10,14 @@ export const getMyFeedAPI = async (userId: number, page: number, size: number) =
   const response = await api.get(`/api/v1/community/feed/user/${userId}?page=${page}&size=${size}`);
   return response.data;
 };
+export const getMyFanArtAPI = async (userId: number, page: number, size: number) => {
+  const response = await api.get(`/api/v1/community/fan-art/user/${userId}?page=${page}&size=${size}`);
+  return response.data;
+};
+export const getMyGoodsAPI = async (userId: number, page: number, size: number) => {
+  const response = await api.get(`/api/v1/community/goods/user/${userId}?page=${page}&size=${size}`);
+  return response.data;
+};
 
 export const getUserInfoAPI = async (userId: number, loggedInUserId: number) => {
   const response = await Authapi.get(`/api/v1/user/${userId}?loggedInUserId=${loggedInUserId}`);

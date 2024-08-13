@@ -3,14 +3,14 @@ import { ReactComponent as Dots } from '../../assets/images/Gallery/whitedots.sv
 import { ReactComponent as FullHeart } from '../../assets/images/Gallery/whitefullheart.svg';
 import { ReactComponent as Heart } from '../../assets/images/Gallery/whiteheart.svg';
 import { ReactComponent as Comment } from '../../assets/images/Gallery/whitecomment.svg';
-import { GalleryInfo } from '../../interface/gallery';
+import { FanArtInfo } from '../../interface/gallery';
 import { IMAGE_BASE_URL } from '../../apis/core';
 import UserProfile from '../common/UserProfile';
 import { useAppDispatch } from '../../store/hooks/hook';
 import { toggleFanArtLike } from '../../features/communityDetail/communityDetailSlice';
 
 interface FanArtProps {
-  fanArt: GalleryInfo;
+  fanArt: FanArtInfo;
   onClick: () => void;
 }
 

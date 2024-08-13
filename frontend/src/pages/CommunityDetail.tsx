@@ -24,7 +24,7 @@ import CommunityGoodsList from '../components/community/CommunityGoodsList';
 export default function CommunityDetail() {
   const params = useParams();
   if (params.idolGroupId === undefined || !/^[1-9]\d*$/.test(params.idolGroupId)) {
-    throw new Error('invalid parameter');
+    throw new Error('잘못된 접근입니다.');
   }
   const idolGroupId: number = Number(params.idolGroupId);
   const [filterOptions, setFilterOptions] = useState<string[]>([]);
