@@ -28,6 +28,7 @@ export default function ChallengeItem({ Challenge }: ChallengeProps) {
   const handleClick = () => {
     dispath(setSelectedChallenge(Challenge));
   };
+  
   return (
     <div className="challengeitem">
       <div className="item-box">

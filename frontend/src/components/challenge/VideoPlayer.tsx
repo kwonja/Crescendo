@@ -31,7 +31,6 @@ export default function VideoPlayer() {
   }, []);
 
   useEffect(() => {
-    console.log(selectedChallenge);
     if (selectedChallenge.challengeId !== 0 && videoRef.current) {
       videoRef.current.play();
       setIsPlaying(true);

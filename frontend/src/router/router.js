@@ -51,10 +51,6 @@ export const router = createBrowserRouter([
         element: <ChallengeDetails />,
       },
       {
-        path: '/game',
-        element: <Main />,
-      },
-      {
         path: '/mypage/:id',
         element: <MyPage />,
       },
