@@ -60,8 +60,8 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [activeMenuId, setActiveMenuId] = useState<number | null>(null);
   const [editModalVisible, setEditModalVisible] = useState(false);
-  const [editingCommentId, setEditingCommentId] = useState<number | null>(null); // 수정 중인 댓글 ID 상태 추가
-  const [editedContent, setEditedContent] = useState<string>(''); // 수정 중인 댓글 내용 상태 추가
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+  const [editedContent, setEditedContent] = useState<string>('');
   const commentsRef = useRef<HTMLDivElement | null>(null);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -162,9 +162,8 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
   };
 
   const handleCommentLikeToggle = (commentId: number) => {
-    // 현재 댓글의 상태를 찾아서 저장
     const commentIndex = comments.findIndex(comment => comment.feedCommentId === commentId);
-    if (commentIndex === -1) return; // 댓글이 없을 경우 아무것도 하지 않음
+    if (commentIndex === -1) return;
 
     const originalComment = comments[commentIndex];
     const updatedComment = {
@@ -173,16 +172,13 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
       likeCnt: originalComment.isLike ? originalComment.likeCnt - 1 : originalComment.likeCnt + 1,
     };
 
-    // 로컬 상태를 먼저 업데이트
     const updatedComments = [...comments];
     updatedComments[commentIndex] = updatedComment;
     setComments(updatedComments);
 
-    // 서버에 요청 보내기
     Authapi.post(`/api/v1/community/feed/feed-comment-like/${commentId}`).catch(error => {
       console.error('댓글 좋아요 오류:', error);
 
-      // 실패할 경우 원래 상태로 롤백
       setComments(prevComments => {
         const rollbackComments = [...prevComments];
         rollbackComments[commentIndex] = originalComment;
@@ -193,17 +189,17 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
 
   const handleMenuToggle = (feedId: number) => {
     if (activeMenuId === feedId) {
-      setActiveMenuId(null); // 이미 열려 있는 메뉴를 닫음
+      setActiveMenuId(null);
     } else {
-      setActiveMenuId(feedId); // 새로운 메뉴를 열음
+      setActiveMenuId(feedId);
     }
   };
 
   const handleCommentMenuToggle = (commentId: number) => {
     if (activeMenuId === commentId) {
-      setActiveMenuId(null); // 이미 열려 있는 메뉴를 닫음
+      setActiveMenuId(null);
     } else {
-      setActiveMenuId(commentId); // 새로운 메뉴를 열음
+      setActiveMenuId(commentId);
     }
   };
 
@@ -257,41 +253,31 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
     const formData = new FormData();
     formData.append('content', editedContent);
 
-    //eslint-disable-next-line no-console
-    console.log(formData);
-
     Authapi.patch(`/api/v1/community/feed/${feedId}/comment/${commentId}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     })
       .then(() => {
-        setEditingCommentId(null); // 수정 모드 종료
-        loadComments(); // 수정 후 댓글 목록 다시 불러오기
+        setEditingCommentId(null);
+        loadComments();
       })
       .catch(error => {
         if (error.response) {
           const { status, data } = error.response;
 
-          // 400 Bad Request 처리
           if (status === 400 && data.exception === 'InvalidFeedCommentContentFormatException') {
             alert('댓글 내용 형식이 올바르지 않습니다.');
-          }
-          // 404 Not Found 처리
-          else if (status === 404 && data.exception === 'FeedCommentNotFoundException') {
+          } else if (status === 404 && data.exception === 'FeedCommentNotFoundException') {
             alert('댓글을 찾을 수 없습니다.');
-          }
-          // 기타 상태 코드 처리
-          else {
+          } else {
             console.error('댓글 수정 오류:', status, data);
             alert(`댓글 수정에 실패했습니다. 서버 응답: ${status}`);
           }
         } else if (error.request) {
-          // 요청이 전송되었으나 응답이 없는 경우
           console.error('응답 없음:', error.request);
           alert('서버로부터 응답을 받지 못했습니다.');
         } else {
-          // 요청을 보내기 전에 발생한 오류
           console.error('요청 설정 오류:', error.message);
           alert('요청을 처리하는 중에 오류가 발생했습니다.');
         }
