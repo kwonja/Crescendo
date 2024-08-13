@@ -46,7 +46,7 @@ def normalize_landmarks(landmarks):
     if not landmarks:
         return landmarks
 
-    base_point = landmarks[0]  # 첫 번째 랜드마크(예: 코)를 기준으로 설정
+    base_point = landmarks[0]
     normalized_landmarks = []
 
     for lm in landmarks:
@@ -60,41 +60,28 @@ def normalize_landmarks(landmarks):
 
     return normalized_landmarks
 
-def calculate_euclidean_distance(landmark1, landmark2):
-    dist = np.sqrt((landmark1['x'] - landmark2['x']) ** 2 +
-                   (landmark1['y'] - landmark2['y']) ** 2 +
-                   (landmark1['z'] - landmark2['z']) ** 2)
-    return dist
-
 def calculate_dtw_similarity(base_landmarks, compare_landmarks):
     base_points = [[lm['x'], lm['y'], lm['z']] for lm in base_landmarks]
     compare_points = [[lm['x'], lm['y'], lm['z']] for lm in compare_landmarks]
 
+    # FastDTW를 사용하여 DTW 거리 계산
     distance, _ = fastdtw(base_points, compare_points, dist=euclidean)
-    return 1 / (1 + distance)
 
-def nonlinear_scaling(similarity):
-    return np.sqrt(similarity) * 100
+    # DTW 거리 값을 적절히 스케일링하여 유사도로 변환
+    max_distance = np.sqrt(3)  # 최대 거리 (Euclidean 거리에서 최대 차원 수를 반영)
+    similarity = np.exp(-distance / max_distance)  # 거리 값을 유사도로 변환 (0-1 사이)
 
-# 두 비디오의 유사도 분석
+    return similarity
+
 def get_analyze(base_landmarks, compare_landmarks):
-    base_length = len(base_landmarks)
-    compare_length = len(compare_landmarks)
-
-    max_length = max(base_length, compare_length)
     total_similarity = 0
 
-    for i in range(max_length):
-        if i < base_length and i < compare_length:
-            base_landmarks_norm = normalize_landmarks(base_landmarks[i]['landmarks'])
-            compare_landmarks_norm = normalize_landmarks(compare_landmarks[i]['landmarks'])
+    for base_frame, compare_frame in zip(base_landmarks, compare_landmarks):
+        base_landmarks_norm = normalize_landmarks(base_frame['landmarks'])
+        compare_landmarks_norm = normalize_landmarks(compare_frame['landmarks'])
 
-            frame_similarity = calculate_dtw_similarity(base_landmarks_norm, compare_landmarks_norm)
-        else:
-            frame_similarity = 0.1
-
+        frame_similarity = calculate_dtw_similarity(base_landmarks_norm, compare_landmarks_norm)
         total_similarity += frame_similarity
 
-    similarity_percentage = (total_similarity / max_length)
-    scaled_similarity = nonlinear_scaling(similarity_percentage)
-    return scaled_similarity
+    similarity_percentage = total_similarity / min(len(base_landmarks), len(compare_landmarks))
+    return similarity_percentage * 100  # 유사도를 0-100 범위로 변환하여 반환
