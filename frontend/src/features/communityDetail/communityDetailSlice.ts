@@ -2,7 +2,7 @@ import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { FeedInfo, FeedListResponse, getFeedListParams } from '../../interface/feed';
 import { GalleryInfo, GalleryListResponse, getGalleryListParams } from '../../interface/gallery';
 import { getCommunityFeedListAPI, toggleFeedLikeAPI } from '../../apis/feed';
-import { PromiseStatus } from '../feed/feedSlice';
+import { PromiseStatus } from '../mypage/myFeedSlice';
 import { RootState } from '../../store/store';
 import { getCommunityFanArtListAPI, toggleFanArtLikeAPI } from '../../apis/fanart';
 import { getCommunityGoodsListAPI, toggleGoodsLikeAPI } from '../../apis/goods';

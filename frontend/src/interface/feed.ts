@@ -1,4 +1,4 @@
-export interface FeedData {
+export interface FeedInfo {
   feedId: number;
   userId: number; // 작성자 userId
   profileImagePath: string; // 작성자 프로필 사진 경로
@@ -11,21 +11,6 @@ export interface FeedData {
   content: string; // 피드 본문
   commentCnt: number; // 댓글 수
   tagList: string[]; // 태그 리스트
-}
-
-export interface FeedInfo {
-  feedId: number;
-  userId: number;
-  profilePath: string;
-  nickname: string;
-  createdAt: string; // "2024-08-08T07:09:32.325Z",
-  lastModified: string; // "2024-08-08T07:09:32.325Z",
-  likeCnt: number;
-  imagePaths: string[];
-  content: string;
-  commentCnt: number;
-  tags: string[];
-  isLike: boolean;
 }
 
 export interface FeedListResponse {
