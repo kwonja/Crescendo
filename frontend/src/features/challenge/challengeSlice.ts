@@ -9,10 +9,9 @@ interface ChallengeProps {
   unReadAlarmCount: number;
   status: PromiseStatus;
   error: string | undefined;
-  currentPage : number;
-  size : number;
-  selectedChallenge : Challenge;
-
+  currentPage: number;
+  size: number;
+  selectedChallenge: Challenge;
 }
 const inistalState: ChallengeProps = {
   challengeLists: [],
@@ -20,8 +19,8 @@ const inistalState: ChallengeProps = {
   status: '',
   error: '',
   currentPage: 0,
-  size : 10,
-  selectedChallenge :{
+  size: 10,
+  selectedChallenge: {
     challengeId: 0,
     title: '',
     challengeVideoPath: '',
@@ -30,20 +29,23 @@ const inistalState: ChallengeProps = {
     userId: 0,
     nickname: '',
     profilePath: '',
-    participants: 0
-  }
+    participants: 0,
+  },
 };
 
-interface APIstate{
-  page : number,
-  size : number,
-  title : string
-  sortBy : string
+interface APIstate {
+  page: number;
+  size: number;
+  title: string;
+  sortBy: string;
 }
-export const getChallengeList = createAsyncThunk('challengeSlice/getChallengeList', async ({page,size,title,sortBy} : APIstate) => {
-  const response = await getChallengeAPI(page,size,title,sortBy);
-  return response;
-});
+export const getChallengeList = createAsyncThunk(
+  'challengeSlice/getChallengeList',
+  async ({ page, size, title, sortBy }: APIstate) => {
+    const response = await getChallengeAPI(page, size, title, sortBy);
+    return response;
+  },
+);
 
 const challengeSlice = createSlice({
   name: 'challenge',
@@ -65,7 +67,7 @@ const challengeSlice = createSlice({
       .addCase(getChallengeList.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
-      })
+      });
   },
 });
 

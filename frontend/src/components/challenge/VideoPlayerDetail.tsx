@@ -1,10 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { ReactComponent as Play } from '../../assets/images/challenge/playbtn.svg';
 import { ReactComponent as Pause } from '../../assets/images/challenge/pause.svg';
-import { useAppSelector } from '../../store/hooks/hook';
-import { IMAGE_BASE_URL } from '../../apis/core';
-export default function VideoPlayer() {
-  const { selectedChallenge } = useAppSelector(state => state.challenge);
+// import { useAppSelector } from '../../store/hooks/hook';
+
+export default function VideoPlayerDetail() {
+  // const { selectedChallenge } = useAppSelector(state => state.challenge);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -29,14 +29,6 @@ export default function VideoPlayer() {
       };
     }
   }, []);
-
-  useEffect(() => {
-    console.log(selectedChallenge);
-    if (selectedChallenge.challengeId !== 0 && videoRef.current) {
-      videoRef.current.play();
-      setIsPlaying(true);
-    }
-  }, [selectedChallenge]);
 
   const togglePlayPause = () => {
     const videoElement = videoRef.current;
@@ -69,17 +61,12 @@ export default function VideoPlayer() {
 
   return (
     <div className="video-container" onClick={togglePlayPause}>
-      {selectedChallenge.challengeVideoPath === '' ? (
-        <div className="no-video">
-          <div className="text-2xl">챌린지를 구경해보세요!</div>
-        </div>
-      ) : (
-        <>
+      
           <video
             ref={videoRef}
             className="video-player"
             onTimeUpdate={updateProgress}
-            src={`${IMAGE_BASE_URL}${selectedChallenge.challengeVideoPath}`}
+            src="/Dance.mp4"
           />
           <div className="controls">
             <button className="play-pause-button">{isPlaying ? <Pause /> : <Play />}</button>
@@ -99,8 +86,6 @@ export default function VideoPlayer() {
               <Play className="w-20 h-20 fade-out" />
             )}
           </div>
-        </>
-      )}
     </div>
   );
 }

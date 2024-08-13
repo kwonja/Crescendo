@@ -7,14 +7,14 @@ import { Challenge } from '../../interface/challenge';
 import { IMAGE_BASE_URL } from '../../apis/core';
 import { useAppDispatch } from '../../store/hooks/hook';
 import { setSelectedChallenge } from '../../features/challenge/challengeSlice';
+import { Link } from 'react-router-dom';
 
-
-interface ChallengeProps{
-  Challenge : Challenge
+interface ChallengeProps {
+  Challenge: Challenge;
 }
-export default function ChallengeItem({Challenge} : ChallengeProps) {
+export default function ChallengeItem({ Challenge }: ChallengeProps) {
   const dispath = useAppDispatch();
-  const {title,challengeVideoPath,participants} = Challenge;
+  const { title, challengeVideoPath, participants,challengeId } = Challenge;
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [duration, setDuration] = useState<number>(0);
 
@@ -25,13 +25,14 @@ export default function ChallengeItem({Challenge} : ChallengeProps) {
     }
   };
 
-  const handleClick=()=>{
+  const handleClick = () => {
     dispath(setSelectedChallenge(Challenge));
-  }
+  };
   return (
     <div className="challengeitem">
       <div className="item-box">
-        <video src={`${IMAGE_BASE_URL}${challengeVideoPath}`}
+        <video
+          src={`${IMAGE_BASE_URL}${challengeVideoPath}`}
           onLoadedMetadata={handleLoadedMetadata}
           ref={videoRef}
         />
@@ -44,11 +45,11 @@ export default function ChallengeItem({Challenge} : ChallengeProps) {
               <Participant /> {participants}
             </li>
           </ul>
-          <Enter className="absolute right-3 top-3" />
+           <Link to={`/dance/${challengeId}`}><Enter className="absolute right-3 top-3" /></Link>
           <div className="challengeitem_title">{title}</div>
         </div>
         <div className="big-play-button">
-          <Play className="w-20 h-20" onClick={handleClick}/>
+          <Play className="w-20 h-20" onClick={handleClick} />
         </div>
       </div>
     </div>

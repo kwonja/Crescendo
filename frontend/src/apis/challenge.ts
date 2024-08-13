@@ -5,7 +5,23 @@ export const postChallengeAPI = async (formData: FormData) => {
   return response;
 };
 
-export const getChallengeAPI = async(page: number,size : number,title : string, sortBy : string) =>{
-  const response = await Authapi.get(`/api/v1/challenge?page=${page}&size=${size}`)
+export const getChallengeAPI = async (
+  page: number,
+  size: number,
+  title: string,
+  sortBy: string,
+) => {
+  const response = await Authapi.get(`/api/v1/challenge?page=${page}&size=${size}`);
+  return response.data;
+};
+
+export const getChallengeDetailsAPI = async (page : number, size : number, nickname : string, sortBy : string, challengeId : number) =>{
+  const response = await Authapi.get(`/api/v1/challenge/${challengeId}/join?page=${page}&size=${size}&nickname=${nickname}&sortBy=${sortBy}`)
+  return response.data;
+}
+
+
+export const getChallengeOriginAPI = async(challengeId : number)=>{
+  const response = await Authapi.get(`/api/v1/challenge/${challengeId}`)
   return response.data;
 }
