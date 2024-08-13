@@ -8,6 +8,7 @@ import { IMAGE_BASE_URL } from '../../apis/core';
 import UserProfile from '../common/UserProfile';
 import { useAppDispatch } from '../../store/hooks/hook';
 import { toggleGoodsLike } from '../../features/communityDetail/communityDetailSlice';
+import { decrementLike, incrementLike } from '../../features/mypage/myFeedSlice';
 
 interface GoodsProps {
   goods: MyGoodsInfo;
@@ -55,8 +56,18 @@ export default function MyGoods({goods}:GoodsProps) {
           <div className='gallery_comment_cnt'>{commentCnt}</div>
         </div>
         <div className = "gallery_heart_box">
-          {isLike?<FullHeart className="gallery_heart hoverup" onClick={()=>dispatch(toggleGoodsLike(goodsId))} />
-                  :<Heart className="gallery_heart hoverup" onClick={()=>dispatch(toggleGoodsLike(goodsId))} />}
+          {isLike?<FullHeart 
+                    className="gallery_heart hoverup" 
+                    onClick={()=>{
+                      dispatch(decrementLike({id:goodsId, type:'goods'}))
+                      dispatch(toggleGoodsLike(goodsId))
+                    }} />
+                  :<Heart 
+                    className="gallery_heart hoverup" 
+                    onClick={()=>{
+                      dispatch(incrementLike({id:goodsId, type:'goods'}))
+                      dispatch(toggleGoodsLike(goodsId))
+                    }} />}
           <div className='gallery_heart_cnt'>{likeCnt}</div>
         </div>
       </div>

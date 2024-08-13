@@ -126,7 +126,7 @@ export default function MyFeed({ feed }: FeedProps) {
             className="hoverup"
             onClick={() => {
               dispatch(toggleFeedLike(feedId));
-              dispatch(incrementLike(feedId));
+              dispatch(incrementLike({id:feedId, type:'feed'}));
             }}
           />
         ) : (
@@ -134,7 +134,7 @@ export default function MyFeed({ feed }: FeedProps) {
             className="hoverup"
             onClick={() => {
               dispatch(toggleFeedLike(feedId));
-              dispatch(decrementLike(feedId));
+              dispatch(decrementLike({id:feedId, type:'feed'}));
             }}
           />
         )}

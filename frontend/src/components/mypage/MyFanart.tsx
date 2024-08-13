@@ -8,6 +8,7 @@ import { IMAGE_BASE_URL } from '../../apis/core';
 import UserProfile from '../common/UserProfile';
 import { useAppDispatch } from '../../store/hooks/hook';
 import { toggleFanArtLike } from '../../features/communityDetail/communityDetailSlice';
+import { decrementLike, incrementLike } from '../../features/mypage/myFeedSlice';
 
 interface FanArtProps {
   fanArt: MyFanArtInfo;
@@ -55,8 +56,18 @@ export default function MyFanart({fanArt}:FanArtProps) {
           <div className='gallery_comment_cnt'>{commentCnt}</div>
         </div>
         <div className = "gallery_heart_box">
-          {isLike?<FullHeart className="gallery_heart hoverup" onClick={()=>dispatch(toggleFanArtLike(fanArtId))} />
-                  :<Heart className="gallery_heart hoverup" onClick={()=>dispatch(toggleFanArtLike(fanArtId))} />}
+        {isLike?<FullHeart 
+                    className="gallery_heart hoverup" 
+                    onClick={()=>{
+                      dispatch(decrementLike({id:fanArtId, type:'fanArt'}))
+                      dispatch(toggleFanArtLike(fanArtId))
+                    }} />
+                  :<Heart 
+                    className="gallery_heart hoverup" 
+                    onClick={()=>{
+                      dispatch(incrementLike({id:fanArtId, type:'fanArt'}))
+                      dispatch(toggleFanArtLike(fanArtId))
+                    }} />}
           <div className='gallery_heart_cnt'>{likeCnt}</div>
         </div>
       </div>

@@ -49,18 +49,54 @@ const myFeedSlice = createSlice({
       return initialState;
     },
 
-    incrementLike: (state, action: PayloadAction<number>) => {
-      const feed = state.myFeedList.find(feed => feed.feedId === action.payload);
-      if (feed) {
-        feed.likeCnt += 1;
-        feed.isLike = true;
+    incrementLike: (state, action: PayloadAction<{type:'feed'|'fanArt'|'goods', id:number}>) => {
+      switch(action.payload.type) {
+        case 'feed':
+          const feed = state.myFeedList.find(feed => feed.feedId === action.payload.id);
+          if (feed) {
+            feed.likeCnt += 1;
+            feed.isLike = true;
+          }
+          break;
+        case 'fanArt':
+          const fanArt = state.myFanArtList.find(fanArt => fanArt.fanArtId === action.payload.id);
+          if (fanArt) {
+            fanArt.likeCnt += 1;
+            fanArt.isLike = true;
+          }
+          break;
+        case 'goods':
+          const goods = state.myGoodsList.find(goods => goods.goodsId === action.payload.id);
+          if (goods) {
+            goods.likeCnt += 1;
+            goods.isLike = true;
+          }
+          break;
       }
     },
-    decrementLike: (state, action: PayloadAction<number>) => {
-      const feed = state.myFeedList.find(feed => feed.feedId === action.payload);
-      if (feed) {
-        feed.likeCnt -= 1;
-        feed.isLike = false;
+    decrementLike: (state, action: PayloadAction<{type:'feed'|'fanArt'|'goods', id:number}>) => {
+      switch(action.payload.type) {
+        case 'feed':
+          const feed = state.myFeedList.find(feed => feed.feedId === action.payload.id);
+          if (feed) {
+            feed.likeCnt -= 1;
+            feed.isLike = false;
+          }
+          break;
+        case 'fanArt':
+          const fanArt = state.myFanArtList.find(fanArt => fanArt.fanArtId === action.payload.id);
+          if (fanArt) {
+            fanArt.likeCnt -= 1;
+            fanArt.isLike = false;
+          }
+          break;
+        case 'goods':
+          const goods = state.myGoodsList.find(goods => goods.goodsId === action.payload.id);
+          if (goods) {
+            goods.likeCnt -= 1;
+            goods.isLike = false;
+          }
+          break;
       }
     },
   },
