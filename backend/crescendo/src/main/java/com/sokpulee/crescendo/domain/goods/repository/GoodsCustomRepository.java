@@ -2,6 +2,7 @@ package com.sokpulee.crescendo.domain.goods.repository;
 
 import com.sokpulee.crescendo.domain.goods.dto.request.GoodsSearchCondition;
 import com.sokpulee.crescendo.domain.goods.dto.response.FavoriteGoodsResponse;
+import com.sokpulee.crescendo.domain.goods.dto.response.GetGoodsByUserIdResponse;
 import com.sokpulee.crescendo.domain.goods.dto.response.GoodsResponse;
 import com.sokpulee.crescendo.domain.goods.dto.response.MyGoodsResponse;
 import org.springframework.data.domain.Page;
@@ -13,4 +14,6 @@ public interface GoodsCustomRepository {
     Page<MyGoodsResponse> findMyGoods(Long loggedInUserId,Pageable pageable);
 
     Page<GoodsResponse> findGoods(Long loggedInUserId, Long idolGroupId, Pageable pageable, GoodsSearchCondition condition);
+
+    Page<GetGoodsByUserIdResponse> findGoodsByUserId(Long userId,Pageable pageable);
 }

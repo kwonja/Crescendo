@@ -6,11 +6,14 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sokpulee.crescendo.domain.fanart.dto.request.FanArtSearchCondition;
 import com.sokpulee.crescendo.domain.fanart.dto.response.FanArtResponse;
 import com.sokpulee.crescendo.domain.fanart.dto.response.FavoriteFanArtResponse;
+import com.sokpulee.crescendo.domain.fanart.dto.response.GetFanArtByUserIdResponse;
 import com.sokpulee.crescendo.domain.fanart.dto.response.MyFanArtResponse;
 import com.sokpulee.crescendo.domain.fanart.entity.FanArt;
 import com.sokpulee.crescendo.domain.fanart.entity.QFanArt;
 import com.sokpulee.crescendo.domain.fanart.entity.QFanArtImage;
 import com.sokpulee.crescendo.domain.fanart.entity.QFanArtLike;
+import com.sokpulee.crescendo.domain.goods.dto.response.GetGoodsByUserIdResponse;
+import com.sokpulee.crescendo.domain.goods.entity.Goods;
 import com.sokpulee.crescendo.domain.idol.entity.QIdolGroup;
 import com.sokpulee.crescendo.domain.user.entity.QUser;
 import jakarta.persistence.EntityManager;
@@ -21,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class FanArtCustomRepositoryImpl implements FanArtCustomRepository{
     private final JPAQueryFactory queryFactory;
@@ -224,6 +228,66 @@ public class FanArtCustomRepositoryImpl implements FanArtCustomRepository{
                 .fetchOne()).orElse(0L);
 
         return new PageImpl<>(fanArtResponses, pageable, total);
+    }
+
+    @Override
+    public Page<GetFanArtByUserIdResponse> findFanArtByUserId(Long userId, Pageable pageable) {
+        QFanArt fanArt = QFanArt.fanArt;
+        QUser user = QUser.user;
+        QFanArtImage fanArtImage = QFanArtImage.fanArtImage;
+        QFanArtLike fanArtLike = QFanArtLike.fanArtLike;
+
+        // 페이징 및 기본 정보 조회
+        List<FanArt> fanArtList = queryFactory
+                .selectFrom(fanArt)
+                .leftJoin(fanArt.user, user).fetchJoin()
+                .where(user.id.eq(userId))
+                .orderBy(fanArt.createdAt.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .distinct()
+                .fetch();
+
+        // 피드 응답 변환
+        List<GetFanArtByUserIdResponse> fanArtByUserIdResponses = fanArtList.stream()
+                .map(f -> {
+                    Boolean isLike = userId != null ? Optional.ofNullable(queryFactory
+                            .select(fanArtLike.count())
+                            .from(fanArtLike)
+                            .where(fanArtLike.fanArt.eq(f).and(fanArtLike.user.id.eq(userId)))
+                            .fetchOne()).orElse(0L) > 0 : false;
+
+                    List<String> imagePaths = queryFactory
+                            .select(fanArtImage.imagePath)
+                            .from(fanArtImage)
+                            .where(fanArtImage.fanArt.eq(f))
+                            .fetch();
+
+                    return new GetFanArtByUserIdResponse(
+                            f.getFanArtId(),
+                            f.getUser().getId(),
+                            f.getUser().getProfilePath(),
+                            f.getUser().getNickname(),
+                            f.getCreatedAt(),
+                            f.getLastModified(),
+                            Optional.ofNullable(f.getLikeCnt()).orElse(0), // 여기에서 null 체크
+                            isLike,
+                            imagePaths,
+                            f.getContent(),
+                            Optional.ofNullable(f.getCommentCnt()).orElse(0),
+                            f.getIdolGroup().getName(),
+                            f.getIdolGroup().getId()
+                    );
+                })
+                .collect(Collectors.toList());
+
+        Long total = Optional.ofNullable(queryFactory
+                .select(fanArt.count())
+                .from(fanArt)
+                .where(user.id.eq(userId))
+                .fetchOne()).orElse(0L);
+
+        return new PageImpl<>(fanArtByUserIdResponses, pageable, total);
     }
 
 }

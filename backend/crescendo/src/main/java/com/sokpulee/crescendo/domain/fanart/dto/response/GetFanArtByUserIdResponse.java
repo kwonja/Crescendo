@@ -1,4 +1,4 @@
-package com.sokpulee.crescendo.domain.feed.dto.response;
+package com.sokpulee.crescendo.domain.fanart.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -7,9 +7,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-public class GetFeedByUserIdResponse {
-
-    private Long feedId;
+public class GetFanArtByUserIdResponse {
+    private Long fanArtId;
 
     private Long userId;
 
@@ -26,20 +25,18 @@ public class GetFeedByUserIdResponse {
     @JsonProperty("isLike")
     private boolean isLike;
 
-    private List<String> feedImagePathList;
+    private List<String> fanArtImagePathList;
 
     private String content;
 
     private int commentCnt;
 
-    private List<String> tagList;
-
-    private String IdolGroupName;
+    private String idolGroupName;
 
     private Long idolGroupId;
 
-    public GetFeedByUserIdResponse(Long feedId,Long userId, String profileImagePath, String nickname, LocalDateTime createdAt, LocalDateTime lastModified, int likeCnt, boolean isLike, List<String> feedImagePathList, String content, int commentCnt, List<String> tagList, String IdolGroupName, Long idolGroupId) {
-        this.feedId = feedId;
+    public GetFanArtByUserIdResponse(Long fanArtId, Long userId, String profileImagePath, String nickname, LocalDateTime createdAt, LocalDateTime lastModified, int likeCnt, boolean isLike, List<String> fanArtImagePathList, String content, int commentCnt, String idolGroupName, Long idolGroupId) {
+        this.fanArtId = fanArtId;
         this.userId = userId;
         this.profileImagePath = profileImagePath;
         this.nickname = nickname;
@@ -47,11 +44,10 @@ public class GetFeedByUserIdResponse {
         this.lastModified = lastModified;
         this.likeCnt = likeCnt;
         this.isLike = isLike;
-        this.feedImagePathList = feedImagePathList;
+        this.fanArtImagePathList = fanArtImagePathList;
         this.content = content;
         this.commentCnt = commentCnt;
-        this.tagList = tagList;
-        this.IdolGroupName = IdolGroupName;
+        this.idolGroupName = idolGroupName;
         this.idolGroupId = idolGroupId;
     }
 }
