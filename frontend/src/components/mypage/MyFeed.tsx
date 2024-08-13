@@ -39,7 +39,7 @@ export default function MyFeed({ feed }: FeedProps) {
 
 
   return (
-    <div className="feed" >
+    <div className="feed">
       <div className="upper">
         <UserProfile
           userId={userId}

@@ -141,7 +141,7 @@ export default function FavoriteRankPostModal({ onClose, idolGroupList }: Favori
             <div className="select-container group-select">
               <GroupIcon className="icon" />
               <Dropdown
-                className="modal-dropdown"
+                className="modal-dropdown group"
                 defaultValue="그룹 선택"
                 options={idolGroupOptions}
                 onSelect={selected => setSelectedGroup(selected)}
