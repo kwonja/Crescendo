@@ -99,7 +99,9 @@ public class FeedCommentCustomRepositoryImpl implements FeedCommentCustomReposit
                             f.getUser().getNickname(),
                             f.getLikeCnt(),
                             isLike,
-                            f.getContent()
+                            f.getContent(),
+                            f.getCreatedAt(),
+                            f.getLastModified()
                     );
                 })
                 .toList();
