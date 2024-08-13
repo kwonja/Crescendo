@@ -45,6 +45,7 @@ type Comment = {
   replyCnt: number;
   likeCnt: number;
   isLike?: boolean;
+  replies?: Reply[];
 };
 
 type FeedDetailModalProps = {
@@ -53,15 +54,26 @@ type FeedDetailModalProps = {
   feedId: number;
 };
 
+type Reply = {
+  writerId: number;
+  profileImagePath: string | null;
+  nickname: string;
+  likeCnt: number;
+  isLike?: boolean;
+  content: string;
+};
+
 const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId }) => {
   const [feedDetail, setFeedDetail] = useState<FeedDetailResponse | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
+  const [newReply, setNewReply] = useState<{ [key: number]: string }>({});
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [activeMenuId, setActiveMenuId] = useState<number | null>(null);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editedContent, setEditedContent] = useState<string>('');
+  const [replyVisibility, setReplyVisibility] = useState<{ [key: number]: boolean }>({});
   const commentsRef = useRef<HTMLDivElement | null>(null);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -77,6 +89,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
     }
   }, [feedId]);
 
+  // 댓글 가져오기
   const loadComments = useCallback(async () => {
     try {
       const response = await Authapi.get(`/api/v1/community/feed/${feedId}/comment`, {
@@ -90,15 +103,54 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
     }
   }, [feedId]);
 
+  // 답글 가져오기
+  const loadReplies = useCallback(
+    async (commentId: number) => {
+      try {
+        const response = await Authapi.get(
+          `/api/v1/community/feed/${feedId}/comment/${commentId}/reply`,
+          {
+            params: { page: 0, size: 100 },
+          },
+        );
+        setComments(prevComments =>
+          prevComments.map(comment =>
+            comment.feedCommentId === commentId
+              ? { ...comment, replies: response.data.content }
+              : comment,
+          ),
+        );
+      } catch (error) {
+        console.error('Error fetching replies:', error);
+      }
+    },
+    [feedId],
+  );
+
   const handleNewCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length <= MAX_COMMENT_LENGTH) {
       setNewComment(e.target.value);
     }
   };
 
+  const handleNewReplyChange = (e: React.ChangeEvent<HTMLInputElement>, commentId: number) => {
+    setNewReply(prevState => ({
+      ...prevState,
+      [commentId]: e.target.value,
+    }));
+  };
+
   const handleNewCommentKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
+      e.preventDefault();
       handleAddComment();
+    }
+  };
+
+  const handleNewReplyKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, commentId: number) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddReply(commentId);
     }
   };
 
@@ -143,6 +195,23 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
       })
       .catch(error => {
         console.error('댓글 작성 오류:', error);
+      });
+  };
+
+  const handleAddReply = (commentId: number) => {
+    const replyContent = newReply[commentId]?.trim();
+    if (!replyContent) return;
+
+    const formData = new FormData();
+    formData.append('content', replyContent);
+
+    Authapi.post(`/api/v1/community/feed/${feedId}/comment/${commentId}/reply`, formData)
+      .then(() => {
+        setNewReply(prevState => ({ ...prevState, [commentId]: '' }));
+        loadReplies(commentId);
+      })
+      .catch(error => {
+        console.error('답글 작성 오류:', error);
       });
   };
 
@@ -200,6 +269,15 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
       setActiveMenuId(null);
     } else {
       setActiveMenuId(commentId);
+    }
+  };
+
+  const handleReplyToggle = (commentId: number) => {
+    if (replyVisibility[commentId]) {
+      setReplyVisibility(prevState => ({ ...prevState, [commentId]: false }));
+    } else {
+      loadReplies(commentId);
+      setReplyVisibility(prevState => ({ ...prevState, [commentId]: true }));
     }
   };
 
@@ -460,11 +538,52 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
                     )}
                   </div>
                   <div className="reply-icon-container">
-                    <ReplyIcon className="reply-icon" />
+                    <ReplyIcon
+                      className="reply-icon"
+                      onClick={() => handleReplyToggle(comment.feedCommentId)}
+                    />
                     <div className="reply-count">
                       {comment.replyCnt}개의 <div>&nbsp;답글</div>
+                      <div className="reply-input-container">
+                        <input
+                          type="text"
+                          placeholder="답글을 입력하세요."
+                          value={newReply[comment.feedCommentId] || ''}
+                          onChange={e => handleNewReplyChange(e, comment.feedCommentId)}
+                          onKeyDown={e => handleNewReplyKeyDown(e, comment.feedCommentId)}
+                        />
+                        <CommentWriteButton
+                          className="comment-write-button"
+                          onClick={() => handleAddReply(comment.feedCommentId)}
+                        />
+                      </div>
                     </div>
                   </div>
+                  {replyVisibility[comment.feedCommentId] && (
+                    <div className="replies">
+                      {comment.replies?.map((reply, index) => (
+                        <div key={index} className="reply">
+                          <div className="reply-header">
+                            <div className="reply-profile-image-container">
+                              {reply.profileImagePath ? (
+                                <img
+                                  src={getAbsolutePath(reply.profileImagePath)}
+                                  alt={reply.nickname}
+                                  className="reply-profile-image"
+                                />
+                              ) : (
+                                <UserProfileImageDefault className="reply-profile-image-default" />
+                              )}
+                            </div>
+                            <div className="reply-user-info">
+                              <div className="reply-nickname">{reply.nickname}</div>
+                              <div className="reply-content">{reply.content}</div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))
             )}
