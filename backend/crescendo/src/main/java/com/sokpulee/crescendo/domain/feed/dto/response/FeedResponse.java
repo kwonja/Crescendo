@@ -32,12 +32,12 @@ public class FeedResponse {
 
     private Integer commentCnt;
 
-    private List<String> tags; // 리스트 형태
+    private List<String> tagList; // 리스트 형태
 
     public FeedResponse(Long feedId, Long userId, String profileImagePath, String nickname,
                         LocalDateTime createdAt, LocalDateTime lastModified, Integer likeCnt,
                         Boolean isLike, List<String> feedImagePathList, String content, Integer commentCnt,
-                        List<String> tags) {
+                        List<String> tagList) {
         this.feedId = feedId;
         this.userId = userId;
         this.profileImagePath = profileImagePath;
@@ -49,6 +49,6 @@ public class FeedResponse {
         this.feedImagePathList = feedImagePathList;
         this.content = content;
         this.commentCnt = commentCnt;
-        this.tags = tags;
+        this.tagList = tagList;
     }
 }
