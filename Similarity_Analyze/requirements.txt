@@ -1,3 +1,6 @@
 flask
 mediapipe
 opencv-python
+numpy
+fastdtw
+scipy

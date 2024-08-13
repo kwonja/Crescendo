@@ -1,6 +1,16 @@
-import mediapipe as mp
-import cv2
 import numpy as np
+import cv2
+import mediapipe as mp
+from fastdtw import fastdtw
+from scipy.spatial.distance import euclidean
+
+def get_video_length(video_path):
+    cap = cv2.VideoCapture(video_path)
+    if not cap.isOpened():
+        return float('inf')
+    length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) / cap.get(cv2.CAP_PROP_FPS)
+    cap.release()
+    return length
 
 def get_landmark_position(video_path):
     mp_pose = mp.solutions.pose
@@ -30,10 +40,12 @@ def get_landmark_position(video_path):
                 processed_landmarks.append(frame_data)
 
     cap.release()
-
     return processed_landmarks
 
 def normalize_landmarks(landmarks):
+    if not landmarks:
+        return landmarks
+
     base_point = landmarks[0]
     normalized_landmarks = []
 
@@ -48,71 +60,37 @@ def normalize_landmarks(landmarks):
 
     return normalized_landmarks
 
-def calculate_cosine_similarity(landmark1, landmark2):
-    vector1 = np.array([landmark1['x'], landmark1['y'], landmark1['z']])
-    vector2 = np.array([landmark2['x'], landmark2['y'], landmark2['z']])
-    norm1 = np.linalg.norm(vector1)
-    norm2 = np.linalg.norm(vector2)
+def calculate_dtw_similarity(base_landmarks, compare_landmarks):
+    base_points = [[lm['x'], lm['y'], lm['z']] for lm in base_landmarks]
+    compare_points = [[lm['x'], lm['y'], lm['z']] for lm in compare_landmarks]
 
-    if norm1 == 0 or norm2 == 0:
-        return 0.0
+    # FastDTW를 사용하여 DTW 거리 계산
+    distance, _ = fastdtw(base_points, compare_points, dist=euclidean)
 
-    dot_product = np.dot(vector1, vector2)
-    return dot_product / (norm1 * norm2)
+    # DTW 거리 값을 적절히 스케일링하여 유사도로 변환
+    max_distance = np.sqrt(3)  # 최대 거리 (Euclidean 거리에서 최대 차원 수를 반영)
+    similarity = np.exp(-distance / max_distance)  # 거리 값을 유사도로 변환 (0-1 사이)
 
-def find_best_start_frame(base_landmarks, compare_landmarks, search_window=10):
-    best_frame = 0
-    max_similarity = -float('inf')
-
-    for i in range(search_window):
-        if i >= len(base_landmarks) or i >= len(compare_landmarks):
-            break
-
-        base_frame_landmarks = normalize_landmarks(base_landmarks[i]['landmarks'])
-        compare_frame_landmarks = normalize_landmarks(compare_landmarks[i]['landmarks'])
-
-        if len(base_frame_landmarks) != len(compare_frame_landmarks):
-            continue
-
-        similarity = 0
-        for j in range(len(base_frame_landmarks)):
-            similarity += calculate_cosine_similarity(base_frame_landmarks[j], compare_frame_landmarks[j])
-
-        if similarity > max_similarity:
-            max_similarity = similarity
-            best_frame = i
-
-    return best_frame
+    return similarity
 
 def get_analyze(base_landmarks, compare_landmarks):
-    base_start = find_best_start_frame(base_landmarks, compare_landmarks)
-    compare_start = base_start
-
     total_similarity = 0
-    common_frames = min(len(base_landmarks) - base_start, len(compare_landmarks) - compare_start)
 
-    if common_frames <= 0:
-        print("Error: No common frames to compare.")
-        return None
+    for base_frame, compare_frame in zip(base_landmarks, compare_landmarks):
+        base_landmarks_norm = normalize_landmarks(base_frame['landmarks'])
+        compare_landmarks_norm = normalize_landmarks(compare_frame['landmarks'])
 
-    for i in range(common_frames):
-        base_frame_landmarks = normalize_landmarks(base_landmarks[base_start + i]['landmarks'])
-        compare_frame_landmarks = normalize_landmarks(compare_landmarks[compare_start + i]['landmarks'])
-
-        if len(base_frame_landmarks) != len(compare_frame_landmarks):
-            continue
-
-        frame_similarity = 0
-        for j in range(len(base_frame_landmarks)):
-            frame_similarity += calculate_cosine_similarity(base_frame_landmarks[j], compare_frame_landmarks[j])
-
+        frame_similarity = calculate_dtw_similarity(base_landmarks_norm, compare_landmarks_norm)
         total_similarity += frame_similarity
 
-    average_similarity = total_similarity / (common_frames * len(base_frame_landmarks))
+    similarity_percentage = total_similarity / min(len(base_landmarks), len(compare_landmarks))
 
-    similarity_score = average_similarity * 1.2
-    similarity_score = min(similarity_score, 1)
-
-    similarity_percentage = similarity_score * 100
-
-    return similarity_percentage
+    # similarity_percentage가 2보다 크면 100%, 0.5보다 작으면 0%, 그 사이의 값은 선형 변환
+    similarity_percentage *= 100
+    if similarity_percentage >= 2:
+        return 100
+    elif similarity_percentage <= 0.5:
+        return 0
+    else:
+        # 선형 변환: 0.5에서 2 사이의 값을 0%에서 100%로 변환
+        return (similarity_percentage - 0.5) * (100 / (2 - 0.5))
