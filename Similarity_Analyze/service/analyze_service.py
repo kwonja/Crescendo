@@ -1,6 +1,8 @@
-import mediapipe as mp
-import cv2
 import numpy as np
+import cv2
+import mediapipe as mp
+from fastdtw import fastdtw
+from scipy.spatial.distance import euclidean
 
 def get_video_length(video_path):
     cap = cv2.VideoCapture(video_path)
@@ -38,11 +40,13 @@ def get_landmark_position(video_path):
                 processed_landmarks.append(frame_data)
 
     cap.release()
-
     return processed_landmarks
 
 def normalize_landmarks(landmarks):
-    base_point = landmarks[0]
+    if not landmarks:
+        return landmarks
+
+    base_point = landmarks[0]  # 첫 번째 랜드마크(예: 코)를 기준으로 설정
     normalized_landmarks = []
 
     for lm in landmarks:
@@ -56,71 +60,41 @@ def normalize_landmarks(landmarks):
 
     return normalized_landmarks
 
-def calculate_cosine_similarity(landmark1, landmark2):
-    vector1 = np.array([landmark1['x'], landmark1['y'], landmark1['z']])
-    vector2 = np.array([landmark2['x'], landmark2['y'], landmark2['z']])
-    norm1 = np.linalg.norm(vector1)
-    norm2 = np.linalg.norm(vector2)
+def calculate_euclidean_distance(landmark1, landmark2):
+    dist = np.sqrt((landmark1['x'] - landmark2['x']) ** 2 +
+                   (landmark1['y'] - landmark2['y']) ** 2 +
+                   (landmark1['z'] - landmark2['z']) ** 2)
+    return dist
 
-    if norm1 == 0 or norm2 == 0:
-        return 0.0
+def calculate_dtw_similarity(base_landmarks, compare_landmarks):
+    base_points = [[lm['x'], lm['y'], lm['z']] for lm in base_landmarks]
+    compare_points = [[lm['x'], lm['y'], lm['z']] for lm in compare_landmarks]
 
-    dot_product = np.dot(vector1, vector2)
-    return dot_product / (norm1 * norm2)
+    distance, _ = fastdtw(base_points, compare_points, dist=euclidean)
+    return 1 / (1 + distance)
 
-def find_best_start_frame(base_landmarks, compare_landmarks, search_window=10):
-    best_frame = 0
-    max_similarity = -float('inf')
+def nonlinear_scaling(similarity):
+    return np.sqrt(similarity) * 100
 
-    for i in range(search_window):
-        if i >= len(base_landmarks) or i >= len(compare_landmarks):
-            break
-
-        base_frame_landmarks = normalize_landmarks(base_landmarks[i]['landmarks'])
-        compare_frame_landmarks = normalize_landmarks(compare_landmarks[i]['landmarks'])
-
-        if len(base_frame_landmarks) != len(compare_frame_landmarks):
-            continue
-
-        similarity = 0
-        for j in range(len(base_frame_landmarks)):
-            similarity += calculate_cosine_similarity(base_frame_landmarks[j], compare_frame_landmarks[j])
-
-        if similarity > max_similarity:
-            max_similarity = similarity
-            best_frame = i
-
-    return best_frame
-
+# 두 비디오의 유사도 분석
 def get_analyze(base_landmarks, compare_landmarks):
-    base_start = find_best_start_frame(base_landmarks, compare_landmarks)
-    compare_start = base_start
+    base_length = len(base_landmarks)
+    compare_length = len(compare_landmarks)
 
+    max_length = max(base_length, compare_length)
     total_similarity = 0
-    common_frames = min(len(base_landmarks) - base_start, len(compare_landmarks) - compare_start)
 
-    if common_frames <= 0:
-        print("Error: No common frames to compare.")
-        return None
+    for i in range(max_length):
+        if i < base_length and i < compare_length:
+            base_landmarks_norm = normalize_landmarks(base_landmarks[i]['landmarks'])
+            compare_landmarks_norm = normalize_landmarks(compare_landmarks[i]['landmarks'])
 
-    for i in range(common_frames):
-        base_frame_landmarks = normalize_landmarks(base_landmarks[base_start + i]['landmarks'])
-        compare_frame_landmarks = normalize_landmarks(compare_landmarks[compare_start + i]['landmarks'])
-
-        if len(base_frame_landmarks) != len(compare_frame_landmarks):
-            continue
-
-        frame_similarity = 0
-        for j in range(len(base_frame_landmarks)):
-            frame_similarity += calculate_cosine_similarity(base_frame_landmarks[j], compare_frame_landmarks[j])
+            frame_similarity = calculate_dtw_similarity(base_landmarks_norm, compare_landmarks_norm)
+        else:
+            frame_similarity = 0.1
 
         total_similarity += frame_similarity
 
-    average_similarity = total_similarity / (common_frames * len(base_frame_landmarks))
-
-    similarity_score = average_similarity * 1.2
-    similarity_score = min(similarity_score, 1)
-
-    similarity_percentage = similarity_score * 100
-
-    return similarity_percentage
+    similarity_percentage = (total_similarity / max_length)
+    scaled_similarity = nonlinear_scaling(similarity_percentage)
+    return scaled_similarity
