@@ -25,7 +25,12 @@ public class CorsConfig implements WebMvcConfigurer {
                         "https://i11b108.p.ssafy.io",
                         "https://i11b108.p.ssafy.io:3000",
                         "https://i11b108.p.ssafy.io:8000",
-                        "https://i11b108.p.ssafy.io:8080"
+                        "https://i11b108.p.ssafy.io:8080",
+                        "https://www.crescendo.o-r.kr:3000",
+                        "https://www.crescendo.o-r.kr:8080",
+                        "https://www.crescendo.o-r.kr:8000",
+                        "https://www.crescendo.o-r.kr",
+                        "http://www.crescendo.o-r.kr:8000"
                 )
                 .allowedMethods(ALLOWED_METHOD_NAMES.split(","))
                 .allowedHeaders("*")
