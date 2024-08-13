@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api, Authapi, getUserId } from '../../apis/core';
 import { useAppDispatch } from '../../store/hooks/hook';
-import { toggleFeedLike } from '../../features/feed/communityFeedSlice';
+import { toggleFeedLike } from '../../features/communityDetail/communityDetailSlice';
 import { ReactComponent as HeartIcon } from '../../assets/images/Feed/white_heart.svg';
 import { ReactComponent as FullHeartIcon } from '../../assets/images/Feed/white_fullheart.svg';
 import { ReactComponent as MenuIcon } from '../../assets/images/Feed/white_dots.svg';

@@ -85,6 +85,10 @@
         bottom: 0px;
         object-fit: cover;
         z-index: 0;
+
+        &.slideLeft {
+          animation: slideLeftPrev 1s
+        }
       }
 
       .next_img {
@@ -97,17 +101,30 @@
         bottom: 0px;
         object-fit: cover;
         z-index: 0;
+
+        &.slideRight {
+          animation: slideRightNext 1s
+        }
       }
 
       .main_img {
         position: absolute;
         width: 500px;
         height: 500px;
+        bottom: 0;
         border: 5px solid #f66;
         border-radius: 20px;
         background-color: white;
         object-fit: cover;
         z-index: 1;
+
+        &.slideRight {
+          animation: slideRightMain 1s
+        }
+
+        &.slideLeft {
+          animation: slideLeftMain 1s
+        }
       }
 
       .image-counter {
@@ -153,5 +170,43 @@
       justify-content: space-around;
       width: 100%;
     }
+  }
+}
+
+@keyframes slideRightMain {
+  0% {
+    left: -100px;
+    width: 300px;
+    height: 300px;
+  }
+  100% {
+    left: 0;
+  }
+}
+
+@keyframes slideLeftMain {
+  0% {
+    right: -100px;
+    width: 300px;
+    height: 300px;
+  }
+  100% {
+    right: 0;
+  }
+}
+
+@keyframes slideRightNext {
+  0% {
+    right: 0px;
+    width: 500px;
+    height: 500px;
+  }
+}
+
+@keyframes slideLeftPrev {
+  0% {
+    left: 0px;
+    width: 500px;
+    height: 500px;
   }
 }
