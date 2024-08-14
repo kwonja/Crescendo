@@ -381,6 +381,164 @@
               }
             }
           }
+
+          .replies {
+            width: 420px;
+            border-radius: 10px;
+            border: 3px solid #f66;
+            padding: 10px;
+            margin: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            .reply {
+              width: 380px;
+              min-height: 100px;
+              height: fit-content;
+
+              margin: 5px;
+              // margin-bottom: 20px; // 댓글 사이 간격
+              border-bottom: 3px solid #f66;
+              margin-bottom: 25px;
+              background: #fff;
+              display: flex;
+              flex-direction: column;
+
+              .reply-header {
+                display: flex;
+                align-items: center;
+                margin-bottom: 5px;
+
+                .reply-profile-image {
+                  width: 50px;
+                  height: 50px;
+                  border-radius: 50%;
+                  margin-right: 10px;
+                  border-width: 3px;
+                  border-color: #f66;
+                  object-fit: cover;
+                  flex-shrink: 0;
+                }
+
+                .reply-user-info {
+                  display: flex;
+                  flex-direction: column;
+
+                  .reply-nickname {
+                    font-size: 14px;
+                  }
+
+                  .reply-date {
+                    font-size: 10px;
+                    margin-left: auto;
+                    color: #000;
+                  }
+                }
+
+                .reply-icons {
+                  top: -10px;
+                  width: min-content;
+                  display: flex;
+                  align-items: center;
+                  margin-left: auto;
+                  position: relative;
+
+                  .reply-heart-button {
+                    width: 30px;
+                    height: 30px;
+                    position: relative;
+                    z-index: 1;
+                  }
+                  .reply-heart-button:hover {
+                    cursor: pointer;
+                  }
+
+                  .reply-dots-button {
+                    position: relative;
+                    width: 24px;
+                    height: 24px;
+                    visibility: hidden;
+                    margin-left: 12px;
+                  }
+                  .reply-dots-button:hover {
+                    cursor: pointer;
+                  }
+
+                  .reply-dots-button.visible {
+                    visibility: visible;
+                  }
+
+                  .reply-menu {
+                    position: relative;
+                    right: 10px;
+                    top: -20px;
+                  }
+
+                  .reply-like-count {
+                    position: absolute;
+                    width: 15px;
+                    height: 15px;
+                    bottom: 0px;
+                    right: 53px;
+                    background-color: #f66;
+                    color: #fff;
+                    border-radius: 50%;
+                    padding: 2px 6px;
+                    font-size: 6px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.25);
+                    z-index: 2;
+                  }
+                }
+              }
+              .reply-content {
+                min-height: 40px;
+                max-height: 1000px;
+                border-radius: 10px;
+                padding: 5px;
+                padding-inline: 10px;
+                color: #fff;
+                background-color: #f66;
+
+                .reply-edit-input {
+                  height: auto;
+                  overflow-y: hidden;
+                  resize: none;
+                  color: black;
+                  background-color: transparent;
+                }
+
+                .editing-reply {
+                  display: flex;
+                  align-items: flex-end;
+                  height: fit-content;
+                  textarea {
+                    padding: 5px;
+                    font-size: 18px;
+                    width: 270px;
+                    margin-right: 5px;
+                    height: auto;
+                    line-height: 1.4;
+                    resize: none;
+                    overflow-y: hidden;
+                  }
+                  textarea:focus {
+                    outline: none;
+                  }
+                  button {
+                    font-size: 20px;
+                  }
+                  .reply-edit-exit-button {
+                    margin-left: 10px;
+                  }
+                }
+              }
+            }
+          }
+
           .reply-icon {
             width: 24px;
             height: 24px;
@@ -394,14 +552,59 @@
           .reply-icon-container {
             display: flex;
             flex-direction: row;
-            margin-top: 10px;
+            margin-top: 15px;
+            width: fit-content;
+            min-height: 30px;
+            height: fit-content;
+
             .reply-count {
               margin-top: 2px;
               display: flex;
               flex-direction: row;
               font-size: 14px;
-              div {
+              .reply-input-toggle {
                 color: #f00;
+              }
+              .reply-input-toggle:hover {
+                cursor: pointer;
+              }
+
+              .reply-input-container {
+                display: flex;
+                align-items: center;
+                flex-direction: row;
+                background-color: #f66;
+                border-radius: 10px;
+                width: 330px;
+                min-height: 30px;
+                height: fit-content;
+                margin-left: 10px;
+                box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.35);
+                textarea {
+                  width: 290px;
+                  background-color: transparent;
+                  border-color: transparent;
+                  color: #fff;
+                  padding: 5px;
+                  padding-block: 10px;
+                  resize: none;
+                  overflow-y: hidden;
+                }
+                textarea::placeholder {
+                  color: #fff;
+                }
+                textarea:focus {
+                  outline: none;
+                }
+                .reply-write-button {
+                  position: relative;
+                  width: 22px;
+                  height: 22px;
+                  right: -10px;
+                }
+                .reply-write-button:hover {
+                  cursor: pointer;
+                }
               }
             }
           }
@@ -427,10 +630,15 @@
             .editing-comment {
               display: flex;
               align-items: flex-end;
-              input {
+              textarea {
                 font-size: 18px;
                 width: 330px;
                 margin-right: 10px;
+                resize: none;
+                overflow-y: hidden;
+              }
+              textarea:focus {
+                outline: none;
               }
               button {
                 font-size: 20px;
@@ -445,12 +653,15 @@
     }
 
     .comment-input-container {
+      position: relative;
       display: flex;
-      height: 80px;
+      min-height: 80px;
+      height: auto;
       align-items: center;
       box-shadow: 1px 1px 20px 0px rgba(0, 0, 0, 0.35);
+      padding-block: 15px;
 
-      input {
+      textarea {
         font-size: 24px;
         color: #fff;
         border-radius: 10px;
@@ -462,18 +673,20 @@
         padding-right: 45px;
         flex-shrink: 0;
         box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.35);
+        resize: none;
+        overflow-y: hidden;
       }
 
-      input::placeholder {
+      textarea::placeholder {
         color: #fff;
       }
 
-      input:focus {
+      textarea:focus {
         outline: none;
       }
 
       .comment-write-button {
-        position: absolute;
+        position: sticky;
         right: 25px;
         bottom: 25px;
         width: 30px;

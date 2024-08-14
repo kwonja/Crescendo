@@ -24,7 +24,9 @@ public class FeedReplyResponse {
 
     private LocalDateTime lastModified;
 
-    public FeedReplyResponse(Long writerId, String profileImagePath, String nickname, int likeCnt, boolean isLike, String content, LocalDateTime createdAt, LocalDateTime lastModified) {
+    private Long feedCommentId;
+
+    public FeedReplyResponse(Long writerId, String profileImagePath, String nickname, int likeCnt, boolean isLike, String content, LocalDateTime createdAt, LocalDateTime lastModified, Long feedCommentId) {
         this.writerId = writerId;
         this.profileImagePath = profileImagePath;
         this.nickname = nickname;
@@ -33,5 +35,6 @@ public class FeedReplyResponse {
         this.content = content;
         this.createdAt = createdAt;
         this.lastModified = lastModified;
+        this.feedCommentId = feedCommentId;
     }
 }

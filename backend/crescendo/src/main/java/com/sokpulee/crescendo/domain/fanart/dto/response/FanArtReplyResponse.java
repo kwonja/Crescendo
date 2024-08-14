@@ -25,8 +25,10 @@ public class FanArtReplyResponse {
 
     private LocalDateTime lastModified;
 
+    private Long fanArtCommentId;
 
-    public FanArtReplyResponse(Long writerId, String profileImagePath, String nickname, int likeCnt, boolean isLike, String content, LocalDateTime createdAt, LocalDateTime lastModified) {
+
+    public FanArtReplyResponse(Long writerId, String profileImagePath, String nickname, int likeCnt, boolean isLike, String content, LocalDateTime createdAt, LocalDateTime lastModified, Long fanArtCommentId) {
         this.writerId = writerId;
         this.profileImagePath = profileImagePath;
         this.nickname = nickname;
@@ -35,5 +37,6 @@ public class FanArtReplyResponse {
         this.content = content;
         this.createdAt = createdAt;
         this.lastModified = lastModified;
+        this.fanArtCommentId = fanArtCommentId;
     }
 }

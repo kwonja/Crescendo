@@ -80,8 +80,7 @@ public class FeedCommentCustomRepositoryImpl implements FeedCommentCustomReposit
         JPAQuery<FeedComment> query = queryFactory
                 .select(feedComment)
                 .from(feedComment)
-                .leftJoin(feedComment.user, user)
-                .where(feedComment.feed.feedId.eq(feedId).and(feedComment.parentFeedComment.isNotNull()))
+                .where(feedComment.parentFeedComment.feedCommentId.eq(feedCommentId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize());
 
@@ -101,7 +100,8 @@ public class FeedCommentCustomRepositoryImpl implements FeedCommentCustomReposit
                             isLike,
                             f.getContent(),
                             f.getCreatedAt(),
-                            f.getLastModified()
+                            f.getLastModified(),
+                            f.getFeedCommentId()
                     );
                 })
                 .toList();
