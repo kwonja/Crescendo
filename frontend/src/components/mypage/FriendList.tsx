@@ -22,11 +22,9 @@ export default function FriendList({ userId }: FrinedsProps) {
 
   useEffect(() => {
     if (isSelected === 'follower') {
-      const promise = dispatch(getUserFollower(userId));
-      return () => promise.abort();
+      dispatch(getUserFollower(userId));
     } else {
-      const promise = dispatch(getUserFollowing(userId));
-      return () => promise.abort();
+     dispatch(getUserFollowing(userId));
     }
   }, [dispatch, isSelected, userId]);
 

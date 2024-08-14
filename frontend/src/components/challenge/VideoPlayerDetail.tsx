@@ -13,7 +13,6 @@ export default function VideoPlayerDetail() {
 
   useEffect(() => {
     const videoElement = videoRef.current;
-
     if (videoElement) {
       const handleLoadedMetadata = () => {
         if (videoElement) {

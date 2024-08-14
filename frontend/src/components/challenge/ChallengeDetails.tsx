@@ -4,7 +4,7 @@ import VideoPlayerDetail from './VideoPlayerDetail';
 import VideoPlayerOrigin from './VideoPlayerOrigin';
 import ChallengeDetailItem from './ChallengeDetailItem';
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
-import { getChallengeDetails } from '../../features/challenge/challengeDetailSlice';
+import { getChallengeDetails, setSelectedChallengeDetail } from '../../features/challenge/challengeDetailSlice';
 import { ReactComponent as Write } from '../../assets/images/write.svg';
 import { ReactComponent as Back } from '../../assets/images/challenge/back.svg';
 import ChallengeDetailModal from './ChallengeDetailModal';
@@ -23,7 +23,19 @@ export default function ChallengeDetails() {
   };
   useEffect(()=>{
     window.scrollTo(0, 0);
-  },[])
+
+    return ()=>{
+      dispatch(setSelectedChallengeDetail({
+        challengeJoinId: 0,
+        challengeVideoPath: '',
+        isLike: false,
+        likeCnt: 0,
+        nickname: '',
+        score: 0,
+        userId: 0,
+      }))
+    };
+  },[dispatch])
   const handleBack = ()=>{
     navigate('/dance');
   }
@@ -37,6 +49,7 @@ export default function ChallengeDetails() {
         <VideoPlayerDetail />
       </div>
       <div className="challenge-room">
+        <div className='title'>챌린지 목록</div>
         {
           challengeDetailLists.map( (challenge)=>(
             <ChallengeDetailItem Challenge={challenge} key={challenge.challengeJoinId}/>
