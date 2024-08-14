@@ -21,6 +21,7 @@
     flex-direction: row;
     gap: 5px;
     cursor: pointer;
+    background-color: #f4f4f4;
   }
 
   .active {
@@ -42,6 +43,7 @@
   border-radius: 20px;
   background: #f66;
   margin: 0 auto;
+  padding-top: 15px;
 }
 
 .profilelist {

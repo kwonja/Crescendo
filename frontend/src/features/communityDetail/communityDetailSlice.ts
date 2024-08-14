@@ -9,8 +9,8 @@ import { getCommunityGoodsListAPI, toggleGoodsLikeAPI } from '../../apis/goods';
 
 interface CommunityDetailState {
   feedList: FeedInfo[];
-  fanArtList: FanArtInfo[],
-  goodsList: GoodsInfo[],
+  fanArtList: FanArtInfo[];
+  goodsList: GoodsInfo[];
   status: PromiseStatus;
   error: string | undefined;
   page: number;
@@ -35,79 +35,78 @@ const initialState: CommunityDetailState = {
 };
 
 // 피드 가져오기
-export const getFeedList = createAsyncThunk<PageableResponse<FeedInfo>, number, { state: RootState }>(
-  'communityDetailSlice/getFeedList',
-  async (idolGroupId, thunkAPI) => {
-    const { page, filterCondition, sortCondition, searchCondition, keyword } =
-      thunkAPI.getState().communityDetail;
-    const params: getFeedListParams = {
-      'idol-group-id': idolGroupId,
-      page,
-      size: 3,
-      nickname: '',
-      content: '',
-      sortByFollowed: filterCondition === '팔로우만',
-      sortByLiked: sortCondition === '좋아요순',
-    };
-    searchCondition === '작성자' ? (params.nickname = keyword) : (params.content = keyword);
-    const response = await getCommunityFeedListAPI(params);
-    return response;
-  },
-);
+export const getFeedList = createAsyncThunk<
+  PageableResponse<FeedInfo>,
+  number,
+  { state: RootState }
+>('communityDetailSlice/getFeedList', async (idolGroupId, thunkAPI) => {
+  const { page, filterCondition, sortCondition, searchCondition, keyword } =
+    thunkAPI.getState().communityDetail;
+  const params: getFeedListParams = {
+    'idol-group-id': idolGroupId,
+    page,
+    size: 3,
+    nickname: '',
+    content: '',
+    sortByFollowed: filterCondition === '팔로우만',
+    sortByLiked: sortCondition === '좋아요순',
+  };
+  searchCondition === '작성자' ? (params.nickname = keyword) : (params.content = keyword);
+  const response = await getCommunityFeedListAPI(params);
+  return response;
+});
 
-export const getFanArtList = createAsyncThunk<PageableResponse<FanArtInfo>, number, { state: RootState }>(
-  'communityDetailSlice/getFanArtList',
-  async (idolGroupId, thunkAPI) => {
-    const { page, filterCondition, sortCondition, searchCondition, keyword } =
-      thunkAPI.getState().communityDetail;
-    const params: getGalleryListParams = {
-      'idol-group-id': idolGroupId,
-      page,
-      size: 3,
-      title: '',
-      nickname: '',
-      content: '',
-      sortByFollowed: filterCondition === '팔로우만',
-      sortByLiked: sortCondition === '좋아요순',
-    };
-    if (searchCondition === '작성자')
-      params.nickname = keyword; 
-    else if (searchCondition === '내용')
-      params.content = keyword;
-    else {
-      params.title = keyword;
-    }
-    const response = await getCommunityFanArtListAPI(params);
-    return response;
-  },
-);
+export const getFanArtList = createAsyncThunk<
+  PageableResponse<FanArtInfo>,
+  number,
+  { state: RootState }
+>('communityDetailSlice/getFanArtList', async (idolGroupId, thunkAPI) => {
+  const { page, filterCondition, sortCondition, searchCondition, keyword } =
+    thunkAPI.getState().communityDetail;
+  const params: getGalleryListParams = {
+    'idol-group-id': idolGroupId,
+    page,
+    size: 3,
+    title: '',
+    nickname: '',
+    content: '',
+    sortByFollowed: filterCondition === '팔로우만',
+    sortByLiked: sortCondition === '좋아요순',
+  };
+  if (searchCondition === '작성자') params.nickname = keyword;
+  else if (searchCondition === '내용') params.content = keyword;
+  else {
+    params.title = keyword;
+  }
+  const response = await getCommunityFanArtListAPI(params);
+  return response;
+});
 
-export const getGoodsList = createAsyncThunk<PageableResponse<GoodsInfo>, number, { state: RootState }>(
-  'communityDetailSlice/getGoodsList',
-  async (idolGroupId, thunkAPI) => {
-    const { page, filterCondition, sortCondition, searchCondition, keyword } =
-      thunkAPI.getState().communityDetail;
-    const params: getGalleryListParams = {
-      'idol-group-id': idolGroupId,
-      page,
-      size: 3,
-      title: '',
-      nickname: '',
-      content: '',
-      sortByFollowed: filterCondition === '팔로우만',
-      sortByLiked: sortCondition === '좋아요순',
-    };
-    if (searchCondition === '작성자')
-      params.nickname = keyword; 
-    else if (searchCondition === '내용')
-      params.content = keyword;
-    else {
-      params.title = keyword;
-    }
-    const response = await getCommunityGoodsListAPI(params);
-    return response;
-  },
-);
+export const getGoodsList = createAsyncThunk<
+  PageableResponse<GoodsInfo>,
+  number,
+  { state: RootState }
+>('communityDetailSlice/getGoodsList', async (idolGroupId, thunkAPI) => {
+  const { page, filterCondition, sortCondition, searchCondition, keyword } =
+    thunkAPI.getState().communityDetail;
+  const params: getGalleryListParams = {
+    'idol-group-id': idolGroupId,
+    page,
+    size: 3,
+    title: '',
+    nickname: '',
+    content: '',
+    sortByFollowed: filterCondition === '팔로우만',
+    sortByLiked: sortCondition === '좋아요순',
+  };
+  if (searchCondition === '작성자') params.nickname = keyword;
+  else if (searchCondition === '내용') params.content = keyword;
+  else {
+    params.title = keyword;
+  }
+  const response = await getCommunityGoodsListAPI(params);
+  return response;
+});
 
 // 피드 하트 클릭
 export const toggleFeedLike = createAsyncThunk(
@@ -183,7 +182,10 @@ const communityDetailSlice = createSlice({
     },
 
     searchFeed: (state, action: PayloadAction<{ searchOption: string; searchKeyword: string }>) => {
-      if (state.searchCondition !==action.payload.searchOption || state.keyword !== action.payload.searchKeyword) {
+      if (
+        state.searchCondition !== action.payload.searchOption ||
+        state.keyword !== action.payload.searchKeyword
+      ) {
         state.feedList = [];
         state.fanArtList = [];
         state.goodsList = [];
@@ -196,18 +198,29 @@ const communityDetailSlice = createSlice({
       }
     },
 
-    updateFeed: (state, action: PayloadAction<{feed:FeedInfo; feedId:number}>) => {
-      state.feedList = [...state.feedList.map((feed)=> feed.feedId=== action.payload.feedId?action.payload.feed:feed)];
+    updateFeed: (state, action: PayloadAction<{ feed: FeedInfo; feedId: number }>) => {
+      state.feedList = [
+        ...state.feedList.map(feed =>
+          feed.feedId === action.payload.feedId ? action.payload.feed : feed,
+        ),
+      ];
     },
 
-    updateFanArt: (state, action: PayloadAction<{fanArt:FanArtInfo; fanArtId:number}>) => {
-      state.fanArtList = [...state.fanArtList.map((fanArt)=> fanArt.fanArtId=== action.payload.fanArtId?action.payload.fanArt:fanArt)];
+    updateFanArt: (state, action: PayloadAction<{ fanArt: FanArtInfo; fanArtId: number }>) => {
+      state.fanArtList = [
+        ...state.fanArtList.map(fanArt =>
+          fanArt.fanArtId === action.payload.fanArtId ? action.payload.fanArt : fanArt,
+        ),
+      ];
     },
 
-    updateGoods: (state, action: PayloadAction<{goods:GoodsInfo; goodsId:number}>) => {
-      state.goodsList = [...state.goodsList.map((goods)=> goods.goodsId=== action.payload.goodsId?action.payload.goods:goods)];
-    }
-
+    updateGoods: (state, action: PayloadAction<{ goods: GoodsInfo; goodsId: number }>) => {
+      state.goodsList = [
+        ...state.goodsList.map(goods =>
+          goods.goodsId === action.payload.goodsId ? action.payload.goods : goods,
+        ),
+      ];
+    },
   },
   extraReducers(builder) {
     builder
@@ -282,10 +295,16 @@ const communityDetailSlice = createSlice({
       })
       .addCase(toggleGoodsLike.rejected, (state, action) => {
         state.error = action.payload as string;
-      })
+      });
   },
 });
 
-export const { resetState, setFilterCondition, setSortCondition, searchFeed, updateFeed, updateGoods } =
-  communityDetailSlice.actions;
+export const {
+  resetState,
+  setFilterCondition,
+  setSortCondition,
+  searchFeed,
+  updateFeed,
+  updateGoods,
+} = communityDetailSlice.actions;
 export default communityDetailSlice.reducer;

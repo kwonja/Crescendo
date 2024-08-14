@@ -39,8 +39,12 @@
 
   &.modal-dropdown {
     width: 100%;
-    font-size: 24px;
+    font-size: 20px;
     color: #f66;
+
+    .dropdown_head {
+      padding: 5px;
+    }
 
     .dropdown_head:hover {
       background-color: transparent;
@@ -48,7 +52,9 @@
 
     .dropdown_list {
       border: 3px solid #f66;
+      border-top: none;
       border-radius: 0 0 15px 15px;
+      max-height: 150px;
 
       &::-webkit-scrollbar {
         width: 12px;
@@ -62,6 +68,10 @@
 
     .dropdown_head_value.is_default {
       color: #bbbbbb;
+    }
+
+    &.group .dropdown_list {
+      z-index: 2;
     }
   }
 }

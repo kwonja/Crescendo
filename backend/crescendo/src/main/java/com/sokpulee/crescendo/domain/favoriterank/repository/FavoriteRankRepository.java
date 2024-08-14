@@ -1,6 +1,7 @@
 package com.sokpulee.crescendo.domain.favoriterank.repository;
 
 import com.sokpulee.crescendo.domain.favoriterank.entity.FavoriteRank;
+import com.sokpulee.crescendo.domain.idol.entity.Idol;
 import com.sokpulee.crescendo.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,4 +23,6 @@ public interface FavoriteRankRepository extends JpaRepository<FavoriteRank, Long
 
     @Query("SELECT COUNT(fr) > 0 FROM FavoriteRank fr WHERE fr.user = :user AND fr.createdAt BETWEEN :startDate AND :endDate")
     boolean existsByUserAndCreatedAtBetween(User user, LocalDateTime startDate, LocalDateTime endDate);
+
+    boolean existsByUserAndIdolAndCreatedAtBetween(User user, Idol idol, LocalDateTime startDate, LocalDateTime endDate);
 }

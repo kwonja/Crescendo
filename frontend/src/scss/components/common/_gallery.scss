@@ -1,5 +1,5 @@
 .gallery {
-  position:relative;
+  position: relative;
   display: flex;
   width: fit-content;
   height: fit-content;
@@ -11,7 +11,7 @@
   box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
 
   .community_name {
-    position:absolute;
+    position: absolute;
     top: 10px;
     right: 20px;
     color: #bbb;
@@ -19,13 +19,13 @@
 
   .gallery-img {
     width: 310px;
-    height: auto;;
+    height: auto;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
   }
 
   .title_box {
-    position:relative;
+    position: relative;
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -33,7 +33,7 @@
     padding: 10px;
     margin-top: 10px;
     gap: 5px;
-    
+
     .type {
       width: 24px;
       height: 10px;
@@ -51,17 +51,14 @@
 
     .dots_box {
       position: absolute;
-      right:0;
+      right: 0;
       width: 30px;
       height: 30px;
       display: flex;
       justify-content: center;
       align-items: center;
     }
-
   }
-  
-
 
   &_info {
     position: relative;
@@ -78,7 +75,7 @@
     width: 30px;
     height: 30px;
   }
-  
+
   .hoverup:hover {
     transform: scale(1.1);
   }
@@ -91,12 +88,14 @@
     height: 30px;
   }
 
-  &_heart, &_comment {
+  &_heart,
+  &_comment {
     position: absolute;
     right: 0;
   }
 
-  &_comment_cnt, &_heart_cnt {
+  &_comment_cnt,
+  &_heart_cnt {
     position: absolute;
     width: 12px;
     height: 12px;
@@ -113,5 +112,4 @@
     box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.25);
     z-index: 2;
   }
-  
 }

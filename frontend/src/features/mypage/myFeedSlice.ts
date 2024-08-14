@@ -27,23 +27,32 @@ const initialState: MyFeedState = {
   page: 0,
 };
 
-export const getMyFeedList = createAsyncThunk('myFeedSlice/getMyFeedList', async (userId: number, thunkAPI) => {
-  const rootState = thunkAPI.getState() as RootState;
-  const response = await getMyFeedAPI(userId, rootState.myFeed.page, 3);
-  return response;
-});
+export const getMyFeedList = createAsyncThunk(
+  'myFeedSlice/getMyFeedList',
+  async (userId: number, thunkAPI) => {
+    const rootState = thunkAPI.getState() as RootState;
+    const response = await getMyFeedAPI(userId, rootState.myFeed.page, 3);
+    return response;
+  },
+);
 
-export const getMyFanArtList = createAsyncThunk('myFeedSlice/getMyFanArtList', async (userId: number, thunkAPI) => {
-  const rootState = thunkAPI.getState() as RootState;
-  const response = await getMyFanArtAPI(userId, rootState.myFeed.page, 3);
-  return response;
-});
+export const getMyFanArtList = createAsyncThunk(
+  'myFeedSlice/getMyFanArtList',
+  async (userId: number, thunkAPI) => {
+    const rootState = thunkAPI.getState() as RootState;
+    const response = await getMyFanArtAPI(userId, rootState.myFeed.page, 3);
+    return response;
+  },
+);
 
-export const getMyGoodsList = createAsyncThunk('myFeedSlice/getMyGoodsList', async (userId: number, thunkAPI) => {
-  const rootState = thunkAPI.getState() as RootState;
-  const response = await getMyGoodsAPI(userId, rootState.myFeed.page, 3);
-  return response;
-});
+export const getMyGoodsList = createAsyncThunk(
+  'myFeedSlice/getMyGoodsList',
+  async (userId: number, thunkAPI) => {
+    const rootState = thunkAPI.getState() as RootState;
+    const response = await getMyGoodsAPI(userId, rootState.myFeed.page, 3);
+    return response;
+  },
+);
 
 const myFeedSlice = createSlice({
   name: 'feed',
@@ -53,22 +62,23 @@ const myFeedSlice = createSlice({
       return initialState;
     },
 
-    incrementLike: (state, action: PayloadAction<{type:'feed'|'fanArt'|'goods', id:number}>) => {
+    incrementLike: (
+      state,
+      action: PayloadAction<{ type: 'feed' | 'fanArt' | 'goods'; id: number }>,
+    ) => {
       if (action.payload.type === 'feed') {
         const feed = state.myFeedList.find(feed => feed.feedId === action.payload.id);
         if (feed) {
           feed.likeCnt += 1;
           feed.isLike = true;
         }
-      }
-      else if (action.payload.type === 'fanArt') {
+      } else if (action.payload.type === 'fanArt') {
         const fanArt = state.myFanArtList.find(fanArt => fanArt.fanArtId === action.payload.id);
         if (fanArt) {
           fanArt.likeCnt += 1;
           fanArt.isLike = true;
         }
-      }
-      else if (action.payload.type === 'goods') {
+      } else if (action.payload.type === 'goods') {
         const goods = state.myGoodsList.find(goods => goods.goodsId === action.payload.id);
         if (goods) {
           goods.likeCnt += 1;
@@ -76,22 +86,23 @@ const myFeedSlice = createSlice({
         }
       }
     },
-    decrementLike: (state, action: PayloadAction<{type:'feed'|'fanArt'|'goods', id:number}>) => {
+    decrementLike: (
+      state,
+      action: PayloadAction<{ type: 'feed' | 'fanArt' | 'goods'; id: number }>,
+    ) => {
       if (action.payload.type === 'feed') {
         const feed = state.myFeedList.find(feed => feed.feedId === action.payload.id);
         if (feed) {
           feed.likeCnt -= 1;
           feed.isLike = false;
         }
-      }
-      else if (action.payload.type === 'fanArt') {
+      } else if (action.payload.type === 'fanArt') {
         const fanArt = state.myFanArtList.find(fanArt => fanArt.fanArtId === action.payload.id);
         if (fanArt) {
           fanArt.likeCnt -= 1;
           fanArt.isLike = false;
         }
-      }
-      else if (action.payload.type === 'goods') {
+      } else if (action.payload.type === 'goods') {
         const goods = state.myGoodsList.find(goods => goods.goodsId === action.payload.id);
         if (goods) {
           goods.likeCnt -= 1;

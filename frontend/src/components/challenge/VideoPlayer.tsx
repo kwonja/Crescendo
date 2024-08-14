@@ -1,7 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { ReactComponent as Play } from '../../assets/images/challenge/playbtn.svg';
 import { ReactComponent as Pause } from '../../assets/images/challenge/pause.svg';
+import { useAppSelector } from '../../store/hooks/hook';
+import { IMAGE_BASE_URL } from '../../apis/core';
 export default function VideoPlayer() {
+  const { selectedChallenge } = useAppSelector(state => state.challenge);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -26,6 +29,13 @@ export default function VideoPlayer() {
       };
     }
   }, []);
+
+  useEffect(() => {
+    if (selectedChallenge.challengeId !== 0 && videoRef.current) {
+      videoRef.current.play();
+      setIsPlaying(true);
+    }
+  }, [selectedChallenge]);
 
   const togglePlayPause = () => {
     const videoElement = videoRef.current;
@@ -52,36 +62,44 @@ export default function VideoPlayer() {
   const updateProgress = () => {
     const videoElement = videoRef.current;
     if (videoElement) {
-      setProgress((videoElement.currentTime / duration) * 100);
+      setProgress((videoElement.currentTime / videoElement.duration) * 100);
     }
   };
 
   return (
     <div className="video-container" onClick={togglePlayPause}>
-      <video
-        ref={videoRef}
-        className="video-player"
-        onTimeUpdate={updateProgress}
-        src="Dance.mp4"
-      />
-      <div className="controls">
-        <button className="play-pause-button">{isPlaying ? <Pause /> : <Play />}</button>
-        <input
-          type="range"
-          className="progress-bar"
-          min="0"
-          max="100"
-          value={progress}
-          onChange={handleProgressChange}
-        />
-      </div>
-      <div className="big-play-pause-button">
-        {isPlaying ? (
-          <Pause className="w-20 h-20 fade-out" />
-        ) : (
-          <Play className="w-20 h-20 fade-out" />
-        )}
-      </div>
+      {selectedChallenge.challengeVideoPath === '' ? (
+        <div className="no-video">
+          <div className="text-2xl">챌린지를 구경해보세요!</div>
+        </div>
+      ) : (
+        <>
+          <video
+            ref={videoRef}
+            className="video-player"
+            onTimeUpdate={updateProgress}
+            src={`${IMAGE_BASE_URL}${selectedChallenge.challengeVideoPath}`}
+          />
+          <div className="controls">
+            <button className="play-pause-button">{isPlaying ? <Pause /> : <Play />}</button>
+            <input
+              type="range"
+              className="progress-bar"
+              min="0"
+              max="100"
+              value={progress}
+              onChange={handleProgressChange}
+            />
+          </div>
+          <div className="big-play-pause-button">
+            {isPlaying ? (
+              <Pause className="w-20 h-20 fade-out" />
+            ) : (
+              <Play className="w-20 h-20 fade-out" />
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }

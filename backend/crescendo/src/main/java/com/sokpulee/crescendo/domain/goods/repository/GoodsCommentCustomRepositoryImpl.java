@@ -54,7 +54,9 @@ public class GoodsCommentCustomRepositoryImpl implements GoodsCommentCustomRepos
                             f.getLikeCnt(),
                             isLike,
                             f.getContent(),
-                            f.getReplyCnt()
+                            f.getReplyCnt(),
+                            f.getCreatedAt(),
+                            f.getLastModified()
                     );
                 })
                 .toList();
@@ -78,8 +80,7 @@ public class GoodsCommentCustomRepositoryImpl implements GoodsCommentCustomRepos
         JPAQuery<GoodsComment> query = queryFactory
                 .select(goodsComment)
                 .from(goodsComment)
-                .leftJoin(goodsComment.user, user)
-                .where(goodsComment.goods.goodsId.eq(goodsId).and(goodsComment.parentGoodsComment.isNotNull()))
+                .where(goodsComment.parentGoodsComment.goodsCommentId.eq(goodsCommentId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize());
 
@@ -97,7 +98,10 @@ public class GoodsCommentCustomRepositoryImpl implements GoodsCommentCustomRepos
                             f.getUser().getNickname(),
                             f.getLikeCnt(),
                             isLike,
-                            f.getContent()
+                            f.getContent(),
+                            f.getCreatedAt(),
+                            f.getLastModified(),
+                            f.getGoodsCommentId()
                     );
                 })
                 .toList();

@@ -9,7 +9,10 @@ interface CommunityFeedListProps {
   onFanArtClick: (fanArtId: number) => void;
 }
 
-export default function CommunityFanartList({ idolGroupId, onFanArtClick }: CommunityFeedListProps) {
+export default function CommunityFanartList({
+  idolGroupId,
+  onFanArtClick,
+}: CommunityFeedListProps) {
   const { fanArtList, hasMore, status, keyword } = useAppSelector(state => state.communityDetail);
   const dispatch = useAppDispatch();
   const observer = useRef<IntersectionObserver | null>(null);
@@ -41,13 +44,19 @@ export default function CommunityFanartList({ idolGroupId, onFanArtClick }: Comm
   return (
     <div className="gallerylist">
       {status === 'loading' || fanArtList.length > 0 ? (
-        fanArtList.map((fanArt) => (
-          <CommunityFanart key={fanArt.fanArtId} fanArt={fanArt} onClick={() => onFanArtClick(fanArt.fanArtId)} />
+        fanArtList.map(fanArt => (
+          <CommunityFanart
+            key={fanArt.fanArtId}
+            fanArt={fanArt}
+            onClick={() => onFanArtClick(fanArt.fanArtId)}
+          />
         ))
       ) : keyword ? (
-        <div className="text-center text-xl">'{keyword}'에 해당하는 팬아트를 찾을 수 없습니다.</div>
+        <div className="text-center text-xl w-full">
+          '{keyword}'에 해당하는 팬아트를 찾을 수 없습니다.
+        </div>
       ) : (
-        <div className="text-center text-xl">작성된 팬아트가 없습니다.</div>
+        <div className="text-center text-xl w-full">작성된 팬아트가 없습니다.</div>
       )}
       {hasMore && <div ref={loadMoreElementRef}>Load More..</div>}
     </div>

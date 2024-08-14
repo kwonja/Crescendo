@@ -33,17 +33,17 @@ export interface FeedInfo {
 export interface PageableResponse<T> {
   content: T[];
   pageable: {
-  // 페이지와 관련된 페이징 정보
-  sort: {
+    // 페이지와 관련된 페이징 정보
+    sort: {
       sorted: boolean; // 데이터를 정렬했는지 여부
       unsorted: boolean; // 데이터를 정렬하지 않았는지 여부
       empty: boolean; // 정렬 기준이 비어 있는지 여부
-  };
-  pageNumber: number; // 현재 페이지 번호 (0부터 시작)
-  pageSize: number; // 한 페이지에 포함되는 요소의 수
-  offset: number; // 페이지의 시작점에서의 오프셋 (pageNumber * pageSize)
-  paged: boolean; // 페이징이 적용되었는지 여부
-  unpaged: boolean; // 페이징이 적용되지 않았는지 여부
+    };
+    pageNumber: number; // 현재 페이지 번호 (0부터 시작)
+    pageSize: number; // 한 페이지에 포함되는 요소의 수
+    offset: number; // 페이지의 시작점에서의 오프셋 (pageNumber * pageSize)
+    paged: boolean; // 페이징이 적용되었는지 여부
+    unpaged: boolean; // 페이징이 적용되지 않았는지 여부
   };
   totalPages: number; // 총 페이지 수
   totalElements: number; // 총 요소의 수 (전체 데이터 개수)

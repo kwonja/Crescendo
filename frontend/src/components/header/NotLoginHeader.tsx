@@ -59,9 +59,6 @@ export default function NotLoginHeader() {
             <li>
               <NavLink to="/favorite">전국최애자랑</NavLink>
             </li>
-            <li>
-              <NavLink to="/game">오락실</NavLink>
-            </li>
             <div className="indicator" style={indicatorStyle}></div>
           </ul>
 

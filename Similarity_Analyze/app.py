@@ -2,6 +2,7 @@ import os
 import time
 import queue
 import threading
+import psutil
 from flask import Flask, request, jsonify
 from service import analyze_service
 from dotenv import load_dotenv
@@ -11,7 +12,11 @@ load_dotenv()
 
 BASE_URL = os.environ.get("BASE_URL")
 task_queue = queue.PriorityQueue()
-semaphore = threading.Semaphore(3)
+semaphore_value = 3
+semaphore = threading.Semaphore(semaphore_value)
+memory_check_time = 10
+min_thread = 1
+max_thread = 10
 
 def calculate_priority(video_length, start_time):
     wait_time = time.time() - start_time
@@ -35,7 +40,28 @@ def task_worker():
         finally:
             task_queue.task_done()
 
-threading.Thread(target=task_worker, daemon=True).start()
+def adjust_semaphore_based_on_memory():
+    global semaphore_value, semaphore
+
+    while True:
+        memory = psutil.virtual_memory()
+        available_memory_ratio = memory.available / memory.total
+        print(f"Memory check: {available_memory_ratio} at {time.time()}")
+
+        if available_memory_ratio < 0.2:
+            semaphore_value = max(min_thread, semaphore_value - 1)
+        elif available_memory_ratio > 0.5:
+            semaphore_value = min(max_thread, semaphore_value + 1)
+
+        semaphore = threading.Semaphore(semaphore_value)
+        print(f"Adjusted Semaphore Value: {semaphore_value} at {time.time()}")
+        time.sleep(memory_check_time)
+
+
+threading.Thread(target=adjust_semaphore_based_on_memory, daemon=True).start()
+
+for _ in range(semaphore_value):
+    threading.Thread(target=task_worker, daemon=True).start()
 
 @app.route('/api/v1/challenge/similarity/landmark', methods=['POST'])
 def get_landmarks():
