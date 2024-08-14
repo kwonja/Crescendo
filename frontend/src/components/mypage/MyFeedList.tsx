@@ -75,8 +75,7 @@ export default function MyFeedList({ userId }: MyFeedListProps) {
         setShowDeleteModal(null);
       }
     }
-  }, [showDeleteModal, dispatch]
-)
+  }, [showDeleteModal, dispatch])
 
   return (
     <div className="feedlist">
