@@ -80,8 +80,7 @@ public class FanArtCommentCustomRepositoryImpl implements FanArtCommentCustomRep
         JPAQuery<FanArtComment> query = queryFactory
                 .select(fanArtComment)
                 .from(fanArtComment)
-                .leftJoin(fanArtComment.user, user)
-                .where(fanArtComment.fanArt.fanArtId.eq(fanArtId).and(fanArtComment.parentFanArtComment.isNotNull()))
+                .where(fanArtComment.parentFanArtComment.fanArtCommentId.eq(fanArtCommentId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize());
 
