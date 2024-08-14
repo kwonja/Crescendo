@@ -36,7 +36,7 @@ export default function ChatRoomListItem({ room, HandleClick }: ChatRoomItemProp
           <User className="w-full h-full" />
         </div>
       )}
-      <div className="content w-8/12">
+      <div className="content w-1/2">
         <div className="nickname">{opponentNickName}</div>
         <div className="lastchat">{lastChatting}</div>
       </div>

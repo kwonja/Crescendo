@@ -1,5 +1,5 @@
 .feed {
-  width: 1260px;
+  width: 1000x;
   border-bottom: 1px solid #f66;
   display: flex;
   flex-direction: column;
@@ -8,8 +8,8 @@
   padding-bottom: 30px;
   position: relative;
 
-  &:hover {
-    background-color: #F0F0F0;
+  &list {
+    margin-top: 20px;
   }
 
   .upper {
@@ -97,7 +97,7 @@
         z-index: 0;
 
         &.slideLeft {
-          animation: slideLeftPrev 1s
+          animation: slideLeftPrev 1s;
         }
       }
 
@@ -113,7 +113,7 @@
         z-index: 0;
 
         &.slideRight {
-          animation: slideRightNext 1s
+          animation: slideRightNext 1s;
         }
       }
 
@@ -129,11 +129,11 @@
         z-index: 1;
 
         &.slideRight {
-          animation: slideRightMain 1s
+          animation: slideRightMain 1s;
         }
 
         &.slideLeft {
-          animation: slideLeftMain 1s
+          animation: slideLeftMain 1s;
         }
       }
 

@@ -71,13 +71,13 @@ public class UserServiceImpl implements UserService {
                 .profilePath(user.getProfilePath())
                 .nickname(user.getNickname())
                 .introduction(user.getIntroduction())
-                .followerNum(followRepository.countByFollowing(user))
-                .followingNum(followRepository.countByFollower(user));
+                .followerNum(followRepository.countByFollower(user))
+                .followingNum(followRepository.countByFollowing(user));
 
         if(loggedInUserId != null) {
             User loggedInUser = userRepository.findById(loggedInUserId).orElseThrow(UserNotFoundException::new);
             userInfo
-                    .isFollowing(followRepository.existsByFollowingAndFollower(user, loggedInUser));
+                    .isFollowing(followRepository.existsByFollowingAndFollower(loggedInUser, user));
         }
 
         return userInfo.build();

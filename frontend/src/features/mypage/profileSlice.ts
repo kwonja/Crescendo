@@ -11,23 +11,22 @@ interface UserInfoProps {
   error: string | undefined;
 }
 
-
 interface APIstate {
-     pathId: number;
-     userId : number
+  pathId: number;
+  userId: number;
 }
 //createAsyncThunk는 비동기 작업을 도와주는 액션함수이기때문에
 //타입이 있어야한다.
 export const getUserInfo = createAsyncThunk(
   'profileSlice/getUserInfo',
-  async ({pathId,userId} : APIstate) => {
-    const response = await getUserInfoAPI(pathId,userId);
+  async ({ pathId, userId }: APIstate) => {
+    const response = await getUserInfoAPI(pathId, userId);
     return response;
   },
 );
 
 const inistalState: UserInfoProps = {
-  userInfo :{
+  userInfo: {
     profilePath: '',
     nickname: '',
     introduction: '',
@@ -44,27 +43,29 @@ const profileSlice = createSlice({
   name: 'profile',
   initialState: inistalState,
   reducers: {
-
-    handleFollow: (state) => {
-        state.userInfo.isFollowing = !state.userInfo.isFollowing
-      },
-      handleInfoUpdate: (state, action: PayloadAction<{ nickname: string; introduction: string; }>) => {
-        const { nickname, introduction } = action.payload;
-        state.userInfo = {
-          ...state.userInfo,
-          nickname,
-          introduction,
-        };
-      },
+    handleFollow: state => {
+      state.userInfo.isFollowing = !state.userInfo.isFollowing;
+    },
+    handleInfoUpdate: (
+      state,
+      action: PayloadAction<{ nickname: string; introduction: string }>,
+    ) => {
+      const { nickname, introduction } = action.payload;
+      state.userInfo = {
+        ...state.userInfo,
+        nickname,
+        introduction,
+      };
+    },
   },
   extraReducers: builder => {
     builder
       .addCase(getUserInfo.pending, state => {
         state.status = 'loading';
       })
-      .addCase(getUserInfo.fulfilled, (state, action : PayloadAction<UserInfo>) => {
+      .addCase(getUserInfo.fulfilled, (state, action: PayloadAction<UserInfo>) => {
         state.status = 'success';
-        if(action.payload.introduction === null)action.payload.introduction ='';
+        if (action.payload.introduction === null) action.payload.introduction = '';
         state.userInfo = action.payload;
       })
       .addCase(getUserInfo.rejected, (state, action) => {
@@ -73,6 +74,5 @@ const profileSlice = createSlice({
       });
   },
 });
-export const { handleFollow,handleInfoUpdate } =
-  profileSlice.actions;
+export const { handleFollow, handleInfoUpdate } = profileSlice.actions;
 export default profileSlice.reducer;

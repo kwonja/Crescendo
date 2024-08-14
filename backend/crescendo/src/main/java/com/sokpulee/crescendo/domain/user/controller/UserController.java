@@ -52,7 +52,7 @@ public class UserController {
     @GetMapping("/{user-id}")
     @Operation(summary = "사용자 정보 불러오기", description = "아이디 기반 사용자 정보 불러오기 API")
     public ResponseEntity<?> getUserById(
-            @AuthPrincipal Long loggedInUserId,
+            @Parameter(hidden = true) @AuthPrincipal Long loggedInUserId,
             @PathVariable("user-id") Long findUserId
     ) {
         UserInfoResponse userInfoResponse = userService.getUserById(loggedInUserId, findUserId);

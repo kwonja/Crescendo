@@ -77,7 +77,7 @@ public class FavoriteRankServiceImpl implements FavoriteRankService {
         Idol idol = idolRepository.findById(favoriteRankAddRequest.getIdolId())
                 .orElseThrow(IdolNotFoundException::new);
 
-        boolean exists = favoriteRankRepository.existsByUserAndCreatedAtBetween(user, startDate, endDate);
+        boolean exists = favoriteRankRepository.existsByUserAndIdolAndCreatedAtBetween(user, idol, startDate, endDate);
         if (exists) {
             throw new DuplicateFavoriteRankException();
         }

@@ -11,6 +11,8 @@ import alarmReducer from '../features/alarm/alarmSlice';
 import communityDetailReducer from '../features/communityDetail/communityDetailSlice';
 import commentReducer from '../features/comment/commentSlice';
 import profileReducer from '../features/mypage/profileSlice';
+import challengeReducer from '../features/challenge/challengeSlice';
+import challengeDetailReducer from '../features/challenge/challengeDetailSlice';
 
 export const store = configureStore({
   reducer: {
@@ -25,7 +27,9 @@ export const store = configureStore({
     alarm: alarmReducer,
     communityDetail: communityDetailReducer,
     comment: commentReducer,
-    profile: profileReducer
+    profile: profileReducer,
+    challenge: challengeReducer,
+    challengeDetail: challengeDetailReducer,
   },
 });
 
