@@ -131,16 +131,34 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
   );
 
   const handleNewCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (e.target.value.length <= MAX_COMMENT_LENGTH) {
-      setNewComment(e.target.value);
+    const value = e.target.value;
+    const lines = value.split('\n');
+
+    if (lines.length > 10) {
+      alert('10줄 이하로만 작성 가능합니다.');
+      return;
+    }
+
+    if (value.length <= MAX_COMMENT_LENGTH) {
+      setNewComment(value);
     }
   };
 
   const handleNewReplyChange = (e: React.ChangeEvent<HTMLTextAreaElement>, commentId: number) => {
-    setNewReply(prevState => ({
-      ...prevState,
-      [commentId]: e.target.value,
-    }));
+    const value = e.target.value;
+    const lines = value.split('\n');
+
+    if (lines.length > 5) {
+      alert('5줄 이하로만 작성 가능합니다.');
+      return;
+    }
+
+    if (value.length <= MAX_COMMENT_LENGTH) {
+      setNewReply(prevState => ({
+        ...prevState,
+        [commentId]: value,
+      }));
+    }
   };
 
   useEffect(() => {

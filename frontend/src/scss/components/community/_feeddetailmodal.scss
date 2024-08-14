@@ -516,11 +516,12 @@
                   align-items: flex-end;
                   height: fit-content;
                   textarea {
+                    padding: 5px;
                     font-size: 18px;
-                    width: 250px;
+                    width: 270px;
+                    margin-right: 5px;
                     height: auto;
                     line-height: 1.4;
-                    margin-right: 10px;
                     resize: none;
                     overflow-y: hidden;
                   }
@@ -580,6 +581,7 @@
                 margin-left: 10px;
                 box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.35);
                 textarea {
+                  width: 290px;
                   background-color: transparent;
                   border-color: transparent;
                   color: #fff;
@@ -598,7 +600,7 @@
                   position: relative;
                   width: 22px;
                   height: 22px;
-                  right: -140px;
+                  right: -10px;
                 }
                 .reply-write-button:hover {
                   cursor: pointer;
@@ -651,10 +653,13 @@
     }
 
     .comment-input-container {
+      position: relative;
       display: flex;
-      height: 80px;
+      min-height: 80px;
+      height: auto;
       align-items: center;
       box-shadow: 1px 1px 20px 0px rgba(0, 0, 0, 0.35);
+      padding-block: 15px;
 
       textarea {
         font-size: 24px;
@@ -681,7 +686,7 @@
       }
 
       .comment-write-button {
-        position: absolute;
+        position: sticky;
         right: 25px;
         bottom: 25px;
         width: 30px;
