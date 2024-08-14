@@ -1,6 +1,6 @@
 // 닉네임 유효성 검사 함수
 export const isValidNickname = (nickname: string): boolean => {
-  const nicknameRegex = /^[a-zA-Z0-9가-힣]{1,10}$/; // 영어, 숫자, 한글, 최대 10글자
+  const nicknameRegex = /^[a-zA-Z0-9가-힣ㄱ-ㅎ]{3,10}$/; // 영어, 숫자, 한글, 최소3글자, 최대 10글자
   return nicknameRegex.test(nickname);
 };
 
