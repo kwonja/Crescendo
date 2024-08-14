@@ -101,7 +101,8 @@ public class GoodsCommentCustomRepositoryImpl implements GoodsCommentCustomRepos
                             isLike,
                             f.getContent(),
                             f.getCreatedAt(),
-                            f.getLastModified()
+                            f.getLastModified(),
+                            f.getGoodsCommentId()
                     );
                 })
                 .toList();

@@ -101,7 +101,8 @@ public class FanArtCommentCustomRepositoryImpl implements FanArtCommentCustomRep
                             isLike,
                             f.getContent(),
                             f.getCreatedAt(),
-                            f.getLastModified()
+                            f.getLastModified(),
+                            f.getFanArtCommentId()
                     );
                 })
                 .toList();
