@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
-import { ReactComponent as Heart } from '../../assets/images/Feed/heart.svg';
-import { ReactComponent as FullHeart } from '../../assets/images/Feed/fullheart.svg';
+import { ReactComponent as Heart } from '../../assets/images/challenge/heart.svg';
+import { ReactComponent as FullHeart } from '../../assets/images/challenge/fullheart.svg';
 import { ReactComponent as Play } from '../../assets/images/challenge/playbtn.svg';
 import { ReactComponent as Trash } from '../../assets/images/challenge/trash.svg';
 import { ChallengeDetails } from '../../interface/challenge';
@@ -41,8 +41,17 @@ export default function ChallengeDetailItem({ Challenge }: ChallengeProps) {
     try {
       await deleteChallengeJoinAPI(challengeJoinId);
       toast.success('삭제되었습니다', {
-        position: 'top-center',
+        position: 'top-right',
       });
+      dispath(setSelectedChallengeDetail({
+        challengeJoinId: 0,
+        challengeVideoPath: '',
+        isLike: false,
+        likeCnt: 0,
+        nickname: '',
+        score: 0,
+        userId: 0,
+      }))
       dispath(deleteChallengeDetail(challengeJoinId));
     } catch (err: unknown) {
       if (isAxiosError(err)) {

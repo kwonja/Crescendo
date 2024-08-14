@@ -83,9 +83,14 @@ export default function ChallengeDetails() {
       </div>
       <div className="challenge-room">
         <div className="title">챌린지 목록</div>
-        {challengeDetailLists.map(challenge => (
-          <ChallengeDetailItem Challenge={challenge} key={challenge.challengeJoinId} />
-        ))}
+
+        {
+         challengeDetailLists.length ===0 ? ( <div className='flex flex-col gap-5'><div className='flex w-full text-4xl'>아직 등록된 챌린지가 없습니다</div> <div className='flex w-full justify-center text-4xl'>지금 참여하세요😀</div></div>) : (
+          challengeDetailLists.map(challenge => (
+            <ChallengeDetailItem Challenge={challenge} key={challenge.challengeJoinId} />
+          ))
+         )  
+        }
         <div className="w-4 h-4" ref={loader}></div>
       </div>
       <Write className="fixed right-12 bottom-12 cursor-pointer" onClick={handleOpenModal} />
