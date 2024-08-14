@@ -10,7 +10,7 @@ interface ChallengeDetailProps {
   error: string | undefined;
   currentPage: number;
   size: number;
-  totalPage : number;
+  totalPage: number;
   selectedChallengeDetail: ChallengeDetails;
 }
 const inistalState: ChallengeDetailProps = {
@@ -80,9 +80,11 @@ const challengeDetailSlice = createSlice({
     setChallengeDetailPage: state => {
       if (state.totalPage > state.currentPage) state.currentPage = state.currentPage + 1;
     },
-    deleteChallengeDetail : (state, action : PayloadAction<number>)=>{
-      state.challengeDetailLists = state.challengeDetailLists.filter(detail => detail.challengeJoinId !== action.payload);
-    }
+    deleteChallengeDetail: (state, action: PayloadAction<number>) => {
+      state.challengeDetailLists = state.challengeDetailLists.filter(
+        detail => detail.challengeJoinId !== action.payload,
+      );
+    },
   },
   extraReducers(builder) {
     builder
@@ -100,6 +102,12 @@ const challengeDetailSlice = createSlice({
   },
 });
 
-export const { setSelectedChallengeDetail, decrementChallengeLike, incrementChallengeLike,deleteChallengeDetail,initialChallengeDetailList,setChallengeDetailPage } =
-  challengeDetailSlice.actions;
+export const {
+  setSelectedChallengeDetail,
+  decrementChallengeLike,
+  incrementChallengeLike,
+  deleteChallengeDetail,
+  initialChallengeDetailList,
+  setChallengeDetailPage,
+} = challengeDetailSlice.actions;
 export default challengeDetailSlice.reducer;

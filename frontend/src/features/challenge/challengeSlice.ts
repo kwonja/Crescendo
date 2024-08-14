@@ -63,12 +63,12 @@ const challengeSlice = createSlice({
     setChallengePage: state => {
       if (state.totalPage > state.currentPage) state.currentPage = state.currentPage + 1;
     },
-    deleteChallenge : (state, action : PayloadAction<number>)=>{
+    deleteChallenge: (state, action: PayloadAction<number>) => {
       const index = state.challengeLists.findIndex(detail => detail.challengeId === action.payload);
       if (index !== -1) {
         state.challengeLists.splice(index, 1);
       }
-    }
+    },
   },
   extraReducers(builder) {
     builder
@@ -88,6 +88,6 @@ const challengeSlice = createSlice({
   },
 });
 
-export const { setSelectedChallenge, setChallengePage, initialChallengeList,deleteChallenge } =
+export const { setSelectedChallenge, setChallengePage, initialChallengeList, deleteChallenge } =
   challengeSlice.actions;
 export default challengeSlice.reducer;

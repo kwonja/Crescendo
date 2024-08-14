@@ -17,33 +17,30 @@ export default function ChallengeDetailModal({ onClose, challengeId }: ModalProp
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const dispatch = useAppDispatch();
 
-
   const CreateChallenge = async () => {
-
     if (!fileRef.current?.files || fileRef.current.files.length === 0) {
-      toast.warn("파일을 업로드 해주세요:)", {
-        position: "top-center"
+      toast.warn('파일을 업로드 해주세요:)', {
+        position: 'top-center',
       });
       return; // 파일이 없으면 함수 종료
     }
-    
+
     const formData = new FormData();
     formData.append('video', fileRef.current.files[0]);
     try {
       onClose();
-      toast.info("등록하는데 1분정도 소요됩니다", {
-        position: "top-right"
+      toast.info('등록하는데 1분정도 소요됩니다', {
+        position: 'top-right',
       });
       await postChallengeJoinAPI(challengeId, formData);
-      toast.info("등록이 완료되었습니다", {
-        position: "top-right"
+      toast.info('등록이 완료되었습니다', {
+        position: 'top-right',
       });
     } catch (err: unknown) {
       if (isAxiosError(err)) {
-  
-        toast.error( `${err.response?.data}`,{
-          position: "top-center"
-        })
+        toast.error(`${err.response?.data}`, {
+          position: 'top-center',
+        });
       }
     } finally {
       dispatch(initialChallengeDetailList());

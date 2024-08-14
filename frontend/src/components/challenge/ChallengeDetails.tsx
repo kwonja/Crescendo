@@ -18,7 +18,7 @@ export default function ChallengeDetails() {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const { challengeId } = useParams<{ challengeId: string }>();
   const numericChallengeId = challengeId ? Number(challengeId) : 0;
-  const { challengeDetailLists,currentPage } = useAppSelector(state => state.challengeDetail);
+  const { challengeDetailLists, currentPage } = useAppSelector(state => state.challengeDetail);
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(

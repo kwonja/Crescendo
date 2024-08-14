@@ -5,10 +5,10 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
 
 export default function AlarmLayout() {
   const dispatch = useAppDispatch();
-  const {currentPage,size} = useAppSelector( state => state.alarm)
+  const { currentPage, size } = useAppSelector(state => state.alarm);
   useEffect(() => {
-    dispatch(getAlarmList({page : currentPage, size}));
-  }, [dispatch,currentPage,size]);
+    dispatch(getAlarmList({ page: currentPage, size }));
+  }, [dispatch, currentPage, size]);
   return (
     <div className="alarmlayout">
       <div className="title">알림목록</div>

@@ -36,9 +36,9 @@ export default function NotSearchUser({ handleMode }: SearchProps) {
       console.error('Error fetching user list:', error);
     }
   };
-  useEffect( ()=>{
+  useEffect(() => {
     getUserList('');
-  },[])
+  }, []);
 
   const OnchangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -99,7 +99,9 @@ export default function NotSearchUser({ handleMode }: SearchProps) {
     <div className="notloginsearchuser">
       <SearchInput placeholder="유저를 검색하세요" onChange={OnchangeHandler} value={inputValue} />
       <div className="searchuser_item w-full">
-        {lists.length === 0 && !isSearch ? <div className='flex justify-center mt-3'>검색하신 유저가 없습니다.</div> : null}
+        {lists.length === 0 && !isSearch ? (
+          <div className="flex justify-center mt-3">검색하신 유저가 없습니다.</div>
+        ) : null}
         {lists.map(list => (
           <div
             className="w-11/12 flex flex-row align-center justgap-2 p-2.5 border-b-2 border-white mx-auto"

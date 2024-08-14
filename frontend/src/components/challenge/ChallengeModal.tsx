@@ -9,9 +9,9 @@ import { initialChallengeList } from '../../features/challenge/challengeSlice';
 
 interface ModalProps {
   onClose: () => void;
-  isOpen : boolean;
+  isOpen: boolean;
 }
-export default function ChallengeModal({ onClose,isOpen }: ModalProps) {
+export default function ChallengeModal({ onClose, isOpen }: ModalProps) {
   const titleRef = useRef<HTMLInputElement>(null);
   const timeRef = useRef<HTMLInputElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -19,22 +19,21 @@ export default function ChallengeModal({ onClose,isOpen }: ModalProps) {
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const dispatch = useAppDispatch();
   const CreateChallenge = async () => {
-
     if (!fileRef.current?.files || fileRef.current.files.length === 0) {
-      toast.warn("파일을 업로드 해주세요:)", {
-        position: "top-center"
+      toast.warn('파일을 업로드 해주세요:)', {
+        position: 'top-center',
       });
       return; // 파일이 없으면 함수 종료
     }
-    if(!titleRef.current?.value){
-      toast.warn("제목을 입력 해주세요:)", {
-        position: "top-center"
+    if (!titleRef.current?.value) {
+      toast.warn('제목을 입력 해주세요:)', {
+        position: 'top-center',
       });
       return;
     }
-    if(!timeRef.current?.value){
-      toast.warn("종료일자를 선택해주세요!!", {
-        position: "top-center"
+    if (!timeRef.current?.value) {
+      toast.warn('종료일자를 선택해주세요!!', {
+        position: 'top-center',
       });
       return;
     }
@@ -44,21 +43,20 @@ export default function ChallengeModal({ onClose,isOpen }: ModalProps) {
     formData.append('endAt', timeRef.current.value);
     formData.append('video', fileRef.current.files[0]);
     try {
-
       onClose();
-      toast.info("등록하는데 1분정도 소요됩니다", {
-        position: "top-right"
+      toast.info('등록하는데 1분정도 소요됩니다', {
+        position: 'top-right',
       });
 
       await postChallengeAPI(formData);
-      toast.info("등록이 완료되었습니다", {
-        position: "top-right"
+      toast.info('등록이 완료되었습니다', {
+        position: 'top-right',
       });
     } catch (err: unknown) {
       if (isAxiosError(err)) {
-        toast.error( `${err.response?.data}`,{
-          position: "top-center"
-        })
+        toast.error(`${err.response?.data}`, {
+          position: 'top-center',
+        });
       }
     } finally {
       dispatch(initialChallengeList());

@@ -20,7 +20,7 @@ interface ChallengeProps {
   Challenge: ChallengeDetails;
 }
 export default function ChallengeDetailItem({ Challenge }: ChallengeProps) {
-  const { isLike, challengeVideoPath, likeCnt, nickname, challengeJoinId,userId } = Challenge;
+  const { isLike, challengeVideoPath, likeCnt, nickname, challengeJoinId, userId } = Challenge;
   const dispath = useAppDispatch();
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -37,20 +37,20 @@ export default function ChallengeDetailItem({ Challenge }: ChallengeProps) {
     dispath(incrementChallengeLike(challengeJoinId));
   };
 
-  const handleRemove= async()=>{
-    try{
+  const handleRemove = async () => {
+    try {
       await deleteChallengeJoinAPI(challengeJoinId);
-      toast.success('삭제되었습니다',{
-        position : 'top-center'
-      })
+      toast.success('삭제되었습니다', {
+        position: 'top-center',
+      });
       dispath(deleteChallengeDetail(challengeJoinId));
-    }catch(err : unknown){
+    } catch (err: unknown) {
       if (isAxiosError(err)) {
         // Axios 에러인 경우
         alert(err.response?.data);
       }
     }
-  }
+  };
 
   return (
     <div className="challengedetailitem">
@@ -64,10 +64,9 @@ export default function ChallengeDetailItem({ Challenge }: ChallengeProps) {
               <Heart className="w-6 h-6" onClick={handleLike} />
             )}{' '}
             {likeCnt}
-            {
-              userId === getUserId() && <Trash className='w-6 h-6 ml-auto cursor-pointer' onClick={handleRemove}/>
-            }
-           
+            {userId === getUserId() && (
+              <Trash className="w-6 h-6 ml-auto cursor-pointer" onClick={handleRemove} />
+            )}
           </div>
           <div className="challengeitem_title">{nickname}</div>
         </div>
