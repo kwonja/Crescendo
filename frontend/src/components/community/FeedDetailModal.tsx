@@ -99,8 +99,6 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
       const response = await Authapi.get(`/api/v1/community/feed/${feedId}/comment`, {
         params: { page: 0, size: 100 },
       });
-      //eslint-disable-next-line no-console
-      console.log('Comments:', response);
       setComments(response.data.content);
     } catch (error) {
       console.error('Error fetching comments:', error);
@@ -111,20 +109,12 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
   const loadReplies = useCallback(
     async (commentId: number) => {
       try {
-        //eslint-disable-next-line no-console
-        console.log('feedId:', feedId);
-        //eslint-disable-next-line no-console
-        console.log('commentId:', commentId);
-
         const response = await Authapi.get(
           `/api/v1/community/feed/${feedId}/comment/${commentId}/reply`,
           {
             params: { page: 0, size: 100 },
           },
         );
-
-        //eslint-disable-next-line no-console
-        console.log('Replies:', response);
 
         setComments(prevComments =>
           prevComments.map(comment =>
