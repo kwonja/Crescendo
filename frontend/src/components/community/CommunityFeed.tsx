@@ -7,13 +7,13 @@ import { ReactComponent as RightBtn } from '../../assets/images/right.svg';
 import { ReactComponent as LeftBtn } from '../../assets/images/left.svg';
 import { FeedInfo } from '../../interface/feed';
 import { useAppDispatch } from '../../store/hooks/hook';
-import { resetState, toggleFeedLike } from '../../features/communityDetail/communityDetailSlice';
+import { resetState, toggleFeedLike, updateFeed } from '../../features/communityDetail/communityDetailSlice';
 import UserProfile from '../common/UserProfile';
 import { getUserId, IMAGE_BASE_URL } from '../../apis/core';
 import Button from '../common/Button';
 import ActionMenu from '../common/ActionMenu';
 import CommonModal from '../common/CommonModal';
-import { deleteFeedAPI } from '../../apis/feed';
+import { deleteFeedAPI, getFeedDetailAPI } from '../../apis/feed';
 import EditFeed from './EditFeed';
 
 interface FeedProps {
@@ -46,6 +46,15 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
   const handleClick = () => {
     onClick();
   };
+
+  const loadFeedDetail = async () => {
+    try {
+      const response = await getFeedDetailAPI(feedId);
+      dispatch(updateFeed({feedId, feed:response}));
+    } catch (error) {
+      console.error('Error fetching feed details:', error);
+    }
+  }
 
   const onDelete = async () => {
       try {
@@ -200,7 +209,7 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
                 </div>
                 <div className="modal-body">
                   <EditFeed
-                    onClose={()=>setShowEditModal(false)}
+                    onClose={()=>{loadFeedDetail(); setShowEditModal(false);}}
                     feedId={feedId}
                     initialContent={content}
                     initialTags={tagList}

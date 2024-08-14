@@ -140,7 +140,6 @@ const EditFeed: React.FC<EditFeedProps> = ({
       });
       if (response.status === 204) {
         alert('피드가 성공적으로 수정되었습니다.');
-        window.scrollTo(0, 0);
         onClose();
       }
     } catch (error) {
