@@ -90,7 +90,7 @@ def get_analyze(base_landmarks, compare_landmarks):
     similarity_percentage *= 100
     if similarity_percentage >= 2:
         return 100
-    elif similarity_percentage <= 0.5:
+    elif similarity_percentage <= 0.1:
         return 0
     else:
-        return (similarity_percentage - 0.5) * (100 / (2 - 0.5))
+        return (similarity_percentage - 0.1) * (100 / (2 - 0.1))
