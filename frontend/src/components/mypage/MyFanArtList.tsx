@@ -18,7 +18,7 @@ export default function MyFanartList({ userId }: MyFanArtListProps) {
       dispatch(resetState());
       if (observer.current) observer.current.disconnect();
     };
-  }, [dispatch]);
+  }, [dispatch, userId]);
 
   const loadMoreElementRef = useCallback(
     (node: HTMLDivElement | null) => {

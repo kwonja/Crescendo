@@ -18,7 +18,7 @@ export default function MyFeedList({ userId }: MyFeedListProps) {
       dispatch(resetState());
       if (observer.current) observer.current.disconnect();
     };
-  }, [dispatch]);
+  }, [dispatch, userId]);
 
   const loadMoreElementRef = useCallback(
     (node: HTMLDivElement | null) => {
@@ -40,7 +40,9 @@ export default function MyFeedList({ userId }: MyFeedListProps) {
   return (
     <div className="feedlist">
       {status === 'loading' || myFeedList.length > 0 ? (
-        myFeedList.map(feed => <MyFeed key={feed.feedId} feed={feed} />)
+        myFeedList.map((feed) => (
+          <MyFeed key={feed.feedId} feed={feed}  />
+        ))
       ) : (
         <div className="text-center text-xl w-full">작성한 피드가 없습니다.</div>
       )}
