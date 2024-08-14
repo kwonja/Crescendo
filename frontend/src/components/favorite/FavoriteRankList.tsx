@@ -3,20 +3,24 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
 import { ReactComponent as Dots } from '../../assets/images/Favorite/smalldots.svg';
 import { ReactComponent as Heart } from '../../assets/images/Favorite/heart.svg';
 import { ReactComponent as FullHeart } from '../../assets/images/Favorite/fullheart.svg';
-import { IMAGE_BASE_URL } from '../../apis/core';
+import { getUserId, IMAGE_BASE_URL } from '../../apis/core';
 import UserProfile from '../common/UserProfile';
 import {
   getFavoriteRankList,
   resetState,
   toggleIsLike,
 } from '../../features/favorite/favoriteSlice';
-import ActionMenu from './ActionMenu';
+import ActionMenu from '../common/ActionMenu';
+import { deleteFavoriteRankAPI } from '../../apis/favorite';
+import CoommonModal from '../common/CommonModal';
 
 export default function FavoriteRankList() {
   const { favoriteRankList, status, hasMore } = useAppSelector(state => state.favorite);
   const [showActionMenu, setShowActionMenu] = useState<number|null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState<number|null>(null);
   const dispatch = useAppDispatch();
   const observer = useRef<IntersectionObserver | null>(null);
+  const userId = getUserId();
 
   useEffect(() => {
     return () => {
@@ -24,6 +28,26 @@ export default function FavoriteRankList() {
       if (observer.current) observer.current.disconnect();
     };
   }, [dispatch]);
+
+  const onDelete = useCallback(async () => {
+    if (showDeleteModal) {
+      try {
+        await deleteFavoriteRankAPI(showDeleteModal);
+        alert('성공적으로 삭제했습니다.');
+        dispatch(resetState())
+      } catch (error: any) {
+        if (error.response && error.response.data) {
+          alert(error.response.data);
+          return;
+        } else {
+          alert('삭제에 실패했습니다.');
+        }
+      } finally {
+        setShowDeleteModal(null);
+      }
+    }
+  }, [showDeleteModal, dispatch]
+)
 
   const loadMoreElementRef = useCallback(
     (node: HTMLDivElement | null) => {
@@ -46,6 +70,7 @@ export default function FavoriteRankList() {
     <div className="favoriteranklist">
       {favoriteRankList.map(rankEntry => (
         <div className="favoriteranklist_card" key={rankEntry.favoriteRankId}>
+          { userId === rankEntry.writerId &&
           <div className="dotsbox">
             <Dots
               className="hoverup"
@@ -53,11 +78,12 @@ export default function FavoriteRankList() {
             />
             {showActionMenu===rankEntry.favoriteRankId && (
               <ActionMenu
-                favoriteRankId={rankEntry.favoriteRankId}
                 onClose={() => setShowActionMenu(null)}
+                onDeleteAction={()=> setShowDeleteModal(rankEntry.favoriteRankId)}
               />
             )}
           </div>
+          }
           <div className="favoriteranklist_card_label text-4xl">
             <div>{rankEntry.idolGroupName}</div>
             <div className="separator mx-3">-</div>
@@ -90,6 +116,15 @@ export default function FavoriteRankList() {
         </div>
       ))}
       
+      {//삭제모달
+      showDeleteModal && (
+        <CoommonModal
+          title="삭제 확인"
+          msg="정말로 삭제하시겠습니까?"
+          onClose={() => setShowDeleteModal(null)}
+          onConfirm={onDelete}
+        />
+      )}
       {(status === 'success' || status === '') && hasMore && (<div ref={loadMoreElementRef}>Load More..</div>)}
     </div>
   );
