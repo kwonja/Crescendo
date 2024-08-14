@@ -16,6 +16,7 @@ import { ReactComponent as ReplyIcon } from '../../assets/images/Feed/comment.sv
 import { ReactComponent as CommentWriteButton } from '../../assets/images/white_write.svg';
 import FeedDetailMenu from './DropdownMenu';
 import CommentMenu from './DropdownMenu';
+import ReplyMenu from './DropdownReplyMenu';
 import EditFeed from './EditFeed';
 import '../../scss/components/community/_feeddetailmodal.scss';
 
@@ -55,6 +56,7 @@ type FeedDetailModalProps = {
 };
 
 type Reply = {
+  feedCommentId: number;
   writerId: number;
   profileImagePath: string | null;
   nickname: string;
@@ -109,12 +111,21 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
   const loadReplies = useCallback(
     async (commentId: number) => {
       try {
+        //eslint-disable-next-line no-console
+        console.log('feedId:', feedId);
+        //eslint-disable-next-line no-console
+        console.log('commentId:', commentId);
+
         const response = await Authapi.get(
           `/api/v1/community/feed/${feedId}/comment/${commentId}/reply`,
           {
             params: { page: 0, size: 100 },
           },
         );
+
+        //eslint-disable-next-line no-console
+        console.log('Replies:', response);
+
         setComments(prevComments =>
           prevComments.map(comment =>
             comment.feedCommentId === commentId
@@ -129,31 +140,17 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
     [feedId],
   );
 
-  const handleNewCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNewCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value.length <= MAX_COMMENT_LENGTH) {
       setNewComment(e.target.value);
     }
   };
 
-  const handleNewReplyChange = (e: React.ChangeEvent<HTMLInputElement>, commentId: number) => {
+  const handleNewReplyChange = (e: React.ChangeEvent<HTMLTextAreaElement>, commentId: number) => {
     setNewReply(prevState => ({
       ...prevState,
       [commentId]: e.target.value,
     }));
-  };
-
-  const handleNewCommentKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleAddComment();
-    }
-  };
-
-  const handleNewReplyKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, commentId: number) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleAddReply(commentId);
-    }
   };
 
   useEffect(() => {
@@ -171,6 +168,17 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
       setActiveMenuId(null);
     }
   }, [show]);
+
+  useEffect(() => {
+    if (editingCommentId !== null) {
+      const textarea = document.querySelector(
+        '.reply-edit-input, .comment-edit-input, .reply-input-textarea',
+      );
+      if (textarea) {
+        adjustTextareaHeight(textarea as HTMLTextAreaElement);
+      }
+    }
+  }, [editingCommentId]);
 
   const handlePrevImage = () => {
     setActiveImageIndex(prevIndex =>
@@ -193,6 +201,12 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
     Authapi.post(`/api/v1/community/feed/${feedId}/comment`, formData)
       .then(() => {
         setNewComment('');
+        const textarea = document.querySelector(
+          '.comment-input-container textarea',
+        ) as HTMLTextAreaElement;
+        if (textarea) {
+          textarea.style.height = '40px';
+        }
         loadComments();
       })
       .catch(error => {
@@ -202,7 +216,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
 
   const handleAddReply = (commentId: number) => {
     if (!currentUserId) {
-      alert("로그인이 필요한 서비스입니다.");
+      alert('로그인이 필요한 서비스입니다.');
       navigate('/login');
       return;
     }
@@ -238,29 +252,84 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
     }
   };
 
-  const handleCommentLikeToggle = (commentId: number) => {
-    const commentIndex = comments.findIndex(comment => comment.feedCommentId === commentId);
+  // 댓글, 답글 좋아요
+  const handleLikeToggle = (commentId: number) => {
+    let updatedComments;
+
+    const commentIndex = comments.findIndex(
+      comment =>
+        comment.feedCommentId === commentId ||
+        (comment.replies && comment.replies.some(reply => reply.feedCommentId === commentId)),
+    );
+
     if (commentIndex === -1) return;
 
-    const originalComment = comments[commentIndex];
-    const updatedComment = {
-      ...originalComment,
-      isLike: !originalComment.isLike,
-      likeCnt: originalComment.isLike ? originalComment.likeCnt - 1 : originalComment.likeCnt + 1,
-    };
+    const comment = comments[commentIndex];
 
-    const updatedComments = [...comments];
-    updatedComments[commentIndex] = updatedComment;
+    // 답글인지 댓글인지 확인
+    if (comment.feedCommentId === commentId) {
+      // 댓글일 경우
+      const updatedComment = {
+        ...comment,
+        isLike: !comment.isLike,
+        likeCnt: comment.isLike ? comment.likeCnt - 1 : comment.likeCnt + 1,
+      };
+      updatedComments = [...comments];
+      updatedComments[commentIndex] = updatedComment;
+    } else {
+      // 답글일 경우
+      const replyIndex = comment.replies!.findIndex(reply => reply.feedCommentId === commentId);
+      if (replyIndex === -1) return;
+
+      const originalReply = comment.replies![replyIndex];
+      const updatedReply = {
+        ...originalReply,
+        isLike: !originalReply.isLike,
+        likeCnt: originalReply.isLike ? originalReply.likeCnt - 1 : originalReply.likeCnt + 1,
+      };
+
+      const updatedReplies = [...(comment.replies || [])];
+      updatedReplies[replyIndex] = updatedReply;
+
+      updatedComments = [...comments];
+      updatedComments[commentIndex] = {
+        ...comment,
+        replies: updatedReplies,
+      };
+    }
+
     setComments(updatedComments);
 
     Authapi.post(`/api/v1/community/feed/feed-comment-like/${commentId}`).catch(error => {
-      console.error('댓글 좋아요 오류:', error);
+      console.error('좋아요 실패:', error);
 
-      setComments(prevComments => {
-        const rollbackComments = [...prevComments];
-        rollbackComments[commentIndex] = originalComment;
-        return rollbackComments;
-      });
+      setComments(prevComments =>
+        prevComments.map((comment, idx) => {
+          if (idx !== commentIndex) return comment;
+
+          if (comment.feedCommentId === commentId) {
+            return {
+              ...comment,
+              isLike: !comment.isLike,
+              likeCnt: comment.isLike ? comment.likeCnt + 1 : comment.likeCnt - 1,
+            };
+          } else {
+            const rollbackReplies = comment.replies!.map(reply =>
+              reply.feedCommentId === commentId
+                ? {
+                    ...reply,
+                    isLike: !reply.isLike,
+                    likeCnt: reply.isLike ? reply.likeCnt + 1 : reply.likeCnt - 1,
+                  }
+                : reply,
+            );
+            return {
+              ...comment,
+              replies: rollbackReplies,
+            };
+          }
+        }),
+      );
     });
   };
 
@@ -330,6 +399,13 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
     setEditedContent(currentContent);
   };
 
+  // 답글 수정 모드로 정ㄴ환
+  const handleReplyEditClick = (replyId: number, currentContent: string) => {
+    handleCommentMenuToggle(replyId);
+    setEditingCommentId(replyId);
+    setEditedContent(currentContent);
+  };
+
   // 댓글 수정 모드 취소
   const handleCommentEditCancel = () => {
     setEditingCommentId(null);
@@ -356,24 +432,8 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
         loadComments();
       })
       .catch(error => {
-        if (error.response) {
-          const { status, data } = error.response;
-
-          if (status === 400 && data.exception === 'InvalidFeedCommentContentFormatException') {
-            alert('댓글 내용 형식이 올바르지 않습니다.');
-          } else if (status === 404 && data.exception === 'FeedCommentNotFoundException') {
-            alert('댓글을 찾을 수 없습니다.');
-          } else {
-            console.error('댓글 수정 오류:', status, data);
-            alert(`댓글 수정에 실패했습니다. 서버 응답: ${status}`);
-          }
-        } else if (error.request) {
-          console.error('응답 없음:', error.request);
-          alert('서버로부터 응답을 받지 못했습니다.');
-        } else {
-          console.error('요청 설정 오류:', error.message);
-          alert('요청을 처리하는 중에 오류가 발생했습니다.');
-        }
+        console.error('댓글 또는 답글 수정 오류:', error);
+        alert('수정에 실패했습니다.');
       });
   };
 
@@ -395,12 +455,37 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
     return path ? `https://www.crescendo.o-r.kr/server/files/${path}` : '';
   };
 
+  const adjustTextareaHeight = (textarea: HTMLTextAreaElement) => {
+    textarea.style.height = 'auto'; // 초기 높이를 auto로 설정
+    textarea.style.height = `${textarea.scrollHeight}px`; // scrollHeight에 맞게 높이를 설정
+    if (textarea.value === '') {
+      textarea.style.height = '40px'; // 기본 높이로 설정
+    }
+  };
+
+  const handleClose = () => {
+    // 댓글 입력 필드 초기화
+    setNewComment('');
+    setNewReply({});
+
+    // textarea 높이 복원
+    const commentTextarea = document.querySelector(
+      '.comment-input-container textarea',
+    ) as HTMLTextAreaElement;
+    if (commentTextarea) {
+      commentTextarea.style.height = '40px'; // 기본 높이로 복구
+    }
+
+    // onClose 콜백 호출 (부모 컴포넌트에서 전달된)
+    onClose();
+  };
+
   if (!show || !feedDetail) return null;
 
   return (
     <div className="feed-detail-modal modal-overlay">
       <div className={`modal-content ${editModalVisible ? 'blurred' : ''}`}>
-        <button className="close-button" onClick={onClose}>
+        <button className="close-button" onClick={handleClose}>
           &times;
         </button>
         <div className="feed-detail-left">
@@ -499,12 +584,12 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
                       {comment.isLike ? (
                         <CommentFullHeartIcon
                           className="comment-heart-button"
-                          onClick={() => handleCommentLikeToggle(comment.feedCommentId)}
+                          onClick={() => handleLikeToggle(comment.feedCommentId)}
                         />
                       ) : (
                         <CommentHeartIcon
                           className="comment-heart-button"
-                          onClick={() => handleCommentLikeToggle(comment.feedCommentId)}
+                          onClick={() => handleLikeToggle(comment.feedCommentId)}
                         />
                       )}
                       <CommentMenuIcon
@@ -526,13 +611,12 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
                   <div className="comment-content">
                     {editingCommentId === comment.feedCommentId ? (
                       <div className="editing-comment">
-                        <input
-                          type="text"
+                        <textarea
                           className="comment-edit-input"
                           value={editedContent}
-                          onChange={e => setEditedContent(e.target.value)}
-                          onKeyDown={e => {
-                            if (e.key === 'Enter') handleCommentEditSubmit(comment.feedCommentId);
+                          onChange={e => {
+                            setEditedContent(e.target.value);
+                            adjustTextareaHeight(e.target);
                           }}
                         />
                         <button
@@ -549,7 +633,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
                         </button>
                       </div>
                     ) : (
-                      <p>{comment.content}</p>
+                      <div style={{ whiteSpace: 'pre-wrap' }}>{comment.content}</div>
                     )}
                   </div>
                   <div className="reply-icon-container">
@@ -559,17 +643,22 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
                     />
                     <div className="reply-count">
                       {comment.replyCnt}개의{' '}
-                      <div onClick={() => handleReplyInputToggle(comment.feedCommentId)}>
+                      <div
+                        className="reply-input-toggle"
+                        onClick={() => handleReplyInputToggle(comment.feedCommentId)}
+                      >
                         &nbsp;답글
                       </div>
                       {replyInputVisibility[comment.feedCommentId] && (
                         <div className="reply-input-container">
-                          <input
-                            type="text"
-                            placeholder="답글을 입력하세요."
+                          <textarea
+                            className="reply-input-textarea"
+                            placeholder="여기에 입력하세요."
                             value={newReply[comment.feedCommentId] || ''}
-                            onChange={e => handleNewReplyChange(e, comment.feedCommentId)}
-                            onKeyDown={e => handleNewReplyKeyDown(e, comment.feedCommentId)}
+                            onChange={e => {
+                              handleNewReplyChange(e, comment.feedCommentId);
+                              adjustTextareaHeight(e.target);
+                            }}
                           />
                           <CommentWriteButton
                             className="reply-write-button"
@@ -579,45 +668,105 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
                       )}
                     </div>
                   </div>
-                  {replyVisibility[comment.feedCommentId] && (
-                    <div className="replies">
-                      {comment.replies?.map((reply, index) => (
-                        <div key={index} className="reply">
-                          <div className="reply-header">
-                            <div className="reply-profile-image-container">
-                              {reply.profileImagePath ? (
-                                <img
-                                  src={getAbsolutePath(reply.profileImagePath)}
-                                  alt={reply.nickname}
-                                  className="reply-profile-image"
+                  {replyVisibility[comment.feedCommentId] &&
+                    comment.replies &&
+                    comment.replies.length > 0 && (
+                      <div className="replies">
+                        {comment.replies?.map((reply, index) => (
+                          <div key={index} className="reply">
+                            <div className="reply-header">
+                              <div className="reply-profile-image-container">
+                                {reply.profileImagePath ? (
+                                  <img
+                                    src={getAbsolutePath(reply.profileImagePath)}
+                                    alt={reply.nickname}
+                                    className="reply-profile-image"
+                                  />
+                                ) : (
+                                  <UserProfileImageDefault className="reply-profile-image-default" />
+                                )}
+                              </div>
+                              <div className="reply-user-info">
+                                <div className="reply-nickname">{reply.nickname}</div>
+                                <div className="reply-date">
+                                  {new Date(reply.createdAt).toLocaleString()}
+                                </div>
+                              </div>
+                              <div className="reply-icons">
+                                <div className="reply-like-count">
+                                  {reply.likeCnt > 99 ? '99+' : reply.likeCnt}
+                                </div>
+                                {reply.isLike ? (
+                                  <CommentFullHeartIcon
+                                    className="reply-heart-button"
+                                    onClick={() => handleLikeToggle(reply.feedCommentId)}
+                                  />
+                                ) : (
+                                  <CommentHeartIcon
+                                    className="reply-heart-button"
+                                    onClick={() => handleLikeToggle(reply.feedCommentId)}
+                                  />
+                                )}
+                                <CommentMenuIcon
+                                  className={`reply-dots-button ${currentUserId === reply.writerId ? 'visible' : ''}`}
+                                  onClick={() => handleCommentMenuToggle(reply.feedCommentId)}
                                 />
+                                <div className="reply-menu">
+                                  {activeMenuId === reply.feedCommentId && (
+                                    <ReplyMenu
+                                      onEdit={() =>
+                                        handleReplyEditClick(reply.feedCommentId, reply.content)
+                                      }
+                                      onDelete={() => handleCommentDelete(reply.feedCommentId)}
+                                    />
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="reply-content">
+                              {editingCommentId === reply.feedCommentId ? (
+                                <div className="editing-reply">
+                                  <textarea
+                                    className="reply-edit-input"
+                                    value={editedContent}
+                                    onChange={e => {
+                                      setEditedContent(e.target.value);
+                                      adjustTextareaHeight(e.target);
+                                    }}
+                                  />
+                                  <button
+                                    className="reply-edit-submit-button"
+                                    onClick={() => handleCommentEditSubmit(reply.feedCommentId)}
+                                  >
+                                    수정
+                                  </button>
+                                  <button
+                                    className="reply-edit-exit-button"
+                                    onClick={handleCommentEditCancel}
+                                  >
+                                    취소
+                                  </button>
+                                </div>
                               ) : (
-                                <UserProfileImageDefault className="reply-profile-image-default" />
+                                <div style={{ whiteSpace: 'pre-wrap' }}>{reply.content}</div>
                               )}
                             </div>
-                            <div className="reply-user-info">
-                              <div className="reply-nickname">{reply.nickname}</div>
-                              <div className="comment-date">
-                                {new Date(reply.createdAt).toLocaleString()}
-                              </div>
-                              <div className="reply-content">{reply.content}</div>
-                            </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                        ))}
+                      </div>
+                    )}
                 </div>
               ))
             )}
           </div>
           <div className="comment-input-container">
-            <input
-              type="text"
+            <textarea
               placeholder="여기에 입력하세요."
               value={newComment}
-              onChange={handleNewCommentChange}
-              onKeyDown={handleNewCommentKeyDown}
+              onChange={e => {
+                handleNewCommentChange(e);
+                adjustTextareaHeight(e.target as HTMLTextAreaElement);
+              }}
             />
             <CommentWriteButton className="comment-write-button" onClick={handleAddComment} />
           </div>
