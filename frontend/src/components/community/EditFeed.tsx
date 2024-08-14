@@ -45,7 +45,9 @@ const EditFeed: React.FC<EditFeedProps> = ({
       isNew: false,
     }));
     setImages(initialImageObjects);
-  }, [initialImages]);
+    setContent(initialContent);
+    setTags(initialTags);
+  }, [initialImages, initialContent, initialTags]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
