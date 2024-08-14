@@ -11,7 +11,6 @@ interface AlarmProps {
   currentPage: number;
   totalPage: number;
   size: number;
-
 }
 const inistalState: AlarmProps = {
   alarmList: [],
@@ -23,14 +22,17 @@ const inistalState: AlarmProps = {
   size: 4,
 };
 
-interface APIstate{
-  page : number,
-  size : number,
+interface APIstate {
+  page: number;
+  size: number;
 }
-export const getAlarmList = createAsyncThunk('alarmSlice/getAlarmList', async ({page,size}:APIstate) => {
-  const response = await getAlarmAPI(page, size);
-  return response;
-});
+export const getAlarmList = createAsyncThunk(
+  'alarmSlice/getAlarmList',
+  async ({ page, size }: APIstate) => {
+    const response = await getAlarmAPI(page, size);
+    return response;
+  },
+);
 
 export const getUnReadAlarmCount = createAsyncThunk('alarmSlice/getUnReadAlarmCount', async () => {
   const response = await getUnReadAlarmCountAPI();
@@ -49,11 +51,10 @@ const alarmSlice = createSlice({
     },
     deleteAlarm: (state, action: PayloadAction<number>) => {
       const index = state.alarmList.findIndex(alarm => alarm.alarmId === action.payload);
-  
+
       if (index !== -1) {
         state.alarmList.splice(index, 1);
       }
-     
     },
     readAlarmUpdate: (state, action: PayloadAction<number>) => {
       state.alarmList = state.alarmList.map(alarm => {
@@ -87,6 +88,6 @@ const alarmSlice = createSlice({
   },
 });
 
-export const { incrementUnRead, decrementUnRead, deleteAlarm, readAlarmUpdate,setAlarmPage } =
+export const { incrementUnRead, decrementUnRead, deleteAlarm, readAlarmUpdate, setAlarmPage } =
   alarmSlice.actions;
 export default alarmSlice.reducer;

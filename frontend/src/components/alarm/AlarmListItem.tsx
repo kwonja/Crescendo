@@ -34,7 +34,7 @@ export default function AlarmListItem({ alarm }: AlarmItemProps) {
       navigate(`/dance/${relatedId}`);
     } else if (alarmChannelId === 4) {
       navigate(`/community/${relatedId}`);
-    }else if (alarmChannelId === 5) {
+    } else if (alarmChannelId === 5) {
       navigate(`/community/${relatedId}`);
     }
   };

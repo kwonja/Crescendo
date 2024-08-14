@@ -73,7 +73,13 @@ export default function Profile({ userId }: ProfileProps) {
         {isEditing ? (
           <>
             <div>닉네임</div>
-            <input type="text" className="nickname_edit" defaultValue={nickname} ref={nickeRef} maxLength={10}/>
+            <input
+              type="text"
+              className="nickname_edit"
+              defaultValue={nickname}
+              ref={nickeRef}
+              maxLength={10}
+            />
           </>
         ) : (
           <div className="nickname break-all">{nickname}</div>

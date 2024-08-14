@@ -51,7 +51,7 @@ export default function FriendList({ userId }: FrinedsProps) {
       {isSelected !== '' && (
         <div className="list">
           <SearchInput placeholder="친구를 검색하세요" className="mt-5 flex" />
-          {isSelected === 'follower' ? <Followerlist /> : <FollowingList />}
+          {isSelected === 'follower' ? <Followerlist userId={userId}/> : <FollowingList userId={userId}/>}
         </div>
       )}
     </>
