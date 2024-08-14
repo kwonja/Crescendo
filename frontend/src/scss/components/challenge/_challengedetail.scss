@@ -1,23 +1,20 @@
 .challengedetail {
   width: 100%;
-  height: 900px;
   max-width: 1300px;
   margin: 0 auto;
   display: flex;
   flex-direction: row;
   position: relative;
   .title {
-    width: 90%;
     display: flex;
     justify-content: center;
+    align-items: center;
     margin: 0 auto;
     font-size: 48px;
     font-style: normal;
     font-weight: 400;
     letter-spacing: 4.8px;
     color: #f66;
-    margin-top: 30px;
-    margin-bottom: 30px;
   }
   .left-box {
     width: calc(100% / 3) * 1;

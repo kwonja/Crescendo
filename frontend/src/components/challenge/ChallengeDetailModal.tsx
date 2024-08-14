@@ -3,6 +3,9 @@ import { ReactComponent as Close } from '../../assets/images/challenge/close.svg
 import { ReactComponent as AddImage } from '../../assets/images/img_add.svg';
 import { postChallengeJoinAPI } from '../../apis/challenge';
 import { isAxiosError } from 'axios';
+import { toast } from 'react-toastify';
+import { useAppDispatch } from '../../store/hooks/hook';
+import { initialChallengeDetailList } from '../../features/challenge/challengeDetailSlice';
 
 interface ModalProps {
   onClose: () => void;
@@ -11,29 +14,39 @@ interface ModalProps {
 export default function ChallengeDetailModal({ onClose, challengeId }: ModalProps) {
   const fileRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
+
 
   const CreateChallenge = async () => {
-    if (!fileRef.current?.files) {
-      alert('파일을 입력해주세요');
-      return;
-    }
 
+    if (!fileRef.current?.files || fileRef.current.files.length === 0) {
+      toast.warn("파일을 업로드 해주세요:)", {
+        position: "top-center"
+      });
+      return; // 파일이 없으면 함수 종료
+    }
+    
     const formData = new FormData();
     formData.append('video', fileRef.current.files[0]);
     try {
-      setIsLoading(true);
-      const response = await postChallengeJoinAPI(challengeId, formData);
-      console.log(response);
+      onClose();
+      toast.info("등록하는데 1분정도 소요됩니다", {
+        position: "top-right"
+      });
+      await postChallengeJoinAPI(challengeId, formData);
+      toast.info("등록이 완료되었습니다", {
+        position: "top-right"
+      });
     } catch (err: unknown) {
       if (isAxiosError(err)) {
-        // Axios 에러인 경우
-        alert(err.response?.data);
+  
+        toast.error( `${err.response?.data}`,{
+          position: "top-center"
+        })
       }
     } finally {
-      setIsLoading(false);
-      onClose();
+      dispatch(initialChallengeDetailList());
     }
   };
 
@@ -92,7 +105,6 @@ export default function ChallengeDetailModal({ onClose, challengeId }: ModalProp
           </div>
         </div>
       </div>
-      {isLoading ? <div className="loading"> 1분정도 소요됩니다:)</div> : null}
     </div>
   );
 }

@@ -6,7 +6,6 @@ import { getChallengeAPI } from '../../apis/challenge';
 export type PromiseStatus = 'loading' | 'success' | 'failed' | '';
 interface ChallengeProps {
   challengeLists: Challenge[];
-  unReadAlarmCount: number;
   status: PromiseStatus;
   error: string | undefined;
   currentPage: number;
@@ -16,7 +15,7 @@ interface ChallengeProps {
 }
 const inistalState: ChallengeProps = {
   challengeLists: [],
-  unReadAlarmCount: 0,
+
   status: '',
   error: '',
   currentPage: 0,
@@ -62,9 +61,14 @@ const challengeSlice = createSlice({
       state.totalPage = 1;
     },
     setChallengePage: state => {
-      console.log(state.currentPage);
       if (state.totalPage > state.currentPage) state.currentPage = state.currentPage + 1;
     },
+    deleteChallenge : (state, action : PayloadAction<number>)=>{
+      const index = state.challengeLists.findIndex(detail => detail.challengeId === action.payload);
+      if (index !== -1) {
+        state.challengeLists.splice(index, 1);
+      }
+    }
   },
   extraReducers(builder) {
     builder
@@ -74,6 +78,7 @@ const challengeSlice = createSlice({
       .addCase(getChallengeList.fulfilled, (state, action) => {
         state.status = 'success';
         state.challengeLists = [...state.challengeLists, ...action.payload.content];
+        console.log(state.challengeLists);
         state.totalPage = action.payload.totalPages;
       })
       .addCase(getChallengeList.rejected, (state, action) => {
@@ -83,6 +88,6 @@ const challengeSlice = createSlice({
   },
 });
 
-export const { setSelectedChallenge, setChallengePage, initialChallengeList } =
+export const { setSelectedChallenge, setChallengePage, initialChallengeList,deleteChallenge } =
   challengeSlice.actions;
 export default challengeSlice.reducer;
