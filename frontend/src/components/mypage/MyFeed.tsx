@@ -9,7 +9,7 @@ import { MyFeedInfo } from '../../interface/feed';
 import { useAppDispatch } from '../../store/hooks/hook';
 import { decrementLike, incrementLike } from '../../features/mypage/myFeedSlice';
 import UserProfile from '../common/UserProfile';
-import { IMAGE_BASE_URL } from '../../apis/core';
+import { getUserId, IMAGE_BASE_URL } from '../../apis/core';
 import Button from '../common/Button';
 import { toggleFeedLike } from '../../features/communityDetail/communityDetailSlice';
 import { Link } from 'react-router-dom';
@@ -37,6 +37,7 @@ export default function MyFeed({ feed, onEditAction, onDeleteAction }: FeedProps
     idolGroupName,
   } = feed;
   const dispatch = useAppDispatch();
+  const currentUserId = getUserId();
   const [imgIdx, setImgIdx] = useState<number>(0);
   const [animation, setAnimation] = useState<string>('');
   const [showActionMenu, setShowActionMenu] = useState<boolean>(false);
@@ -53,6 +54,7 @@ export default function MyFeed({ feed, onEditAction, onDeleteAction }: FeedProps
         <div className="community_name">
           <Link to={`/community/${idolGroupId}`}>{idolGroupName}</Link>
         </div>
+        { userId === currentUserId &&
         <div className="dots_box">
           <Dots className="dots hoverup" onClick={e => {setShowActionMenu(true); e.stopPropagation();}} />
           {showActionMenu && <ActionMenu 
@@ -62,6 +64,7 @@ export default function MyFeed({ feed, onEditAction, onDeleteAction }: FeedProps
           />
           }
         </div>
+        }
       </div>
       {feedImagePathList.length > 0 && (
         <div className="feed_image_box">
