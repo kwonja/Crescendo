@@ -9,7 +9,7 @@ interface CommonModalProps {
   closeOnOutsideClick?: boolean;
 }
 
-export default function CoommonModal({
+export default function CommonModal({
   title,
   msg,
   onClose,

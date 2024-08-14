@@ -9,3 +9,7 @@ export const getCommunityFeedListAPI = async (params: getFeedListParams) => {
 export const toggleFeedLikeAPI = async (feedId: number) => {
   await Authapi.post(`/api/v1/community/feed/feed-like/${feedId}`);
 };
+
+export const deleteFeedAPI = async (feedId: number) => {
+  await Authapi.delete(`/api/v1/community/feed/${feedId}`)
+}

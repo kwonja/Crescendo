@@ -28,11 +28,11 @@ export default function ActionMenu({ onClose, onEditAction, onDeleteAction }: Ac
       className="action-menu"
     >
       {onEditAction &&
-      <div className="action-menu-item" onClick={() => onEditAction()}>
+      <div className="action-menu-item" onClick={(e) => {onEditAction(); e.stopPropagation();}}>
         수정
       </div>
       }
-      <div className="action-menu-item" onClick={() => onDeleteAction()}>
+      <div className="action-menu-item" onClick={(e) => {onDeleteAction(); e.stopPropagation();}}>
         삭제
       </div>
     </div>

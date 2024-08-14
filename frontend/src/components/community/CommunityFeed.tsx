@@ -7,10 +7,14 @@ import { ReactComponent as RightBtn } from '../../assets/images/right.svg';
 import { ReactComponent as LeftBtn } from '../../assets/images/left.svg';
 import { FeedInfo } from '../../interface/feed';
 import { useAppDispatch } from '../../store/hooks/hook';
-import { toggleFeedLike } from '../../features/communityDetail/communityDetailSlice';
+import { resetState, toggleFeedLike } from '../../features/communityDetail/communityDetailSlice';
 import UserProfile from '../common/UserProfile';
-import { IMAGE_BASE_URL } from '../../apis/core';
+import { getUserId, IMAGE_BASE_URL } from '../../apis/core';
 import Button from '../common/Button';
+import ActionMenu from '../common/ActionMenu';
+import CommonModal from '../common/CommonModal';
+import { deleteFeedAPI } from '../../apis/feed';
+import EditFeed from './EditFeed';
 
 interface FeedProps {
   feed: FeedInfo;
@@ -34,10 +38,31 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
   const dispatch = useAppDispatch();
   const [imgIdx, setImgIdx] = useState<number>(0);
   const [animation, setAnimation] = useState<string>('');
+  const [showActionMenu, setShowActionMenu] = useState<boolean>(false);
+  const [showEditModal, setShowEditModal] = useState<boolean>(false);
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const currentUserId = getUserId();
 
   const handleClick = () => {
     onClick();
   };
+
+  const onDelete = async () => {
+      try {
+        await deleteFeedAPI(feedId);
+        alert('성공적으로 삭제했습니다.');
+        dispatch(resetState())
+      } catch (error: any) {
+        if (error.response && error.response.data) {
+          alert(error.response.data);
+          return;
+        } else {
+          alert('삭제에 실패했습니다.');
+        }
+      } finally {
+        setShowDeleteModal(false);
+      }
+  }
 
   return (
     <div className="feed" onClick={handleClick}>
@@ -48,7 +73,21 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
           date={new Date(createdAt).toLocaleString()}
           userProfilePath={profileImagePath ? IMAGE_BASE_URL + profileImagePath : null}
         />
-        <Dots className="dots hoverup" onClick={e => e.stopPropagation()} />
+        { userId === currentUserId &&
+        <div className="dots_box">
+          <Dots className="dots hoverup" onClick={e => {
+            e.stopPropagation();
+            setShowActionMenu(true);
+          }} />
+          {showActionMenu && (
+              <ActionMenu
+                onClose={() => setShowActionMenu(false)}
+                onEditAction={()=> setShowEditModal(true)}
+                onDeleteAction={()=> setShowDeleteModal(true)}
+              />
+            )}
+        </div>
+        }
       </div>
       {feedImagePathList.length > 0 && (
         <div className="feed_image_box">
@@ -144,8 +183,45 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
       <div className="feed_comment_box">
         {' '}
         {commentCnt}
-        <Comment />
+        <Comment className='hoverup' />
       </div>
+      {//수정모달
+        showEditModal && (
+          <div className="modal-overlay" style={{zIndex:1100}} onClick = {(e)=>e.stopPropagation()}>
+            <div className="feed-edit-modal" >
+              <div className="modal-content">
+                <div className="modal-header">
+                  <div className="modal-header-title">
+                    <h2>글 수정</h2>
+                  </div>
+                  <span className="close" onClick={()=>setShowEditModal(false)}>
+                    &times;
+                  </span>
+                </div>
+                <div className="modal-body">
+                  <EditFeed
+                    onClose={()=>setShowEditModal(false)}
+                    feedId={feedId}
+                    initialContent={content}
+                    initialTags={tagList}
+                    initialImages={feedImagePathList}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      {//삭제모달
+      showDeleteModal && (
+        <CommonModal
+          title="삭제 확인"
+          msg="정말로 삭제하시겠습니까?"
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={onDelete}
+        />
+      )}
     </div>
   );
 }

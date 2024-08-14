@@ -12,7 +12,7 @@ import {
 } from '../../features/favorite/favoriteSlice';
 import ActionMenu from '../common/ActionMenu';
 import { deleteFavoriteRankAPI } from '../../apis/favorite';
-import CoommonModal from '../common/CommonModal';
+import CommonModal from '../common/CommonModal';
 
 export default function FavoriteRankList() {
   const { favoriteRankList, status, hasMore } = useAppSelector(state => state.favorite);
@@ -118,7 +118,7 @@ export default function FavoriteRankList() {
       
       {//삭제모달
       showDeleteModal && (
-        <CoommonModal
+        <CommonModal
           title="삭제 확인"
           msg="정말로 삭제하시겠습니까?"
           onClose={() => setShowDeleteModal(null)}
