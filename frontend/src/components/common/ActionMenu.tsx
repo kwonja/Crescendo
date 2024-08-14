@@ -2,10 +2,11 @@ import React, { useEffect, useRef } from 'react';
 
 interface ActionMenuProps {
   onClose: () => void;
-  onDeleteAction: ()=>void; 
+  onEditAction?: ()=> void;
+  onDeleteAction: ()=> void; 
 }
 
-export default function ActionMenu({ onClose, onDeleteAction }: ActionMenuProps) {
+export default function ActionMenu({ onClose, onEditAction, onDeleteAction }: ActionMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -26,6 +27,11 @@ export default function ActionMenu({ onClose, onDeleteAction }: ActionMenuProps)
       ref={menuRef}
       className="action-menu"
     >
+      {onEditAction &&
+      <div className="action-menu-item" onClick={() => onEditAction()}>
+        수정
+      </div>
+      }
       <div className="action-menu-item" onClick={() => onDeleteAction()}>
         삭제
       </div>
