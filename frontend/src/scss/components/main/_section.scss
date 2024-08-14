@@ -55,11 +55,23 @@
     height: 100%;
     position: relative;
   }
-  &-phone {
+  &-1 {
     position: absolute;
-    bottom: 0;
-    right: 0;
-    z-index: 5;
+    top: 350px;
+    right: 500px;
+    z-index: 4;
+  }
+  &-2 {
+    position: absolute;
+    top: 20px;
+    right: 250px;
+    z-index: 2;
+  }
+  &-3 {
+    position: absolute;
+    top: 450px;
+    right: 50px;
+    z-index: 3;
   }
   &-title_box {
     font-size: 60px;
@@ -89,14 +101,14 @@
 
   &-img1 {
     position: absolute;
-    top: 50%;
+    top: 25%;
     right: 15%;
     z-index: 5;
   }
   &-img2 {
     position: absolute;
-    top: 15%;
-    right: 25%;
+    top: 5%;
+    right: 30%;
   }
   &-title_box {
     font-size: 60px;
