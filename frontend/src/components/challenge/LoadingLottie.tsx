@@ -4,11 +4,11 @@ import snow from '../../assets/images/challenge/loading.json'; // Lottie JSON íŒ
 const DefaultLottie = () => {
   const defaultOptions = {
     loop: true,
-    autoplay: true, 
+    autoplay: true,
     animationData: snow,
     rendererSettings: {
-      preserveAspectRatio: 'xMidYMid slice'
-    }
+      preserveAspectRatio: 'xMidYMid slice',
+    },
   };
 
   return <Lottie options={defaultOptions} height={400} width={400} />;

@@ -24,7 +24,7 @@ export default function FriendList({ userId }: FrinedsProps) {
     if (isSelected === 'follower') {
       dispatch(getUserFollower(userId));
     } else {
-     dispatch(getUserFollowing(userId));
+      dispatch(getUserFollowing(userId));
     }
   }, [dispatch, isSelected, userId]);
 

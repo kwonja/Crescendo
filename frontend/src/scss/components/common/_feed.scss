@@ -9,7 +9,7 @@
   position: relative;
 
   &list {
-    margin-top:20px;
+    margin-top: 20px;
   }
 
   .upper {
@@ -97,7 +97,7 @@
         z-index: 0;
 
         &.slideLeft {
-          animation: slideLeftPrev 1s
+          animation: slideLeftPrev 1s;
         }
       }
 
@@ -113,7 +113,7 @@
         z-index: 0;
 
         &.slideRight {
-          animation: slideRightNext 1s
+          animation: slideRightNext 1s;
         }
       }
 
@@ -129,11 +129,11 @@
         z-index: 1;
 
         &.slideRight {
-          animation: slideRightMain 1s
+          animation: slideRightMain 1s;
         }
 
         &.slideLeft {
-          animation: slideLeftMain 1s
+          animation: slideLeftMain 1s;
         }
       }
 

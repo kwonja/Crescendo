@@ -5,7 +5,7 @@ import { useAppSelector } from '../../store/hooks/hook';
 import { IMAGE_BASE_URL } from '../../apis/core';
 
 export default function VideoPlayerDetail() {
-   const { selectedChallengeDetail } = useAppSelector(state => state.challengeDetail);
+  const { selectedChallengeDetail } = useAppSelector(state => state.challengeDetail);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -97,7 +97,9 @@ export default function VideoPlayerDetail() {
               <Play className="w-20 h-20 fade-out" />
             )}
           </div>
-          <div className='absolute text-black top-2 right-10 text-3xl'>{Math.floor(selectedChallengeDetail.score)} 점</div>
+          <div className="absolute text-black top-2 right-10 text-3xl">
+            {Math.floor(selectedChallengeDetail.score)} 점
+          </div>
         </>
       )}
     </div>

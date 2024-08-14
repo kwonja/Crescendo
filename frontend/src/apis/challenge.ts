@@ -33,13 +33,12 @@ export const getChallengeOriginAPI = async (challengeId: number) => {
   return response.data;
 };
 
-
 export const getChallengeLikeAPI = async (challengeId: number) => {
   const response = await Authapi.post(`/api/v1/challenge/join/${challengeId}`);
   return response.data;
-}
+};
 
-export const postChallengeJoinAPI = async (challengeId: number, formData : FormData) => {
-  const response = await Authapi.postForm(`/api/v1/challenge/${challengeId}/join`,formData);
+export const postChallengeJoinAPI = async (challengeId: number, formData: FormData) => {
+  const response = await Authapi.postForm(`/api/v1/challenge/${challengeId}/join`, formData);
   return response;
-}
+};

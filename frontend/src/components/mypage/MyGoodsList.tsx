@@ -40,10 +40,8 @@ export default function MyGoodsList({ userId }: MyGoodsListProps) {
   return (
     <div className="gallerylist">
       {status === 'loading' || myGoodsList.length > 0 ? (
-        myGoodsList.map((goods) => (
-          <MyGoods key={goods.goodsId} goods={goods} />
-        ))
-      ) :  (
+        myGoodsList.map(goods => <MyGoods key={goods.goodsId} goods={goods} />)
+      ) : (
         <div className="text-center text-xl w-full">작성된 굿즈가 없습니다.</div>
       )}
       {hasMore && <div ref={loadMoreElementRef}>Load More..</div>}

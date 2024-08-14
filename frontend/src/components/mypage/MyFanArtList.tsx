@@ -9,7 +9,7 @@ interface MyFanArtListProps {
 }
 
 export default function MyFanartList({ userId }: MyFanArtListProps) {
-  const { myFanArtList, hasMore, status, } = useAppSelector(state => state.myFeed);
+  const { myFanArtList, hasMore, status } = useAppSelector(state => state.myFeed);
   const dispatch = useAppDispatch();
   const observer = useRef<IntersectionObserver | null>(null);
 
@@ -40,13 +40,10 @@ export default function MyFanartList({ userId }: MyFanArtListProps) {
   return (
     <div className="gallerylist">
       {status === 'loading' || myFanArtList.length > 0 ? (
-        myFanArtList.map((fanArt) => (
-          <MyFanart key={fanArt.fanArtId} fanArt={fanArt} />
-        ))
+        myFanArtList.map(fanArt => <MyFanart key={fanArt.fanArtId} fanArt={fanArt} />)
       ) : (
         <div className="text-center text-xl w-full">작성한 팬아트가 없습니다.</div>
-      )
-      }
+      )}
       {hasMore && <div ref={loadMoreElementRef}>Load More..</div>}
     </div>
   );

@@ -10,7 +10,7 @@ interface ChallengeProps {
   status: PromiseStatus;
   error: string | undefined;
   currentPage: number;
-  totalPage : number;
+  totalPage: number;
   size: number;
   selectedChallenge: Challenge;
 }
@@ -20,7 +20,7 @@ const inistalState: ChallengeProps = {
   status: '',
   error: '',
   currentPage: 0,
-  totalPage :1,
+  totalPage: 1,
   size: 10,
   selectedChallenge: {
     challengeId: 0,
@@ -83,5 +83,6 @@ const challengeSlice = createSlice({
   },
 });
 
-export const { setSelectedChallenge,setChallengePage,initialChallengeList } = challengeSlice.actions;
+export const { setSelectedChallenge, setChallengePage, initialChallengeList } =
+  challengeSlice.actions;
 export default challengeSlice.reducer;

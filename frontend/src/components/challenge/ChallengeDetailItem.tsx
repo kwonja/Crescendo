@@ -5,14 +5,18 @@ import { ReactComponent as Play } from '../../assets/images/challenge/playbtn.sv
 import { ChallengeDetails } from '../../interface/challenge';
 import { IMAGE_BASE_URL } from '../../apis/core';
 import { useAppDispatch } from '../../store/hooks/hook';
-import { decrementChallengeLike, incrementChallengeLike, setSelectedChallengeDetail } from '../../features/challenge/challengeDetailSlice';
+import {
+  decrementChallengeLike,
+  incrementChallengeLike,
+  setSelectedChallengeDetail,
+} from '../../features/challenge/challengeDetailSlice';
 import { getChallengeLikeAPI } from '../../apis/challenge';
 
 interface ChallengeProps {
   Challenge: ChallengeDetails;
 }
 export default function ChallengeDetailItem({ Challenge }: ChallengeProps) {
-  const {isLike,challengeVideoPath,likeCnt,nickname,challengeJoinId} =Challenge;
+  const { isLike, challengeVideoPath, likeCnt, nickname, challengeJoinId } = Challenge;
   const dispath = useAppDispatch();
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -20,25 +24,27 @@ export default function ChallengeDetailItem({ Challenge }: ChallengeProps) {
     dispath(setSelectedChallengeDetail(Challenge));
   };
 
-  const handleNotLike = async()=>{
+  const handleNotLike = async () => {
     await getChallengeLikeAPI(challengeJoinId);
     dispath(decrementChallengeLike(challengeJoinId));
-  }
-  const handleLike = async()=>{
+  };
+  const handleLike = async () => {
     await getChallengeLikeAPI(challengeJoinId);
     dispath(incrementChallengeLike(challengeJoinId));
-  }
+  };
 
   return (
     <div className="challengedetailitem">
       <div className="item-box">
-        <video
-          src={`${IMAGE_BASE_URL}${challengeVideoPath}`}
-          ref={videoRef}
-        />
+        <video src={`${IMAGE_BASE_URL}${challengeVideoPath}`} ref={videoRef} />
         <div className="info">
-          <div className='flex flex-row gap-2 mx-3 my-3 text-white'>
-          {isLike ? <FullHeart className='w-6 h-6' onClick={handleNotLike}/> : <Heart className='w-6 h-6' onClick={handleLike}/>} {likeCnt}
+          <div className="flex flex-row gap-2 mx-3 my-3 text-white">
+            {isLike ? (
+              <FullHeart className="w-6 h-6" onClick={handleNotLike} />
+            ) : (
+              <Heart className="w-6 h-6" onClick={handleLike} />
+            )}{' '}
+            {likeCnt}
           </div>
           <div className="challengeitem_title">{nickname}</div>
         </div>

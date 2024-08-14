@@ -103,7 +103,7 @@ export default function MyPage() {
 
         {isSelected === 'goods' && (
           <div className="mypage_goods">
-            <MyGoodsList userId={numericId} /> 
+            <MyGoodsList userId={numericId} />
           </div>
         )}
       </div>

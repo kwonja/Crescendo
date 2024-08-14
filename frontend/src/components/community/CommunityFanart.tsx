@@ -14,32 +14,31 @@ interface FanArtProps {
   onClick: () => void;
 }
 
-export default function CommunityFanart({fanArt}:FanArtProps) {
+export default function CommunityFanart({ fanArt }: FanArtProps) {
   const {
-          fanArtId,
-          userId,
-          profileImagePath,
-          nickname,
-          likeCnt,
-          fanArtImagePathList,
-          commentCnt,
-          lastModified,
-          title,
-          isLike
-        } = fanArt;
-  
+    fanArtId,
+    userId,
+    profileImagePath,
+    nickname,
+    likeCnt,
+    fanArtImagePathList,
+    commentCnt,
+    lastModified,
+    title,
+    isLike,
+  } = fanArt;
+
   const dispatch = useAppDispatch();
-      
 
   return (
     <div className="gallery">
-      <img className='gallery-img' src={IMAGE_BASE_URL+fanArtImagePathList[0]} alt="팬아트그림" />
+      <img className="gallery-img" src={IMAGE_BASE_URL + fanArtImagePathList[0]} alt="팬아트그림" />
 
       <div className="title_box">
         <div className="type">팬아트</div>
         <div className="title">{title}</div>
         <div className="dots_box">
-          <Dots className='dots hoverup'/>
+          <Dots className="dots hoverup" />
         </div>
       </div>
       <div className="gallery_info">
@@ -53,12 +52,21 @@ export default function CommunityFanart({fanArt}:FanArtProps) {
         </div>
         <div className="gallery_comment_box">
           <Comment className="gallery_comment" />
-          <div className='gallery_comment_cnt'>{commentCnt}</div>
+          <div className="gallery_comment_cnt">{commentCnt}</div>
         </div>
-        <div className = "gallery_heart_box">
-          {isLike?<FullHeart className="gallery_heart hoverup" onClick={()=>dispatch(toggleFanArtLike(fanArtId))} />
-                  :<Heart className="gallery_heart hoverup" onClick={()=>dispatch(toggleFanArtLike(fanArtId))} />}
-          <div className='gallery_heart_cnt'>{likeCnt}</div>
+        <div className="gallery_heart_box">
+          {isLike ? (
+            <FullHeart
+              className="gallery_heart hoverup"
+              onClick={() => dispatch(toggleFanArtLike(fanArtId))}
+            />
+          ) : (
+            <Heart
+              className="gallery_heart hoverup"
+              onClick={() => dispatch(toggleFanArtLike(fanArtId))}
+            />
+          )}
+          <div className="gallery_heart_cnt">{likeCnt}</div>
         </div>
       </div>
     </div>

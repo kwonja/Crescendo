@@ -41,7 +41,7 @@ export default function CommunityFeedList({ idolGroupId, onFeedClick }: Communit
   return (
     <div className="feedlist">
       {status === 'loading' || feedList.length > 0 ? (
-        feedList.map((feed) => (
+        feedList.map(feed => (
           <CommunityFeed key={feed.feedId} feed={feed} onClick={() => onFeedClick(feed.feedId)} />
         ))
       ) : keyword ? (

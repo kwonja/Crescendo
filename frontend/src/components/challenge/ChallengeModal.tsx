@@ -13,7 +13,7 @@ export default function ChallengeModal({ onClose }: ModalProps) {
   const fileRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
-  const [isLoading,setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const CreateChallenge = async () => {
     if (!titleRef.current?.value || !timeRef.current?.value || !fileRef.current?.files) {
       alert('전부 입력해주세요');
@@ -24,20 +24,19 @@ export default function ChallengeModal({ onClose }: ModalProps) {
     formData.append('title', titleRef.current.value);
     formData.append('endAt', timeRef.current.value);
     formData.append('video', fileRef.current.files[0]);
-    try{
+    try {
       setIsLoading(true);
-          const response = await postChallengeAPI(formData);
-          console.log(response);
-      }catch(err : unknown){
-          if (isAxiosError(err)) {
-              // Axios 에러인 경우
-              alert(err.response?.data);
-            }
-      }finally{
-          setIsLoading(false);
-          onClose();
+      const response = await postChallengeAPI(formData);
+      console.log(response);
+    } catch (err: unknown) {
+      if (isAxiosError(err)) {
+        // Axios 에러인 경우
+        alert(err.response?.data);
       }
-
+    } finally {
+      setIsLoading(false);
+      onClose();
+    }
   };
 
   const handleFileChange = () => {
@@ -108,7 +107,7 @@ export default function ChallengeModal({ onClose }: ModalProps) {
           </div>
         </div>
       </div>
-      {isLoading ? <div className='loading'> 1분정도 소요됩니다:)</div> : null}
+      {isLoading ? <div className="loading"> 1분정도 소요됩니다:)</div> : null}
     </div>
   );
 }

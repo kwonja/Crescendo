@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import {  getChallengeDetailsAPI } from '../../apis/challenge';
+import { getChallengeDetailsAPI } from '../../apis/challenge';
 import { ChallengeDetails } from '../../interface/challenge';
 
 export type PromiseStatus = 'loading' | 'success' | 'failed' | '';
@@ -30,17 +30,17 @@ const inistalState: ChallengeDetailProps = {
 };
 
 interface APIstate {
-  page: number,
-  size: number,
-  nickname: string,
-  sortBy: string,
-  challengeId: number,
+  page: number;
+  size: number;
+  nickname: string;
+  sortBy: string;
+  challengeId: number;
 }
 
 export const getChallengeDetails = createAsyncThunk(
   'challengeDetailSlice/getChallengeList',
-  async ({ page, size, nickname, sortBy,challengeId }: APIstate) => {
-    const response = await getChallengeDetailsAPI(page, size, nickname, sortBy,challengeId);
+  async ({ page, size, nickname, sortBy, challengeId }: APIstate) => {
+    const response = await getChallengeDetailsAPI(page, size, nickname, sortBy, challengeId);
     return response;
   },
 );
@@ -52,20 +52,24 @@ const challengeDetailSlice = createSlice({
     setSelectedChallengeDetail: (state, action: PayloadAction<ChallengeDetails>) => {
       state.selectedChallengeDetail = action.payload;
     },
-    decrementChallengeLike : (state, action : PayloadAction<number>)=>{
-      const challengeDetail = state.challengeDetailLists.find(detail => detail.challengeJoinId === action.payload);
+    decrementChallengeLike: (state, action: PayloadAction<number>) => {
+      const challengeDetail = state.challengeDetailLists.find(
+        detail => detail.challengeJoinId === action.payload,
+      );
       if (challengeDetail) {
         challengeDetail.isLike = false;
         challengeDetail.likeCnt--;
       }
     },
-    incrementChallengeLike : (state, action : PayloadAction<number>)=>{
-      const challengeDetail = state.challengeDetailLists.find(detail => detail.challengeJoinId === action.payload);
+    incrementChallengeLike: (state, action: PayloadAction<number>) => {
+      const challengeDetail = state.challengeDetailLists.find(
+        detail => detail.challengeJoinId === action.payload,
+      );
       if (challengeDetail) {
         challengeDetail.isLike = true;
         challengeDetail.likeCnt++;
       }
-    }
+    },
   },
   extraReducers(builder) {
     builder
@@ -83,5 +87,6 @@ const challengeDetailSlice = createSlice({
   },
 });
 
-export const { setSelectedChallengeDetail,decrementChallengeLike ,incrementChallengeLike} = challengeDetailSlice.actions;
+export const { setSelectedChallengeDetail, decrementChallengeLike, incrementChallengeLike } =
+  challengeDetailSlice.actions;
 export default challengeDetailSlice.reducer;

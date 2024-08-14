@@ -29,7 +29,7 @@ export const store = configureStore({
     comment: commentReducer,
     profile: profileReducer,
     challenge: challengeReducer,
-    challengeDetail : challengeDetailReducer,
+    challengeDetail: challengeDetailReducer,
   },
 });
 

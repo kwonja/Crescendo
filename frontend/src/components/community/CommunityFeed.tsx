@@ -33,7 +33,7 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
   } = feed;
   const dispatch = useAppDispatch();
   const [imgIdx, setImgIdx] = useState<number>(0);
-  const [animation, setAnimation] = useState<string>("");
+  const [animation, setAnimation] = useState<string>('');
 
   const handleClick = () => {
     onClick();
@@ -53,16 +53,16 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
       {feedImagePathList.length > 0 && (
         <div className="feed_image_box">
           <div className="slider">
-            <div onClick={(e) => e.stopPropagation()}>
-            <Button
-              className={`square empty ${imgIdx <= 0 ? 'hidden ' : ''}`}
-              onClick={() => {
-                setAnimation('slideRight');
-                setImgIdx(prev => prev - 1);
-              }}
-            >
-              <LeftBtn />
-            </Button>
+            <div onClick={e => e.stopPropagation()}>
+              <Button
+                className={`square empty ${imgIdx <= 0 ? 'hidden ' : ''}`}
+                onClick={() => {
+                  setAnimation('slideRight');
+                  setImgIdx(prev => prev - 1);
+                }}
+              >
+                <LeftBtn />
+              </Button>
             </div>
             <div className="main_img_container">
               {imgIdx > 0 && (
@@ -91,16 +91,16 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
                 {imgIdx + 1}/{feedImagePathList.length}
               </div>
             </div>
-            <div onClick={(e) => e.stopPropagation()}>
-            <Button
-              className={`square empty ${imgIdx >= feedImagePathList.length - 1 ? 'hidden ' : ''}`}
-              onClick={() => {
-                setAnimation('slideLeft');
-                setImgIdx(prev => prev + 1);
-              }}
-            >
-              <RightBtn />
-            </Button>
+            <div onClick={e => e.stopPropagation()}>
+              <Button
+                className={`square empty ${imgIdx >= feedImagePathList.length - 1 ? 'hidden ' : ''}`}
+                onClick={() => {
+                  setAnimation('slideLeft');
+                  setImgIdx(prev => prev + 1);
+                }}
+              >
+                <RightBtn />
+              </Button>
             </div>
           </div>
           <div className="pagination-dots" onClick={e => e.stopPropagation()}>
@@ -109,8 +109,8 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
                 key={idx}
                 className={`pagination-dot ${idx === imgIdx ? 'active' : ''}`}
                 onClick={() => {
-                  setAnimation("");
-                  setImgIdx(idx)
+                  setAnimation('');
+                  setImgIdx(idx);
                 }}
               ></div>
             ))}
@@ -141,7 +141,7 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
           />
         )}
       </div>
-      <div className="feed_comment_box" >
+      <div className="feed_comment_box">
         {' '}
         {commentCnt}
         <Comment />

@@ -11,11 +11,15 @@ export const getMyFeedAPI = async (userId: number, page: number, size: number) =
   return response.data;
 };
 export const getMyFanArtAPI = async (userId: number, page: number, size: number) => {
-  const response = await api.get(`/api/v1/community/fan-art/user/${userId}?page=${page}&size=${size}`);
+  const response = await api.get(
+    `/api/v1/community/fan-art/user/${userId}?page=${page}&size=${size}`,
+  );
   return response.data;
 };
 export const getMyGoodsAPI = async (userId: number, page: number, size: number) => {
-  const response = await api.get(`/api/v1/community/goods/user/${userId}?page=${page}&size=${size}`);
+  const response = await api.get(
+    `/api/v1/community/goods/user/${userId}?page=${page}&size=${size}`,
+  );
   return response.data;
 };
 

@@ -31,12 +31,11 @@ export default function MyFeed({ feed }: FeedProps) {
     tagList,
     isLike,
     idolGroupId,
-    idolGroupName
+    idolGroupName,
   } = feed;
   const dispatch = useAppDispatch();
   const [imgIdx, setImgIdx] = useState<number>(0);
-  const [animation, setAnimation] = useState<string>("");
-
+  const [animation, setAnimation] = useState<string>('');
 
   return (
     <div className="feed">
@@ -47,22 +46,24 @@ export default function MyFeed({ feed }: FeedProps) {
           date={new Date(createdAt).toLocaleString()}
           userProfilePath={profileImagePath ? IMAGE_BASE_URL + profileImagePath : null}
         />
-        <div className='community_name'><Link to={`/community/${idolGroupId}`}>{idolGroupName}</Link></div>
+        <div className="community_name">
+          <Link to={`/community/${idolGroupId}`}>{idolGroupName}</Link>
+        </div>
         <Dots className="dots hoverup" onClick={e => e.stopPropagation()} />
       </div>
       {feedImagePathList.length > 0 && (
         <div className="feed_image_box">
           <div className="slider">
-            <div onClick={(e) => e.stopPropagation()}>
-            <Button
-              className={`square empty ${imgIdx <= 0 ? 'hidden ' : ''}`}
-              onClick={() => {
-                setAnimation('slideRight');
-                setImgIdx(prev => prev - 1);
-              }}
-            >
-              <LeftBtn />
-            </Button>
+            <div onClick={e => e.stopPropagation()}>
+              <Button
+                className={`square empty ${imgIdx <= 0 ? 'hidden ' : ''}`}
+                onClick={() => {
+                  setAnimation('slideRight');
+                  setImgIdx(prev => prev - 1);
+                }}
+              >
+                <LeftBtn />
+              </Button>
             </div>
             <div className="main_img_container">
               {imgIdx > 0 && (
@@ -91,16 +92,16 @@ export default function MyFeed({ feed }: FeedProps) {
                 {imgIdx + 1}/{feedImagePathList.length}
               </div>
             </div>
-            <div onClick={(e) => e.stopPropagation()}>
-            <Button
-              className={`square empty ${imgIdx >= feedImagePathList.length - 1 ? 'hidden ' : ''}`}
-              onClick={() => {
-                setAnimation('slideLeft');
-                setImgIdx(prev => prev + 1);
-              }}
-            >
-              <RightBtn />
-            </Button>
+            <div onClick={e => e.stopPropagation()}>
+              <Button
+                className={`square empty ${imgIdx >= feedImagePathList.length - 1 ? 'hidden ' : ''}`}
+                onClick={() => {
+                  setAnimation('slideLeft');
+                  setImgIdx(prev => prev + 1);
+                }}
+              >
+                <RightBtn />
+              </Button>
             </div>
           </div>
           <div className="pagination-dots" onClick={e => e.stopPropagation()}>
@@ -109,8 +110,8 @@ export default function MyFeed({ feed }: FeedProps) {
                 key={idx}
                 className={`pagination-dot ${idx === imgIdx ? 'active' : ''}`}
                 onClick={() => {
-                  setAnimation("");
-                  setImgIdx(idx)
+                  setAnimation('');
+                  setImgIdx(idx);
                 }}
               ></div>
             ))}
@@ -130,7 +131,7 @@ export default function MyFeed({ feed }: FeedProps) {
             className="hoverup"
             onClick={() => {
               dispatch(toggleFeedLike(feedId));
-              dispatch(incrementLike({id:feedId, type:'feed'}));
+              dispatch(incrementLike({ id: feedId, type: 'feed' }));
             }}
           />
         ) : (
@@ -138,12 +139,12 @@ export default function MyFeed({ feed }: FeedProps) {
             className="hoverup"
             onClick={() => {
               dispatch(toggleFeedLike(feedId));
-              dispatch(decrementLike({id:feedId, type:'feed'}));
+              dispatch(decrementLike({ id: feedId, type: 'feed' }));
             }}
           />
         )}
       </div>
-      <div className="feed_comment_box" >
+      <div className="feed_comment_box">
         {' '}
         {commentCnt}
         <Comment />
