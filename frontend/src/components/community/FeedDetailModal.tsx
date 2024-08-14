@@ -130,6 +130,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
     [feedId],
   );
 
+  // 댓글 작성 제한
   const handleNewCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
     const lines = value.split('\n');
@@ -144,6 +145,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
     }
   };
 
+  // 답글 작성 제한
   const handleNewReplyChange = (e: React.ChangeEvent<HTMLTextAreaElement>, commentId: number) => {
     const value = e.target.value;
     const lines = value.split('\n');
