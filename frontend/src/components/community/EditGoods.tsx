@@ -4,9 +4,9 @@ import { useParams } from 'react-router-dom';
 import { ReactComponent as AddImage } from '../../assets/images/img_add.svg';
 import { ReactComponent as RemoveIcon } from '../../assets/images/remove_icon.svg';
 import { useAppDispatch } from '../../store/hooks/hook';
-import { getFeedDetailAPI } from '../../apis/feed';
-import { updateFeed } from '../../features/communityDetail/communityDetailSlice';
-import { updateMyFeed } from '../../features/mypage/myFeedSlice';
+import { getGoodsDetailAPI } from '../../apis/goods';
+import { updateGoods } from '../../features/communityDetail/communityDetailSlice';
+// import { updateMyFeed } from '../../features/mypage/myFeedSlice';
 import '../../scss/components/community/_postfeed.scss';
 
 type ImageWithId = {
@@ -16,16 +16,16 @@ type ImageWithId = {
   isNew: boolean;
 };
 
-type EditFeedProps = {
+type EditGoodsProps = {
   onClose: () => void;
-  feedId: number;
+  goodsId: number;
   initialContent: string;
   initialImages: string[];
 };
 
-const EditFeed: React.FC<EditFeedProps> = ({
+const EditGoods: React.FC<EditGoodsProps> = ({
   onClose,
-  feedId,
+  goodsId,
   initialContent,
   initialImages,
 }) => {
@@ -123,7 +123,7 @@ const EditFeed: React.FC<EditFeedProps> = ({
     }
 
     try {
-      const response = await Authapi.put(`/api/v1/community/feed/${feedId}`, formData, {
+      const response = await Authapi.put(`/api/v1/community/goods/${goodsId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -158,9 +158,9 @@ const EditFeed: React.FC<EditFeedProps> = ({
 
   const updateFeedDetail = async () => {
     try {
-      const response = await getFeedDetailAPI(feedId);
-      dispatch(updateFeed({feedId, feed:response}));
-      dispatch(updateMyFeed({feedId, feed:response}));
+      const response = await getGoodsDetailAPI(goodsId);
+      dispatch(updateGoods({goodsId, goods:response}));
+      // dispatch(updateMyFeed({goodsId, feed:response}));
     } catch (error) {
       console.error('Error fetching feed details:', error);
     }
@@ -232,4 +232,4 @@ const EditFeed: React.FC<EditFeedProps> = ({
   );
 };
 
-export default EditFeed;
+export default EditGoods;

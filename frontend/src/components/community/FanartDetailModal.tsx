@@ -30,7 +30,7 @@ type FanArtDetailResponse = {
   createdAt: string;
   updatedAt?: string;
   likeCnt: number;
-  likeUsed?: boolean;
+  isLike?: boolean;
   fanArtImagePathList: string[];
   content: string;
   title: string;
@@ -87,8 +87,9 @@ const FanartDetailModal: React.FC<FanArtDetailModalProps> = ({ show, onClose, fa
 
   const loadfanArtDetail = useCallback(async () => {
     try {
+      console.log(fanArtId);
       const response = await Authapi.get(`/api/v1/community/fan-art/${fanArtId}`);
-      
+      console.log(response);
       setFanArtDetail(response.data);
     } catch (error) {
       console.error('Error fetching feed details:', error);
@@ -255,8 +256,8 @@ const FanartDetailModal: React.FC<FanArtDetailModalProps> = ({ show, onClose, fa
         prevDetail
           ? {
               ...prevDetail,
-              likeUsed: !prevDetail.likeUsed,
-              likeCnt: prevDetail.likeUsed ? prevDetail.likeCnt - 1 : prevDetail.likeCnt + 1,
+              isLike: !prevDetail.isLike,
+              likeCnt: prevDetail.isLike ? prevDetail.likeCnt - 1 : prevDetail.likeCnt + 1,
             }
           : prevDetail,
       );
@@ -520,7 +521,7 @@ const FanartDetailModal: React.FC<FanArtDetailModalProps> = ({ show, onClose, fa
               <div className="feed-like-count">
                 {fanArtDetail.likeCnt > 99 ? '99+' : fanArtDetail.likeCnt}
               </div>
-              {fanArtDetail.likeUsed ? (
+              {fanArtDetail.isLike ? (
                 <FeedFullHeartIcon className="feed-heart-button" onClick={handleFeedLikeToggle} />
               ) : (
                 <FeedHeartIcon className="feed-heart-button" onClick={handleFeedLikeToggle} />
@@ -791,7 +792,7 @@ const FanartDetailModal: React.FC<FanArtDetailModalProps> = ({ show, onClose, fa
             <div className="modal-body">
               <EditFanart
                 onClose={handleEditModalClose}
-                feedId={fanArtId}
+                fanArtId={fanArtId}
                 initialTitle={fanArtDetail.title}
                 initialContent={fanArtDetail.content}
                 initialImages={fanArtDetail.fanArtImagePathList}
