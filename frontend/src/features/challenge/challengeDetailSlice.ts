@@ -85,6 +85,7 @@ const challengeDetailSlice = createSlice({
         detail => detail.challengeJoinId !== action.payload,
       );
     },
+    
   },
   extraReducers(builder) {
     builder
