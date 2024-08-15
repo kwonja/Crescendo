@@ -1,6 +1,7 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { ReactComponent as FullStar } from '../assets/images/CommunityDetail/fullstar.svg';
 import { ReactComponent as Star } from '../assets/images/CommunityDetail/star.svg';
+import { ReactComponent as Close } from '../assets/images/close_white.svg';
 import React, { useEffect, useRef, useState } from 'react';
 import SearchInput from '../components/common/SearchInput';
 import Dropdown from '../components/common/Dropdown';
@@ -30,6 +31,7 @@ export default function CommunityDetail() {
   const [filterOptions, setFilterOptions] = useState<string[]>([]);
   const [sortOptions, setSortOptions] = useState<string[]>([]);
   const [searchOptions, setSearchOptions] = useState<string[]>([]);
+  const navigate = useNavigate();
 
   const initialDetail: CommunityDetailInfo = {
     idolGroupId: 0,
@@ -52,7 +54,7 @@ export default function CommunityDetail() {
   const dispatch = useAppDispatch();
 
   const [show, setShow] = useState(false);
-  const [activeTab, setActiveTab] = useState('feed');
+  // const [activeTab, setActiveTab] = useState('feed');
   const [showDetail, setShowDetail] = useState(false);
   const [selectedFeedId, setSelectedFeedId] = useState<number | null>(null);
 
@@ -87,8 +89,17 @@ export default function CommunityDetail() {
       : setSearchOptions(['제목', '내용', '작성자']);
   }, [isSelected, dispatch]);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleClose = () => {
+    setShow(false)};
+
+  const handleShow = () => {
+    if (isLoggedIn) {
+      setShow(true);
+    } else {
+      alert('로그인이 필요한 서비스입니다.');
+      navigate('/login');
+    }
+  };
 
   const handleCloseDetail = () => {
     setShowDetail(false);
@@ -199,13 +210,35 @@ export default function CommunityDetail() {
         )}
       </div>
 
-      {isLoggedIn && <WriteButton className="write-button" onClick={handleShow} />}
+      {<WriteButton className="write-button" onClick={handleShow} />}
 
       {selectedFeedId && (
         <FeedDetailModal show={showDetail} onClose={handleCloseDetail} feedId={selectedFeedId} />
       )}
 
-      {show && (
+      {show && isSelected  === 'feed' && (
+        <div className="modal">
+          <div className="modal-content">
+            <div className="modal-header">
+              <div className="modal-header-title">
+                <h2>글작성</h2>
+              </div>
+              <div className="tabs">
+                <div
+                  className={'tab'}
+                >
+                  피드
+                </div>
+              </div>
+              <Close className="close" onClick={handleClose} />
+            </div>
+            <div className="modal-body">
+              <FeedForm onClose={handleClose} />
+            </div>
+          </div>
+        </div>
+      )}
+      {show && isSelected  === 'fan-art' && (
         <div className="modal">
           <div className="modal-content">
             <div className="modal-header">
@@ -214,24 +247,37 @@ export default function CommunityDetail() {
               </div>
               <div className="tabs">
                 <button
-                  className={`tab ${activeTab === 'feed' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('feed')}
+                  className={'tab'}
                 >
-                  피드
-                </button>
-                <button
-                  className={`tab ${activeTab === 'gallery' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('gallery')}
-                >
-                  갤러리
+                  팬아트
                 </button>
               </div>
-              <span className="close" onClick={handleClose}>
-                &times;
-              </span>
+              <Close className="close" onClick={handleClose} />
             </div>
             <div className="modal-body">
-              {activeTab === 'feed' ? <FeedForm onClose={handleClose} /> : <GalleryForm />}
+              <GalleryForm category="팬아트" onClose={handleClose} />
+            </div>
+          </div>
+        </div>
+      )}
+      {show && isSelected  === 'goods' && (
+        <div className="modal">
+          <div className="modal-content">
+            <div className="modal-header">
+              <div className="modal-header-title">
+                <h2>글작성</h2>
+              </div>
+              <div className="tabs">
+                <button
+                  className={'tab'}
+                >
+                  굿즈
+                </button>
+              </div>
+              <Close className="close" onClick={handleClose} />
+            </div>
+            <div className="modal-body">
+              <GalleryForm category="굿즈" onClose={handleClose}/>
             </div>
           </div>
         </div>

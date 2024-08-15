@@ -1,7 +1,9 @@
-import React, { useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useRef, useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Authapi } from '../../apis/core';
 import { ReactComponent as AddImage } from '../../assets/images/img_add.svg';
+import { ReactComponent as AddTag } from '../../assets/images/tag_add.svg';
+import { ReactComponent as RemoveTag } from '../../assets/images/tag_remove.svg';
 import { ReactComponent as RemoveIcon } from '../../assets/images/remove_icon.svg';
 import '../../scss/components/community/_postfeed.scss';
 
@@ -10,14 +12,21 @@ type ImageWithId = {
   file: File;
 };
 
-const GalleryForm = () => {
+interface GalleryFormProps {
+  onClose: () => void;
+  category: '팬아트' | '굿즈';
+}
+
+const GalleryForm = ({ onClose, category }: GalleryFormProps) => {
   const { idolGroupId } = useParams<{ idolGroupId: string }>();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [tags, setTags] = useState<string[]>([]);
+  const [newTag, setNewTag] = useState('');
   const [images, setImages] = useState<ImageWithId[]>([]);
   const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
+  const navigate = useNavigate();
 
-  const [category, setCategory] = useState('팬아트');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,8 +66,37 @@ const GalleryForm = () => {
     setImages(images.filter(image => image.id !== id));
   };
 
+  const handleTagAdd = () => {
+    const formattedTag = newTag.trim();
+    if (formattedTag && !tags.includes(formattedTag) && tags.length < 10) {
+      setTags([...tags, newTag]);
+      setNewTag('');
+    } else if (tags.length >= 10) {
+      alert('태그는 최대 10개까지 추가 가능합니다.');
+    }
+  };
+
+  const handleNewTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^\w가-힣ㄱ-ㅎㅏ-ㅣ]/g, '');
+    setNewTag(value);
+  };
+
+  const handleTagRemove = (tag: string) => {
+    setTags(tags.filter(t => t !== tag));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (title.trim() === '') {
+      alert('제목을 입력해주세요.');
+      return;
+    }
+    
+    if (content.trim() === '') {
+      alert('내용을 입력해주세요.');
+      return;
+    }
 
     if (images.length === 0) {
       alert('최소 한 장의 이미지를 업로드해야 합니다.');
@@ -69,6 +107,7 @@ const GalleryForm = () => {
     formData.append('title', title);
     formData.append('content', content);
     images.forEach(image => formData.append('imageList', image.file));
+    tags.forEach(tag => formData.append('tagList', tag));
     formData.append('idolGroupId', idolGroupId ?? '');
 
     let apiEndpoint = '';
@@ -87,6 +126,9 @@ const GalleryForm = () => {
 
       if (response.status === 201) {
         alert('성공적으로 등록되었습니다.');
+        window.scrollTo(0, 0);
+        navigate(0);
+        onClose();
       }
     } catch (error) {
       alert('작성에 실패했습니다.');
@@ -106,10 +148,33 @@ const GalleryForm = () => {
   };
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value.length <= 15) {
+    if (e.target.value.length <=25) {
       setTitle(e.target.value);
     }
   };
+
+  const handleNewTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleTagAdd();
+    }
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose(); // ESC 키를 누르면 모달 닫기
+      }
+    };
+
+    // 이벤트 리스너 추가
+    window.addEventListener('keydown', handleKeyDown);
+
+    // 컴포넌트가 언마운트되거나 모달이 닫힐 때 이벤트 리스너 제거
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [onClose]);
 
   return (
     <form onSubmit={handleSubmit} className="gallery-form">
@@ -145,14 +210,10 @@ const GalleryForm = () => {
 
       <div className="form-group">
         <div className="select-title-group">
-          <select value={category} onChange={e => setCategory(e.target.value)}>
-            <option value="팬아트">팬아트</option>
-            <option value="굿즈">굿즈</option>
-          </select>
           <div className="title-wrapper">
             <input
               type="text"
-              placeholder="제목을 입력하세요 (최대 15자)"
+              placeholder="제목을 입력하세요 (최대 25자)"
               value={title}
               onChange={handleTitleChange}
             />
@@ -169,6 +230,33 @@ const GalleryForm = () => {
             onChange={handleContentChange}
           />
           <span className="char-count">{content.length}/400</span>
+        </div>
+      </div>
+
+      <div className="form-group">
+        <div className="tags-wrapper">
+          <div className="tags">
+            {tags.map((tag, index) => (
+              <span key={index} className="tag">
+                #{tag}{' '}
+                <RemoveTag className="removetag-button" onClick={() => handleTagRemove(tag)} />
+              </span>
+            ))}
+            {tags.length < 10 && (
+              <div className="addtag-container">
+                <input
+                  type="text"
+                  value={newTag}
+                  onChange={handleNewTagChange}
+                  onKeyDown={handleNewTagKeyDown}
+                  placeholder="#태그"
+                  maxLength={10}
+                  style={{ minWidth: '50px', width: 'auto' }}
+                />
+                <AddTag className="addtag-button" onClick={handleTagAdd} />
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
