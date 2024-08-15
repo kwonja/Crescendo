@@ -11,6 +11,7 @@ import Favorite from '../pages/Favorite';
 import Challenge from '../pages/Challenge';
 import PasswordReset from '../pages/PasswordReset';
 import ChallengeDetails from '../components/challenge/ChallengeDetails';
+import Settings from '../pages/Settings';
 
 export const router = createBrowserRouter([
   {
@@ -57,6 +58,10 @@ export const router = createBrowserRouter([
       {
         path: '/password-reset',
         element: <PasswordReset />,
+      },
+      {
+        path: '/settings',
+        element: <Settings />,
       },
     ],
   },

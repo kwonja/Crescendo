@@ -4,6 +4,7 @@ import { modifyIntroductionAPI, modifyNicknameAPI, modifyProfileAPI } from '../.
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
 import { handleFollow, handleInfoUpdate } from '../../features/mypage/profileSlice';
 import { followAPI } from '../../apis/follow';
+import { isExactForbiddenNickname, isIncludedForbiddenNickname, isValidNickname } from '../../utils/NicknameValidation';
 
 interface ProfileProps {
   userId: number;
@@ -15,6 +16,7 @@ export default function Profile({ userId }: ProfileProps) {
     state => state.profile.userInfo,
   );
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [nicknameError, setNicknameError] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const nickeRef = useRef<HTMLInputElement>(null);
   const introRef = useRef<HTMLTextAreaElement>(null);
@@ -32,6 +34,17 @@ export default function Profile({ userId }: ProfileProps) {
     }
     const newNickname = nickeRef.current?.value || nickname;
     const newIntroduction = introRef.current?.value || introduction;
+    if (isExactForbiddenNickname(newNickname)) {
+      setNicknameError('사용할 수 없는 닉네임입니다.');
+      return;
+    } else if (isIncludedForbiddenNickname(newNickname)) {
+      setNicknameError('욕설이 포함된 닉네임은 사용할 수 없습니다.');
+      return;
+    } else if (!isValidNickname(newNickname)) {
+      setNicknameError('닉네임은 영어, 숫자 또는 한글로 구성된 3~10글자여야 합니다.');
+      return;
+    }
+    setNicknameError(null);
 
     if (introduction !== newIntroduction) await modifyIntroductionAPI(getUserId(), newIntroduction);
     if (newNickname !== nickname) await modifyNicknameAPI(getUserId(), newNickname);
@@ -80,6 +93,7 @@ export default function Profile({ userId }: ProfileProps) {
               ref={nickeRef}
               maxLength={10}
             />
+            {nicknameError && <div style={{color:'red'}}>{nicknameError}</div>}
           </>
         ) : (
           <div className="nickname break-all">{nickname}</div>
@@ -101,7 +115,7 @@ export default function Profile({ userId }: ProfileProps) {
               <button className="w-1/4 bg-mainColor" onClick={handleSaveClick}>
                 저장
               </button>
-              <button className="w-1/4 bg-subColor" onClick={() => setIsEditing(prev => !prev)}>
+              <button className="w-1/4 bg-subColor" onClick={() => {setNicknameError(null);setIsEditing(prev => !prev)}}>
                 취소
               </button>
             </div>

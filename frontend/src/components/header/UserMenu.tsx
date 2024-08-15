@@ -25,7 +25,11 @@ export default function UserMenu({ handleMode }: MenuProps) {
           마이페이지
         </Link>
       </li>
-      <li>설정</li>
+      <li>
+        <Link to={'settings'} onClick={handleMode}>
+          설정
+        </Link>
+      </li>
       <li className="logout-button" onClick={handleLogout}>
         로그아웃
       </li>

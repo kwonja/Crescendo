@@ -22,7 +22,9 @@ export default function UserProfile({
     <div className={`flex ${className}`}>
       <div className="mr-5">
         {notFoundImgError ? (
-          <UserDefault />
+          <Link to={`/mypage/${userId}`}>
+            <UserDefault onClick={() => window.scrollTo(0,0)} />
+          </Link>
         ) : (
           <Link to={`/mypage/${userId}`}>
             <img
