@@ -152,7 +152,7 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 10px;
-    max-width: calc(100% - 150px); /* 태그 영역 제한 */
+    max-width: calc(100% - 150px);
 
     .tags {
       display: flex;

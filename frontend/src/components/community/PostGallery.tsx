@@ -2,7 +2,9 @@ import React, { useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Authapi } from '../../apis/core';
 import { ReactComponent as AddImage } from '../../assets/images/img_add.svg';
+import { ReactComponent as AddTag } from '../../assets/images/tag_add.svg';
 import { ReactComponent as RemoveIcon } from '../../assets/images/remove_icon.svg';
+import { ReactComponent as RemoveTag } from '../../assets/images/tag_remove.svg';
 import '../../scss/components/community/_postfeed.scss';
 
 type ImageWithId = {
@@ -14,6 +16,8 @@ const GalleryForm = () => {
   const { idolGroupId } = useParams<{ idolGroupId: string }>();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [tags, setTags] = useState<string[]>([]);
+  const [newTag, setNewTag] = useState('');
   const [images, setImages] = useState<ImageWithId[]>([]);
   const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
 
@@ -57,6 +61,25 @@ const GalleryForm = () => {
     setImages(images.filter(image => image.id !== id));
   };
 
+  const handleTagAdd = () => {
+    const formattedTag = newTag.trim();
+    if (formattedTag && !tags.includes(formattedTag) && tags.length < 10) {
+      setTags([...tags, newTag]);
+      setNewTag('');
+    } else if (tags.length >= 10) {
+      alert('태그는 최대 10개까지 추가 가능합니다.');
+    }
+  };
+
+  const handleNewTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^\w가-힣ㄱ-ㅎㅏ-ㅣ]/g, '');
+    setNewTag(value);
+  };
+
+  const handleTagRemove = (tag: string) => {
+    setTags(tags.filter(t => t !== tag));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -69,6 +92,7 @@ const GalleryForm = () => {
     formData.append('title', title);
     formData.append('content', content);
     images.forEach(image => formData.append('imageList', image.file));
+    tags.forEach(tag => formData.append('tagList', tag));
     formData.append('idolGroupId', idolGroupId ?? '');
 
     let apiEndpoint = '';
@@ -105,8 +129,15 @@ const GalleryForm = () => {
     }
   };
 
+  const handleNewTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleTagAdd();
+    }
+  };
+
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value.length <= 15) {
+    if (e.target.value.length <= 25) {
       setTitle(e.target.value);
     }
   };
@@ -152,7 +183,7 @@ const GalleryForm = () => {
           <div className="title-wrapper">
             <input
               type="text"
-              placeholder="제목을 입력하세요 (최대 15자)"
+              placeholder="제목을 입력하세요 (최대 25자)"
               value={title}
               onChange={handleTitleChange}
             />
@@ -169,6 +200,33 @@ const GalleryForm = () => {
             onChange={handleContentChange}
           />
           <span className="char-count">{content.length}/400</span>
+        </div>
+      </div>
+
+      <div className="form-group">
+        <div className="tags-wrapper">
+          <div className="tags">
+            {tags.map((tag, index) => (
+              <span key={index} className="tag">
+                #{tag}{' '}
+                <RemoveTag className="removetag-button" onClick={() => handleTagRemove(tag)} />
+              </span>
+            ))}
+            {tags.length < 10 && (
+              <div className="addtag-container">
+                <input
+                  type="text"
+                  value={newTag}
+                  onChange={handleNewTagChange}
+                  onKeyDown={handleNewTagKeyDown}
+                  placeholder="#태그"
+                  maxLength={10}
+                  style={{ minWidth: '50px', width: 'auto' }}
+                />
+                <AddTag className="addtag-button" onClick={handleTagAdd} />
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

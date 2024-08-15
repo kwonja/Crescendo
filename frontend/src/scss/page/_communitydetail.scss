@@ -22,84 +22,93 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
-  }
-
-  .modal-content {
-    background-color: white;
-    border-radius: 20px 20px 0px 0px;
-    width: 950px;
-    height: 609px;
-    border: 5px solid #f66;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .close {
-    color: white;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 24px;
-    cursor: pointer;
-  }
-
-  .modal-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    background: #f66;
-    border-radius: 10px 10px 0px 0px;
-
-    font-size: 23px;
-    letter-spacing: 2.3px;
-    font-weight: 400;
-    line-height: 100%; /* 23px */
-
-    .modal-header-title {
-      width: 90px;
-      height: 44px;
+    
+    .modal-content {
+      background-color: white;
+      border-radius: 20px 20px 0px 0px;
+      width: 950px;
+      height: 609px;
+      border: 5px solid #f66;
+      position: relative;
       display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #fff;
+      flex-direction: column;
+
+      .modal-header {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        background: #f66;
+        border-radius: 10px 10px 0px 0px;
+    
+        font-size: 23px;
+        letter-spacing: 2.3px;
+        font-weight: 400;
+        line-height: 100%; /* 23px */
+    
+        .modal-header-title {
+          width: 90px;
+          height: 44px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: #fff;
+        }
+
+        .tabs {
+          display: flex;
+        }
+      
+        .tab {
+          width: 90px;
+          height: 44px;
+          color: #fff;
+          cursor: pointer;
+        }
+      
+        .tab.active {
+          border-radius: 20px 20px 0px 0px;
+          background: #fff;
+          color: #f66;
+        }
+
+        .close {
+          color: white;
+          position: absolute;
+          top: 12px;
+          right: 15px;
+          width: 14px;
+          height: 14px;
+          cursor: pointer;
+        }
+      }
+      
+      .modal-body {
+        flex: 1;
+        padding: 20px;
+        overflow-y: scroll;
+      }
+    
+      .modal-body::-webkit-scrollbar {
+        width: 12px;
+      }
+    
+      .modal-body::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+      }
+    
+      .modal-body::-webkit-scrollbar-track {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+
     }
+
   }
 
-  .tabs {
-    display: flex;
-  }
 
-  .tab {
-    width: 90px;
-    height: 44px;
-    color: #fff;
-    cursor: pointer;
-  }
 
-  .tab.active {
-    border-radius: 20px 20px 0px 0px;
-    background: #fff;
-    color: #f66;
-  }
 
-  .modal-body {
-    flex: 1;
-    padding: 20px;
-  }
 
-  .modal-body::-webkit-scrollbar {
-    width: 12px;
-  }
-
-  .modal-body::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
-  }
-
-  .modal-body::-webkit-scrollbar-track {
-    background-color: rgba(0, 0, 0, 0.1);
-  }
 
   .submit-container {
     position: absolute; /* 모달의 우측 하단에 고정 */

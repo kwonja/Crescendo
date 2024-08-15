@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { ReactComponent as FullStar } from '../assets/images/CommunityDetail/fullstar.svg';
 import { ReactComponent as Star } from '../assets/images/CommunityDetail/star.svg';
+import { ReactComponent as Close } from '../assets/images/close_white.svg';
 import React, { useEffect, useRef, useState } from 'react';
 import SearchInput from '../components/common/SearchInput';
 import Dropdown from '../components/common/Dropdown';
@@ -234,9 +235,7 @@ export default function CommunityDetail() {
                   갤러리
                 </button>
               </div>
-              <span className="close" onClick={handleClose}>
-                &times;
-              </span>
+              <Close className="close" onClick={handleClose} />
             </div>
             <div className="modal-body">
               {activeTab === 'feed' ? <FeedForm onClose={handleClose} /> : <GalleryForm />}
