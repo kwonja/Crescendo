@@ -237,6 +237,9 @@
     }
 
     .select-title-group {
+      display: flex;
+      flex-direction: row;
+
       .title-wrapper {
         position: relative;
         border-radius: 15px;
@@ -270,9 +273,6 @@
           font-size: 25px;
         }
       }
-      display: flex;
-      flex-direction: row;
-
     }
   }
 
