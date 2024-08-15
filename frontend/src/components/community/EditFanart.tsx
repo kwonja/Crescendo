@@ -4,9 +4,9 @@ import { useParams } from 'react-router-dom';
 import { ReactComponent as AddImage } from '../../assets/images/img_add.svg';
 import { ReactComponent as RemoveIcon } from '../../assets/images/remove_icon.svg';
 import { useAppDispatch } from '../../store/hooks/hook';
-import { getFeedDetailAPI } from '../../apis/feed';
-import { updateFeed } from '../../features/communityDetail/communityDetailSlice';
-import { updateMyFeed } from '../../features/mypage/myFeedSlice';
+import { getFanArtDetailAPI } from '../../apis/fanart';
+import { updateFanArt } from '../../features/communityDetail/communityDetailSlice';
+// import { updateMyFeed } from '../../features/mypage/myFeedSlice';
 import '../../scss/components/community/_postfeed.scss';
 
 type ImageWithId = {
@@ -18,7 +18,7 @@ type ImageWithId = {
 
 type EditFanartProps = {
   onClose: () => void;
-  feedId: number;
+  fanArtId: number;
   initialTitle: string;
   initialContent: string;
   initialImages: string[];
@@ -26,7 +26,7 @@ type EditFanartProps = {
 
 const EditFanart: React.FC<EditFanartProps> = ({
   onClose,
-  feedId,
+  fanArtId,
   initialTitle,
   initialContent,
   initialImages,
@@ -121,7 +121,7 @@ const EditFanart: React.FC<EditFanartProps> = ({
     }
 
     try {
-      const response = await Authapi.put(`/api/v1/community/fan-art/${feedId}`, formData, {
+      const response = await Authapi.put(`/api/v1/community/fan-art/${fanArtId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -156,9 +156,9 @@ const EditFanart: React.FC<EditFanartProps> = ({
 
   const updateFeedDetail = async () => {
     try {
-      const response = await getFeedDetailAPI(feedId);
-      dispatch(updateFeed({feedId, feed:response}));
-      dispatch(updateMyFeed({feedId, feed:response}));
+      const response = await getFanArtDetailAPI(fanArtId);
+      dispatch(updateFanArt({fanArtId, fanArt:response}));
+      // dispatch(updateMyFeed({fanArtId, feed:response}));
     } catch (error) {
       console.error('Error fetching feed details:', error);
     }
