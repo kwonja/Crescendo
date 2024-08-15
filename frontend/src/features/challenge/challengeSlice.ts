@@ -19,7 +19,7 @@ const inistalState: ChallengeProps = {
   error: '',
   currentPage: 0,
   totalPage: 1,
-  size: 10,
+  size: 4,
   selectedChallenge: {
     challengeId: 0,
     title: '',
@@ -89,8 +89,8 @@ const challengeSlice = createSlice({
       })
       .addCase(getChallengeList.fulfilled, (state, action) => {
         state.status = 'success';
+        console.log(action.payload);
         state.challengeLists = [...state.challengeLists, ...action.payload.content];
-        console.log(state.challengeLists);
         state.totalPage = action.payload.totalPages;
       })
       .addCase(getChallengeList.rejected, (state, action) => {
