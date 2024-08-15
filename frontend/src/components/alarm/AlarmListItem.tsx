@@ -40,6 +40,8 @@ export default function AlarmListItem({ alarm }: AlarmItemProps) {
   };
 
   const handleDeleteAlarm = async (alarmId: number) => {
+    dispatch(decrementUnRead());
+    dispatch(readAlarmUpdate(alarmId));
     dispatch(deleteAlarm(alarmId));
     try {
       await deleteAlamrAPI(alarmId);
@@ -49,8 +51,8 @@ export default function AlarmListItem({ alarm }: AlarmItemProps) {
   };
 
   return (
-    <div className="alarmlistitem" onClick={() => handleReadAlarm(alarmId)}>
-      <div className="cont w-9/12 cursor-pointer">
+    <div className="alarmlistitem">
+      <div className="cont w-9/12 cursor-pointer" onClick={() => handleReadAlarm(alarmId)}>
         <div className="flex flex-row gap-3 w-full">
           <div className="nickname">{content.substring(0, content.indexOf('님'))}</div>
           <div>{Channel(alarmChannelId)}</div>

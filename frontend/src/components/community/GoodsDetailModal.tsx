@@ -15,7 +15,7 @@ import { ReactComponent as UserProfileImageDefault } from '../../assets/images/U
 import { ReactComponent as ReplyIcon } from '../../assets/images/Feed/comment.svg';
 import { ReactComponent as CommentWriteButton } from '../../assets/images/white_write.svg';
 import { ReactComponent as NoComments } from '../../assets/images/text_bubble.svg';
-import FeedDetailMenu from './DropdownMenu';
+import GoodsDetailMenu from './DropdownMenu';
 import CommentMenu from './DropdownMenu';
 import ReplyMenu from './DropdownReplyMenu';
 import EditGoods from './EditGoods';
@@ -50,7 +50,7 @@ type Comment = {
   replies?: Reply[];
 };
 
-type FeedDetailModalProps = {
+type GoodsDetailModalProps = {
   show: boolean;
   onClose: () => void;
   goodsId: number;
@@ -67,8 +67,8 @@ type Reply = {
   createdAt: string;
 };
 
-const GoodsDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, goodsId }) => {
-  const [feedDetail, setFeedDetail] = useState<GoodsDetailResponse | null>(null);
+const GoodsDetailModal: React.FC<GoodsDetailModalProps> = ({ show, onClose, goodsId }) => {
+  const [goodsDetail, setgoodsDetail] = useState<GoodsDetailResponse | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
   const [newReply, setNewReply] = useState<{ [key: number]: string }>({});
@@ -85,10 +85,10 @@ const GoodsDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, goods
 
   const currentUserId = getUserId();
 
-  const loadFeedDetail = useCallback(async () => {
+  const loadgoodsDetail = useCallback(async () => {
     try {
       const response = await Authapi.get(`/api/v1/community/goods/${goodsId}`);
-      setFeedDetail(response.data);
+      setgoodsDetail(response.data);
     } catch (error) {
       console.error('Error fetching feed details:', error);
     }
@@ -167,10 +167,10 @@ const GoodsDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, goods
   useEffect(() => {
     if (show) {
       setComments([]);
-      loadFeedDetail();
+      loadgoodsDetail();
       loadComments();
     }
-  }, [show, goodsId, loadComments, loadFeedDetail]);
+  }, [show, goodsId, loadComments, loadgoodsDetail]);
 
   useEffect(() => {
     if (!show) {
@@ -193,13 +193,13 @@ const GoodsDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, goods
 
   const handlePrevImage = () => {
     setActiveImageIndex(prevIndex =>
-      prevIndex > 0 ? prevIndex - 1 : feedDetail!.goodsImagePathList.length - 1,
+      prevIndex > 0 ? prevIndex - 1 : goodsDetail!.goodsImagePathList.length - 1,
     );
   };
 
   const handleNextImage = () => {
     setActiveImageIndex(prevIndex =>
-      prevIndex < feedDetail!.goodsImagePathList.length - 1 ? prevIndex + 1 : 0,
+      prevIndex < goodsDetail!.goodsImagePathList.length - 1 ? prevIndex + 1 : 0,
     );
   };
 
@@ -249,9 +249,9 @@ const GoodsDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, goods
   };
 
   const handleFeedLikeToggle = () => {
-    if (feedDetail) {
+    if (goodsDetail) {
       dispatch(toggleGoodsLike(goodsId));
-      setFeedDetail(prevDetail =>
+      setgoodsDetail(prevDetail =>
         prevDetail
           ? {
               ...prevDetail,
@@ -382,7 +382,7 @@ const GoodsDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, goods
   };
 
   const handleEditModalClose = async () => {
-    await loadFeedDetail();
+    await loadgoodsDetail();
     setEditModalVisible(false);
   };
 
@@ -491,7 +491,7 @@ const GoodsDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, goods
     onClose();
   };
 
-  if (!show || !feedDetail) return null;
+  if (!show || !goodsDetail) return null;
 
   return (
     <div className="feed-detail-modal modal-overlay">
@@ -502,10 +502,10 @@ const GoodsDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, goods
         <div className="feed-detail-left">
           <div className="feed-header">
             <div className="profile-image-container">
-              {feedDetail.profileImagePath ? (
+              {goodsDetail.profileImagePath ? (
                 <img
-                  src={getAbsolutePath(feedDetail.profileImagePath)}
-                  alt={feedDetail.nickname}
+                  src={getAbsolutePath(goodsDetail.profileImagePath)}
+                  alt={goodsDetail.nickname}
                   className="profile-image"
                 />
               ) : (
@@ -513,46 +513,47 @@ const GoodsDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, goods
               )}
             </div>
             <div className="profile-info">
-              <div className="nickname">{feedDetail.nickname}</div>
-              <div className="feed-date">{new Date(feedDetail.createdAt).toLocaleString()}</div>
+              <div className="nickname">{goodsDetail.nickname}</div>
+              <div className="feed-date">{new Date(goodsDetail.createdAt).toLocaleString()}</div>
             </div>
             <div className="feed-icons">
               <div className="feed-like-count">
-                {feedDetail.likeCnt > 99 ? '99+' : feedDetail.likeCnt}
+                {goodsDetail.likeCnt > 99 ? '99+' : goodsDetail.likeCnt}
               </div>
-              {feedDetail.isLike ? (
+              {goodsDetail.isLike ? (
                 <FeedFullHeartIcon className="feed-heart-button" onClick={handleFeedLikeToggle} />
               ) : (
                 <FeedHeartIcon className="feed-heart-button" onClick={handleFeedLikeToggle} />
               )}
               <FeedMenuIcon
-                className={`feed-dots-button ${currentUserId === feedDetail.userId ? 'visible' : ''}`}
+                className={`feed-dots-button ${currentUserId === goodsDetail.userId ? 'visible' : ''}`}
                 onClick={() => handleMenuToggle(goodsId)}
               />
               <div className="feed-menu">
                 {activeMenuId === goodsId && (
-                  <FeedDetailMenu onEdit={handleEdit} onDelete={handleDelete} />
+                  <GoodsDetailMenu onEdit={handleEdit} onDelete={handleDelete} />
                 )}
               </div>
             </div>
           </div>
           <div className="feed-body">
             <div className="slider-container">
-              {feedDetail.goodsImagePathList.length > 0 && (
+              {goodsDetail.goodsImagePathList.length > 0 && (
                 <div className="image-slider">
                   <PrevButton className="prev-button" onClick={handlePrevImage} />
                   <img
-                    src={getAbsolutePath(feedDetail.goodsImagePathList[activeImageIndex])}
+                    src={getAbsolutePath(goodsDetail.goodsImagePathList[activeImageIndex])}
                     alt="Feed"
                     draggable="false"
                   />
                   <NextButton className="next-button" onClick={handleNextImage} />
-                  <div className="image-counter">{`${activeImageIndex + 1} / ${feedDetail.goodsImagePathList.length}`}</div>
+                  <div className="image-counter">{`${activeImageIndex + 1} / ${goodsDetail.goodsImagePathList.length}`}</div>
                 </div>
               )}
             </div>
             <div className="feed-content-container">
-              <div className="feed-content">{feedDetail.content}</div>
+              <div className="feed-title">{goodsDetail.title}</div>
+              <div className="feed-content">{goodsDetail.content}</div>
             </div>
           </div>
         </div>
@@ -776,7 +777,7 @@ const GoodsDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, goods
           </div>
         </div>
       </div>
-      {editModalVisible && feedDetail && (
+      {editModalVisible && goodsDetail && (
         <div className="feed-edit-modal">
           <div className="modal-content">
             <div className="modal-header">
@@ -791,8 +792,9 @@ const GoodsDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, goods
               <EditGoods
                 onClose={handleEditModalClose}
                 goodsId={goodsId}
-                initialContent={feedDetail.content}
-                initialImages={feedDetail.goodsImagePathList}
+                initialTitle={goodsDetail.title}
+                initialContent={goodsDetail.content}
+                initialImages={goodsDetail.goodsImagePathList}
               />
             </div>
           </div>

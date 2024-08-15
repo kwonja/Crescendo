@@ -14,3 +14,7 @@ export const getGoodsDetailAPI = async (goodsId: number) => {
   const response = await Authapi.get(`/api/v1/community/goods/${goodsId}`);
   return response.data;
 }
+
+export const deleteGoodsAPI = async (goodsId: number) => {
+  await Authapi.delete(`/api/v1/community/goods/${goodsId}`);
+}

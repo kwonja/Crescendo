@@ -38,7 +38,6 @@ export default function Challenge() {
     (entries: IntersectionObserverEntry[]) => {
       const target = entries[0];
       if (target.isIntersecting) {
-        console.log("랜더링체크")
         dispatch(setChallengePage());
       }
     },

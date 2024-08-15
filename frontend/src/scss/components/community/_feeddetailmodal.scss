@@ -168,6 +168,7 @@
           align-items: center;
           min-height: 200px;
           justify-content: center;
+          margin-bottom: 20px;
 
           .image-slider {
             position: relative;
@@ -237,6 +238,11 @@
           padding-right: 20px;
           max-height: 100%;
           overflow-y: auto;
+
+          .feed-title {
+            font-size: 43px;
+            color: #fff;
+          }
 
           .feed-content {
             margin-top: 10px;

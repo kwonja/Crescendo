@@ -94,7 +94,11 @@ export default function CommunityDetail() {
   }, [isSelected, dispatch]);
 
   const handleClose = () => {
-    setShow(false)};
+    setShow(false);
+    setSelectedFeedId(null);
+    setSelectedFanartId(null);
+    setSelectedGoodsId(null);
+  };
 
   const handleShow = () => {
     if (isLoggedIn) {

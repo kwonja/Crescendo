@@ -89,7 +89,6 @@ const challengeSlice = createSlice({
       })
       .addCase(getChallengeList.fulfilled, (state, action) => {
         state.status = 'success';
-        console.log(action.payload);
         state.challengeLists = [...state.challengeLists, ...action.payload.content];
         state.totalPage = action.payload.totalPages;
       })

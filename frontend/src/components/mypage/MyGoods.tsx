@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ReactComponent as Dots } from '../../assets/images/Gallery/whitedots.svg';
 import { ReactComponent as FullHeart } from '../../assets/images/Gallery/whitefullheart.svg';
 import { ReactComponent as Heart } from '../../assets/images/Gallery/whiteheart.svg';
@@ -10,12 +10,15 @@ import { useAppDispatch } from '../../store/hooks/hook';
 import { toggleGoodsLike } from '../../features/communityDetail/communityDetailSlice';
 import { decrementLike, incrementLike } from '../../features/mypage/myFeedSlice';
 import { Link } from 'react-router-dom';
+import ActionMenu from '../common/ActionMenu';
 
 interface GoodsProps {
   goods: MyGoodsInfo;
+  onEditAction: (goodsId:number)=>void;
+  onDeleteAction: (goodsId:number)=>void;
 }
 
-export default function MyGoods({ goods }: GoodsProps) {
+export default function MyGoods({ goods, onDeleteAction, onEditAction }: GoodsProps) {
   const {
     goodsId,
     userId,
@@ -32,6 +35,7 @@ export default function MyGoods({ goods }: GoodsProps) {
   } = goods;
 
   const dispatch = useAppDispatch();
+  const [showActionMenu, setShowActionMenu] = useState<boolean>(false);
   const currentUserId = getUserId();
 
   return (
@@ -44,7 +48,17 @@ export default function MyGoods({ goods }: GoodsProps) {
       </div>
       {userId === currentUserId &&
       <div className="dots_box">
-        <Dots className="dots hoverup" />
+        <Dots className="dots hoverup" onClick={e => {
+          e.stopPropagation();
+          setShowActionMenu(true);
+        }} />
+        {showActionMenu && (
+          <ActionMenu
+            onClose={()=>setShowActionMenu(false)}
+            onEditAction={()=>onEditAction(goodsId)}
+            onDeleteAction={()=>onDeleteAction(goodsId)}
+          />
+        )}
       </div>
       }
       <div className="title_box">
