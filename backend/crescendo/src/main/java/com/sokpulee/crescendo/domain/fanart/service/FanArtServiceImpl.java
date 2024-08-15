@@ -299,6 +299,7 @@ public class FanArtServiceImpl implements FanArtService {
                     .fanArtImagePathList(fanArtImagePathList)
                     .content(fanArt.getContent())
                     .commentCnt(fanArt.getCommentCnt())
+                    .title(fanArt.getTitle())
                     .build();
         }
         return response;
