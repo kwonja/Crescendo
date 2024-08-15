@@ -8,6 +8,7 @@ import { getFanArtDetailAPI } from '../../apis/fanart';
 import { updateFanArt } from '../../features/communityDetail/communityDetailSlice';
 // import { updateMyFeed } from '../../features/mypage/myFeedSlice';
 import '../../scss/components/community/_postfeed.scss';
+import { updateMyFanArt } from '../../features/mypage/myFeedSlice';
 
 type ImageWithId = {
   id: number;
@@ -158,7 +159,7 @@ const EditFanart: React.FC<EditFanartProps> = ({
     try {
       const response = await getFanArtDetailAPI(fanArtId);
       dispatch(updateFanArt({fanArtId, fanArt:response}));
-      // dispatch(updateMyFeed({fanArtId, feed:response}));
+      dispatch(updateMyFanArt({fanArtId, fanArt:response}));
     } catch (error) {
       console.error('Error fetching feed details:', error);
     }

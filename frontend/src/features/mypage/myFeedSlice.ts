@@ -141,7 +141,7 @@ const myFeedSlice = createSlice({
       );
     },
 
-    updateMyGoodsArt: (state, action: PayloadAction<{ goods: GoodsInfo; goodsId: number }>) => {
+    updateMyGoods: (state, action: PayloadAction<{ goods: GoodsInfo; goodsId: number }>) => {
       state.myGoodsList = state.myGoodsList.map(goods => {
           if (goods.goodsId !== action.payload.goodsId) {
             return goods;
@@ -201,5 +201,5 @@ const myFeedSlice = createSlice({
   },
 });
 
-export const { resetState, incrementLike, decrementLike, updateMyFeed } = myFeedSlice.actions;
+export const { resetState, incrementLike, decrementLike, updateMyFeed, updateMyFanArt, updateMyGoods} = myFeedSlice.actions;
 export default myFeedSlice.reducer;
