@@ -165,12 +165,6 @@ const FanartDetailModal: React.FC<FanArtDetailModalProps> = ({ show, onClose, fa
   };
 
   useEffect(() => {
-    if (fanArtDetail !== null) {
-      console.log(fanArtDetail);
-    }
-  }, [fanArtDetail]);
-
-  useEffect(() => {
     if (show) {
       setComments([]);
       loadfanArtDetail();
