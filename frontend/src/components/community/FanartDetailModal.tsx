@@ -167,6 +167,12 @@ const FanartDetailModal: React.FC<FanArtDetailModalProps> = ({ show, onClose, fa
   };
 
   useEffect(() => {
+    if (fanArtDetail !== null) {
+      console.log(fanArtDetail);
+    }
+  }, [fanArtDetail]);
+
+  useEffect(() => {
     if (show) {
       setComments([]);
       loadfanArtDetail();
@@ -383,8 +389,11 @@ const FanartDetailModal: React.FC<FanArtDetailModalProps> = ({ show, onClose, fa
   };
 
   const handleEditModalClose = async () => {
+    const userConfirmed = window.confirm('작성 중인 내용이 사라질 수 있습니다. 그래도 닫으시겠습니까?');
+    if (userConfirmed) {
     await loadfanArtDetail();
     setEditModalVisible(false);
+  }
   };
 
   // 피드 삭제
@@ -553,7 +562,7 @@ const FanartDetailModal: React.FC<FanArtDetailModalProps> = ({ show, onClose, fa
               )}
             </div>
             <div className="feed-content-container">
-              <div className='feed-title'>{fanArtDetail.title}</div>
+              <div className="feed-title">{fanArtDetail.title}</div>
               <div className="feed-content">{fanArtDetail.content}</div>
             </div>
           </div>
