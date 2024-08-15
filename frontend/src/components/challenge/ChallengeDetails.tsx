@@ -87,7 +87,7 @@ export default function ChallengeDetails() {
         {
          challengeDetailLists.length ===0 ? ( <div className='flex flex-col gap-5'><div className='flex w-full text-4xl'>아직 등록된 챌린지가 없습니다</div> <div className='flex w-full justify-center text-4xl'>지금 참여하세요😀</div></div>) : (
           challengeDetailLists.map(challenge => (
-            <ChallengeDetailItem Challenge={challenge} key={challenge.challengeJoinId} />
+            <ChallengeDetailItem Challenge={challenge} key={challenge.challengeJoinId} challengeId={numericChallengeId}/>
           ))
          )  
         }
