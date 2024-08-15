@@ -30,7 +30,7 @@ export default function CommunityGoodsList({ idolGroupId, onGoodsClick }: Commun
     const goods = goodsList.find((goods)=>goods.goodsId===showEditModal);
     if (goods) {
       setEditModalProps({
-        title: goods.title,
+        title:goods.title,
         content:goods.content,
         images:goods.goodsImagePathList
       })
@@ -100,6 +100,7 @@ export default function CommunityGoodsList({ idolGroupId, onGoodsClick }: Commun
       ) : (
         <div className="text-center text-xl w-full">작성된 굿즈가 없습니다.</div>
       )}
+
       { //수정모달
         showEditModal && (
           <div className="modal-overlay" style={{zIndex:1100}} onClick = {(e)=>e.stopPropagation()}>
@@ -138,6 +139,7 @@ export default function CommunityGoodsList({ idolGroupId, onGoodsClick }: Commun
         />
       )
       }
+
       {hasMore && <div ref={loadMoreElementRef}>Load More..</div>}
     </div>
   );

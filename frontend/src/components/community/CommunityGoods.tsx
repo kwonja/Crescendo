@@ -44,18 +44,18 @@ export default function CommunityGoods({ goods, onClick, onDeleteAction, onEditA
       <img className="gallery-img" src={IMAGE_BASE_URL + goodsImagePathList[0]} alt="굿즈그림" />
       {userId === currentUserId &&
       <div className="dots_box">
-      <Dots className="dots hoverup" onClick={e => {
-        e.stopPropagation();
-        setShowActionMenu(true);
-      }} />
-      {showActionMenu && (
-        <ActionMenu
-          onClose={()=>setShowActionMenu(false)}
-          onEditAction={()=>onEditAction(goodsId)}
-          onDeleteAction={()=>onDeleteAction(goodsId)}
-        />
-      )}
-    </div>
+        <Dots className="dots hoverup" onClick={e => {
+          e.stopPropagation();
+          setShowActionMenu(true);
+        }} />
+        {showActionMenu && (
+          <ActionMenu
+            onClose={()=>setShowActionMenu(false)}
+            onEditAction={()=>onEditAction(goodsId)}
+            onDeleteAction={()=>onDeleteAction(goodsId)}
+          />
+        )}
+      </div>
       }
       <div className="title_box">
         <div className="type">굿즈</div>
