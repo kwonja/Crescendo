@@ -382,11 +382,8 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
   };
 
   const handleEditModalClose = async () => {
-    const userConfirmed = window.confirm('작성 중인 내용이 사라질 수 있습니다. 그래도 닫으시겠습니까?');
-  if (userConfirmed) {
     await loadFeedDetail();
     setEditModalVisible(false);
-  }
   };
 
   // 피드 삭제
