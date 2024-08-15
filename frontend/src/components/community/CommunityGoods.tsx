@@ -14,7 +14,7 @@ interface GoodsProps {
   onClick: () => void;
 }
 
-export default function CommunityGoods({ goods }: GoodsProps) {
+export default function CommunityGoods({ goods, onClick }: GoodsProps) {
   const {
     goodsId,
     userId,
@@ -31,8 +31,12 @@ export default function CommunityGoods({ goods }: GoodsProps) {
   const dispatch = useAppDispatch();
   const currentUserId = getUserId();
 
+  const handleClick = () => {
+    onClick();
+  };
+
   return (
-    <div className="gallery">
+    <div className="gallery" onClick={handleClick}>
       <img className="gallery-img" src={IMAGE_BASE_URL + goodsImagePathList[0]} alt="굿즈그림" />
       {userId === currentUserId &&
       <div className="dots_box">
@@ -43,7 +47,7 @@ export default function CommunityGoods({ goods }: GoodsProps) {
         <div className="type">굿즈</div>
         <div className="title">{title}</div>
       </div>
-      <div className="gallery_info">
+      <div className="gallery_info" onClick={e => e.stopPropagation()}>
         <div className="gallery_profile">
           <UserProfile
             userId={userId}

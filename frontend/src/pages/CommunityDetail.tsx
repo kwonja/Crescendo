@@ -10,6 +10,8 @@ import FeedForm from '../components/community/PostFeed';
 import GalleryForm from '../components/community/PostGallery';
 import { ReactComponent as WriteButton } from '../assets/images/write.svg';
 import FeedDetailModal from '../components/community/FeedDetailModal';
+import FanartDetailModal from '../components/community/FanartDetailModal';
+import GoodsDetailModal from '../components/community/GoodsDetailModal';
 import { getCommunityDetailAPI, toggleFavoriteAPI } from '../apis/community';
 import { useAppDispatch, useAppSelector } from '../store/hooks/hook';
 import { CommunityDetailInfo } from '../interface/communityList';
@@ -57,6 +59,8 @@ export default function CommunityDetail() {
   // const [activeTab, setActiveTab] = useState('feed');
   const [showDetail, setShowDetail] = useState(false);
   const [selectedFeedId, setSelectedFeedId] = useState<number | null>(null);
+  const [selectedFanartId, setSelectedFanartId] = useState<number | null>(null);
+  const [selectedGoodsId, setSelectedGoodsId] = useState<number | null>(null);
 
   // 데이터 가져오기, 초기세팅
   useEffect(() => {
@@ -103,10 +107,23 @@ export default function CommunityDetail() {
 
   const handleCloseDetail = () => {
     setShowDetail(false);
+    setSelectedFeedId(null);
+    setSelectedFanartId(null);
+    setSelectedGoodsId(null);
   };
 
-  const handleShowDetail = (feedId: number) => {
+  const handleShowFeedDetail = (feedId: number) => {
     setSelectedFeedId(feedId);
+    setShowDetail(true);
+  };
+
+  const handleShowFanartDetail = (fanArtId: number) => {
+    setSelectedFanartId(fanArtId);
+    setShowDetail(true);
+  };
+
+  const handleShowGoodsDetail = (goodsId: number) => {
+    setSelectedGoodsId(goodsId);
     setShowDetail(true);
   };
 
@@ -200,13 +217,13 @@ export default function CommunityDetail() {
           </div>
         </div>
         {isSelected === 'feed' && (
-          <CommunityFeedList idolGroupId={idolGroupId} onFeedClick={handleShowDetail} />
+          <CommunityFeedList idolGroupId={idolGroupId} onFeedClick={handleShowFeedDetail} />
         )}
         {isSelected === 'fan-art' && (
-          <CommunityFanArtList idolGroupId={idolGroupId} onFanArtClick={() => {}} />
+          <CommunityFanArtList idolGroupId={idolGroupId} onFanArtClick={handleShowFanartDetail} />
         )}
         {isSelected === 'goods' && (
-          <CommunityGoodsList idolGroupId={idolGroupId} onGoodsClick={() => {}} />
+          <CommunityGoodsList idolGroupId={idolGroupId} onGoodsClick={handleShowGoodsDetail} />
         )}
       </div>
 
@@ -214,6 +231,12 @@ export default function CommunityDetail() {
 
       {selectedFeedId && (
         <FeedDetailModal show={showDetail} onClose={handleCloseDetail} feedId={selectedFeedId} />
+      )}
+      {selectedFanartId && (
+        <FanartDetailModal show={showDetail} onClose={handleCloseDetail} fanArtId={selectedFanartId} />
+      )}
+      {selectedGoodsId && (
+        <GoodsDetailModal show={showDetail} onClose={handleCloseDetail} goodsId={selectedGoodsId} />
       )}
 
       {show && isSelected  === 'feed' && (
