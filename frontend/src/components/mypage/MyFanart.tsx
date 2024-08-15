@@ -4,7 +4,7 @@ import { ReactComponent as FullHeart } from '../../assets/images/Gallery/whitefu
 import { ReactComponent as Heart } from '../../assets/images/Gallery/whiteheart.svg';
 import { ReactComponent as Comment } from '../../assets/images/Gallery/whitecomment.svg';
 import { MyFanArtInfo } from '../../interface/gallery';
-import { IMAGE_BASE_URL } from '../../apis/core';
+import { getUserId, IMAGE_BASE_URL } from '../../apis/core';
 import UserProfile from '../common/UserProfile';
 import { useAppDispatch } from '../../store/hooks/hook';
 import { toggleFanArtLike } from '../../features/communityDetail/communityDetailSlice';
@@ -32,20 +32,24 @@ export default function MyFanart({ fanArt }: FanArtProps) {
   } = fanArt;
 
   const dispatch = useAppDispatch();
+  const currentUserId = getUserId();
 
   return (
     <div className="gallery">
-      <div className="community_name">
-        <Link to={`/community/${idolGroupId}`}>{idolGroupName}</Link>
+      <div className="gallery-img-container">
+        <img className="gallery-img" src={IMAGE_BASE_URL + fanArtImagePathList[0]} alt="팬아트그림" />
+        <div className="community_name">
+          <Link to={`/community/${idolGroupId}`}>{idolGroupName}</Link>
+        </div>
       </div>
-      <img className="gallery-img" src={IMAGE_BASE_URL + fanArtImagePathList[0]} alt="팬아트그림" />
-
+      {userId === currentUserId &&
+      <div className="dots_box">
+        <Dots className="dots hoverup" />
+      </div>
+      }
       <div className="title_box">
         <div className="type">팬아트</div>
         <div className="title">{title}</div>
-        <div className="dots_box">
-          <Dots className="dots hoverup" />
-        </div>
       </div>
       <div className="gallery_info">
         <div className="gallery_profile">
