@@ -1,13 +1,16 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, {  useState, useEffect } from 'react';
 import { ReactComponent as Play } from '../../assets/images/challenge/playbtn.svg';
 import { ReactComponent as Pause } from '../../assets/images/challenge/pause.svg';
 import { useAppSelector } from '../../store/hooks/hook';
 import { IMAGE_BASE_URL } from '../../apis/core';
 
-export default function VideoPlayerDetail() {
-  const { selectedChallengeDetail } = useAppSelector(state => state.challengeDetail);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+interface Props{
+  videoRef: React.RefObject<HTMLVideoElement>;
+  isPlaying : boolean;
+  setIsPlaying : (argu : boolean) => void;
+}
+export default function VideoPlayerDetail( {videoRef,isPlaying,setIsPlaying} : Props) {
+  const { selectedChallengeDetail  } = useAppSelector(state => state.challengeDetail);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
 
@@ -28,7 +31,7 @@ export default function VideoPlayerDetail() {
         }
       };
     }
-  }, []);
+  }, [videoRef]);
 
   const togglePlayPause = () => {
     const videoElement = videoRef.current;
@@ -63,7 +66,8 @@ export default function VideoPlayerDetail() {
       videoRef.current.play();
       setIsPlaying(true);
     }
-  }, [selectedChallengeDetail]);
+
+  }, [selectedChallengeDetail, videoRef,setIsPlaying]);
 
   return (
     <div className="video-container" onClick={togglePlayPause}>
@@ -96,9 +100,6 @@ export default function VideoPlayerDetail() {
             ) : (
               <Play className="w-20 h-20 fade-out" />
             )}
-          </div>
-          <div className="absolute text-black top-2 right-10 text-3xl">
-            {Math.floor(selectedChallengeDetail.score)} 점
           </div>
         </>
       )}

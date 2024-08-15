@@ -48,7 +48,9 @@ export default function CommunityFanartList({
           <CommunityFanart
             key={fanArt.fanArtId}
             fanArt={fanArt}
-            onClick={() => onFanArtClick(fanArt.fanArtId)}
+            onClick={() => {
+              onFanArtClick(fanArt.fanArtId);
+            }}
           />
         ))
       ) : keyword ? (

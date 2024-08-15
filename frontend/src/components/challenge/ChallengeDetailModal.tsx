@@ -6,6 +6,7 @@ import { isAxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { useAppDispatch } from '../../store/hooks/hook';
 import { initialChallengeDetailList } from '../../features/challenge/challengeDetailSlice';
+import { incrementParticipants } from '../../features/challenge/challengeSlice';
 
 interface ModalProps {
   onClose: () => void;
@@ -33,6 +34,7 @@ export default function ChallengeDetailModal({ onClose, challengeId }: ModalProp
         position: 'top-right',
       });
       await postChallengeJoinAPI(challengeId, formData);
+      dispatch(incrementParticipants(challengeId));
       toast.info('등록이 완료되었습니다', {
         position: 'top-right',
       });

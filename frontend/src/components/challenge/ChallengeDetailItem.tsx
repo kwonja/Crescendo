@@ -15,11 +15,13 @@ import {
 import { deleteChallengeJoinAPI, getChallengeLikeAPI } from '../../apis/challenge';
 import { isAxiosError } from 'axios';
 import { toast } from 'react-toastify';
+import { decrementParticipants } from '../../features/challenge/challengeSlice';
 
 interface ChallengeProps {
   Challenge: ChallengeDetails;
+  challengeId : number;
 }
-export default function ChallengeDetailItem({ Challenge }: ChallengeProps) {
+export default function ChallengeDetailItem({ Challenge,challengeId }: ChallengeProps) {
   const { isLike, challengeVideoPath, likeCnt, nickname, challengeJoinId, userId } = Challenge;
   const dispath = useAppDispatch();
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -43,6 +45,7 @@ export default function ChallengeDetailItem({ Challenge }: ChallengeProps) {
       toast.success('삭제되었습니다', {
         position: 'top-right',
       });
+
       dispath(setSelectedChallengeDetail({
         challengeJoinId: 0,
         challengeVideoPath: '',
@@ -53,6 +56,7 @@ export default function ChallengeDetailItem({ Challenge }: ChallengeProps) {
         userId: 0,
       }))
       dispath(deleteChallengeDetail(challengeJoinId));
+      dispath(decrementParticipants(challengeId));
     } catch (err: unknown) {
       if (isAxiosError(err)) {
         // Axios 에러인 경우
