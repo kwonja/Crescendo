@@ -61,14 +61,12 @@
         .tab {
           width: 90px;
           height: 44px;
-          color: #fff;
-          cursor: pointer;
-        }
-      
-        .tab.active {
           border-radius: 20px 20px 0px 0px;
           background: #fff;
           color: #f66;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .close {

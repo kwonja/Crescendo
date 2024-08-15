@@ -54,7 +54,7 @@ export default function CommunityDetail() {
   const dispatch = useAppDispatch();
 
   const [show, setShow] = useState(false);
-  const [activeTab, setActiveTab] = useState('feed');
+  // const [activeTab, setActiveTab] = useState('feed');
   const [showDetail, setShowDetail] = useState(false);
   const [selectedFeedId, setSelectedFeedId] = useState<number | null>(null);
 
@@ -89,7 +89,9 @@ export default function CommunityDetail() {
       : setSearchOptions(['제목', '내용', '작성자']);
   }, [isSelected, dispatch]);
 
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    setShow(false)};
+
   const handleShow = () => {
     if (isLoggedIn) {
       setShow(true);
@@ -214,7 +216,29 @@ export default function CommunityDetail() {
         <FeedDetailModal show={showDetail} onClose={handleCloseDetail} feedId={selectedFeedId} />
       )}
 
-      {show && (
+      {show && isSelected  === 'feed' && (
+        <div className="modal">
+          <div className="modal-content">
+            <div className="modal-header">
+              <div className="modal-header-title">
+                <h2>글작성</h2>
+              </div>
+              <div className="tabs">
+                <div
+                  className={'tab'}
+                >
+                  피드
+                </div>
+              </div>
+              <Close className="close" onClick={handleClose} />
+            </div>
+            <div className="modal-body">
+              <FeedForm onClose={handleClose} />
+            </div>
+          </div>
+        </div>
+      )}
+      {show && isSelected  === 'fan-art' && (
         <div className="modal">
           <div className="modal-content">
             <div className="modal-header">
@@ -223,22 +247,37 @@ export default function CommunityDetail() {
               </div>
               <div className="tabs">
                 <button
-                  className={`tab ${activeTab === 'feed' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('feed')}
+                  className={'tab'}
                 >
-                  피드
-                </button>
-                <button
-                  className={`tab ${activeTab === 'gallery' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('gallery')}
-                >
-                  갤러리
+                  팬아트
                 </button>
               </div>
               <Close className="close" onClick={handleClose} />
             </div>
             <div className="modal-body">
-              {activeTab === 'feed' ? <FeedForm onClose={handleClose} /> : <GalleryForm />}
+              <GalleryForm category="팬아트" onClose={handleClose} />
+            </div>
+          </div>
+        </div>
+      )}
+      {show && isSelected  === 'goods' && (
+        <div className="modal">
+          <div className="modal-content">
+            <div className="modal-header">
+              <div className="modal-header-title">
+                <h2>글작성</h2>
+              </div>
+              <div className="tabs">
+                <button
+                  className={'tab'}
+                >
+                  굿즈
+                </button>
+              </div>
+              <Close className="close" onClick={handleClose} />
+            </div>
+            <div className="modal-body">
+              <GalleryForm category="굿즈" onClose={handleClose}/>
             </div>
           </div>
         </div>
