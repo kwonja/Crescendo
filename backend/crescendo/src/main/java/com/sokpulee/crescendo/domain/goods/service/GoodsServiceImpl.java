@@ -276,6 +276,7 @@ public class GoodsServiceImpl implements GoodsService {
                     .goodsImagePathList(goodsImagePathList)
                     .content(goods.getContent())
                     .commentCnt(goods.getCommentCnt())
+                    .title(goods.getTitle())
                     .build();
         } else {
             User user1 = userRepository.findById(loggedInUserId)
