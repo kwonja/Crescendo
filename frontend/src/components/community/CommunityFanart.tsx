@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ReactComponent as Dots } from '../../assets/images/Gallery/whitedots.svg';
 import { ReactComponent as FullHeart } from '../../assets/images/Gallery/whitefullheart.svg';
 import { ReactComponent as Heart } from '../../assets/images/Gallery/whiteheart.svg';
@@ -8,13 +8,16 @@ import { getUserId, IMAGE_BASE_URL } from '../../apis/core';
 import UserProfile from '../common/UserProfile';
 import { useAppDispatch } from '../../store/hooks/hook';
 import { toggleFanArtLike } from '../../features/communityDetail/communityDetailSlice';
+import ActionMenu from '../common/ActionMenu';
 
 interface FanArtProps {
   fanArt: FanArtInfo;
   onClick: () => void;
+  onEditAction: (fanArtId:number)=>void;
+  onDeleteAction: (fanArtId:number)=>void;
 }
 
-export default function CommunityFanart({ fanArt, onClick }: FanArtProps) {
+export default function CommunityFanart({ fanArt, onClick, onDeleteAction, onEditAction }: FanArtProps) {
   const {
     fanArtId,
     userId,
@@ -23,12 +26,13 @@ export default function CommunityFanart({ fanArt, onClick }: FanArtProps) {
     likeCnt,
     fanArtImagePathList,
     commentCnt,
-    lastModified,
+    createdAt,
     title,
     isLike,
   } = fanArt;
 
   const dispatch = useAppDispatch();
+  const [showActionMenu, setShowActionMenu] = useState<boolean>(false);
   const currentUserId = getUserId();
 
   const handleClick = () => {
@@ -40,7 +44,17 @@ export default function CommunityFanart({ fanArt, onClick }: FanArtProps) {
       <img className="gallery-img" src={IMAGE_BASE_URL + fanArtImagePathList[0]} alt="팬아트그림" />
       {userId === currentUserId &&
       <div className="dots_box">
-        <Dots className="dots hoverup" />
+        <Dots className="dots hoverup" onClick={e => {
+          e.stopPropagation();
+          setShowActionMenu(true);
+        }} />
+        {showActionMenu && (
+          <ActionMenu
+            onClose={()=>setShowActionMenu(false)}
+            onEditAction={()=>onEditAction(fanArtId)}
+            onDeleteAction={()=>onDeleteAction(fanArtId)}
+          />
+        )}
       </div>
       }
       <div className="title_box">
@@ -53,7 +67,7 @@ export default function CommunityFanart({ fanArt, onClick }: FanArtProps) {
           <UserProfile
             userId={userId}
             userNickname={nickname}
-            date={lastModified}
+            date={new Date(createdAt).toLocaleString()}
             userProfilePath={profileImagePath ? IMAGE_BASE_URL + profileImagePath : null}
           />
         </div>

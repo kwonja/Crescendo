@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ReactComponent as Dots } from '../../assets/images/Gallery/whitedots.svg';
 import { ReactComponent as FullHeart } from '../../assets/images/Gallery/whitefullheart.svg';
 import { ReactComponent as Heart } from '../../assets/images/Gallery/whiteheart.svg';
@@ -10,12 +10,15 @@ import { useAppDispatch } from '../../store/hooks/hook';
 import { toggleFanArtLike } from '../../features/communityDetail/communityDetailSlice';
 import { decrementLike, incrementLike } from '../../features/mypage/myFeedSlice';
 import { Link } from 'react-router-dom';
+import ActionMenu from '../common/ActionMenu';
 
 interface FanArtProps {
   fanArt: MyFanArtInfo;
+  onEditAction: (fanArtId:number)=>void;
+  onDeleteAction: (fanArtId:number)=>void;
 }
 
-export default function MyFanart({ fanArt }: FanArtProps) {
+export default function MyFanart({ fanArt, onDeleteAction, onEditAction  }: FanArtProps) {
   const {
     fanArtId,
     userId,
@@ -32,6 +35,7 @@ export default function MyFanart({ fanArt }: FanArtProps) {
   } = fanArt;
 
   const dispatch = useAppDispatch();
+  const [showActionMenu, setShowActionMenu] = useState<boolean>(false);
   const currentUserId = getUserId();
 
   return (
@@ -44,7 +48,17 @@ export default function MyFanart({ fanArt }: FanArtProps) {
       </div>
       {userId === currentUserId &&
       <div className="dots_box">
-        <Dots className="dots hoverup" />
+        <Dots className="dots hoverup" onClick={e => {
+          e.stopPropagation();
+          setShowActionMenu(true);
+        }} />
+        {showActionMenu && (
+          <ActionMenu
+            onClose={()=>setShowActionMenu(false)}
+            onEditAction={()=>onEditAction(fanArtId)}
+            onDeleteAction={()=>onDeleteAction(fanArtId)}
+          />
+        )}
       </div>
       }
       <div className="title_box">

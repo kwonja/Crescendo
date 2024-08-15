@@ -27,7 +27,6 @@ export default function MyFeedList({ userId }: MyFeedListProps) {
 
   useEffect(()=> {
     const feed = myFeedList.find((feed)=>feed.feedId===showEditModal);
-    console.log(feed);
     if (feed) {
       setEditModalProps({content:feed.content, tags:feed.tagList, images:feed.feedImagePathList})
     }
@@ -93,7 +92,7 @@ export default function MyFeedList({ userId }: MyFeedListProps) {
       { //수정모달
         showEditModal && (
           <div className="modal-overlay" style={{zIndex:1100}} onClick = {(e)=>e.stopPropagation()}>
-            <div className="feed-edit-modal" >
+            <div className="feed-edit-modal modal" >
               <div className="modal-content">
                 <div className="modal-header">
                   <div className="modal-header-title">

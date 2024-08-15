@@ -795,6 +795,7 @@ const GoodsDetailModal: React.FC<GoodsDetailModalProps> = ({ show, onClose, good
               <EditGoods
                 onClose={handleEditModalClose}
                 goodsId={goodsId}
+                initialTitle={goodsDetail.title}
                 initialContent={goodsDetail.content}
                 initialImages={goodsDetail.goodsImagePathList}
               />
