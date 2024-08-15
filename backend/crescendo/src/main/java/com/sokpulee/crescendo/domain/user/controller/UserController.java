@@ -63,7 +63,7 @@ public class UserController {
     @DeleteMapping
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 API")
     public ResponseEntity<?> deleteUserById(@AuthPrincipal Long loggedInUserId) {
-        if(loggedInUserId != null) {
+        if(loggedInUserId == null) {
             throw new AuthenticationRequiredException();
         }
 
