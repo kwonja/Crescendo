@@ -103,7 +103,7 @@ export default function CommunityGoodsList({ idolGroupId, onGoodsClick }: Commun
       { //수정모달
         showEditModal && (
           <div className="modal-overlay" style={{zIndex:1100}} onClick = {(e)=>e.stopPropagation()}>
-            <div className="feed-edit-modal" >
+            <div className="feed-edit-modal modal" >
               <div className="modal-content">
                 <div className="modal-header">
                   <div className="modal-header-title">
