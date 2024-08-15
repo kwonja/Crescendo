@@ -15,7 +15,6 @@ interface ChallengeProps {
 }
 const inistalState: ChallengeProps = {
   challengeLists: [],
-
   status: '',
   error: '',
   currentPage: 0,

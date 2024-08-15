@@ -12,6 +12,7 @@ interface ChallengeDetailProps {
   size: number;
   totalPage: number;
   selectedChallengeDetail: ChallengeDetails;
+  comparePlay : boolean;
 }
 const inistalState: ChallengeDetailProps = {
   challengeDetailLists: [],
@@ -29,6 +30,7 @@ const inistalState: ChallengeDetailProps = {
     score: 0,
     userId: 0,
   },
+  comparePlay  : false,
 };
 
 interface APIstate {
@@ -85,7 +87,10 @@ const challengeDetailSlice = createSlice({
         detail => detail.challengeJoinId !== action.payload,
       );
     },
-    
+    playCompareVideo : (state)=>{
+      state.comparePlay = true;
+    }
+
   },
   extraReducers(builder) {
     builder
@@ -110,5 +115,6 @@ export const {
   deleteChallengeDetail,
   initialChallengeDetailList,
   setChallengeDetailPage,
+  playCompareVideo,
 } = challengeDetailSlice.actions;
 export default challengeDetailSlice.reducer;
