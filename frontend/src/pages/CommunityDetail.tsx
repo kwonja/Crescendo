@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { ReactComponent as FullStar } from '../assets/images/CommunityDetail/fullstar.svg';
 import { ReactComponent as Star } from '../assets/images/CommunityDetail/star.svg';
 import React, { useEffect, useRef, useState } from 'react';
@@ -30,6 +30,7 @@ export default function CommunityDetail() {
   const [filterOptions, setFilterOptions] = useState<string[]>([]);
   const [sortOptions, setSortOptions] = useState<string[]>([]);
   const [searchOptions, setSearchOptions] = useState<string[]>([]);
+  const navigate = useNavigate();
 
   const initialDetail: CommunityDetailInfo = {
     idolGroupId: 0,
@@ -88,7 +89,14 @@ export default function CommunityDetail() {
   }, [isSelected, dispatch]);
 
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleShow = () => {
+    if (isLoggedIn) {
+      setShow(true);
+    } else {
+      alert('로그인이 필요한 서비스입니다.');
+      navigate('/login');
+    }
+  };
 
   const handleCloseDetail = () => {
     setShowDetail(false);
@@ -199,7 +207,7 @@ export default function CommunityDetail() {
         )}
       </div>
 
-      {isLoggedIn && <WriteButton className="write-button" onClick={handleShow} />}
+      {<WriteButton className="write-button" onClick={handleShow} />}
 
       {selectedFeedId && (
         <FeedDetailModal show={showDetail} onClose={handleCloseDetail} feedId={selectedFeedId} />
