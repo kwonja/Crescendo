@@ -94,7 +94,13 @@ export default function CommunityDetail() {
   }, [isSelected, dispatch]);
 
   const handleClose = () => {
-    setShow(false)};
+    const userConfirmed = window.confirm('작성 중인 내용이 사라질 수 있습니다. 그래도 닫으시겠습니까?');
+    if (userConfirmed) {
+    setShow(false);
+    setSelectedFeedId(null);
+    setSelectedFanartId(null);
+    setSelectedGoodsId(null);
+  }};
 
   const handleShow = () => {
     if (isLoggedIn) {
