@@ -1,7 +1,7 @@
 //Ducks 패턴 공부예정
 
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { MyFeedInfo } from '../../interface/feed';
+import { FeedInfo, MyFeedInfo } from '../../interface/feed';
 import { getMyFanArtAPI, getMyFeedAPI, getMyGoodsAPI } from '../../apis/user';
 import { MyFanArtInfo, MyGoodsInfo } from '../../interface/gallery';
 import { RootState } from '../../store/store';
@@ -110,6 +110,20 @@ const myFeedSlice = createSlice({
         }
       }
     },
+
+    updateMyFeed: (state, action: PayloadAction<{ feed: FeedInfo; feedId: number }>) => {
+      state.myFeedList = state.myFeedList.map(feed => {
+          if (feed.feedId !== action.payload.feedId) {
+            return feed;
+          } 
+          const newFeed:MyFeedInfo = {...action.payload.feed, 
+            idolGroupId: feed.idolGroupId, 
+            idolGroupName: feed.idolGroupName};
+          return newFeed;
+        }
+        );
+    },
+
   },
   extraReducers(builder) {
     builder
@@ -155,5 +169,5 @@ const myFeedSlice = createSlice({
   },
 });
 
-export const { resetState, incrementLike, decrementLike } = myFeedSlice.actions;
+export const { resetState, incrementLike, decrementLike, updateMyFeed } = myFeedSlice.actions;
 export default myFeedSlice.reducer;

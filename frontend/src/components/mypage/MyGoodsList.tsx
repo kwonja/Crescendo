@@ -18,7 +18,7 @@ export default function MyGoodsList({ userId }: MyGoodsListProps) {
       dispatch(resetState());
       if (observer.current) observer.current.disconnect();
     };
-  }, [dispatch]);
+  }, [dispatch, userId]);
 
   const loadMoreElementRef = useCallback(
     (node: HTMLDivElement | null) => {
