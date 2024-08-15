@@ -23,7 +23,7 @@ import '../../scss/components/community/_feeddetailmodal.scss';
 
 const MAX_COMMENT_LENGTH = 50;
 
-type FeedDetailResponse = {
+type GoodsDetailResponse = {
   userId: number;
   profileImagePath: string;
   nickname: string;
@@ -38,7 +38,7 @@ type FeedDetailResponse = {
 };
 
 type Comment = {
-  feedCommentId: number;
+  goodsCommentId: number;
   userId: number;
   nickname: string;
   profileImagePath: string | null;
@@ -57,7 +57,7 @@ type FeedDetailModalProps = {
 };
 
 type Reply = {
-  feedCommentId: number;
+  goodsCommentId: number;
   writerId: number;
   profileImagePath: string | null;
   nickname: string;
@@ -68,7 +68,7 @@ type Reply = {
 };
 
 const GoodsDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, goodsId }) => {
-  const [feedDetail, setFeedDetail] = useState<FeedDetailResponse | null>(null);
+  const [feedDetail, setFeedDetail] = useState<GoodsDetailResponse | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
   const [newReply, setNewReply] = useState<{ [key: number]: string }>({});
@@ -119,7 +119,7 @@ const GoodsDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, goods
 
         setComments(prevComments =>
           prevComments.map(comment =>
-            comment.feedCommentId === commentId
+            comment.goodsCommentId === commentId
               ? { ...comment, replies: response.data.content }
               : comment,
           ),
@@ -269,8 +269,8 @@ const GoodsDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, goods
 
     const commentIndex = comments.findIndex(
       comment =>
-        comment.feedCommentId === commentId ||
-        (comment.replies && comment.replies.some(reply => reply.feedCommentId === commentId)),
+        comment.goodsCommentId === commentId ||
+        (comment.replies && comment.replies.some(reply => reply.goodsCommentId === commentId)),
     );
 
     if (commentIndex === -1) return;
@@ -278,7 +278,7 @@ const GoodsDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, goods
     const comment = comments[commentIndex];
 
     // 답글인지 댓글인지 확인
-    if (comment.feedCommentId === commentId) {
+    if (comment.goodsCommentId === commentId) {
       // 댓글일 경우
       const updatedComment = {
         ...comment,
@@ -289,7 +289,7 @@ const GoodsDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, goods
       updatedComments[commentIndex] = updatedComment;
     } else {
       // 답글일 경우
-      const replyIndex = comment.replies!.findIndex(reply => reply.feedCommentId === commentId);
+      const replyIndex = comment.replies!.findIndex(reply => reply.goodsCommentId === commentId);
       if (replyIndex === -1) return;
 
       const originalReply = comment.replies![replyIndex];
@@ -318,7 +318,7 @@ const GoodsDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, goods
         prevComments.map((comment, idx) => {
           if (idx !== commentIndex) return comment;
 
-          if (comment.feedCommentId === commentId) {
+          if (comment.goodsCommentId === commentId) {
             return {
               ...comment,
               isLike: !comment.isLike,
@@ -326,7 +326,7 @@ const GoodsDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, goods
             };
           } else {
             const rollbackReplies = comment.replies!.map(reply =>
-              reply.feedCommentId === commentId
+              reply.goodsCommentId === commentId
                 ? {
                     ...reply,
                     isLike: !reply.isLike,
@@ -562,7 +562,7 @@ const GoodsDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, goods
               <div className='no-comments-container'><NoComments className='no-comments-icon'/><div className='no-comments-text'>등록된 댓글이 없습니다...</div></div>
             ) : (
               comments.map(comment => (
-                <div key={comment.feedCommentId} className="comment">
+                <div key={comment.goodsCommentId} className="comment">
                   <div className="comment-header">
                     <div className="comment-profile-image-container">
                       {comment.profileImagePath ? (
@@ -588,32 +588,32 @@ const GoodsDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, goods
                       {comment.isLike ? (
                         <CommentFullHeartIcon
                           className="comment-heart-button"
-                          onClick={() => handleLikeToggle(comment.feedCommentId)}
+                          onClick={() => handleLikeToggle(comment.goodsCommentId)}
                         />
                       ) : (
                         <CommentHeartIcon
                           className="comment-heart-button"
-                          onClick={() => handleLikeToggle(comment.feedCommentId)}
+                          onClick={() => handleLikeToggle(comment.goodsCommentId)}
                         />
                       )}
                       <CommentMenuIcon
                         className={`comment-dots-button ${currentUserId === comment.userId ? 'visible' : ''}`}
-                        onClick={() => handleCommentMenuToggle(comment.feedCommentId)}
+                        onClick={() => handleCommentMenuToggle(comment.goodsCommentId)}
                       />
                       <div className="comment-menu">
-                        {activeMenuId === comment.feedCommentId && (
+                        {activeMenuId === comment.goodsCommentId && (
                           <CommentMenu
                             onEdit={() =>
-                              handleCommentEditClick(comment.feedCommentId, comment.content)
+                              handleCommentEditClick(comment.goodsCommentId, comment.content)
                             }
-                            onDelete={() => handleCommentDelete(comment.feedCommentId)}
+                            onDelete={() => handleCommentDelete(comment.goodsCommentId)}
                           />
                         )}
                       </div>
                     </div>
                   </div>
                   <div className="comment-content">
-                    {editingCommentId === comment.feedCommentId ? (
+                    {editingCommentId === comment.goodsCommentId ? (
                       <div className="editing-comment">
                         <textarea
                           className="comment-edit-input"
@@ -625,7 +625,7 @@ const GoodsDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, goods
                         />
                         <button
                           className="comment-edit-submit-button"
-                          onClick={() => handleCommentEditSubmit(comment.feedCommentId)}
+                          onClick={() => handleCommentEditSubmit(comment.goodsCommentId)}
                         >
                           수정
                         </button>
@@ -643,36 +643,36 @@ const GoodsDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, goods
                   <div className="reply-icon-container">
                     <ReplyIcon
                       className="reply-icon"
-                      onClick={() => handleReplyToggle(comment.feedCommentId)}
+                      onClick={() => handleReplyToggle(comment.goodsCommentId)}
                     />
                     <div className="reply-count">
                       {comment.replyCnt}개의{' '}
                       <div
                         className="reply-input-toggle"
-                        onClick={() => handleReplyInputToggle(comment.feedCommentId)}
+                        onClick={() => handleReplyInputToggle(comment.goodsCommentId)}
                       >
                         &nbsp;답글
                       </div>
-                      {replyInputVisibility[comment.feedCommentId] && (
+                      {replyInputVisibility[comment.goodsCommentId] && (
                         <div className="reply-input-container">
                           <textarea
                             className="reply-input-textarea"
                             placeholder="여기에 입력하세요."
-                            value={newReply[comment.feedCommentId] || ''}
+                            value={newReply[comment.goodsCommentId] || ''}
                             onChange={e => {
-                              handleNewReplyChange(e, comment.feedCommentId);
+                              handleNewReplyChange(e, comment.goodsCommentId);
                               adjustTextareaHeight(e.target);
                             }}
                           />
                           <CommentWriteButton
                             className="reply-write-button"
-                            onClick={() => handleAddReply(comment.feedCommentId)}
+                            onClick={() => handleAddReply(comment.goodsCommentId)}
                           />
                         </div>
                       )}
                     </div>
                   </div>
-                  {replyVisibility[comment.feedCommentId] &&
+                  {replyVisibility[comment.goodsCommentId] &&
                     comment.replies &&
                     comment.replies.length > 0 && (
                       <div className="replies">
@@ -703,32 +703,32 @@ const GoodsDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, goods
                                 {reply.isLike ? (
                                   <CommentFullHeartIcon
                                     className="reply-heart-button"
-                                    onClick={() => handleLikeToggle(reply.feedCommentId)}
+                                    onClick={() => handleLikeToggle(reply.goodsCommentId)}
                                   />
                                 ) : (
                                   <CommentHeartIcon
                                     className="reply-heart-button"
-                                    onClick={() => handleLikeToggle(reply.feedCommentId)}
+                                    onClick={() => handleLikeToggle(reply.goodsCommentId)}
                                   />
                                 )}
                                 <CommentMenuIcon
                                   className={`reply-dots-button ${currentUserId === reply.writerId ? 'visible' : ''}`}
-                                  onClick={() => handleCommentMenuToggle(reply.feedCommentId)}
+                                  onClick={() => handleCommentMenuToggle(reply.goodsCommentId)}
                                 />
                                 <div className="reply-menu">
-                                  {activeMenuId === reply.feedCommentId && (
+                                  {activeMenuId === reply.goodsCommentId && (
                                     <ReplyMenu
                                       onEdit={() =>
-                                        handleReplyEditClick(reply.feedCommentId, reply.content)
+                                        handleReplyEditClick(reply.goodsCommentId, reply.content)
                                       }
-                                      onDelete={() => handleCommentDelete(reply.feedCommentId)}
+                                      onDelete={() => handleCommentDelete(reply.goodsCommentId)}
                                     />
                                   )}
                                 </div>
                               </div>
                             </div>
                             <div className="reply-content">
-                              {editingCommentId === reply.feedCommentId ? (
+                              {editingCommentId === reply.goodsCommentId ? (
                                 <div className="editing-reply">
                                   <textarea
                                     className="reply-edit-input"
@@ -740,7 +740,7 @@ const GoodsDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, goods
                                   />
                                   <button
                                     className="reply-edit-submit-button"
-                                    onClick={() => handleCommentEditSubmit(reply.feedCommentId)}
+                                    onClick={() => handleCommentEditSubmit(reply.goodsCommentId)}
                                   >
                                     수정
                                   </button>
@@ -790,7 +790,7 @@ const GoodsDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, goods
             <div className="modal-body">
               <EditGoods
                 onClose={handleEditModalClose}
-                feedId={goodsId}
+                goodsId={goodsId}
                 initialContent={feedDetail.content}
                 initialImages={feedDetail.goodsImagePathList}
               />
