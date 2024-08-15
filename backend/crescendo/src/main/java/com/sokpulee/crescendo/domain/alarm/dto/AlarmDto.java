@@ -9,12 +9,14 @@ import lombok.Getter;
 @Getter
 public class AlarmDto {
 
+    private Long ownerId;
     private Long userId;
     private Long alarmChannelId;
     private Long relatedId;
     private String content;
 
-    public AlarmDto(Long userId, Long alarmChannelId, Long relatedId, String content) {
+    public AlarmDto(Long ownerId, Long userId, Long alarmChannelId, Long relatedId, String content) {
+        this.ownerId = ownerId;
         this.userId = userId;
         this.alarmChannelId = alarmChannelId;
         this.relatedId = relatedId;
