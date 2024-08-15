@@ -167,6 +167,12 @@ const FanartDetailModal: React.FC<FanArtDetailModalProps> = ({ show, onClose, fa
   };
 
   useEffect(() => {
+    if (fanArtDetail !== null) {
+      console.log(fanArtDetail);
+    }
+  }, [fanArtDetail]);
+
+  useEffect(() => {
     if (show) {
       setComments([]);
       loadfanArtDetail();
@@ -553,7 +559,7 @@ const FanartDetailModal: React.FC<FanArtDetailModalProps> = ({ show, onClose, fa
               )}
             </div>
             <div className="feed-content-container">
-              <div className='feed-title'>{fanArtDetail.title}</div>
+              <div className="feed-title">{fanArtDetail.title}</div>
               <div className="feed-content">{fanArtDetail.content}</div>
             </div>
           </div>
