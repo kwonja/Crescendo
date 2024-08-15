@@ -152,7 +152,7 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 10px;
-    max-width: calc(100% - 150px); /* 태그 영역 제한 */
+    max-width: calc(100% - 150px);
 
     .tags {
       display: flex;
@@ -236,23 +236,6 @@
     }
 
     .select-title-group {
-      display: flex;
-      flex-direction: row;
-
-      select {
-        width: 113px;
-        height: 40px;
-        border-radius: 15px;
-        border: 3px solid #f66;
-        box-sizing: border-box;
-        font-size: 24px;
-        text-align: center;
-        color: #f66;
-        font-weight: 400;
-        line-height: 100%; /* 24px */
-        letter-spacing: 2.4px;
-      }
-
       .title-wrapper {
         position: relative;
         border-radius: 15px;
@@ -261,9 +244,7 @@
         box-sizing: border-box;
         overflow: hidden;
 
-        margin-left: 15px;
-
-        width: 782px;
+        width: 1782px;
         height: 40px;
 
         input {
@@ -288,6 +269,9 @@
           font-size: 25px;
         }
       }
+      display: flex;
+      flex-direction: row;
+
     }
   }
 
