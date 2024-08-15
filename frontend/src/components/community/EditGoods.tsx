@@ -19,6 +19,7 @@ type ImageWithId = {
 type EditGoodsProps = {
   onClose: () => void;
   goodsId: number;
+  initialTitle: string;
   initialContent: string;
   initialImages: string[];
 };
@@ -26,11 +27,12 @@ type EditGoodsProps = {
 const EditGoods: React.FC<EditGoodsProps> = ({
   onClose,
   goodsId,
+  initialTitle,
   initialContent,
   initialImages,
 }) => {
   const [images, setImages] = useState<ImageWithId[]>([]);
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState(initialTitle);
   const [content, setContent] = useState(initialContent);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
@@ -46,7 +48,8 @@ const EditGoods: React.FC<EditGoodsProps> = ({
     }));
     setImages(initialImageObjects);
     setContent(initialContent);
-  }, [initialImages, initialContent,]);
+    setTitle(initialTitle)
+  }, [initialImages, initialContent, initialTitle]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {

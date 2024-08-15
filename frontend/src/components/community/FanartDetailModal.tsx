@@ -87,9 +87,7 @@ const FanartDetailModal: React.FC<FanArtDetailModalProps> = ({ show, onClose, fa
 
   const loadfanArtDetail = useCallback(async () => {
     try {
-      console.log(fanArtId);
       const response = await Authapi.get(`/api/v1/community/fan-art/${fanArtId}`);
-      console.log(response);
       setFanArtDetail(response.data);
     } catch (error) {
       console.error('Error fetching feed details:', error);

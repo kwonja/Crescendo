@@ -28,7 +28,6 @@ export default function CommunityFeedList({ idolGroupId, onFeedClick }: Communit
 
   useEffect(()=> {
     const feed = feedList.find((feed)=>feed.feedId===showEditModal);
-    console.log(feed);
     if (feed) {
       setEditModalProps({content:feed.content, tags:feed.tagList, images:feed.feedImagePathList})
     }

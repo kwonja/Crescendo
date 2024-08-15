@@ -60,12 +60,12 @@ export default function CommunityFeed({ feed, onClick, onEditAction, onDeleteAct
             setShowActionMenu(true);
           }} />
           {showActionMenu && (
-              <ActionMenu
-                onClose={()=>setShowActionMenu(false)}
-                onEditAction={()=>onEditAction(feedId)}
-                onDeleteAction={()=>onDeleteAction(feedId)}
-              />
-            )}
+            <ActionMenu
+              onClose={()=>setShowActionMenu(false)}
+              onEditAction={()=>onEditAction(feedId)}
+              onDeleteAction={()=>onDeleteAction(feedId)}
+            />
+          )}
         </div>
         }
       </div>
