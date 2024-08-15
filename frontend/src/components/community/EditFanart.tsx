@@ -1,46 +1,73 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
 import { Authapi } from '../../apis/core';
+import { useParams } from 'react-router-dom';
 import { ReactComponent as AddImage } from '../../assets/images/img_add.svg';
 import { ReactComponent as RemoveIcon } from '../../assets/images/remove_icon.svg';
+import { useAppDispatch } from '../../store/hooks/hook';
+import { getFeedDetailAPI } from '../../apis/feed';
+import { updateFeed } from '../../features/communityDetail/communityDetailSlice';
+import { updateMyFeed } from '../../features/mypage/myFeedSlice';
 import '../../scss/components/community/_postfeed.scss';
 
 type ImageWithId = {
   id: number;
-  file: File;
+  url: string;
+  file?: File;
+  isNew: boolean;
 };
 
-interface GalleryFormProps {
+type EditFanartProps = {
   onClose: () => void;
-  category: '팬아트' | '굿즈';
-}
+  feedId: number;
+  initialTitle: string;
+  initialContent: string;
+  initialImages: string[];
+};
 
-const GalleryForm = ({ onClose, category }: GalleryFormProps) => {
-  const { idolGroupId } = useParams<{ idolGroupId: string }>();
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+const EditFanart: React.FC<EditFanartProps> = ({
+  onClose,
+  feedId,
+  initialTitle,
+  initialContent,
+  initialImages,
+}) => {
   const [images, setImages] = useState<ImageWithId[]>([]);
-  const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
-  const navigate = useNavigate();
-
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState(initialContent);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
+
+  const { idolGroupId } = useParams<{ idolGroupId: string }>();
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const initialImageObjects = initialImages.map((url, index) => ({
+      id: index,
+      url: `https://www.crescendo.o-r.kr/server/files/${url}`,
+      isNew: false,
+    }));
+    setImages(initialImageObjects);
+    setTitle(initialTitle);
+    setContent(initialContent);
+  }, [initialImages, initialTitle, initialContent,]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const fileList = Array.from(e.target.files);
       const newImages = fileList.map(file => ({
         id: Date.now() + Math.random(),
+        url: URL.createObjectURL(file),
         file: file,
+        isNew: true,
       }));
 
-      // 중복 검사 및 용량 제한 검사
-      const existingFiles = new Set(images.map(image => image.file.name));
+      const existingFiles = new Set(images.map(image => image.file?.name));
       const filteredImages = newImages.filter(image => {
-        if (existingFiles.has(image.file.name)) {
+        if (existingFiles.has(image.file!.name)) {
           return false;
         }
-        if (image.file.size > MAX_FILE_SIZE) {
-          alert(`${image.file.name} 파일이 너무 큽니다. 20MB 이하의 파일만 업로드 가능합니다.`);
+        if (image.file!.size > MAX_FILE_SIZE) {
+          alert(`${image.file!.name} 파일이 너무 큽니다. 20MB 이하의 파일만 업로드 가능합니다.`);
           return false;
         }
         return true;
@@ -51,7 +78,6 @@ const GalleryForm = ({ onClose, category }: GalleryFormProps) => {
         alert('이미지는 최대 10장까지 업로드 가능합니다.');
       }
 
-      // 동일 파일 재업로드를 위해 초기화
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
@@ -65,11 +91,6 @@ const GalleryForm = ({ onClose, category }: GalleryFormProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (title.trim() === '') {
-      alert('제목을 입력해주세요.');
-      return;
-    }
-    
     if (content.trim() === '') {
       alert('내용을 입력해주세요.');
       return;
@@ -83,31 +104,35 @@ const GalleryForm = ({ onClose, category }: GalleryFormProps) => {
     const formData = new FormData();
     formData.append('title', title);
     formData.append('content', content);
-    images.forEach(image => formData.append('imageList', image.file));
-    formData.append('idolGroupId', idolGroupId ?? '');
 
-    let apiEndpoint = '';
-    if (category === '팬아트') {
-      apiEndpoint = '/api/v1/community/fan-art';
-    } else if (category === '굿즈') {
-      apiEndpoint = '/api/v1/community/goods';
+    for (const image of images) {
+      if (!image.isNew) {
+        const response = await fetch(image.url);
+        const blob = await response.blob();
+        const file = new File([blob], `existing_image_${image.id}.jpg`, { type: blob.type });
+        formData.append('imageList', file);
+      } else if (image.isNew && image.file) {
+        formData.append('imageList', image.file);
+      }
+    }
+
+    if (idolGroupId) {
+      formData.append('idolGroupId', idolGroupId);
     }
 
     try {
-      const response = await Authapi.post(`${apiEndpoint}`, formData, {
+      const response = await Authapi.put(`/api/v1/community/fan-art/${feedId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-
-      if (response.status === 201) {
-        alert('성공적으로 등록되었습니다.');
-        window.scrollTo(0, 0);
-        navigate(0);
+      if (response.status === 200) {
+        alert('수정되었습니다.');
+        updateFeedDetail();
         onClose();
       }
     } catch (error) {
-      alert('작성에 실패했습니다.');
+      alert('게시물 수정에 실패했습니다.');
     }
   };
 
@@ -129,21 +154,15 @@ const GalleryForm = ({ onClose, category }: GalleryFormProps) => {
     }
   };
 
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose(); // ESC 키를 누르면 모달 닫기
-      }
-    };
-
-    // 이벤트 리스너 추가
-    window.addEventListener('keydown', handleKeyDown);
-
-    // 컴포넌트가 언마운트되거나 모달이 닫힐 때 이벤트 리스너 제거
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [onClose]);
+  const updateFeedDetail = async () => {
+    try {
+      const response = await getFeedDetailAPI(feedId);
+      dispatch(updateFeed({feedId, feed:response}));
+      dispatch(updateMyFeed({feedId, feed:response}));
+    } catch (error) {
+      console.error('Error fetching feed details:', error);
+    }
+  }
 
   return (
     <form onSubmit={handleSubmit} className="gallery-form">
@@ -151,7 +170,7 @@ const GalleryForm = ({ onClose, category }: GalleryFormProps) => {
         <div className="image-preview">
           {images.map((imageWithId, index) => (
             <div key={imageWithId.id} className="image-wrapper">
-              <img src={URL.createObjectURL(imageWithId.file)} alt={`preview-${index}`} />
+              <img src={imageWithId.url} alt={`preview-${index}`} />
               <RemoveIcon
                 className="remove-image"
                 onClick={() => handleImageRemove(imageWithId.id)}
@@ -204,11 +223,11 @@ const GalleryForm = ({ onClose, category }: GalleryFormProps) => {
 
       <div className="submit-container">
         <button type="submit" className="submit-button">
-          작성
+          수정
         </button>
       </div>
     </form>
   );
 };
 
-export default GalleryForm;
+export default EditFanart;

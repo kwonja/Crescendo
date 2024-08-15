@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Authapi, getUserId } from '../../apis/core';
 import { useAppDispatch } from '../../store/hooks/hook';
-import { toggleFeedLike } from '../../features/communityDetail/communityDetailSlice';
+import { toggleFanArtLike } from '../../features/communityDetail/communityDetailSlice';
 import { ReactComponent as FeedHeartIcon } from '../../assets/images/Feed/white_heart.svg';
 import { ReactComponent as FeedFullHeartIcon } from '../../assets/images/Feed/white_fullheart.svg';
 import { ReactComponent as CommentHeartIcon } from '../../assets/images/Feed/heart.svg';
@@ -15,30 +15,30 @@ import { ReactComponent as UserProfileImageDefault } from '../../assets/images/U
 import { ReactComponent as ReplyIcon } from '../../assets/images/Feed/comment.svg';
 import { ReactComponent as CommentWriteButton } from '../../assets/images/white_write.svg';
 import { ReactComponent as NoComments } from '../../assets/images/text_bubble.svg';
-import FeedDetailMenu from './DropdownMenu';
+import FanArtDetailMenu from './DropdownMenu';
 import CommentMenu from './DropdownMenu';
 import ReplyMenu from './DropdownReplyMenu';
-import EditFeed from './EditFeed';
+import EditFanart from './EditFanart';
 import '../../scss/components/community/_feeddetailmodal.scss';
 
 const MAX_COMMENT_LENGTH = 50;
 
-type FeedDetailResponse = {
+type FanArtDetailResponse = {
   userId: number;
   profileImagePath: string;
   nickname: string;
   createdAt: string;
-  lastModified?: string;
+  updatedAt?: string;
   likeCnt: number;
-  isLike?: boolean;
-  feedImagePathList: string[];
+  likeUsed?: boolean;
+  fanArtImagePathList: string[];
   content: string;
+  title: string;
   commentCnt: number;
-  tagList: string[];
 };
 
 type Comment = {
-  feedCommentId: number;
+  fanArtCommentId: number;
   userId: number;
   nickname: string;
   profileImagePath: string | null;
@@ -50,14 +50,14 @@ type Comment = {
   replies?: Reply[];
 };
 
-type FeedDetailModalProps = {
+type FanArtDetailModalProps = {
   show: boolean;
   onClose: () => void;
-  feedId: number;
+  fanArtId: number;
 };
 
 type Reply = {
-  feedCommentId: number;
+  fanArtCommentId: number;
   writerId: number;
   profileImagePath: string | null;
   nickname: string;
@@ -67,8 +67,8 @@ type Reply = {
   createdAt: string;
 };
 
-const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId }) => {
-  const [feedDetail, setFeedDetail] = useState<FeedDetailResponse | null>(null);
+const FanartDetailModal: React.FC<FanArtDetailModalProps> = ({ show, onClose, fanArtId }) => {
+  const [fanArtDetail, setFanArtDetail] = useState<FanArtDetailResponse | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
   const [newReply, setNewReply] = useState<{ [key: number]: string }>({});
@@ -85,33 +85,34 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
 
   const currentUserId = getUserId();
 
-  const loadFeedDetail = useCallback(async () => {
+  const loadfanArtDetail = useCallback(async () => {
     try {
-      const response = await Authapi.get(`/api/v1/community/feed/${feedId}`);
-      setFeedDetail(response.data);
+      const response = await Authapi.get(`/api/v1/community/fan-art/${fanArtId}`);
+      
+      setFanArtDetail(response.data);
     } catch (error) {
       console.error('Error fetching feed details:', error);
     }
-  }, [feedId]);
+  }, [fanArtId]);
 
   // 댓글 가져오기
   const loadComments = useCallback(async () => {
     try {
-      const response = await Authapi.get(`/api/v1/community/feed/${feedId}/comment`, {
+      const response = await Authapi.get(`/api/v1/community/fan-art/${fanArtId}/comment`, {
         params: { page: 0, size: 100 },
       });
       setComments(response.data.content);
     } catch (error) {
       console.error('Error fetching comments:', error);
     }
-  }, [feedId]);
+  }, [fanArtId]);
 
   // 답글 가져오기
   const loadReplies = useCallback(
     async (commentId: number) => {
       try {
         const response = await Authapi.get(
-          `/api/v1/community/feed/${feedId}/comment/${commentId}/reply`,
+          `/api/v1/community/fan-art/${fanArtId}/comment/${commentId}/reply`,
           {
             params: { page: 0, size: 100 },
           },
@@ -119,7 +120,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
 
         setComments(prevComments =>
           prevComments.map(comment =>
-            comment.feedCommentId === commentId
+            comment.fanArtCommentId === commentId
               ? { ...comment, replies: response.data.content }
               : comment,
           ),
@@ -128,7 +129,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
         console.error('Error fetching replies:', error);
       }
     },
-    [feedId],
+    [fanArtId],
   );
 
   // 댓글 작성 제한
@@ -167,10 +168,10 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
   useEffect(() => {
     if (show) {
       setComments([]);
-      loadFeedDetail();
+      loadfanArtDetail();
       loadComments();
     }
-  }, [show, feedId, loadComments, loadFeedDetail]);
+  }, [show, fanArtId, loadComments, loadfanArtDetail]);
 
   useEffect(() => {
     if (!show) {
@@ -193,13 +194,13 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
 
   const handlePrevImage = () => {
     setActiveImageIndex(prevIndex =>
-      prevIndex > 0 ? prevIndex - 1 : feedDetail!.feedImagePathList.length - 1,
+      prevIndex > 0 ? prevIndex - 1 : fanArtDetail!.fanArtImagePathList.length - 1,
     );
   };
 
   const handleNextImage = () => {
     setActiveImageIndex(prevIndex =>
-      prevIndex < feedDetail!.feedImagePathList.length - 1 ? prevIndex + 1 : 0,
+      prevIndex < fanArtDetail!.fanArtImagePathList.length - 1 ? prevIndex + 1 : 0,
     );
   };
 
@@ -209,7 +210,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
     const formData = new FormData();
     formData.append('content', newComment);
 
-    Authapi.post(`/api/v1/community/feed/${feedId}/comment`, formData)
+    Authapi.post(`/api/v1/community/fan-art/${fanArtId}/comment`, formData)
       .then(() => {
         setNewComment('');
         const textarea = document.querySelector(
@@ -237,8 +238,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
 
     const formData = new FormData();
     formData.append('content', replyContent);
-
-    Authapi.post(`/api/v1/community/feed/${feedId}/comment/${commentId}/reply`, formData)
+    Authapi.post(`/api/v1/community/fan-art/${fanArtId}/comment/${commentId}/reply`, formData)
       .then(() => {
         setNewReply(prevState => ({ ...prevState, [commentId]: '' }));
         loadReplies(commentId);
@@ -249,14 +249,14 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
   };
 
   const handleFeedLikeToggle = () => {
-    if (feedDetail) {
-      dispatch(toggleFeedLike(feedId));
-      setFeedDetail(prevDetail =>
+    if (fanArtDetail) {
+      dispatch(toggleFanArtLike(fanArtId));
+      setFanArtDetail(prevDetail =>
         prevDetail
           ? {
               ...prevDetail,
-              isLike: !prevDetail.isLike,
-              likeCnt: prevDetail.isLike ? prevDetail.likeCnt - 1 : prevDetail.likeCnt + 1,
+              likeUsed: !prevDetail.likeUsed,
+              likeCnt: prevDetail.likeUsed ? prevDetail.likeCnt - 1 : prevDetail.likeCnt + 1,
             }
           : prevDetail,
       );
@@ -269,8 +269,8 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
 
     const commentIndex = comments.findIndex(
       comment =>
-        comment.feedCommentId === commentId ||
-        (comment.replies && comment.replies.some(reply => reply.feedCommentId === commentId)),
+        comment.fanArtCommentId === commentId ||
+        (comment.replies && comment.replies.some(reply => reply.fanArtCommentId === commentId)),
     );
 
     if (commentIndex === -1) return;
@@ -278,7 +278,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
     const comment = comments[commentIndex];
 
     // 답글인지 댓글인지 확인
-    if (comment.feedCommentId === commentId) {
+    if (comment.fanArtCommentId === commentId) {
       // 댓글일 경우
       const updatedComment = {
         ...comment,
@@ -289,7 +289,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
       updatedComments[commentIndex] = updatedComment;
     } else {
       // 답글일 경우
-      const replyIndex = comment.replies!.findIndex(reply => reply.feedCommentId === commentId);
+      const replyIndex = comment.replies!.findIndex(reply => reply.fanArtCommentId === commentId);
       if (replyIndex === -1) return;
 
       const originalReply = comment.replies![replyIndex];
@@ -311,14 +311,14 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
 
     setComments(updatedComments);
 
-    Authapi.post(`/api/v1/community/feed/feed-comment-like/${commentId}`).catch(error => {
+    Authapi.post(`/api/v1/community/fan-art/fan-art-comment-like/${commentId}`).catch(error => {
       console.error('좋아요 실패:', error);
 
       setComments(prevComments =>
         prevComments.map((comment, idx) => {
           if (idx !== commentIndex) return comment;
 
-          if (comment.feedCommentId === commentId) {
+          if (comment.fanArtCommentId === commentId) {
             return {
               ...comment,
               isLike: !comment.isLike,
@@ -326,7 +326,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
             };
           } else {
             const rollbackReplies = comment.replies!.map(reply =>
-              reply.feedCommentId === commentId
+              reply.fanArtCommentId === commentId
                 ? {
                     ...reply,
                     isLike: !reply.isLike,
@@ -344,11 +344,11 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
     });
   };
 
-  const handleMenuToggle = (feedId: number) => {
-    if (activeMenuId === feedId) {
+  const handleMenuToggle = (fanArtId: number) => {
+    if (activeMenuId === fanArtId) {
       setActiveMenuId(null);
     } else {
-      setActiveMenuId(feedId);
+      setActiveMenuId(fanArtId);
     }
   };
 
@@ -382,7 +382,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
   };
 
   const handleEditModalClose = async () => {
-    await loadFeedDetail();
+    await loadfanArtDetail();
     setEditModalVisible(false);
   };
 
@@ -392,7 +392,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
     const confirmDelete = window.confirm('삭제 후에는 복구가 불가능합니다. 정말 삭제하시겠습니까?');
     if (confirmDelete) {
       try {
-        await Authapi.delete(`/api/v1/community/feed/${feedId}`);
+        await Authapi.delete(`/api/v1/community/fan-art/${fanArtId}`);
         alert('삭제되었습니다.');
         navigate(0);
         onClose();
@@ -433,7 +433,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
     const formData = new FormData();
     formData.append('content', editedContent);
 
-    Authapi.patch(`/api/v1/community/feed/${feedId}/comment/${commentId}`, formData, {
+    Authapi.patch(`/api/v1/community/fan-art/${fanArtId}/comment/${commentId}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -452,7 +452,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
   const handleCommentDelete = (commentId: number) => {
     const confirmDelete = window.confirm('댓글을 삭제하시겠습니까?');
     if (confirmDelete) {
-      Authapi.delete(`/api/v1/community/feed/${feedId}/comment/${commentId}`)
+      Authapi.delete(`/api/v1/community/fan-art/${fanArtId}/comment/${commentId}`)
         .then(() => {
           loadComments();
         })
@@ -491,7 +491,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
     onClose();
   };
 
-  if (!show || !feedDetail) return null;
+  if (!show || !fanArtDetail) return null;
 
   return (
     <div className="feed-detail-modal modal-overlay">
@@ -502,10 +502,10 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
         <div className="feed-detail-left">
           <div className="feed-header">
             <div className="profile-image-container">
-              {feedDetail.profileImagePath ? (
+              {fanArtDetail.profileImagePath ? (
                 <img
-                  src={getAbsolutePath(feedDetail.profileImagePath)}
-                  alt={feedDetail.nickname}
+                  src={getAbsolutePath(fanArtDetail.profileImagePath)}
+                  alt={fanArtDetail.nickname}
                   className="profile-image"
                 />
               ) : (
@@ -513,63 +513,57 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
               )}
             </div>
             <div className="profile-info">
-              <div className="nickname">{feedDetail.nickname}</div>
-              <div className="feed-date">{new Date(feedDetail.createdAt).toLocaleString()}</div>
+              <div className="nickname">{fanArtDetail.nickname}</div>
+              <div className="feed-date">{new Date(fanArtDetail.createdAt).toLocaleString()}</div>
             </div>
             <div className="feed-icons">
               <div className="feed-like-count">
-                {feedDetail.likeCnt > 99 ? '99+' : feedDetail.likeCnt}
+                {fanArtDetail.likeCnt > 99 ? '99+' : fanArtDetail.likeCnt}
               </div>
-              {feedDetail.isLike ? (
+              {fanArtDetail.likeUsed ? (
                 <FeedFullHeartIcon className="feed-heart-button" onClick={handleFeedLikeToggle} />
               ) : (
                 <FeedHeartIcon className="feed-heart-button" onClick={handleFeedLikeToggle} />
               )}
               <FeedMenuIcon
-                className={`feed-dots-button ${currentUserId === feedDetail.userId ? 'visible' : ''}`}
-                onClick={() => handleMenuToggle(feedId)}
+                className={`feed-dots-button ${currentUserId === fanArtDetail.userId ? 'visible' : ''}`}
+                onClick={() => handleMenuToggle(fanArtId)}
               />
               <div className="feed-menu">
-                {activeMenuId === feedId && (
-                  <FeedDetailMenu onEdit={handleEdit} onDelete={handleDelete} />
+                {activeMenuId === fanArtId && (
+                  <FanArtDetailMenu onEdit={handleEdit} onDelete={handleDelete} />
                 )}
               </div>
             </div>
           </div>
           <div className="feed-body">
             <div className="slider-container">
-              {feedDetail.feedImagePathList.length > 0 && (
+              {fanArtDetail.fanArtImagePathList.length > 0 && (
                 <div className="image-slider">
                   <PrevButton className="prev-button" onClick={handlePrevImage} />
                   <img
-                    src={getAbsolutePath(feedDetail.feedImagePathList[activeImageIndex])}
+                    src={getAbsolutePath(fanArtDetail.fanArtImagePathList[activeImageIndex])}
                     alt="Feed"
                     draggable="false"
                   />
                   <NextButton className="next-button" onClick={handleNextImage} />
-                  <div className="image-counter">{`${activeImageIndex + 1} / ${feedDetail.feedImagePathList.length}`}</div>
+                  <div className="image-counter">{`${activeImageIndex + 1} / ${fanArtDetail.fanArtImagePathList.length}`}</div>
                 </div>
               )}
             </div>
             <div className="feed-content-container">
-              <div className="feed-content">{feedDetail.content}</div>
-              <div className="feed-tags">
-                {feedDetail.tagList.map((tag, index) => (
-                  <span key={index} className="tag">
-                    #{tag}
-                  </span>
-                ))}
-              </div>
+              <div className='feed-title'>{fanArtDetail.title}</div>
+              <div className="feed-content">{fanArtDetail.content}</div>
             </div>
           </div>
         </div>
         <div className="feed-detail-right">
           <div className="comments" ref={commentsRef}>
-            {comments.length === 0 ? (
+          {comments.length === 0 ? (
               <div className='no-comments-container'><NoComments className='no-comments-icon'/><div className='no-comments-text'>등록된 댓글이 없습니다...</div></div>
             ) : (
               comments.map(comment => (
-                <div key={comment.feedCommentId} className="comment">
+                <div key={comment.fanArtCommentId} className="comment">
                   <div className="comment-header">
                     <div className="comment-profile-image-container">
                       {comment.profileImagePath ? (
@@ -595,32 +589,32 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
                       {comment.isLike ? (
                         <CommentFullHeartIcon
                           className="comment-heart-button"
-                          onClick={() => handleLikeToggle(comment.feedCommentId)}
+                          onClick={() => handleLikeToggle(comment.fanArtCommentId)}
                         />
                       ) : (
                         <CommentHeartIcon
                           className="comment-heart-button"
-                          onClick={() => handleLikeToggle(comment.feedCommentId)}
+                          onClick={() => handleLikeToggle(comment.fanArtCommentId)}
                         />
                       )}
                       <CommentMenuIcon
                         className={`comment-dots-button ${currentUserId === comment.userId ? 'visible' : ''}`}
-                        onClick={() => handleCommentMenuToggle(comment.feedCommentId)}
+                        onClick={() => handleCommentMenuToggle(comment.fanArtCommentId)}
                       />
                       <div className="comment-menu">
-                        {activeMenuId === comment.feedCommentId && (
+                        {activeMenuId === comment.fanArtCommentId && (
                           <CommentMenu
                             onEdit={() =>
-                              handleCommentEditClick(comment.feedCommentId, comment.content)
+                              handleCommentEditClick(comment.fanArtCommentId, comment.content)
                             }
-                            onDelete={() => handleCommentDelete(comment.feedCommentId)}
+                            onDelete={() => handleCommentDelete(comment.fanArtCommentId)}
                           />
                         )}
                       </div>
                     </div>
                   </div>
                   <div className="comment-content">
-                    {editingCommentId === comment.feedCommentId ? (
+                    {editingCommentId === comment.fanArtCommentId ? (
                       <div className="editing-comment">
                         <textarea
                           className="comment-edit-input"
@@ -632,7 +626,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
                         />
                         <button
                           className="comment-edit-submit-button"
-                          onClick={() => handleCommentEditSubmit(comment.feedCommentId)}
+                          onClick={() => handleCommentEditSubmit(comment.fanArtCommentId)}
                         >
                           수정
                         </button>
@@ -650,36 +644,36 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
                   <div className="reply-icon-container">
                     <ReplyIcon
                       className="reply-icon"
-                      onClick={() => handleReplyToggle(comment.feedCommentId)}
+                      onClick={() => handleReplyToggle(comment.fanArtCommentId)}
                     />
                     <div className="reply-count">
                       {comment.replyCnt}개의{' '}
                       <div
                         className="reply-input-toggle"
-                        onClick={() => handleReplyInputToggle(comment.feedCommentId)}
+                        onClick={() => handleReplyInputToggle(comment.fanArtCommentId)}
                       >
                         &nbsp;답글
                       </div>
-                      {replyInputVisibility[comment.feedCommentId] && (
+                      {replyInputVisibility[comment.fanArtCommentId] && (
                         <div className="reply-input-container">
                           <textarea
                             className="reply-input-textarea"
                             placeholder="여기에 입력하세요."
-                            value={newReply[comment.feedCommentId] || ''}
+                            value={newReply[comment.fanArtCommentId] || ''}
                             onChange={e => {
-                              handleNewReplyChange(e, comment.feedCommentId);
+                              handleNewReplyChange(e, comment.fanArtCommentId);
                               adjustTextareaHeight(e.target);
                             }}
                           />
                           <CommentWriteButton
                             className="reply-write-button"
-                            onClick={() => handleAddReply(comment.feedCommentId)}
+                            onClick={() => handleAddReply(comment.fanArtCommentId)}
                           />
                         </div>
                       )}
                     </div>
                   </div>
-                  {replyVisibility[comment.feedCommentId] &&
+                  {replyVisibility[comment.fanArtCommentId] &&
                     comment.replies &&
                     comment.replies.length > 0 && (
                       <div className="replies">
@@ -710,32 +704,32 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
                                 {reply.isLike ? (
                                   <CommentFullHeartIcon
                                     className="reply-heart-button"
-                                    onClick={() => handleLikeToggle(reply.feedCommentId)}
+                                    onClick={() => handleLikeToggle(reply.fanArtCommentId)}
                                   />
                                 ) : (
                                   <CommentHeartIcon
                                     className="reply-heart-button"
-                                    onClick={() => handleLikeToggle(reply.feedCommentId)}
+                                    onClick={() => handleLikeToggle(reply.fanArtCommentId)}
                                   />
                                 )}
                                 <CommentMenuIcon
                                   className={`reply-dots-button ${currentUserId === reply.writerId ? 'visible' : ''}`}
-                                  onClick={() => handleCommentMenuToggle(reply.feedCommentId)}
+                                  onClick={() => handleCommentMenuToggle(reply.fanArtCommentId)}
                                 />
                                 <div className="reply-menu">
-                                  {activeMenuId === reply.feedCommentId && (
+                                  {activeMenuId === reply.fanArtCommentId && (
                                     <ReplyMenu
                                       onEdit={() =>
-                                        handleReplyEditClick(reply.feedCommentId, reply.content)
+                                        handleReplyEditClick(reply.fanArtCommentId, reply.content)
                                       }
-                                      onDelete={() => handleCommentDelete(reply.feedCommentId)}
+                                      onDelete={() => handleCommentDelete(reply.fanArtCommentId)}
                                     />
                                   )}
                                 </div>
                               </div>
                             </div>
                             <div className="reply-content">
-                              {editingCommentId === reply.feedCommentId ? (
+                              {editingCommentId === reply.fanArtCommentId ? (
                                 <div className="editing-reply">
                                   <textarea
                                     className="reply-edit-input"
@@ -747,7 +741,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
                                   />
                                   <button
                                     className="reply-edit-submit-button"
-                                    onClick={() => handleCommentEditSubmit(reply.feedCommentId)}
+                                    onClick={() => handleCommentEditSubmit(reply.fanArtCommentId)}
                                   >
                                     수정
                                   </button>
@@ -783,7 +777,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
           </div>
         </div>
       </div>
-      {editModalVisible && feedDetail && (
+      {editModalVisible && fanArtDetail && (
         <div className="feed-edit-modal">
           <div className="modal-content">
             <div className="modal-header">
@@ -795,12 +789,12 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
               </span>
             </div>
             <div className="modal-body">
-              <EditFeed
+              <EditFanart
                 onClose={handleEditModalClose}
-                feedId={feedId}
-                initialContent={feedDetail.content}
-                initialTags={feedDetail.tagList}
-                initialImages={feedDetail.feedImagePathList}
+                feedId={fanArtId}
+                initialTitle={fanArtDetail.title}
+                initialContent={fanArtDetail.content}
+                initialImages={fanArtDetail.fanArtImagePathList}
               />
             </div>
           </div>
@@ -810,4 +804,4 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
   );
 };
 
-export default FeedDetailModal;
+export default FanartDetailModal;
