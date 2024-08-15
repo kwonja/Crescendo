@@ -15,7 +15,7 @@ export default function FriendProfile({ user }: UserProps) {
       <Link to={`/mypage/${userId}`}>
         <img src={`${IMAGE_BASE_URL}${userProfilePath}`} alt="유저 프로필" />
       </Link>
-      <div className="friendprofile_nickname">{nickname}</div>
+      <div className="friendprofile_nickname break-all">{nickname}</div>
     </div>
   );
 }

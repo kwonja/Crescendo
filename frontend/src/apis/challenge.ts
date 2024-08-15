@@ -42,3 +42,13 @@ export const postChallengeJoinAPI = async (challengeId: number, formData: FormDa
   const response = await Authapi.postForm(`/api/v1/challenge/${challengeId}/join`, formData);
   return response;
 };
+
+export const deleteChallengeJoinAPI = async (challengeJoinId: number) => {
+  const response = await Authapi.delete(`/api/v1/challenge/join/${challengeJoinId}`);
+  return response;
+};
+
+export const deleteChallengeAPI = async (challengeId: number) => {
+  const response = await Authapi.delete(`/api/v1/challenge/${challengeId}`);
+  return response;
+};

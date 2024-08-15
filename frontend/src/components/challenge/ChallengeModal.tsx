@@ -3,20 +3,38 @@ import { ReactComponent as Close } from '../../assets/images/challenge/close.svg
 import { ReactComponent as AddImage } from '../../assets/images/img_add.svg';
 import { postChallengeAPI } from '../../apis/challenge';
 import { isAxiosError } from 'axios';
+import { toast } from 'react-toastify';
+import { useAppDispatch } from '../../store/hooks/hook';
+import { initialChallengeList } from '../../features/challenge/challengeSlice';
 
 interface ModalProps {
   onClose: () => void;
+  isOpen: boolean;
 }
-export default function ChallengeModal({ onClose }: ModalProps) {
+export default function ChallengeModal({ onClose, isOpen }: ModalProps) {
   const titleRef = useRef<HTMLInputElement>(null);
   const timeRef = useRef<HTMLInputElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
   const CreateChallenge = async () => {
-    if (!titleRef.current?.value || !timeRef.current?.value || !fileRef.current?.files) {
-      alert('전부 입력해주세요');
+    if (!fileRef.current?.files || fileRef.current.files.length === 0) {
+      toast.warn('파일을 업로드 해주세요:)', {
+        position: 'top-center',
+      });
+      return; // 파일이 없으면 함수 종료
+    }
+    if (!titleRef.current?.value) {
+      toast.warn('제목을 입력 해주세요:)', {
+        position: 'top-center',
+      });
+      return;
+    }
+    if (!timeRef.current?.value) {
+      toast.warn('종료일자를 선택해주세요!!', {
+        position: 'top-center',
+      });
       return;
     }
 
@@ -25,17 +43,23 @@ export default function ChallengeModal({ onClose }: ModalProps) {
     formData.append('endAt', timeRef.current.value);
     formData.append('video', fileRef.current.files[0]);
     try {
-      setIsLoading(true);
-      const response = await postChallengeAPI(formData);
-      console.log(response);
+      onClose();
+      toast.info('등록하는데 1분정도 소요됩니다', {
+        position: 'top-right',
+      });
+
+      await postChallengeAPI(formData);
+      toast.info('등록이 완료되었습니다', {
+        position: 'top-right',
+      });
     } catch (err: unknown) {
       if (isAxiosError(err)) {
-        // Axios 에러인 경우
-        alert(err.response?.data);
+        toast.error(`${err.response?.data}`, {
+          position: 'top-center',
+        });
       }
     } finally {
-      setIsLoading(false);
-      onClose();
+      dispatch(initialChallengeList());
     }
   };
 
@@ -107,7 +131,6 @@ export default function ChallengeModal({ onClose }: ModalProps) {
           </div>
         </div>
       </div>
-      {isLoading ? <div className="loading"> 1분정도 소요됩니다:)</div> : null}
     </div>
   );
 }
