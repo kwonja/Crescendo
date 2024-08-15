@@ -4,21 +4,35 @@ import { Alarm } from '../../interface/alarm';
 
 export type PromiseStatus = 'loading' | 'success' | 'failed' | '';
 interface AlarmProps {
-  alramList: Alarm[];
+  alarmList: Alarm[];
   unReadAlarmCount: number;
   status: PromiseStatus;
   error: string | undefined;
+  currentPage: number;
+  totalPage: number;
+  size: number;
 }
 const inistalState: AlarmProps = {
-  alramList: [],
+  alarmList: [],
   unReadAlarmCount: 0,
   status: '',
   error: '',
+  currentPage: 0,
+  totalPage: 1,
+  size: 4,
 };
-export const getAlarmList = createAsyncThunk('alarmSlice/getAlarmList', async () => {
-  const response = await getAlarmAPI(0, 10);
-  return response;
-});
+
+interface APIstate {
+  page: number;
+  size: number;
+}
+export const getAlarmList = createAsyncThunk(
+  'alarmSlice/getAlarmList',
+  async ({ page, size }: APIstate) => {
+    const response = await getAlarmAPI(page, size);
+    return response;
+  },
+);
 
 export const getUnReadAlarmCount = createAsyncThunk('alarmSlice/getUnReadAlarmCount', async () => {
   const response = await getUnReadAlarmCountAPI();
@@ -36,15 +50,22 @@ const alarmSlice = createSlice({
       state.unReadAlarmCount--;
     },
     deleteAlarm: (state, action: PayloadAction<number>) => {
-      state.alramList = state.alramList.filter(alarm => alarm.alarmId !== action.payload);
+      const index = state.alarmList.findIndex(alarm => alarm.alarmId === action.payload);
+
+      if (index !== -1) {
+        state.alarmList.splice(index, 1);
+      }
     },
     readAlarmUpdate: (state, action: PayloadAction<number>) => {
-      state.alramList = state.alramList.map(alarm => {
+      state.alarmList = state.alarmList.map(alarm => {
         if (alarm.alarmId === action.payload) {
           return { ...alarm, isRead: true };
         }
         return alarm;
       });
+    },
+    setAlarmPage: state => {
+      if (state.totalPage > state.currentPage) state.currentPage = state.currentPage + 1;
     },
   },
   extraReducers(builder) {
@@ -54,7 +75,8 @@ const alarmSlice = createSlice({
       })
       .addCase(getAlarmList.fulfilled, (state, action) => {
         state.status = 'success';
-        state.alramList = action.payload.content;
+        state.alarmList = [...state.alarmList, ...action.payload.content];
+        state.totalPage = action.payload.totalPages;
       })
       .addCase(getAlarmList.rejected, (state, action) => {
         state.status = 'failed';
@@ -66,6 +88,6 @@ const alarmSlice = createSlice({
   },
 });
 
-export const { incrementUnRead, decrementUnRead, deleteAlarm, readAlarmUpdate } =
+export const { incrementUnRead, decrementUnRead, deleteAlarm, readAlarmUpdate, setAlarmPage } =
   alarmSlice.actions;
 export default alarmSlice.reducer;

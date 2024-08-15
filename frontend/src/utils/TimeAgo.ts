@@ -1,5 +1,7 @@
-// timeAgo.ts
-export function timeAgo(timestamp: string): string {
+export function timeAgo(timestamp: string | null): string {
+  if (timestamp === null) {
+    return '시작전';
+  }
   const now = new Date();
   const messageTime = new Date(timestamp);
   const diff = now.getTime() - messageTime.getTime();

@@ -16,8 +16,7 @@ export default function Challenge() {
   const { currentPage, challengeLists } = useAppSelector(state => state.challenge);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   useEffect(() => {
-    dispatch(getChallengeList({ page: currentPage, size: 4, title: '', sortBy: '' }));
-
+    dispatch(getChallengeList({ page: currentPage, size: 8, title: '', sortBy: '' }));
     return () => {
       dispatch(
         setSelectedChallenge({
@@ -33,7 +32,7 @@ export default function Challenge() {
         }),
       );
     };
-  }, [dispatch, currentPage, isModalOpen]);
+  }, [dispatch, currentPage]);
 
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
@@ -75,7 +74,7 @@ export default function Challenge() {
         </div>
       </div>
       <Write className="fixed right-12 bottom-12 cursor-pointer" onClick={handleOpenModal} />
-      {isModalOpen ? <ChallengeModal onClose={handleOpenModal} /> : null}
+      {isModalOpen ? <ChallengeModal onClose={handleOpenModal} isOpen={isModalOpen} /> : null}
     </div>
   );
 }
