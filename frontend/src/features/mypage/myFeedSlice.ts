@@ -1,9 +1,9 @@
 //Ducks 패턴 공부예정
 
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { MyFeedInfo } from '../../interface/feed';
+import { FeedInfo, MyFeedInfo } from '../../interface/feed';
 import { getMyFanArtAPI, getMyFeedAPI, getMyGoodsAPI } from '../../apis/user';
-import { MyFanArtInfo, MyGoodsInfo } from '../../interface/gallery';
+import { FanArtInfo, GoodsInfo, MyFanArtInfo, MyGoodsInfo } from '../../interface/gallery';
 import { RootState } from '../../store/store';
 
 export type PromiseStatus = 'loading' | 'success' | 'failed' | '';
@@ -110,6 +110,52 @@ const myFeedSlice = createSlice({
         }
       }
     },
+
+    updateMyFeed: (state, action: PayloadAction<{ feed: FeedInfo; feedId: number }>) => {
+      state.myFeedList = state.myFeedList.map(feed => {
+          if (feed.feedId !== action.payload.feedId) {
+            return feed;
+          } 
+          const newFeed:MyFeedInfo = {
+            ...action.payload.feed, 
+            idolGroupId: feed.idolGroupId, 
+            idolGroupName: feed.idolGroupName
+          };
+          return newFeed;
+        }
+      );
+    },
+
+    updateMyFanArt: (state, action: PayloadAction<{ fanArt: FanArtInfo; fanArtId: number }>) => {
+      state.myFanArtList = state.myFanArtList.map(fanArt => {
+          if (fanArt.fanArtId !== action.payload.fanArtId) {
+            return fanArt;
+          } 
+          const newFanArt:MyFanArtInfo = {
+            ...action.payload.fanArt, 
+            idolGroupId: fanArt.idolGroupId, 
+            idolGroupName: fanArt.idolGroupName
+          };
+          return newFanArt;
+        }
+      );
+    },
+
+    updateMyGoods: (state, action: PayloadAction<{ goods: GoodsInfo; goodsId: number }>) => {
+      state.myGoodsList = state.myGoodsList.map(goods => {
+          if (goods.goodsId !== action.payload.goodsId) {
+            return goods;
+          } 
+          const newGoods:MyGoodsInfo = {
+            ...action.payload.goods, 
+            idolGroupId: goods.idolGroupId, 
+            idolGroupName: goods.idolGroupName
+          };
+          return newGoods;
+        }
+      );
+    },
+
   },
   extraReducers(builder) {
     builder
@@ -155,5 +201,5 @@ const myFeedSlice = createSlice({
   },
 });
 
-export const { resetState, incrementLike, decrementLike } = myFeedSlice.actions;
+export const { resetState, incrementLike, decrementLike, updateMyFeed, updateMyFanArt, updateMyGoods} = myFeedSlice.actions;
 export default myFeedSlice.reducer;

@@ -1,17 +1,17 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ReactComponent as Play } from '../../assets/images/challenge/playbtn.svg';
 import { ReactComponent as Pause } from '../../assets/images/challenge/pause.svg';
 import { getChallengeOriginAPI } from '../../apis/challenge';
 import { IMAGE_BASE_URL } from '../../apis/core';
-// import { useAppSelector } from '../../store/hooks/hook';
 
 interface ParmsProps {
   challengeId: number;
+  videoRef: React.RefObject<HTMLVideoElement>;
+  isPlaying : boolean;
+  setIsPlaying : (argu : boolean) => void;
 }
-export default function VideoPlayerOrigin({ challengeId }: ParmsProps) {
+export default function VideoPlayerOrigin({ challengeId,videoRef,isPlaying,setIsPlaying }: ParmsProps) {
   const [url, setUrl] = useState<string>();
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
 
@@ -32,7 +32,7 @@ export default function VideoPlayerOrigin({ challengeId }: ParmsProps) {
         }
       };
     }
-  }, []);
+  }, [videoRef]);
 
   useEffect(() => {
     const getOriginChallenge = async () => {
@@ -41,6 +41,13 @@ export default function VideoPlayerOrigin({ challengeId }: ParmsProps) {
     };
     getOriginChallenge();
   }, [challengeId]);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.play();
+      setIsPlaying(true);
+    }
+  }, [videoRef,setIsPlaying]);
 
   const togglePlayPause = () => {
     const videoElement = videoRef.current;

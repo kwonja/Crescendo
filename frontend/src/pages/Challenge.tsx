@@ -16,7 +16,7 @@ export default function Challenge() {
   const { currentPage, challengeLists } = useAppSelector(state => state.challenge);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   useEffect(() => {
-    dispatch(getChallengeList({ page: currentPage, size: 8, title: '', sortBy: '' }));
+    dispatch(getChallengeList({ page: currentPage, size: 4, title: '', sortBy: '' }));
     return () => {
       dispatch(
         setSelectedChallenge({
@@ -70,7 +70,7 @@ export default function Challenge() {
               <ChallengeItem Challenge={challenge} key={challenge.challengeId} />
             ))}
           </div>
-          <div ref={loader}></div>
+          <div className="w-4 h-4"ref={loader}></div>
         </div>
       </div>
       <Write className="fixed right-12 bottom-12 cursor-pointer" onClick={handleOpenModal} />

@@ -116,7 +116,7 @@ public class AlarmServiceImpl implements AlarmService {
 
         String content = user.getNickname() + "님께서 회원님을 팔로우 하셨습니다.";
 
-        sendToAlarm(new AlarmDto(followerUserId, AlarmType.FOLLOW.getId(), relatedId, content));
+        sendToAlarm(new AlarmDto(followerUserId, followingUserId, AlarmType.FOLLOW.getId(), relatedId, content));
     }
 
     @Override
@@ -127,7 +127,7 @@ public class AlarmServiceImpl implements AlarmService {
 
         String content = joiner.getNickname() + "님께서 " + challengeName + " 챌린지에 참여하셨습니다.";
 
-        sendToAlarm(new AlarmDto(challengeOrganizerId, AlarmType.CHALLENGE.getId(), relatedId, content));
+        sendToAlarm(new AlarmDto(challengeOrganizerId, challengeJoinerId, AlarmType.CHALLENGE.getId(), relatedId, content));
 
     }
 
@@ -139,7 +139,7 @@ public class AlarmServiceImpl implements AlarmService {
 
         String content = likedUser.getNickname() + "님께서 " + challengeName + " 챌린지에 좋아요를 누르셨습니다.";
 
-        sendToAlarm(new AlarmDto(challengeJoinerId, AlarmType.CHALLENGE.getId(), relatedId, content));
+        sendToAlarm(new AlarmDto(challengeJoinerId, challengeJoinLikedUserId, AlarmType.CHALLENGE.getId(), relatedId, content));
     }
 
     @Override
@@ -150,7 +150,7 @@ public class AlarmServiceImpl implements AlarmService {
 
         String content = likedUser.getNickname() + "님께서 " + goodsTitle + " 에 좋아요를 누르셨습니다.";
 
-        sendToAlarm(new AlarmDto(goodsWriterId, AlarmType.GOODS.getId(), relatedId, content));
+        sendToAlarm(new AlarmDto(goodsWriterId, goodsLikedUserId, AlarmType.GOODS.getId(), relatedId, content));
     }
 
     @Override
@@ -161,7 +161,7 @@ public class AlarmServiceImpl implements AlarmService {
 
         String content = commenter.getNickname() + "님께서 " + goodsTitle + "에 댓글을 추가하셨습니다. " + "\"" +  comment + "\"";
 
-        sendToAlarm(new AlarmDto(goodsWriterId, AlarmType.GOODS.getId(), relatedId, content));
+        sendToAlarm(new AlarmDto(goodsWriterId, goodsCommenterId, AlarmType.GOODS.getId(), relatedId, content));
     }
 
     @Override
@@ -172,7 +172,7 @@ public class AlarmServiceImpl implements AlarmService {
 
         String content = replier.getNickname() + "님께서 " + "\"" + comment + "\"" + " 댓글에 대댓글을 추가하셨습니다. " + "\"" +  reply+ "\"";
 
-        sendToAlarm(new AlarmDto(goodsCommenterId, AlarmType.GOODS.getId(), relatedId, content));
+        sendToAlarm(new AlarmDto(goodsCommenterId, goodsReplierId, AlarmType.GOODS.getId(), relatedId, content));
     }
 
     @Override
@@ -183,7 +183,7 @@ public class AlarmServiceImpl implements AlarmService {
 
         String content = likedUser.getNickname() + "님께서 " + "\"" + comment + "\"" + " 댓글에 좋아요를 누르셨습니다.";
 
-        sendToAlarm(new AlarmDto(goodsCommenterId, AlarmType.GOODS.getId(), relatedId, content));
+        sendToAlarm(new AlarmDto(goodsCommenterId, goodsCommentLikeUserId, AlarmType.GOODS.getId(), relatedId, content));
     }
 
     @Override
@@ -194,7 +194,7 @@ public class AlarmServiceImpl implements AlarmService {
 
         String content = likedUser.getNickname() + "님께서 " + idolGroupName + " 커뮤니티에 올리신 피드에 좋아요를 누르셨습니다.";
 
-        sendToAlarm(new AlarmDto(feedWriterId, AlarmType.FEED.getId(), relatedId, content));
+        sendToAlarm(new AlarmDto(feedWriterId, feedLikedUserId, AlarmType.FEED.getId(), relatedId, content));
     }
 
     @Override
@@ -205,7 +205,7 @@ public class AlarmServiceImpl implements AlarmService {
 
         String content = commenter.getNickname() + "님께서 " + idolGroupName + " 커뮤니티에 올리신 피드에 댓글을 추가하셨습니다. " + "\"" +  comment + "\"";
 
-        sendToAlarm(new AlarmDto(feedWriterId, AlarmType.FEED.getId(), relatedId, content));
+        sendToAlarm(new AlarmDto(feedWriterId, feedCommenterId, AlarmType.FEED.getId(), relatedId, content));
     }
 
     @Override
@@ -216,7 +216,7 @@ public class AlarmServiceImpl implements AlarmService {
 
         String content = replier.getNickname() + "님께서 " + "\"" + comment + "\"" + " 댓글에 대댓글을 추가하셨습니다. " + "\"" +  reply+ "\"";
 
-        sendToAlarm(new AlarmDto(feedCommenterId, AlarmType.FEED.getId(), relatedId, content));
+        sendToAlarm(new AlarmDto(feedCommenterId, feedReplierId, AlarmType.FEED.getId(), relatedId, content));
     }
 
     @Override
@@ -227,7 +227,7 @@ public class AlarmServiceImpl implements AlarmService {
 
         String content = likedUser.getNickname() + "님께서 " + "\"" + comment + "\"" + " 댓글에 좋아요를 누르셨습니다.";
 
-        sendToAlarm(new AlarmDto(feedCommenterId, AlarmType.FEED.getId(), relatedId, content));
+        sendToAlarm(new AlarmDto(feedCommenterId, feedCommentLikeUserId, AlarmType.FEED.getId(), relatedId, content));
     }
 
     @Override
@@ -238,7 +238,7 @@ public class AlarmServiceImpl implements AlarmService {
 
         String content = likedUser.getNickname() + "님께서 " + fanArtTitle + "에 좋아요를 누르셨습니다.";
 
-        sendToAlarm(new AlarmDto(fanArtWriterId, AlarmType.FANART.getId(), relatedId, content));
+        sendToAlarm(new AlarmDto(fanArtWriterId, fanArtLikedUserId, AlarmType.FANART.getId(), relatedId, content));
     }
 
     @Override
@@ -249,7 +249,7 @@ public class AlarmServiceImpl implements AlarmService {
 
         String content = commenter.getNickname() + "님께서 " + fanArtTitle + "에 댓글을 추가하셨습니다. " + "\"" +  comment + "\"";
 
-        sendToAlarm(new AlarmDto(fanArtWriterId, AlarmType.FANART.getId(), relatedId, content));
+        sendToAlarm(new AlarmDto(fanArtWriterId, fanArtCommenterId, AlarmType.FANART.getId(), relatedId, content));
     }
 
     @Override
@@ -260,7 +260,7 @@ public class AlarmServiceImpl implements AlarmService {
 
         String content = replier.getNickname() + "님께서 " + "\"" + comment + "\"" + " 댓글에 대댓글을 추가하셨습니다. " + "\"" +  reply+ "\"";
 
-        sendToAlarm(new AlarmDto(fanArtCommenterId, AlarmType.FANART.getId(), relatedId, content));
+        sendToAlarm(new AlarmDto(fanArtCommenterId, fanArtReplierId, AlarmType.FANART.getId(), relatedId, content));
     }
 
     @Override
@@ -271,13 +271,17 @@ public class AlarmServiceImpl implements AlarmService {
 
         String content = likedUser.getNickname() + "님께서 " + "\"" + comment + "\"" + " 댓글에 좋아요를 누르셨습니다.";
 
-        sendToAlarm(new AlarmDto(fanArtCommenterId, AlarmType.FANART.getId(), relatedId, content));
+        sendToAlarm(new AlarmDto(fanArtCommenterId, fanArtCommentLikeUserId, AlarmType.FANART.getId(), relatedId, content));
     }
 
 
     public void sendToAlarm(AlarmDto alarmDto) {
 
-        User user = userRepository.findById(alarmDto.getUserId())
+        if(alarmDto.getOwnerId().equals(alarmDto.getUserId())) {
+            return;
+        }
+
+        User user = userRepository.findById(alarmDto.getOwnerId())
                 .orElseThrow(UserNotFoundException::new);
 
         AlarmChannel alarmChannel = alarmChannelRepository.findById(alarmDto.getAlarmChannelId())
@@ -285,12 +289,12 @@ public class AlarmServiceImpl implements AlarmService {
 
         alarmRepository.save(alarmDto.toEntity(user, alarmChannel));
 
-        SseEmitter emitter = emitterRepository.get(alarmDto.getUserId());
+        SseEmitter emitter = emitterRepository.get(alarmDto.getOwnerId());
         if (emitter != null) {
             try {
                 emitter.send(SseEmitter.event().name("alarm").data(alarmDto.getContent()));
             } catch (IOException exception) {
-                emitterRepository.deleteById(alarmDto.getUserId());
+                emitterRepository.deleteById(alarmDto.getOwnerId());
                 emitter.completeWithError(exception);
             }
         }

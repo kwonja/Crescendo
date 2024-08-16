@@ -6,6 +6,10 @@ import { ReactComponent as AddTag } from '../../assets/images/tag_add.svg';
 import { ReactComponent as RemoveTag } from '../../assets/images/tag_remove.svg';
 import { ReactComponent as RemoveIcon } from '../../assets/images/remove_icon.svg';
 import '../../scss/components/community/_postfeed.scss';
+import { useAppDispatch } from '../../store/hooks/hook';
+import { getFeedDetailAPI } from '../../apis/feed';
+import { updateFeed } from '../../features/communityDetail/communityDetailSlice';
+import { updateMyFeed } from '../../features/mypage/myFeedSlice';
 
 type ImageWithId = {
   id: number;
@@ -37,6 +41,7 @@ const EditFeed: React.FC<EditFeedProps> = ({
   const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
 
   const { idolGroupId } = useParams<{ idolGroupId: string }>();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const initialImageObjects = initialImages.map((url, index) => ({
@@ -45,7 +50,9 @@ const EditFeed: React.FC<EditFeedProps> = ({
       isNew: false,
     }));
     setImages(initialImageObjects);
-  }, [initialImages]);
+    setContent(initialContent);
+    setTags(initialTags);
+  }, [initialImages, initialContent, initialTags]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -140,7 +147,7 @@ const EditFeed: React.FC<EditFeedProps> = ({
       });
       if (response.status === 204) {
         alert('피드가 성공적으로 수정되었습니다.');
-        window.scrollTo(0, 0);
+        updateFeedDetail();
         onClose();
       }
     } catch (error) {
@@ -166,6 +173,16 @@ const EditFeed: React.FC<EditFeedProps> = ({
       handleTagAdd();
     }
   };
+
+  const updateFeedDetail = async () => {
+    try {
+      const response = await getFeedDetailAPI(feedId);
+      dispatch(updateFeed({feedId, feed:response}));
+      dispatch(updateMyFeed({feedId, feed:response}));
+    } catch (error) {
+      console.error('Error fetching feed details:', error);
+    }
+  }
 
   return (
     <form onSubmit={handleSubmit} className="feed-form">

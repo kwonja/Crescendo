@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
-import { ReactComponent as Heart } from '../../assets/images/Feed/heart.svg';
-import { ReactComponent as FullHeart } from '../../assets/images/Feed/fullheart.svg';
+import { ReactComponent as Heart } from '../../assets/images/challenge/heart.svg';
+import { ReactComponent as FullHeart } from '../../assets/images/challenge/fullheart.svg';
 import { ReactComponent as Play } from '../../assets/images/challenge/playbtn.svg';
 import { ReactComponent as Trash } from '../../assets/images/challenge/trash.svg';
 import { ChallengeDetails } from '../../interface/challenge';
@@ -15,11 +15,13 @@ import {
 import { deleteChallengeJoinAPI, getChallengeLikeAPI } from '../../apis/challenge';
 import { isAxiosError } from 'axios';
 import { toast } from 'react-toastify';
+import { decrementParticipants } from '../../features/challenge/challengeSlice';
 
 interface ChallengeProps {
   Challenge: ChallengeDetails;
+  challengeId : number;
 }
-export default function ChallengeDetailItem({ Challenge }: ChallengeProps) {
+export default function ChallengeDetailItem({ Challenge,challengeId }: ChallengeProps) {
   const { isLike, challengeVideoPath, likeCnt, nickname, challengeJoinId, userId } = Challenge;
   const dispath = useAppDispatch();
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -41,9 +43,20 @@ export default function ChallengeDetailItem({ Challenge }: ChallengeProps) {
     try {
       await deleteChallengeJoinAPI(challengeJoinId);
       toast.success('삭제되었습니다', {
-        position: 'top-center',
+        position: 'top-right',
       });
+
+      dispath(setSelectedChallengeDetail({
+        challengeJoinId: 0,
+        challengeVideoPath: '',
+        isLike: false,
+        likeCnt: 0,
+        nickname: '',
+        score: 0,
+        userId: 0,
+      }))
       dispath(deleteChallengeDetail(challengeJoinId));
+      dispath(decrementParticipants(challengeId));
     } catch (err: unknown) {
       if (isAxiosError(err)) {
         // Axios 에러인 경우

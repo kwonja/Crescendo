@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ReactComponent as UserDefault } from '../../assets/images/UserProfile/reduser.svg';
+import { Link } from 'react-router-dom';
 
 interface UserProfileProps {
   className?: string;
@@ -21,14 +22,19 @@ export default function UserProfile({
     <div className={`flex ${className}`}>
       <div className="mr-5">
         {notFoundImgError ? (
-          <UserDefault />
+          <Link to={`/mypage/${userId}`}>
+            <UserDefault onClick={() => window.scrollTo(0,0)} />
+          </Link>
         ) : (
-          <img
-            className="w-12 h-12 rounded-full"
-            src={userProfilePath || ''}
-            alt="이미지없음에러"
-            onError={() => setNotFoundImgError(true)}
-          />
+          <Link to={`/mypage/${userId}`}>
+            <img
+              className="w-12 h-12 rounded-full"
+              src={userProfilePath || ''}
+              alt="이미지없음에러"
+              onError={() => setNotFoundImgError(true)}
+              onClick={() => window.scrollTo(0,0)}
+            />
+          </Link>
         )}
       </div>
       <div className="flex-col">

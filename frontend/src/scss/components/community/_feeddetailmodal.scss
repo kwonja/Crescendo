@@ -168,6 +168,7 @@
           align-items: center;
           min-height: 200px;
           justify-content: center;
+          margin-bottom: 20px;
 
           .image-slider {
             position: relative;
@@ -238,6 +239,11 @@
           max-height: 100%;
           overflow-y: auto;
 
+          .feed-title {
+            font-size: 43px;
+            color: #fff;
+          }
+
           .feed-content {
             margin-top: 10px;
             font-size: 32px;
@@ -273,6 +279,7 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      overflow-x: hidden;
       overflow-y: auto;
       box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.35);
 
@@ -582,6 +589,7 @@
                 box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.35);
                 textarea {
                   width: 290px;
+                  height: 40px;
                   background-color: transparent;
                   border-color: transparent;
                   color: #fff;
@@ -647,6 +655,23 @@
                 margin-left: 10px;
               }
             }
+          }
+        }
+
+        .no-comments-container{
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          width: auto;
+          padding-top: 42%;
+          .no-comments-icon{
+            width: 50px;
+            height: 50px;
+            margin-bottom: 15px;
+          }
+          .no-comments-text{
+            font-size: 22px;
           }
         }
       }

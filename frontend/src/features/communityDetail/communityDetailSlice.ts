@@ -306,5 +306,6 @@ export const {
   searchFeed,
   updateFeed,
   updateGoods,
+  updateFanArt
 } = communityDetailSlice.actions;
 export default communityDetailSlice.reducer;

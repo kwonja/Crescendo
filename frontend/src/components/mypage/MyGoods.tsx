@@ -1,21 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ReactComponent as Dots } from '../../assets/images/Gallery/whitedots.svg';
 import { ReactComponent as FullHeart } from '../../assets/images/Gallery/whitefullheart.svg';
 import { ReactComponent as Heart } from '../../assets/images/Gallery/whiteheart.svg';
 import { ReactComponent as Comment } from '../../assets/images/Gallery/whitecomment.svg';
 import { MyGoodsInfo } from '../../interface/gallery';
-import { IMAGE_BASE_URL } from '../../apis/core';
+import { getUserId, IMAGE_BASE_URL } from '../../apis/core';
 import UserProfile from '../common/UserProfile';
 import { useAppDispatch } from '../../store/hooks/hook';
 import { toggleGoodsLike } from '../../features/communityDetail/communityDetailSlice';
 import { decrementLike, incrementLike } from '../../features/mypage/myFeedSlice';
 import { Link } from 'react-router-dom';
+import ActionMenu from '../common/ActionMenu';
 
 interface GoodsProps {
   goods: MyGoodsInfo;
+  onEditAction: (goodsId:number)=>void;
+  onDeleteAction: (goodsId:number)=>void;
 }
 
-export default function MyGoods({ goods }: GoodsProps) {
+export default function MyGoods({ goods, onDeleteAction, onEditAction }: GoodsProps) {
   const {
     goodsId,
     userId,
@@ -32,24 +35,35 @@ export default function MyGoods({ goods }: GoodsProps) {
   } = goods;
 
   const dispatch = useAppDispatch();
+  const [showActionMenu, setShowActionMenu] = useState<boolean>(false);
+  const currentUserId = getUserId();
 
   return (
     <div className="gallery">
-      <div className="community_name">
-        <Link to={`/community/${idolGroupId}`}>{idolGroupName}</Link>
+      <div className="gallery-img-container">
+        <img className="gallery-img" src={IMAGE_BASE_URL + goodsImagePathList[0]} alt="팬아트그림" />
+        <div className="community_name">
+          <Link to={`/community/${idolGroupId}`}>{idolGroupName}</Link>
+        </div>
       </div>
-      <img
-        className="gallery-img"
-        src={goodsImagePathList ? IMAGE_BASE_URL + goodsImagePathList[0] : ''}
-        alt="굿즈그림"
-      />
-
+      {userId === currentUserId &&
+      <div className="dots_box">
+        <Dots className="dots hoverup" onClick={e => {
+          e.stopPropagation();
+          setShowActionMenu(true);
+        }} />
+        {showActionMenu && (
+          <ActionMenu
+            onClose={()=>setShowActionMenu(false)}
+            onEditAction={()=>onEditAction(goodsId)}
+            onDeleteAction={()=>onDeleteAction(goodsId)}
+          />
+        )}
+      </div>
+      }
       <div className="title_box">
         <div className="type">굿즈</div>
         <div className="title">{title}</div>
-        <div className="dots_box">
-          <Dots className="dots hoverup" />
-        </div>
       </div>
       <div className="gallery_info">
         <div className="gallery_profile">

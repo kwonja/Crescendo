@@ -40,6 +40,8 @@ export default function AlarmListItem({ alarm }: AlarmItemProps) {
   };
 
   const handleDeleteAlarm = async (alarmId: number) => {
+    dispatch(decrementUnRead());
+    dispatch(readAlarmUpdate(alarmId));
     dispatch(deleteAlarm(alarmId));
     try {
       await deleteAlamrAPI(alarmId);

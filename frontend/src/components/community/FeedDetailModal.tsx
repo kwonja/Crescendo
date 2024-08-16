@@ -14,6 +14,7 @@ import { ReactComponent as PrevButton } from '../../assets/images/Feed/prev_butt
 import { ReactComponent as UserProfileImageDefault } from '../../assets/images/UserProfile/reduser.svg';
 import { ReactComponent as ReplyIcon } from '../../assets/images/Feed/comment.svg';
 import { ReactComponent as CommentWriteButton } from '../../assets/images/white_write.svg';
+import { ReactComponent as NoComments } from '../../assets/images/text_bubble.svg';
 import FeedDetailMenu from './DropdownMenu';
 import CommentMenu from './DropdownMenu';
 import ReplyMenu from './DropdownReplyMenu';
@@ -130,6 +131,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
     [feedId],
   );
 
+  // 댓글 작성 제한
   const handleNewCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
     const lines = value.split('\n');
@@ -144,6 +146,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
     }
   };
 
+  // 답글 작성 제한
   const handleNewReplyChange = (e: React.ChangeEvent<HTMLTextAreaElement>, commentId: number) => {
     const value = e.target.value;
     const lines = value.split('\n');
@@ -563,7 +566,7 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
         <div className="feed-detail-right">
           <div className="comments" ref={commentsRef}>
             {comments.length === 0 ? (
-              <div>댓글이 없습니다.</div>
+              <div className='no-comments-container'><NoComments className='no-comments-icon'/><div className='no-comments-text'>등록된 댓글이 없습니다...</div></div>
             ) : (
               comments.map(comment => (
                 <div key={comment.feedCommentId} className="comment">

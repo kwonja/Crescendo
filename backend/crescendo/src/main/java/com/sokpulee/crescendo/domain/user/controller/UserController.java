@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,13 +65,23 @@ public class UserController {
     @DeleteMapping
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 API")
     public ResponseEntity<?> deleteUserById(@AuthPrincipal Long loggedInUserId) {
-        if(loggedInUserId != null) {
+        if(loggedInUserId == null) {
             throw new AuthenticationRequiredException();
         }
 
         userService.deleteUserById(loggedInUserId);
 
-        return ResponseEntity.status(NO_CONTENT).build();
+        ResponseCookie deleteCookie = ResponseCookie.from("refreshToken", "")
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(0) // 쿠키 삭제
+                .build();
+
+        return ResponseEntity
+                .status(OK)
+                .header(HttpHeaders.SET_COOKIE, deleteCookie.toString())
+                .build();
     }
 
     @PatchMapping(value = "/mypage/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

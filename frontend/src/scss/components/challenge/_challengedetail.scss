@@ -94,6 +94,40 @@
     top: 100px;
     left: 110px;
   }
+  .detail-btn{
+    position: fixed;
+    width: 100px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    border-radius: 15px;
+    top: 690px;
+    left: 400px;
+    background-color: #f66;
+    color: #fff;
+    box-shadow: 2px 2px 2px 0px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    &:hover{
+      transform: scale(1.03);
+    }
+  }
+  .detail-score{
+    position: fixed;
+    width: 100px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    border-radius: 15px;
+    top: 690px;
+    left: 520px;
+    background-color: #f66;
+    color: #fff;
+    box-shadow: 2px 2px 2px 0px rgba(0, 0, 0, 0.25);
+  }
   .challenger {
     width: 405px;
     height: 600px;

@@ -15,8 +15,6 @@ interface APIstate {
   pathId: number;
   userId: number;
 }
-//createAsyncThunk는 비동기 작업을 도와주는 액션함수이기때문에
-//타입이 있어야한다.
 export const getUserInfo = createAsyncThunk(
   'profileSlice/getUserInfo',
   async ({ pathId, userId }: APIstate) => {
@@ -44,6 +42,9 @@ const profileSlice = createSlice({
   initialState: inistalState,
   reducers: {
     handleFollow: state => {
+      if(state.userInfo.isFollowing ===false){
+        state.userInfo.followerNum++;
+      }else state.userInfo.followerNum--;
       state.userInfo.isFollowing = !state.userInfo.isFollowing;
     },
     handleInfoUpdate: (

@@ -9,15 +9,18 @@ import { FeedInfo } from '../../interface/feed';
 import { useAppDispatch } from '../../store/hooks/hook';
 import { toggleFeedLike } from '../../features/communityDetail/communityDetailSlice';
 import UserProfile from '../common/UserProfile';
-import { IMAGE_BASE_URL } from '../../apis/core';
+import { getUserId, IMAGE_BASE_URL } from '../../apis/core';
 import Button from '../common/Button';
+import ActionMenu from '../common/ActionMenu';
 
 interface FeedProps {
   feed: FeedInfo;
   onClick: () => void;
+  onEditAction: (feedId:number)=>void;
+  onDeleteAction: (feedId:number)=>void;
 }
 
-export default function CommunityFeed({ feed, onClick }: FeedProps) {
+export default function CommunityFeed({ feed, onClick, onEditAction, onDeleteAction }: FeedProps) {
   const {
     feedId,
     userId,
@@ -34,6 +37,8 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
   const dispatch = useAppDispatch();
   const [imgIdx, setImgIdx] = useState<number>(0);
   const [animation, setAnimation] = useState<string>('');
+  const [showActionMenu, setShowActionMenu] = useState<boolean>(false);
+  const currentUserId = getUserId();
 
   const handleClick = () => {
     onClick();
@@ -48,7 +53,21 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
           date={new Date(createdAt).toLocaleString()}
           userProfilePath={profileImagePath ? IMAGE_BASE_URL + profileImagePath : null}
         />
-        <Dots className="dots hoverup" onClick={e => e.stopPropagation()} />
+        { userId === currentUserId &&
+        <div className="dots_box">
+          <Dots className="dots hoverup" onClick={e => {
+            e.stopPropagation();
+            setShowActionMenu(true);
+          }} />
+          {showActionMenu && (
+            <ActionMenu
+              onClose={()=>setShowActionMenu(false)}
+              onEditAction={()=>onEditAction(feedId)}
+              onDeleteAction={()=>onDeleteAction(feedId)}
+            />
+          )}
+        </div>
+        }
       </div>
       {feedImagePathList.length > 0 && (
         <div className="feed_image_box">
@@ -144,7 +163,7 @@ export default function CommunityFeed({ feed, onClick }: FeedProps) {
       <div className="feed_comment_box">
         {' '}
         {commentCnt}
-        <Comment />
+        <Comment className='hoverup' />
       </div>
     </div>
   );

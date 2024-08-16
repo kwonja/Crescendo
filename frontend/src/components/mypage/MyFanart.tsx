@@ -1,21 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ReactComponent as Dots } from '../../assets/images/Gallery/whitedots.svg';
 import { ReactComponent as FullHeart } from '../../assets/images/Gallery/whitefullheart.svg';
 import { ReactComponent as Heart } from '../../assets/images/Gallery/whiteheart.svg';
 import { ReactComponent as Comment } from '../../assets/images/Gallery/whitecomment.svg';
 import { MyFanArtInfo } from '../../interface/gallery';
-import { IMAGE_BASE_URL } from '../../apis/core';
+import { getUserId, IMAGE_BASE_URL } from '../../apis/core';
 import UserProfile from '../common/UserProfile';
 import { useAppDispatch } from '../../store/hooks/hook';
 import { toggleFanArtLike } from '../../features/communityDetail/communityDetailSlice';
 import { decrementLike, incrementLike } from '../../features/mypage/myFeedSlice';
 import { Link } from 'react-router-dom';
+import ActionMenu from '../common/ActionMenu';
 
 interface FanArtProps {
   fanArt: MyFanArtInfo;
+  onEditAction: (fanArtId:number)=>void;
+  onDeleteAction: (fanArtId:number)=>void;
 }
 
-export default function MyFanart({ fanArt }: FanArtProps) {
+export default function MyFanart({ fanArt, onDeleteAction, onEditAction  }: FanArtProps) {
   const {
     fanArtId,
     userId,
@@ -32,20 +35,35 @@ export default function MyFanart({ fanArt }: FanArtProps) {
   } = fanArt;
 
   const dispatch = useAppDispatch();
+  const [showActionMenu, setShowActionMenu] = useState<boolean>(false);
+  const currentUserId = getUserId();
 
   return (
     <div className="gallery">
-      <div className="community_name">
-        <Link to={`/community/${idolGroupId}`}>{idolGroupName}</Link>
+      <div className="gallery-img-container">
+        <img className="gallery-img" src={IMAGE_BASE_URL + fanArtImagePathList[0]} alt="팬아트그림" />
+        <div className="community_name">
+          <Link to={`/community/${idolGroupId}`}>{idolGroupName}</Link>
+        </div>
       </div>
-      <img className="gallery-img" src={IMAGE_BASE_URL + fanArtImagePathList[0]} alt="팬아트그림" />
-
+      {userId === currentUserId &&
+      <div className="dots_box">
+        <Dots className="dots hoverup" onClick={e => {
+          e.stopPropagation();
+          setShowActionMenu(true);
+        }} />
+        {showActionMenu && (
+          <ActionMenu
+            onClose={()=>setShowActionMenu(false)}
+            onEditAction={()=>onEditAction(fanArtId)}
+            onDeleteAction={()=>onDeleteAction(fanArtId)}
+          />
+        )}
+      </div>
+      }
       <div className="title_box">
         <div className="type">팬아트</div>
         <div className="title">{title}</div>
-        <div className="dots_box">
-          <Dots className="dots hoverup" />
-        </div>
       </div>
       <div className="gallery_info">
         <div className="gallery_profile">

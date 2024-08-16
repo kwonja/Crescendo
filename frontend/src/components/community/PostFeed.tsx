@@ -97,11 +97,6 @@ const FeedForm: React.FC<FeedFormProps> = ({ onClose }) => {
     tags.forEach(tag => formData.append('tagList', tag));
     formData.append('idolGroupId', idolGroupId ?? '');
 
-    // 데이터 확인용 로그 출력
-    // for (let pair of formData.entries()) {
-    //   console.log(pair[0] + ': ' + pair[1]);
-    // }
-
     try {
       const response = await Authapi.post('/api/v1/community/feed', formData, {
         headers: {
