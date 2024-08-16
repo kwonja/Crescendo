@@ -62,7 +62,7 @@ export default function ChallengeItem({ Challenge }: ChallengeProps) {
           <ul>
             <li>
               <Link to={`/dance/${challengeId}`}>
-                <Enter/>
+                <Enter />
               </Link>{' '}
               <Link to={`/dance/${challengeId}`}>입장하기 </Link>
             </li>
