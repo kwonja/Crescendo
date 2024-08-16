@@ -27,6 +27,7 @@ export default function ChatConnect() {
     client.current.connect(
       {},
       (frame: string) => {
+        dispatch(getUserChatRoomList());
         client.current?.subscribe(`/topic/messages/${getUserId()}`, content => {
           const newMessage: Message = JSON.parse(content.body);
           dispatch(
@@ -41,6 +42,7 @@ export default function ChatConnect() {
           );
           if (newMessage.dmGroupId !== selectedGroup.dmGroupId) {
             dispatch(incrementUnReadChat(newMessage.dmGroupId));
+            dispatch(getUserChatRoomList())
           }
         });
       },

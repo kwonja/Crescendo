@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import ChatRoomListItem from './ChatRoomListItem';
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
 import {
   decrementUnReadChat,
-  getUserChatRoomList,
   setIsSelected,
   setSelectedGroup,
 } from '../../features/chat/chatroomSlice';
@@ -18,10 +17,10 @@ export default function ChatLayout() {
     dispatch(setIsSelected(true));
     dispatch(decrementUnReadChat(Group.dmGroupId));
   };
-  useEffect(() => {
-    const promise = dispatch(getUserChatRoomList());
-    return () => promise.abort();
-  }, [dispatch]);
+  // useEffect(() => {
+  //   const promise = dispatch(getUserChatRoomList());
+  //   return () => promise.abort();
+  // }, [dispatch]);
 
   return (
     <div className="chatlayout">
