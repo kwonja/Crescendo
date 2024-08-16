@@ -11,10 +11,10 @@ export const toggleFeedLikeAPI = async (feedId: number) => {
 };
 
 export const deleteFeedAPI = async (feedId: number) => {
-  await Authapi.delete(`/api/v1/community/feed/${feedId}`)
-}
+  await Authapi.delete(`/api/v1/community/feed/${feedId}`);
+};
 
 export const getFeedDetailAPI = async (feedId: number) => {
   const response = await Authapi.get(`/api/v1/community/feed/${feedId}`);
   return response.data;
-}
+};

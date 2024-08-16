@@ -13,8 +13,8 @@ export const toggleFanArtLikeAPI = async (fanArtId: number) => {
 export const getFanArtDetailAPI = async (fanArtId: number) => {
   const response = await Authapi.get(`/api/v1/community/fan-art/${fanArtId}`);
   return response.data;
-}
+};
 
 export const deleteFanArtAPI = async (fanArtId: number) => {
   await Authapi.delete(`/api/v1/community/fan-art/${fanArtId}`);
-}
+};

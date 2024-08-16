@@ -19,9 +19,9 @@ import { decrementParticipants } from '../../features/challenge/challengeSlice';
 
 interface ChallengeProps {
   Challenge: ChallengeDetails;
-  challengeId : number;
+  challengeId: number;
 }
-export default function ChallengeDetailItem({ Challenge,challengeId }: ChallengeProps) {
+export default function ChallengeDetailItem({ Challenge, challengeId }: ChallengeProps) {
   const { isLike, challengeVideoPath, likeCnt, nickname, challengeJoinId, userId } = Challenge;
   const dispath = useAppDispatch();
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -46,15 +46,17 @@ export default function ChallengeDetailItem({ Challenge,challengeId }: Challenge
         position: 'top-right',
       });
 
-      dispath(setSelectedChallengeDetail({
-        challengeJoinId: 0,
-        challengeVideoPath: '',
-        isLike: false,
-        likeCnt: 0,
-        nickname: '',
-        score: 0,
-        userId: 0,
-      }))
+      dispath(
+        setSelectedChallengeDetail({
+          challengeJoinId: 0,
+          challengeVideoPath: '',
+          isLike: false,
+          likeCnt: 0,
+          nickname: '',
+          score: 0,
+          userId: 0,
+        }),
+      );
       dispath(deleteChallengeDetail(challengeJoinId));
       dispath(decrementParticipants(challengeId));
     } catch (err: unknown) {

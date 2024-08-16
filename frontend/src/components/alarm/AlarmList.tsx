@@ -7,7 +7,7 @@ export default function AlarmList() {
   const loader = useRef<HTMLDivElement | null>(null);
   const dispatch = useAppDispatch();
   const { alarmList } = useAppSelector(state => state.alarm);
-  
+
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
       const target = entries[0];

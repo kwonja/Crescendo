@@ -14,8 +14,8 @@ import ActionMenu from '../common/ActionMenu';
 
 interface GoodsProps {
   goods: MyGoodsInfo;
-  onEditAction: (goodsId:number)=>void;
-  onDeleteAction: (goodsId:number)=>void;
+  onEditAction: (goodsId: number) => void;
+  onDeleteAction: (goodsId: number) => void;
 }
 
 export default function MyGoods({ goods, onDeleteAction, onEditAction }: GoodsProps) {
@@ -41,26 +41,33 @@ export default function MyGoods({ goods, onDeleteAction, onEditAction }: GoodsPr
   return (
     <div className="gallery">
       <div className="gallery-img-container">
-        <img className="gallery-img" src={IMAGE_BASE_URL + goodsImagePathList[0]} alt="팬아트그림" />
+        <img
+          className="gallery-img"
+          src={IMAGE_BASE_URL + goodsImagePathList[0]}
+          alt="팬아트그림"
+        />
         <div className="community_name">
           <Link to={`/community/${idolGroupId}`}>{idolGroupName}</Link>
         </div>
       </div>
-      {userId === currentUserId &&
-      <div className="dots_box">
-        <Dots className="dots hoverup" onClick={e => {
-          e.stopPropagation();
-          setShowActionMenu(true);
-        }} />
-        {showActionMenu && (
-          <ActionMenu
-            onClose={()=>setShowActionMenu(false)}
-            onEditAction={()=>onEditAction(goodsId)}
-            onDeleteAction={()=>onDeleteAction(goodsId)}
+      {userId === currentUserId && (
+        <div className="dots_box">
+          <Dots
+            className="dots hoverup"
+            onClick={e => {
+              e.stopPropagation();
+              setShowActionMenu(true);
+            }}
           />
-        )}
-      </div>
-      }
+          {showActionMenu && (
+            <ActionMenu
+              onClose={() => setShowActionMenu(false)}
+              onEditAction={() => onEditAction(goodsId)}
+              onDeleteAction={() => onDeleteAction(goodsId)}
+            />
+          )}
+        </div>
+      )}
       <div className="title_box">
         <div className="type">굿즈</div>
         <div className="title">{title}</div>

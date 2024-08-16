@@ -566,7 +566,10 @@ const FeedDetailModal: React.FC<FeedDetailModalProps> = ({ show, onClose, feedId
         <div className="feed-detail-right">
           <div className="comments" ref={commentsRef}>
             {comments.length === 0 ? (
-              <div className='no-comments-container'><NoComments className='no-comments-icon'/><div className='no-comments-text'>등록된 댓글이 없습니다...</div></div>
+              <div className="no-comments-container">
+                <NoComments className="no-comments-icon" />
+                <div className="no-comments-text">등록된 댓글이 없습니다...</div>
+              </div>
             ) : (
               comments.map(comment => (
                 <div key={comment.feedCommentId} className="comment">

@@ -23,7 +23,7 @@ export default function UserProfile({
       <div className="mr-5">
         {notFoundImgError ? (
           <Link to={`/mypage/${userId}`}>
-            <UserDefault onClick={() => window.scrollTo(0,0)} />
+            <UserDefault onClick={() => window.scrollTo(0, 0)} />
           </Link>
         ) : (
           <Link to={`/mypage/${userId}`}>
@@ -32,7 +32,7 @@ export default function UserProfile({
               src={userProfilePath || ''}
               alt="이미지없음에러"
               onError={() => setNotFoundImgError(true)}
-              onClick={() => window.scrollTo(0,0)}
+              onClick={() => window.scrollTo(0, 0)}
             />
           </Link>
         )}

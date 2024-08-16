@@ -9,8 +9,9 @@ const Section2 = () => {
           자신이 좋아하는 아이돌이 어느정도 인기인지 확인할 수 있어요
         </div>
       </div>
-      <div className="section2-1" data-aos="fade-down" data-aos-duration="1500"><Image1 className='img'/></div>
-      
+      <div className="section2-1" data-aos="fade-down" data-aos-duration="1500">
+        <Image1 className="img" />
+      </div>
     </div>
   );
 };

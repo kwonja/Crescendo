@@ -2,8 +2,8 @@ import React, { useEffect, useRef } from 'react';
 
 interface ActionMenuProps {
   onClose: () => void;
-  onEditAction?: ()=> void;
-  onDeleteAction: ()=> void; 
+  onEditAction?: () => void;
+  onDeleteAction: () => void;
 }
 
 export default function ActionMenu({ onClose, onEditAction, onDeleteAction }: ActionMenuProps) {
@@ -23,18 +23,27 @@ export default function ActionMenu({ onClose, onEditAction, onDeleteAction }: Ac
   }, [menuRef, onClose]);
 
   return (
-    <div
-      ref={menuRef}
-      className="action-menu"
-    >
-      {onEditAction &&
-      <div className="action-menu-item" onClick={(e) => {onEditAction(); e.stopPropagation();}}>
-        수정
-      </div>
-      }
-      <div className="action-menu-item" onClick={(e) => {onDeleteAction(); e.stopPropagation();}}>
+    <div ref={menuRef} className="action-menu">
+      {onEditAction && (
+        <div
+          className="action-menu-item"
+          onClick={e => {
+            onEditAction();
+            e.stopPropagation();
+          }}
+        >
+          수정
+        </div>
+      )}
+      <div
+        className="action-menu-item"
+        onClick={e => {
+          onDeleteAction();
+          e.stopPropagation();
+        }}
+      >
         삭제
       </div>
     </div>
-  )
+  );
 }

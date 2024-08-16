@@ -16,8 +16,8 @@ import CommonModal from '../common/CommonModal';
 
 export default function FavoriteRankList() {
   const { favoriteRankList, status, hasMore } = useAppSelector(state => state.favorite);
-  const [showActionMenu, setShowActionMenu] = useState<number|null>(null);
-  const [showDeleteModal, setShowDeleteModal] = useState<number|null>(null);
+  const [showActionMenu, setShowActionMenu] = useState<number | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState<number | null>(null);
   const dispatch = useAppDispatch();
   const observer = useRef<IntersectionObserver | null>(null);
   const userId = getUserId();
@@ -34,7 +34,7 @@ export default function FavoriteRankList() {
       try {
         await deleteFavoriteRankAPI(showDeleteModal);
         alert('성공적으로 삭제했습니다.');
-        dispatch(resetState())
+        dispatch(resetState());
       } catch (error: any) {
         if (error.response && error.response.data) {
           alert(error.response.data);
@@ -46,8 +46,7 @@ export default function FavoriteRankList() {
         setShowDeleteModal(null);
       }
     }
-  }, [showDeleteModal, dispatch]
-)
+  }, [showDeleteModal, dispatch]);
 
   const loadMoreElementRef = useCallback(
     (node: HTMLDivElement | null) => {
@@ -70,20 +69,20 @@ export default function FavoriteRankList() {
     <div className="favoriteranklist">
       {favoriteRankList.map(rankEntry => (
         <div className="favoriteranklist_card" key={rankEntry.favoriteRankId}>
-          { userId === rankEntry.writerId &&
-          <div className="dotsbox">
-            <Dots
-              className="hoverup"
-              onClick={()=> setShowActionMenu(rankEntry.favoriteRankId)}
-            />
-            {showActionMenu===rankEntry.favoriteRankId && (
-              <ActionMenu
-                onClose={() => setShowActionMenu(null)}
-                onDeleteAction={()=> setShowDeleteModal(rankEntry.favoriteRankId)}
+          {userId === rankEntry.writerId && (
+            <div className="dotsbox">
+              <Dots
+                className="hoverup"
+                onClick={() => setShowActionMenu(rankEntry.favoriteRankId)}
               />
-            )}
-          </div>
-          }
+              {showActionMenu === rankEntry.favoriteRankId && (
+                <ActionMenu
+                  onClose={() => setShowActionMenu(null)}
+                  onDeleteAction={() => setShowDeleteModal(rankEntry.favoriteRankId)}
+                />
+              )}
+            </div>
+          )}
           <div className="favoriteranklist_card_label text-4xl">
             <div>{rankEntry.idolGroupName}</div>
             <div className="separator mx-3">-</div>
@@ -115,17 +114,21 @@ export default function FavoriteRankList() {
           </div>
         </div>
       ))}
-      
-      {//삭제모달
-      showDeleteModal && (
-        <CommonModal
-          title="삭제 확인"
-          msg="정말로 삭제하시겠습니까?"
-          onClose={() => setShowDeleteModal(null)}
-          onConfirm={onDelete}
-        />
+
+      {
+        //삭제모달
+        showDeleteModal && (
+          <CommonModal
+            title="삭제 확인"
+            msg="정말로 삭제하시겠습니까?"
+            onClose={() => setShowDeleteModal(null)}
+            onConfirm={onDelete}
+          />
+        )
+      }
+      {(status === 'success' || status === '') && hasMore && (
+        <div ref={loadMoreElementRef}>Load More..</div>
       )}
-      {(status === 'success' || status === '') && hasMore && (<div ref={loadMoreElementRef}>Load More..</div>)}
     </div>
   );
 }

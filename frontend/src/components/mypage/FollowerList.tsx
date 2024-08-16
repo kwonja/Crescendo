@@ -7,7 +7,7 @@ interface FrinedsProps {
   userId: number;
 }
 
-export default function Followerlist({userId} : FrinedsProps) {
+export default function Followerlist({ userId }: FrinedsProps) {
   const { followerList, error } = useAppSelector(state => state.follower);
 
   if (error === 'failed') {
@@ -16,11 +16,9 @@ export default function Followerlist({userId} : FrinedsProps) {
 
   return (
     <div className="profilelist">
-      {followerList.length > 0 ? (
-        followerList.map((follower, index) => <FriendProfile key={index} user={follower} />)
-      ) : (
-        userId === getUserId() && (<div>친구를 추가해 보세요!</div>)
-        )}
+      {followerList.length > 0
+        ? followerList.map((follower, index) => <FriendProfile key={index} user={follower} />)
+        : userId === getUserId() && <div>친구를 추가해 보세요!</div>}
     </div>
   );
 }

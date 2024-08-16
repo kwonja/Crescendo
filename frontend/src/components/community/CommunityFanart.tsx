@@ -13,11 +13,16 @@ import ActionMenu from '../common/ActionMenu';
 interface FanArtProps {
   fanArt: FanArtInfo;
   onClick: () => void;
-  onEditAction: (fanArtId:number)=>void;
-  onDeleteAction: (fanArtId:number)=>void;
+  onEditAction: (fanArtId: number) => void;
+  onDeleteAction: (fanArtId: number) => void;
 }
 
-export default function CommunityFanart({ fanArt, onClick, onDeleteAction, onEditAction }: FanArtProps) {
+export default function CommunityFanart({
+  fanArt,
+  onClick,
+  onDeleteAction,
+  onEditAction,
+}: FanArtProps) {
   const {
     fanArtId,
     userId,
@@ -42,25 +47,27 @@ export default function CommunityFanart({ fanArt, onClick, onDeleteAction, onEdi
   return (
     <div className="gallery" onClick={handleClick}>
       <img className="gallery-img" src={IMAGE_BASE_URL + fanArtImagePathList[0]} alt="팬아트그림" />
-      {userId === currentUserId &&
-      <div className="dots_box">
-        <Dots className="dots hoverup" onClick={e => {
-          e.stopPropagation();
-          setShowActionMenu(true);
-        }} />
-        {showActionMenu && (
-          <ActionMenu
-            onClose={()=>setShowActionMenu(false)}
-            onEditAction={()=>onEditAction(fanArtId)}
-            onDeleteAction={()=>onDeleteAction(fanArtId)}
+      {userId === currentUserId && (
+        <div className="dots_box">
+          <Dots
+            className="dots hoverup"
+            onClick={e => {
+              e.stopPropagation();
+              setShowActionMenu(true);
+            }}
           />
-        )}
-      </div>
-      }
+          {showActionMenu && (
+            <ActionMenu
+              onClose={() => setShowActionMenu(false)}
+              onEditAction={() => onEditAction(fanArtId)}
+              onDeleteAction={() => onDeleteAction(fanArtId)}
+            />
+          )}
+        </div>
+      )}
       <div className="title_box">
         <div className="type">팬아트</div>
         <div className="title">{title}</div>
-        
       </div>
       <div className="gallery_info" onClick={e => e.stopPropagation()}>
         <div className="gallery_profile">
@@ -71,22 +78,24 @@ export default function CommunityFanart({ fanArt, onClick, onDeleteAction, onEdi
             userProfilePath={profileImagePath ? IMAGE_BASE_URL + profileImagePath : null}
           />
         </div>
-        <div className="gallery_comment_box" >
+        <div className="gallery_comment_box">
           <Comment className="gallery_comment" />
-          <div className="gallery_comment_cnt" >{commentCnt}</div>
+          <div className="gallery_comment_cnt">{commentCnt}</div>
         </div>
-        <div className="gallery_heart_box" >
+        <div className="gallery_heart_box">
           {isLike ? (
             <FullHeart
               className="gallery_heart hoverup"
-              onClick={(e) => {
-                dispatch(toggleFanArtLike(fanArtId))} }
+              onClick={e => {
+                dispatch(toggleFanArtLike(fanArtId));
+              }}
             />
           ) : (
             <Heart
               className="gallery_heart hoverup"
-              onClick={(e) => {
-                dispatch(toggleFanArtLike(fanArtId))}}
+              onClick={e => {
+                dispatch(toggleFanArtLike(fanArtId));
+              }}
             />
           )}
           <div className="gallery_heart_cnt">{likeCnt}</div>

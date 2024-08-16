@@ -16,8 +16,8 @@ import ActionMenu from '../common/ActionMenu';
 interface FeedProps {
   feed: FeedInfo;
   onClick: () => void;
-  onEditAction: (feedId:number)=>void;
-  onDeleteAction: (feedId:number)=>void;
+  onEditAction: (feedId: number) => void;
+  onDeleteAction: (feedId: number) => void;
 }
 
 export default function CommunityFeed({ feed, onClick, onEditAction, onDeleteAction }: FeedProps) {
@@ -53,21 +53,24 @@ export default function CommunityFeed({ feed, onClick, onEditAction, onDeleteAct
           date={new Date(createdAt).toLocaleString()}
           userProfilePath={profileImagePath ? IMAGE_BASE_URL + profileImagePath : null}
         />
-        { userId === currentUserId &&
-        <div className="dots_box">
-          <Dots className="dots hoverup" onClick={e => {
-            e.stopPropagation();
-            setShowActionMenu(true);
-          }} />
-          {showActionMenu && (
-            <ActionMenu
-              onClose={()=>setShowActionMenu(false)}
-              onEditAction={()=>onEditAction(feedId)}
-              onDeleteAction={()=>onDeleteAction(feedId)}
+        {userId === currentUserId && (
+          <div className="dots_box">
+            <Dots
+              className="dots hoverup"
+              onClick={e => {
+                e.stopPropagation();
+                setShowActionMenu(true);
+              }}
             />
-          )}
-        </div>
-        }
+            {showActionMenu && (
+              <ActionMenu
+                onClose={() => setShowActionMenu(false)}
+                onEditAction={() => onEditAction(feedId)}
+                onDeleteAction={() => onDeleteAction(feedId)}
+              />
+            )}
+          </div>
+        )}
       </div>
       {feedImagePathList.length > 0 && (
         <div className="feed_image_box">
@@ -163,7 +166,7 @@ export default function CommunityFeed({ feed, onClick, onEditAction, onDeleteAct
       <div className="feed_comment_box">
         {' '}
         {commentCnt}
-        <Comment className='hoverup' />
+        <Comment className="hoverup" />
       </div>
     </div>
   );

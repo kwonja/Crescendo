@@ -50,53 +50,60 @@ const Settings: React.FC = () => {
     }
 
     try {
-      await Authapi.patch(`api/v1/user/mypage/password?loggedInUserId=${userId}`, {currentPassword, newPassword:password})
+      await Authapi.patch(`api/v1/user/mypage/password?loggedInUserId=${userId}`, {
+        currentPassword,
+        newPassword: password,
+      });
       alert('비밀번호가 성공적으로 변경되었습니다.');
       navigate(0);
-    }
-    catch(error:any) {
-      if (error.response && error.response.data && error.response.data === '현재 비밀번호와 일치하지 않습니다.') {
+    } catch (error: any) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data === '현재 비밀번호와 일치하지 않습니다.'
+      ) {
         setFieldErrors(prev => ({
           ...prev,
-          currentPassword: error.response.data
+          currentPassword: error.response.data,
         }));
       }
     }
   };
 
   const handleDeleteClick = async () => {
-    const confirmDelete = window.confirm('회원 탈퇴 후에는 복구가 불가능하며 작성한 모든 데이터가 삭제됩니다. 정말 삭제하시겠습니까?');
+    const confirmDelete = window.confirm(
+      '회원 탈퇴 후에는 복구가 불가능하며 작성한 모든 데이터가 삭제됩니다. 정말 삭제하시겠습니까?',
+    );
     if (confirmDelete) {
       try {
         await Authapi.delete(`api/v1/user?loggedInUserId=${userId}`);
         alert('회원 탈퇴 성공');
-        dispatch(reset())
+        dispatch(reset());
         navigate('/');
-      }
-      catch(error) {
+      } catch (error) {
         alert('회원 탈퇴 실패');
       }
     }
-  } 
+  };
 
   return (
     <div className="settings-container">
       <h1 className="settings-title">비밀번호 변경</h1>
       <div className="password-reset-wrapper">
         <form onSubmit={handleSubmit} className="password-reset-form">
-        <div className="form-group">
+          <div className="form-group">
             <div className="input-group">
               <input
                 type={showCurrentPassword ? 'text' : 'password'}
                 placeholder="현재 비밀번호 입력"
                 value={currentPassword}
-                onChange={(e)=>setCurrentPassword(e.target.value)}
+                onChange={e => setCurrentPassword(e.target.value)}
                 minLength={8}
                 maxLength={32}
                 required
               />
               <Visualization
-                onClick={() => setShowCurrentPassword(prev=>!prev)}
+                onClick={() => setShowCurrentPassword(prev => !prev)}
                 className="toggle-password"
               >
                 {showPassword ? '숨기기' : '보이기'}
@@ -151,21 +158,19 @@ const Settings: React.FC = () => {
             </p>
           </div>
           <div className="button-group">
-            <button type="submit" className="submit-button" >
+            <button type="submit" className="submit-button">
               변경
             </button>
           </div>
         </form>
       </div>
       <h1 className="settings-title">회원 탈퇴</h1>
-      <div className='flex items-center mb-5'>
+      <div className="flex items-center mb-5">
         <WarningSign />
-        <div className='deletion-warning-msg'>
-          탈퇴 시 되돌릴 수 없습니다. 
-        </div>
+        <div className="deletion-warning-msg">탈퇴 시 되돌릴 수 없습니다.</div>
       </div>
       <div className="button-group">
-        <button className="delete-button" onClick={handleDeleteClick} >
+        <button className="delete-button" onClick={handleDeleteClick}>
           탈퇴
         </button>
       </div>

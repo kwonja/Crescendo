@@ -70,7 +70,7 @@ export default function Challenge() {
               <ChallengeItem Challenge={challenge} key={challenge.challengeId} />
             ))}
           </div>
-          <div className="w-4 h-4"ref={loader}></div>
+          <div className="w-4 h-4" ref={loader}></div>
         </div>
       </div>
       <Write className="fixed right-12 bottom-12 cursor-pointer" onClick={handleOpenModal} />

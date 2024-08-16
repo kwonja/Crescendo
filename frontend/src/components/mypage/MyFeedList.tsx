@@ -21,17 +21,20 @@ export default function MyFeedList({ userId }: MyFeedListProps) {
   const { myFeedList, hasMore, status } = useAppSelector(state => state.myFeed);
   const dispatch = useAppDispatch();
   const observer = useRef<IntersectionObserver | null>(null);
-  const [showEditModal, setShowEditModal] = useState<number|null>(null);
-  const [showDeleteModal, setShowDeleteModal] = useState<number|null>(null);
-  const [editModalProps, setEditModalProps] = useState<EditModalProps|null>(null);
+  const [showEditModal, setShowEditModal] = useState<number | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState<number | null>(null);
+  const [editModalProps, setEditModalProps] = useState<EditModalProps | null>(null);
 
-  useEffect(()=> {
-    const feed = myFeedList.find((feed)=>feed.feedId===showEditModal);
+  useEffect(() => {
+    const feed = myFeedList.find(feed => feed.feedId === showEditModal);
     if (feed) {
-      setEditModalProps({content:feed.content, tags:feed.tagList, images:feed.feedImagePathList})
-    }
-    else setEditModalProps(null);
-  }, [showEditModal, myFeedList])
+      setEditModalProps({
+        content: feed.content,
+        tags: feed.tagList,
+        images: feed.feedImagePathList,
+      });
+    } else setEditModalProps(null);
+  }, [showEditModal, myFeedList]);
 
   useEffect(() => {
     return () => {
@@ -62,7 +65,7 @@ export default function MyFeedList({ userId }: MyFeedListProps) {
       try {
         await deleteFeedAPI(showDeleteModal);
         alert('성공적으로 삭제했습니다.');
-        dispatch(resetState())
+        dispatch(resetState());
       } catch (error: any) {
         if (error.response && error.response.data) {
           alert(error.response.data);
@@ -74,37 +77,45 @@ export default function MyFeedList({ userId }: MyFeedListProps) {
         setShowDeleteModal(null);
       }
     }
-  }, [showDeleteModal, dispatch])
+  }, [showDeleteModal, dispatch]);
 
   return (
     <div className="feedlist">
       {status === 'loading' || myFeedList.length > 0 ? (
-        myFeedList.map((feed) => (
-          <MyFeed 
-            key={feed.feedId} 
-            feed={feed} 
-            onEditAction={(feedId:number)=>setShowEditModal(feedId)} 
-            onDeleteAction={(feedId:number)=>setShowDeleteModal(feedId)}  />
+        myFeedList.map(feed => (
+          <MyFeed
+            key={feed.feedId}
+            feed={feed}
+            onEditAction={(feedId: number) => setShowEditModal(feedId)}
+            onDeleteAction={(feedId: number) => setShowDeleteModal(feedId)}
+          />
         ))
       ) : (
         <div className="text-center text-xl w-full">작성한 피드가 없습니다.</div>
       )}
-      { //수정모달
+      {
+        //수정모달
         showEditModal && (
-          <div className="modal-overlay" style={{zIndex:1100}} onClick = {(e)=>e.stopPropagation()}>
-            <div className="feed-edit-modal modal" >
+          <div
+            className="modal-overlay"
+            style={{ zIndex: 1100 }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="feed-edit-modal modal">
               <div className="modal-content">
                 <div className="modal-header">
                   <div className="modal-header-title">
                     <h2>글 수정</h2>
                   </div>
-                  <span className="close" onClick={()=>setShowEditModal(null)}>
+                  <span className="close" onClick={() => setShowEditModal(null)}>
                     &times;
                   </span>
                 </div>
                 <div className="modal-body">
                   <EditFeed
-                    onClose={()=>{setShowEditModal(null);}}
+                    onClose={() => {
+                      setShowEditModal(null);
+                    }}
                     feedId={showEditModal}
                     initialContent={editModalProps?.content ?? ''}
                     initialTags={editModalProps?.tags ?? []}
@@ -117,15 +128,16 @@ export default function MyFeedList({ userId }: MyFeedListProps) {
         )
       }
 
-      {//삭제모달
-      showDeleteModal && (
-        <CommonModal
-          title="삭제 확인"
-          msg="정말로 삭제하시겠습니까?"
-          onClose={() => setShowDeleteModal(null)}
-          onConfirm={onDelete}
-        />
-      )
+      {
+        //삭제모달
+        showDeleteModal && (
+          <CommonModal
+            title="삭제 확인"
+            msg="정말로 삭제하시겠습니까?"
+            onClose={() => setShowDeleteModal(null)}
+            onConfirm={onDelete}
+          />
+        )
       }
       {hasMore && <div ref={loadMoreElementRef}>Load More..</div>}
     </div>

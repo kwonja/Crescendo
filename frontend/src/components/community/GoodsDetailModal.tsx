@@ -559,8 +559,11 @@ const GoodsDetailModal: React.FC<GoodsDetailModalProps> = ({ show, onClose, good
         </div>
         <div className="feed-detail-right">
           <div className="comments" ref={commentsRef}>
-          {comments.length === 0 ? (
-              <div className='no-comments-container'><NoComments className='no-comments-icon'/><div className='no-comments-text'>등록된 댓글이 없습니다...</div></div>
+            {comments.length === 0 ? (
+              <div className="no-comments-container">
+                <NoComments className="no-comments-icon" />
+                <div className="no-comments-text">등록된 댓글이 없습니다...</div>
+              </div>
             ) : (
               comments.map(comment => (
                 <div key={comment.goodsCommentId} className="comment">

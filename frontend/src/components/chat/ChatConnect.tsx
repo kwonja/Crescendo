@@ -42,7 +42,7 @@ export default function ChatConnect() {
           );
           if (newMessage.dmGroupId !== selectedGroup.dmGroupId) {
             dispatch(incrementUnReadChat(newMessage.dmGroupId));
-            dispatch(getUserChatRoomList())
+            dispatch(getUserChatRoomList());
           }
         });
       },

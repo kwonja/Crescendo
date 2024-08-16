@@ -42,9 +42,9 @@ const profileSlice = createSlice({
   initialState: inistalState,
   reducers: {
     handleFollow: state => {
-      if(state.userInfo.isFollowing ===false){
+      if (state.userInfo.isFollowing === false) {
         state.userInfo.followerNum++;
-      }else state.userInfo.followerNum--;
+      } else state.userInfo.followerNum--;
       state.userInfo.isFollowing = !state.userInfo.isFollowing;
     },
     handleInfoUpdate: (

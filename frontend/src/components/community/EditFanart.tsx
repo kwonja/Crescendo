@@ -50,7 +50,7 @@ const EditFanart: React.FC<EditFanartProps> = ({
     setImages(initialImageObjects);
     setTitle(initialTitle);
     setContent(initialContent);
-  }, [initialImages, initialTitle, initialContent,]);
+  }, [initialImages, initialTitle, initialContent]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -150,7 +150,7 @@ const EditFanart: React.FC<EditFanartProps> = ({
   };
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value.length <=25) {
+    if (e.target.value.length <= 25) {
       setTitle(e.target.value);
     }
   };
@@ -158,12 +158,12 @@ const EditFanart: React.FC<EditFanartProps> = ({
   const updateFeedDetail = async () => {
     try {
       const response = await getFanArtDetailAPI(fanArtId);
-      dispatch(updateFanArt({fanArtId, fanArt:response}));
-      dispatch(updateMyFanArt({fanArtId, fanArt:response}));
+      dispatch(updateFanArt({ fanArtId, fanArt: response }));
+      dispatch(updateMyFanArt({ fanArtId, fanArt: response }));
     } catch (error) {
       console.error('Error fetching feed details:', error);
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="gallery-form">

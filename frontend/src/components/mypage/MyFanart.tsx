@@ -14,11 +14,11 @@ import ActionMenu from '../common/ActionMenu';
 
 interface FanArtProps {
   fanArt: MyFanArtInfo;
-  onEditAction: (fanArtId:number)=>void;
-  onDeleteAction: (fanArtId:number)=>void;
+  onEditAction: (fanArtId: number) => void;
+  onDeleteAction: (fanArtId: number) => void;
 }
 
-export default function MyFanart({ fanArt, onDeleteAction, onEditAction  }: FanArtProps) {
+export default function MyFanart({ fanArt, onDeleteAction, onEditAction }: FanArtProps) {
   const {
     fanArtId,
     userId,
@@ -41,26 +41,33 @@ export default function MyFanart({ fanArt, onDeleteAction, onEditAction  }: FanA
   return (
     <div className="gallery">
       <div className="gallery-img-container">
-        <img className="gallery-img" src={IMAGE_BASE_URL + fanArtImagePathList[0]} alt="팬아트그림" />
+        <img
+          className="gallery-img"
+          src={IMAGE_BASE_URL + fanArtImagePathList[0]}
+          alt="팬아트그림"
+        />
         <div className="community_name">
           <Link to={`/community/${idolGroupId}`}>{idolGroupName}</Link>
         </div>
       </div>
-      {userId === currentUserId &&
-      <div className="dots_box">
-        <Dots className="dots hoverup" onClick={e => {
-          e.stopPropagation();
-          setShowActionMenu(true);
-        }} />
-        {showActionMenu && (
-          <ActionMenu
-            onClose={()=>setShowActionMenu(false)}
-            onEditAction={()=>onEditAction(fanArtId)}
-            onDeleteAction={()=>onDeleteAction(fanArtId)}
+      {userId === currentUserId && (
+        <div className="dots_box">
+          <Dots
+            className="dots hoverup"
+            onClick={e => {
+              e.stopPropagation();
+              setShowActionMenu(true);
+            }}
           />
-        )}
-      </div>
-      }
+          {showActionMenu && (
+            <ActionMenu
+              onClose={() => setShowActionMenu(false)}
+              onEditAction={() => onEditAction(fanArtId)}
+              onDeleteAction={() => onDeleteAction(fanArtId)}
+            />
+          )}
+        </div>
+      )}
       <div className="title_box">
         <div className="type">팬아트</div>
         <div className="title">{title}</div>

@@ -21,21 +21,20 @@ export default function MyGoodsList({ userId }: MyGoodsListProps) {
   const { myGoodsList, hasMore, status } = useAppSelector(state => state.myFeed);
   const dispatch = useAppDispatch();
   const observer = useRef<IntersectionObserver | null>(null);
-  const [showEditModal, setShowEditModal] = useState<number|null>(null);
-  const [showDeleteModal, setShowDeleteModal] = useState<number|null>(null);
-  const [editModalProps, setEditModalProps] = useState<EditModalProps|null>(null);
+  const [showEditModal, setShowEditModal] = useState<number | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState<number | null>(null);
+  const [editModalProps, setEditModalProps] = useState<EditModalProps | null>(null);
 
-  useEffect(()=> {
-    const goods = myGoodsList.find((goods)=>goods.goodsId===showEditModal);
+  useEffect(() => {
+    const goods = myGoodsList.find(goods => goods.goodsId === showEditModal);
     if (goods) {
       setEditModalProps({
-        title:goods.title,
-        content:goods.content,
-        images:goods.goodsImagePathList
-      })
-    }
-    else setEditModalProps(null);
-  }, [showEditModal, myGoodsList])
+        title: goods.title,
+        content: goods.content,
+        images: goods.goodsImagePathList,
+      });
+    } else setEditModalProps(null);
+  }, [showEditModal, myGoodsList]);
 
   useEffect(() => {
     return () => {
@@ -66,7 +65,7 @@ export default function MyGoodsList({ userId }: MyGoodsListProps) {
       try {
         await deleteGoodsAPI(showDeleteModal);
         alert('성공적으로 삭제했습니다.');
-        dispatch(resetState())
+        dispatch(resetState());
       } catch (error: any) {
         if (error.response && error.response.data) {
           alert(error.response.data);
@@ -78,39 +77,46 @@ export default function MyGoodsList({ userId }: MyGoodsListProps) {
         setShowDeleteModal(null);
       }
     }
-  }, [showDeleteModal, dispatch])
+  }, [showDeleteModal, dispatch]);
 
   return (
     <div className="gallerylist">
       {status === 'loading' || myGoodsList.length > 0 ? (
         myGoodsList.map(goods => (
-          <MyGoods 
-            key={goods.goodsId} 
-            goods={goods} 
-            onEditAction={(goodsId)=>setShowEditModal(goodsId)}
-            onDeleteAction={(goodsId)=>setShowDeleteModal(goodsId)}
+          <MyGoods
+            key={goods.goodsId}
+            goods={goods}
+            onEditAction={goodsId => setShowEditModal(goodsId)}
+            onDeleteAction={goodsId => setShowDeleteModal(goodsId)}
           />
         ))
       ) : (
         <div className="text-center text-xl w-full">작성된 굿즈가 없습니다.</div>
       )}
 
-      { //수정모달
+      {
+        //수정모달
         showEditModal && (
-          <div className="modal-overlay" style={{zIndex:1100}} onClick = {(e)=>e.stopPropagation()}>
-            <div className="feed-edit-modal modal" >
+          <div
+            className="modal-overlay"
+            style={{ zIndex: 1100 }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="feed-edit-modal modal">
               <div className="modal-content">
                 <div className="modal-header">
                   <div className="modal-header-title">
                     <h2>글 수정</h2>
                   </div>
-                  <span className="close" onClick={()=>setShowEditModal(null)}>
+                  <span className="close" onClick={() => setShowEditModal(null)}>
                     &times;
                   </span>
                 </div>
                 <div className="modal-body">
                   <EditGoods
-                    onClose={()=>{setShowEditModal(null);}}
+                    onClose={() => {
+                      setShowEditModal(null);
+                    }}
                     goodsId={showEditModal}
                     initialTitle={editModalProps?.title ?? ''}
                     initialContent={editModalProps?.content ?? ''}
@@ -123,15 +129,16 @@ export default function MyGoodsList({ userId }: MyGoodsListProps) {
         )
       }
 
-      {//삭제모달
-      showDeleteModal && (
-        <CommonModal
-          title="삭제 확인"
-          msg="정말로 삭제하시겠습니까?"
-          onClose={() => setShowDeleteModal(null)}
-          onConfirm={onDelete}
-        />
-      )
+      {
+        //삭제모달
+        showDeleteModal && (
+          <CommonModal
+            title="삭제 확인"
+            msg="정말로 삭제하시겠습니까?"
+            onClose={() => setShowDeleteModal(null)}
+            onConfirm={onDelete}
+          />
+        )
       }
 
       {hasMore && <div ref={loadMoreElementRef}>Load More..</div>}

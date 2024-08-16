@@ -49,7 +49,7 @@ const EditGoods: React.FC<EditGoodsProps> = ({
     }));
     setImages(initialImageObjects);
     setContent(initialContent);
-    setTitle(initialTitle)
+    setTitle(initialTitle);
   }, [initialImages, initialContent, initialTitle]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -155,7 +155,7 @@ const EditGoods: React.FC<EditGoodsProps> = ({
   };
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value.length <=25) {
+    if (e.target.value.length <= 25) {
       setTitle(e.target.value);
     }
   };
@@ -163,12 +163,12 @@ const EditGoods: React.FC<EditGoodsProps> = ({
   const updateFeedDetail = async () => {
     try {
       const response = await getGoodsDetailAPI(goodsId);
-      dispatch(updateGoods({goodsId, goods:response}));
-      dispatch(updateMyGoods({goodsId, goods:response}));
+      dispatch(updateGoods({ goodsId, goods: response }));
+      dispatch(updateMyGoods({ goodsId, goods: response }));
     } catch (error) {
       console.error('Error fetching feed details:', error);
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="gallery-form">

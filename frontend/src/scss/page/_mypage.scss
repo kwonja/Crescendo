@@ -101,7 +101,7 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    
+
     .modal-content {
       background-color: white;
       border-radius: 20px 20px 0px 0px;
@@ -118,12 +118,12 @@
         justify-content: flex-start;
         background: #f66;
         border-radius: 10px 10px 0px 0px;
-    
+
         font-size: 23px;
         letter-spacing: 2.3px;
         font-weight: 400;
         line-height: 100%; /* 23px */
-    
+
         .modal-header-title {
           width: 90px;
           height: 44px;
@@ -136,7 +136,7 @@
         .tabs {
           display: flex;
         }
-      
+
         .tab {
           width: 90px;
           height: 44px;
@@ -158,26 +158,25 @@
           cursor: pointer;
         }
       }
-      
+
       .modal-body {
         flex: 1;
         padding: 20px;
         overflow-y: scroll;
       }
-    
+
       .modal-body::-webkit-scrollbar {
         width: 12px;
       }
-    
+
       .modal-body::-webkit-scrollbar-thumb {
         background-color: rgba(0, 0, 0, 0.2);
         border-radius: 10px;
       }
-    
+
       .modal-body::-webkit-scrollbar-track {
         background-color: rgba(0, 0, 0, 0.1);
       }
-
     }
   }
 

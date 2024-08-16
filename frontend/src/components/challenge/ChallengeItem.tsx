@@ -40,17 +40,19 @@ export default function ChallengeItem({ Challenge }: ChallengeProps) {
       toast.success('삭제되었습니다', {
         position: 'top-center',
       });
-      dispath(setSelectedChallenge({
-        challengeId: 0,
-        title: '',
-        challengeVideoPath: '',
-        createdAt: '',
-        endAt: '',
-        userId: 0,
-        nickname: '',
-        profilePath: '',
-        participants: 0,
-      }))
+      dispath(
+        setSelectedChallenge({
+          challengeId: 0,
+          title: '',
+          challengeVideoPath: '',
+          createdAt: '',
+          endAt: '',
+          userId: 0,
+          nickname: '',
+          profilePath: '',
+          participants: 0,
+        }),
+      );
     } catch (err: unknown) {
       if (isAxiosError(err)) {
         // Axios 에러인 경우

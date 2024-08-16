@@ -177,12 +177,12 @@ const EditFeed: React.FC<EditFeedProps> = ({
   const updateFeedDetail = async () => {
     try {
       const response = await getFeedDetailAPI(feedId);
-      dispatch(updateFeed({feedId, feed:response}));
-      dispatch(updateMyFeed({feedId, feed:response}));
+      dispatch(updateFeed({ feedId, feed: response }));
+      dispatch(updateMyFeed({ feedId, feed: response }));
     } catch (error) {
       console.error('Error fetching feed details:', error);
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="feed-form">

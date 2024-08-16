@@ -7,10 +7,15 @@ import { IMAGE_BASE_URL } from '../../apis/core';
 interface ParmsProps {
   challengeId: number;
   videoRef: React.RefObject<HTMLVideoElement>;
-  isPlaying : boolean;
-  setIsPlaying : (argu : boolean) => void;
+  isPlaying: boolean;
+  setIsPlaying: (argu: boolean) => void;
 }
-export default function VideoPlayerOrigin({ challengeId,videoRef,isPlaying,setIsPlaying }: ParmsProps) {
+export default function VideoPlayerOrigin({
+  challengeId,
+  videoRef,
+  isPlaying,
+  setIsPlaying,
+}: ParmsProps) {
   const [url, setUrl] = useState<string>();
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -47,7 +52,7 @@ export default function VideoPlayerOrigin({ challengeId,videoRef,isPlaying,setIs
       videoRef.current.play();
       setIsPlaying(true);
     }
-  }, [videoRef,setIsPlaying]);
+  }, [videoRef, setIsPlaying]);
 
   const togglePlayPause = () => {
     const videoElement = videoRef.current;

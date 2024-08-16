@@ -4,7 +4,11 @@ import { modifyIntroductionAPI, modifyNicknameAPI, modifyProfileAPI } from '../.
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
 import { handleFollow, handleInfoUpdate } from '../../features/mypage/profileSlice';
 import { followAPI } from '../../apis/follow';
-import { isExactForbiddenNickname, isIncludedForbiddenNickname, isValidNickname } from '../../utils/NicknameValidation';
+import {
+  isExactForbiddenNickname,
+  isIncludedForbiddenNickname,
+  isValidNickname,
+} from '../../utils/NicknameValidation';
 
 interface ProfileProps {
   userId: number;
@@ -93,7 +97,7 @@ export default function Profile({ userId }: ProfileProps) {
               ref={nickeRef}
               maxLength={10}
             />
-            {nicknameError && <div style={{color:'red'}}>{nicknameError}</div>}
+            {nicknameError && <div style={{ color: 'red' }}>{nicknameError}</div>}
           </>
         ) : (
           <div className="nickname break-all">{nickname}</div>
@@ -115,7 +119,13 @@ export default function Profile({ userId }: ProfileProps) {
               <button className="w-1/4 bg-mainColor" onClick={handleSaveClick}>
                 저장
               </button>
-              <button className="w-1/4 bg-subColor" onClick={() => {setNicknameError(null);setIsEditing(prev => !prev)}}>
+              <button
+                className="w-1/4 bg-subColor"
+                onClick={() => {
+                  setNicknameError(null);
+                  setIsEditing(prev => !prev);
+                }}
+              >
                 취소
               </button>
             </div>

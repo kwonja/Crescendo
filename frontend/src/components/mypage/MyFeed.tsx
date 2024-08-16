@@ -17,8 +17,8 @@ import ActionMenu from '../common/ActionMenu';
 
 interface FeedProps {
   feed: MyFeedInfo;
-  onEditAction: (feedId:number)=>void;
-  onDeleteAction: (feedId:number)=>void;
+  onEditAction: (feedId: number) => void;
+  onDeleteAction: (feedId: number) => void;
 }
 export default function MyFeed({ feed, onEditAction, onDeleteAction }: FeedProps) {
   const {
@@ -54,17 +54,24 @@ export default function MyFeed({ feed, onEditAction, onDeleteAction }: FeedProps
         <div className="community_name">
           <Link to={`/community/${idolGroupId}`}>{idolGroupName}</Link>
         </div>
-        { userId === currentUserId &&
-        <div className="dots_box">
-          <Dots className="dots hoverup" onClick={e => {setShowActionMenu(true); e.stopPropagation();}} />
-          {showActionMenu && <ActionMenu 
-            onClose={()=>setShowActionMenu(false)}
-            onEditAction={()=>onEditAction(feedId)}
-            onDeleteAction={()=>onDeleteAction(feedId)}
-          />
-          }
-        </div>
-        }
+        {userId === currentUserId && (
+          <div className="dots_box">
+            <Dots
+              className="dots hoverup"
+              onClick={e => {
+                setShowActionMenu(true);
+                e.stopPropagation();
+              }}
+            />
+            {showActionMenu && (
+              <ActionMenu
+                onClose={() => setShowActionMenu(false)}
+                onEditAction={() => onEditAction(feedId)}
+                onDeleteAction={() => onDeleteAction(feedId)}
+              />
+            )}
+          </div>
+        )}
       </div>
       {feedImagePathList.length > 0 && (
         <div className="feed_image_box">

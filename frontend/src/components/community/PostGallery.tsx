@@ -69,7 +69,7 @@ const GalleryForm = ({ onClose, category }: GalleryFormProps) => {
       alert('제목을 입력해주세요.');
       return;
     }
-    
+
     if (content.trim() === '') {
       alert('내용을 입력해주세요.');
       return;
@@ -124,7 +124,7 @@ const GalleryForm = ({ onClose, category }: GalleryFormProps) => {
   };
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value.length <=25) {
+    if (e.target.value.length <= 25) {
       setTitle(e.target.value);
     }
   };

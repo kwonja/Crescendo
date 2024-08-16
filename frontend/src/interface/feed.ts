@@ -1,4 +1,4 @@
-export interface MyFeedInfo extends FeedInfo{
+export interface MyFeedInfo extends FeedInfo {
   idolGroupId: number;
   idolGroupName: string;
 }

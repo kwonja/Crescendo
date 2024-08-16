@@ -237,13 +237,17 @@ export default function CommunityDetail() {
         <FeedDetailModal show={showDetail} onClose={handleCloseDetail} feedId={selectedFeedId} />
       )}
       {selectedFanartId && (
-        <FanartDetailModal show={showDetail} onClose={handleCloseDetail} fanArtId={selectedFanartId} />
+        <FanartDetailModal
+          show={showDetail}
+          onClose={handleCloseDetail}
+          fanArtId={selectedFanartId}
+        />
       )}
       {selectedGoodsId && (
         <GoodsDetailModal show={showDetail} onClose={handleCloseDetail} goodsId={selectedGoodsId} />
       )}
 
-      {show && isSelected  === 'feed' && (
+      {show && isSelected === 'feed' && (
         <div className="modal">
           <div className="modal-content">
             <div className="modal-header">
@@ -251,11 +255,7 @@ export default function CommunityDetail() {
                 <h2>글작성</h2>
               </div>
               <div className="tabs">
-                <div
-                  className={'tab'}
-                >
-                  피드
-                </div>
+                <div className={'tab'}>피드</div>
               </div>
               <Close className="close" onClick={handleClose} />
             </div>
@@ -265,7 +265,7 @@ export default function CommunityDetail() {
           </div>
         </div>
       )}
-      {show && isSelected  === 'fan-art' && (
+      {show && isSelected === 'fan-art' && (
         <div className="modal">
           <div className="modal-content">
             <div className="modal-header">
@@ -273,11 +273,7 @@ export default function CommunityDetail() {
                 <h2>글작성</h2>
               </div>
               <div className="tabs">
-                <button
-                  className={'tab'}
-                >
-                  팬아트
-                </button>
+                <button className={'tab'}>팬아트</button>
               </div>
               <Close className="close" onClick={handleClose} />
             </div>
@@ -287,7 +283,7 @@ export default function CommunityDetail() {
           </div>
         </div>
       )}
-      {show && isSelected  === 'goods' && (
+      {show && isSelected === 'goods' && (
         <div className="modal">
           <div className="modal-content">
             <div className="modal-header">
@@ -295,16 +291,12 @@ export default function CommunityDetail() {
                 <h2>글작성</h2>
               </div>
               <div className="tabs">
-                <button
-                  className={'tab'}
-                >
-                  굿즈
-                </button>
+                <button className={'tab'}>굿즈</button>
               </div>
               <Close className="close" onClick={handleClose} />
             </div>
             <div className="modal-body">
-              <GalleryForm category="굿즈" onClose={handleClose}/>
+              <GalleryForm category="굿즈" onClose={handleClose} />
             </div>
           </div>
         </div>

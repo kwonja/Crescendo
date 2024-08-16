@@ -658,19 +658,19 @@
           }
         }
 
-        .no-comments-container{
+        .no-comments-container {
           display: flex;
           flex-direction: column;
           justify-content: center;
           align-items: center;
           width: auto;
           padding-top: 42%;
-          .no-comments-icon{
+          .no-comments-icon {
             width: 50px;
             height: 50px;
             margin-bottom: 15px;
           }
-          .no-comments-text{
+          .no-comments-text {
             font-size: 22px;
           }
         }

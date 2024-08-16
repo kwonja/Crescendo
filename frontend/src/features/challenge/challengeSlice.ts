@@ -68,19 +68,18 @@ const challengeSlice = createSlice({
         state.challengeLists.splice(index, 1);
       }
     },
-    incrementParticipants : (state, action : PayloadAction<number>) =>{
-      const index =state.challengeLists.findIndex(item => item.challengeId ===action.payload);
+    incrementParticipants: (state, action: PayloadAction<number>) => {
+      const index = state.challengeLists.findIndex(item => item.challengeId === action.payload);
       if (index !== -1) {
         state.challengeLists[index].participants++;
       }
-
     },
-    decrementParticipants : (state, action : PayloadAction<number>) =>{
-      const index =state.challengeLists.findIndex(item => item.challengeId ===action.payload);
+    decrementParticipants: (state, action: PayloadAction<number>) => {
+      const index = state.challengeLists.findIndex(item => item.challengeId === action.payload);
       if (index !== -1) {
         state.challengeLists[index].participants--;
       }
-    }
+    },
   },
   extraReducers(builder) {
     builder
@@ -99,6 +98,12 @@ const challengeSlice = createSlice({
   },
 });
 
-export const { setSelectedChallenge, setChallengePage, initialChallengeList, deleteChallenge,incrementParticipants,decrementParticipants} =
-  challengeSlice.actions;
+export const {
+  setSelectedChallenge,
+  setChallengePage,
+  initialChallengeList,
+  deleteChallenge,
+  incrementParticipants,
+  decrementParticipants,
+} = challengeSlice.actions;
 export default challengeSlice.reducer;
