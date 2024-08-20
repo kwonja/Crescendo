@@ -6,9 +6,7 @@ import { ReactComponent as Clip } from '../../assets/images/Chat/clip.svg';
 import { ReactComponent as Submit } from '../../assets/images/Chat/submit.svg';
 import MyMessage from './MyMessage';
 import OtherMessage from './OtherMessage';
-import { BASE_URL, getUserId } from '../../apis/core';
-import SockJS from 'sockjs-client';
-import { CompatClient, Stomp } from '@stomp/stompjs';
+import {  getUserId } from '../../apis/core';
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
 import { setIsSelected, setSelectedGroup } from '../../features/chat/chatroomSlice';
 import { getMessages, initialMessage, setMessage, setPage } from '../../features/chat/messageSlice';
@@ -16,7 +14,6 @@ import { ChatDateTransfer } from '../../utils/ChatDateTransfer';
 import { Message } from '../../interface/chat';
 
 export default function Chatroom() {
-  const client = useRef<CompatClient | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [isScroll, setScroll] = useState<boolean>(false);
   const { dmGroupId, opponentNickName, opponentId } = useAppSelector(
@@ -26,28 +23,13 @@ export default function Chatroom() {
   const messageListRef = useRef<HTMLDivElement>(null);
   const [prevScrollHeight, setPrevScrollHeight] = useState(0);
   const dispatch = useAppDispatch();
-
-  const connect = useCallback(() => {
-    client.current = Stomp.over(() => new SockJS(`${BASE_URL}/ws`));
-
-    client.current.connect(
-      {},
-      (frame: string) => {
-        client.current?.subscribe(`/topic/messages/${getUserId()}`, content => {
-          const newMessage: Message = JSON.parse(content.body);
-          setScroll(true);
-          dispatch(setMessage(newMessage));
-        });
-      },
-      (error: any) => {},
-    );
-  }, [dispatch]);
+  const client = useAppSelector(state => state.websocket.client);
 
   const HandleMessageSend = () => {
     const message = inputRef.current!.value;
 
     if (message !== '') {
-      client.current!.send(
+      client!.send(
         '/app/message',
         {},
         JSON.stringify({
@@ -73,15 +55,18 @@ export default function Chatroom() {
   }, [dmGroupId, currentPage, dispatch]);
 
   useEffect(() => {
-    connect();
+
+    const subscription = client?.subscribe(`/topic/messages/${getUserId()}`, content => {
+      const newMessage: Message = JSON.parse(content.body);
+      setScroll(true);
+      dispatch(setMessage(newMessage));
+    });
+
     return () => {
-      if (client.current) {
-        client.current.disconnect(() => {
-          dispatch(initialMessage());
-        });
-      }
+      subscription?.unsubscribe();
+      dispatch(initialMessage());
     };
-  }, [connect, dispatch]);
+  }, [dispatch,client]);
 
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect  } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
 import { CompatClient, Stomp } from '@stomp/stompjs';
 import { Message } from '../../interface/chat';
@@ -9,12 +9,12 @@ import {
   incrementUnReadChat,
   setLastChatting,
 } from '../../features/chat/chatroomSlice';
+import { setClient, setConnected } from '../../features/chat/webSocketSlice';
 
 export default function ChatConnect() {
   const { selectedGroup } = useAppSelector(state => state.chatroom);
 
   const dispatch = useAppDispatch();
-  const client = useRef<CompatClient | null>(null);
 
   useEffect(() => {
     const promise = dispatch(getUserChatRoomList());
@@ -22,13 +22,15 @@ export default function ChatConnect() {
   }, [dispatch]);
 
   useEffect(() => {
-    client.current = Stomp.over(() => new SockJS(`${BASE_URL}/ws`));
+    const client: CompatClient = Stomp.over(() => new SockJS(`${BASE_URL}/ws`));
 
-    client.current.connect(
+    client.connect(
       {},
       (frame: string) => {
+        dispatch(setClient(client));
+        dispatch(setConnected(true));
         dispatch(getUserChatRoomList());
-        client.current?.subscribe(`/topic/messages/${getUserId()}`, content => {
+        client.subscribe(`/topic/messages/${getUserId()}`, content => {
           const newMessage: Message = JSON.parse(content.body);
           dispatch(
             setLastChatting({
@@ -50,9 +52,9 @@ export default function ChatConnect() {
     );
 
     return () => {
-      if (client.current) {
-        client.current.disconnect();
-      }
+      client.disconnect(() => {
+        dispatch(setConnected(false));
+      });
     };
   }, [dispatch, selectedGroup]);
 
