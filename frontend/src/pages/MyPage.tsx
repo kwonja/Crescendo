@@ -13,9 +13,7 @@ export default function MyPage() {
   const menuRef = useRef<HTMLDivElement>(null);
 
   const { id } = useParams<{ id: string }>();
-  if (id === undefined
-    
-    || !/^[1-9]\d*$/.test(id)) {
+  if (id === undefined || !/^[1-9]\d*$/.test(id)) {
     throw new Error('잘못된 접근입니다.');
   }
   const numericId = id ? parseInt(id, 10) : NaN;

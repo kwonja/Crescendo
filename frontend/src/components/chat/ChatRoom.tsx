@@ -6,12 +6,13 @@ import { ReactComponent as Clip } from '../../assets/images/Chat/clip.svg';
 import { ReactComponent as Submit } from '../../assets/images/Chat/submit.svg';
 import MyMessage from './MyMessage';
 import OtherMessage from './OtherMessage';
-import {  getUserId } from '../../apis/core';
+import { getUserId } from '../../apis/core';
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
 import { setIsSelected, setSelectedGroup } from '../../features/chat/chatroomSlice';
 import { getMessages, initialMessage, setMessage, setPage } from '../../features/chat/messageSlice';
 import { ChatDateTransfer } from '../../utils/ChatDateTransfer';
 import { Message } from '../../interface/chat';
+import { useWebSocket } from '../../contexts/WebSocketContext';
 
 export default function Chatroom() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -20,10 +21,10 @@ export default function Chatroom() {
     state => state.chatroom.selectedGroup,
   );
   const { messageList, currentPage } = useAppSelector(state => state.message);
+  const {client} = useWebSocket();
   const messageListRef = useRef<HTMLDivElement>(null);
   const [prevScrollHeight, setPrevScrollHeight] = useState(0);
   const dispatch = useAppDispatch();
-  const client = useAppSelector(state => state.websocket.client);
 
   const HandleMessageSend = () => {
     const message = inputRef.current!.value;
@@ -55,7 +56,6 @@ export default function Chatroom() {
   }, [dmGroupId, currentPage, dispatch]);
 
   useEffect(() => {
-
     const subscription = client?.subscribe(`/topic/messages/${getUserId()}`, content => {
       const newMessage: Message = JSON.parse(content.body);
       setScroll(true);
@@ -66,7 +66,7 @@ export default function Chatroom() {
       subscription?.unsubscribe();
       dispatch(initialMessage());
     };
-  }, [dispatch,client]);
+  }, [dispatch, client]);
 
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {

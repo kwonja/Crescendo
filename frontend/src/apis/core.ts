@@ -1,6 +1,6 @@
 import axios from 'axios';
-export const BASE_URL = 'https://www.crescendo.o-r.kr/server';
-export const IMAGE_BASE_URL = 'https://www.crescendo.o-r.kr/server/files/';
+export const BASE_URL = 'http://localhost:8080';
+export const IMAGE_BASE_URL = 'http://localhost:8080/files/';
 const config = {
   baseURL: BASE_URL,
   withCredentials: true,

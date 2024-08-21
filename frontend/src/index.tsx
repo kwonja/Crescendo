@@ -12,6 +12,7 @@ import { refreshToken } from './features/auth/authSlice';
 
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { WebSocketProvider } from './contexts/WebSocketContext';
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 AOS.init();
 
@@ -33,7 +34,9 @@ const initApp = async () => {
 initApp().then(() => {
   root.render(
     <Provider store={store}>
+      <WebSocketProvider>
       <RouterProvider router={router} />
+      </WebSocketProvider>
     </Provider>,
   );
 });

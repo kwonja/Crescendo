@@ -24,6 +24,7 @@ export default function App() {
         <NotLoginHeader />
       )}
 
+
       <Outlet />
       <ToastContainer
         position="top-center"

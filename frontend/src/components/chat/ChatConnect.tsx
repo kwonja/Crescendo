@@ -1,19 +1,17 @@
-import React, { useEffect  } from 'react';
-import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
-import { CompatClient, Stomp } from '@stomp/stompjs';
-import { Message } from '../../interface/chat';
+import React, { useEffect, useRef } from 'react';
+import { CompatClient, Stomp, StompSubscription } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import { useWebSocket } from '../../contexts/WebSocketContext';
+import { useAppDispatch, useAppSelector } from '../../store/hooks/hook';
 import { BASE_URL, getUserId } from '../../apis/core';
-import {
-  getUserChatRoomList,
-  incrementUnReadChat,
-  setLastChatting,
-} from '../../features/chat/chatroomSlice';
-import { setClient, setConnected } from '../../features/chat/webSocketSlice';
+import { Message } from '../../interface/chat';
+import { getUserChatRoomList, incrementUnReadChat, setLastChatting } from '../../features/chat/chatroomSlice';
 
-export default function ChatConnect() {
+
+const ChatConnect: React.FC = () => {
+  const { setClient, setConnected,connected,client } = useWebSocket();
   const { selectedGroup } = useAppSelector(state => state.chatroom);
-
+  const subscriptionRef = useRef<StompSubscription | null>(null);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -21,42 +19,58 @@ export default function ChatConnect() {
     return () => promise.abort();
   }, [dispatch]);
 
-  useEffect(() => {
-    const client: CompatClient = Stomp.over(() => new SockJS(`${BASE_URL}/ws`));
-
-    client.connect(
-      {},
-      (frame: string) => {
-        dispatch(setClient(client));
-        dispatch(setConnected(true));
-        dispatch(getUserChatRoomList());
-        client.subscribe(`/topic/messages/${getUserId()}`, content => {
-          const newMessage: Message = JSON.parse(content.body);
-          dispatch(
-            setLastChatting({
-              dmGroupId: newMessage.dmGroupId,
-              opponentId: newMessage.writerId,
-              opponentProfilePath: newMessage.writerProfilePath,
-              opponentNickName: newMessage.writerNickName,
-              lastChatting: newMessage.message,
-              lastChattingTime: newMessage.createdAt,
-            }),
-          );
-          if (newMessage.dmGroupId !== selectedGroup.dmGroupId) {
-            dispatch(incrementUnReadChat(newMessage.dmGroupId));
-            dispatch(getUserChatRoomList());
-          }
-        });
-      },
-      (error: any) => {},
-    );
+  useEffect(()=>{
+    const stompClient: CompatClient = Stomp.over(() => new SockJS(`${BASE_URL}/ws`));
+    stompClient.connect({},(frame : string)=>{
+        setClient(stompClient);
+        setConnected(true);
+    })
 
     return () => {
-      client.disconnect(() => {
-        dispatch(setConnected(false));
-      });
+        stompClient?.disconnect(() => {
+                setConnected(false);
+                setClient(null);
+        });
     };
-  }, [dispatch, selectedGroup]);
+  },[setClient,setConnected])
+  
+  useEffect(() => {
+    if (connected && client) {
+      subscriptionRef.current = client.subscribe(`/topic/messages/${getUserId()}`, (message) => {
+        if (typeof message.body === 'string') {
+          try {
+            const newMessage: Message = JSON.parse(message.body);
+            dispatch(
+              setLastChatting({
+                dmGroupId: newMessage.dmGroupId,
+                opponentId: newMessage.writerId,
+                opponentProfilePath: newMessage.writerProfilePath,
+                opponentNickName: newMessage.writerNickName,
+                lastChatting: newMessage.message,
+                lastChattingTime: newMessage.createdAt,
+              })
+            );
+            if (newMessage.dmGroupId !== selectedGroup.dmGroupId) {
+              dispatch(incrementUnReadChat(newMessage.dmGroupId));
+            }
+          } catch (error) {
+            console.error('Error parsing message body:', error);
+          }
+        } else {
+          console.error('Message body is not a string');
+        }
+      });
+    }
 
-  return <></>;
-}
+    return () => {
+      if (subscriptionRef.current) {
+        subscriptionRef.current.unsubscribe();
+        subscriptionRef.current = null;
+      }
+    };
+  }, [selectedGroup.dmGroupId, dispatch, client, connected]);
+
+  return null;
+};
+
+export default ChatConnect;
