@@ -35,7 +35,7 @@ initApp().then(() => {
   root.render(
     <Provider store={store}>
       <WebSocketProvider>
-      <RouterProvider router={router} />
+        <RouterProvider router={router} />
       </WebSocketProvider>
     </Provider>,
   );

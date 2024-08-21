@@ -21,7 +21,7 @@ export default function Chatroom() {
     state => state.chatroom.selectedGroup,
   );
   const { messageList, currentPage } = useAppSelector(state => state.message);
-  const {client} = useWebSocket();
+  const { client } = useWebSocket();
   const messageListRef = useRef<HTMLDivElement>(null);
   const [prevScrollHeight, setPrevScrollHeight] = useState(0);
   const dispatch = useAppDispatch();
