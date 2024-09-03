@@ -31,6 +31,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "postbuild": "purgecss --css ./build/static/css/*.css --content ./build/index.html ./build/static/js/*.js --output ./build/static/css",
     "prepare": "husky",
     "format": "prettier --cache --write .",
     "lint": "eslint --cache .",
@@ -53,11 +54,13 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@fullhuman/postcss-purgecss": "^6.0.0",
     "@types/aos": "^3.0.7",
     "@types/react-slick": "^0.23.13",
     "@types/sockjs-client": "^1.5.4",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
+    "glob-all": "^3.3.1",
     "husky": "^9.1.4",
     "prettier": "^3.3.3",
     "tailwindcss": "^3.4.7"
