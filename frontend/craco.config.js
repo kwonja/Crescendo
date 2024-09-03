@@ -1,4 +1,4 @@
-const purgecss = require("@fullhuman/postcss-purgecss");
+const purgecss = require('@fullhuman/postcss-purgecss');
 
 module.exports = {
   style: {
@@ -6,7 +6,7 @@ module.exports = {
       plugins: [
         require('tailwindcss'),
         purgecss({
-          content: ["./src/**/*.html", "./src/**/*.tsx", "./src/**/*.ts"],
+          content: ['./src/**/*.html', './src/**/*.tsx', './src/**/*.ts'],
         }),
       ],
     },
